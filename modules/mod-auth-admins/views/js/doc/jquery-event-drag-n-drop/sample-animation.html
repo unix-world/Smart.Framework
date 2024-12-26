@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>jQuery Event Drag Animation</title>
+	<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script src="../../jquery.event.drag.js"></script>
+	<script src="../../jquery.event.drop.js"></script>
+	<style type="text/css">
+	.drag {
+		position: absolute;
+		border: 1px solid #89B;
+		background: #BCE;
+		height: 58px;
+		width: 58px;
+		text-align: center;
+		line-height: 58px;
+		cursor: move;
+		top: 100px;
+		font-size: 32px;
+		}
+	.drop {
+		position: absolute;
+		top: 20px;
+		right: 20px;
+		width: 98px;
+		height: 98px;
+		border: 1px dashed #888;
+		background: #EEE;
+		margin: 0 10px 0 0;
+		text-align: center;
+		line-height: 99px;
+		}
+	.dropped {
+		background-color: #EBC;
+		border-color: #B89;
+		}
+	.active {
+		background-color: #CEB;
+		border-color: #9B8;
+		}
+	</style>
+</head>
+<body>
+<h1>Moving Drop Demo</h1>
+<p>Drag the blue boxes, into the moving dashed boxes.</p>
+<div class="drop"></div>
+<div class="drop"></div>
+<div class="drop"></div>
+<div class="drag" style="left:20px;"></div>
+<div class="drag" style="left:100px;"></div>
+<div class="drag" style="left:180px;"></div>
+<script>
+$(function() {
+
+	$('.drag')
+		.drag(function( ev, dd ){
+			dd.update();
+			$( this ).css({
+				top: dd.offsetY,
+				left: dd.offsetX
+			});
+		});
+	$('.drop')
+		.drop("start",function(){
+			$( this ).addClass("active").stop();
+		})
+		.drop(function(){
+			$( this ).toggleClass("dropped");
+		})
+		.drop("end",function( ev, dd ){
+			$( this ).animate({
+				top: Math.random() * ( $( window ).height() - 140 ) + 20,
+				left: Math.random() * ( $( window ).width() - 140 ) + 20
+			},{
+				complete: function(){
+					$( this ).drop("end");
+				},
+				duration: 1000
+			})
+			.removeClass("active");
+		});
+	setTimeout(function(){
+		$('.drop').drop("end");
+	}, 100 );
+
+});
+</script>
+</body>
+</html>

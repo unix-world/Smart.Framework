@@ -1,0 +1,92 @@
+
+/*
+jQuery Tabs 2.1.1
+(c) 2016-2021 unix-world.org
+v.20210512
+*/
+
+div.simple_tabs_container {
+	text-align: left;
+	margin-top: 1px;
+	margin-bottom: 5px;
+}
+
+div.simple_tabs_load_err {
+	line-height: 36px;
+	text-align: left;
+	font-size: 1.25rem;
+	font-weight: bold;
+	font-style: normal;
+	padding-left: 16px;
+	padding-right: 16px;
+	padding-top: 12px;
+	padding-bottom: 8px;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	max-width: calc(100% - 10px) !important;
+	min-width: 100px;
+	min-height: 40px;
+	height: auto !important;
+	border-radius: 5px;
+	box-shadow: 1px 1px 2px 2px #ECECEC;
+	box-sizing: content-box !important;
+	opacity: 1 !important;
+	background-color: #555555 !important;
+	color: #FAFAFA !important;
+}
+
+ul.simple_tabs_head {
+	margin: 0;
+	margin-bottom: -1px;
+	padding: 0;
+	padding-top: 2px;
+	padding-left: 4px;
+}
+
+ul.simple_tabs_head li {
+	list-style: none;
+	display: inline;
+}
+
+ul.simple_tabs_head li a.simple_tabs_inactive {
+	font-weight: bold;
+	text-decoration: none !important;
+	margin-top: 5px;
+	margin-right: 1px;
+	padding: 5px 10px;
+	display: inline-block;
+	border: 1px solid #F2F2F2;
+	border-bottom: 1px solid #F2F2F2;
+	background: #FFFFFF;
+	color: #555555;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+}
+
+ul.simple_tabs_head li a.simple_tabs_active {
+	background: #555555;
+	color: #FFFFFF;
+	border: 1px solid #555555;
+	border-bottom: 1px solid #555555;
+	cursor: default !important;
+}
+
+ul.simple_tabs_head li a.simple_tabs_disabled {
+	opacity: 0.5 !important;
+	cursor: not-allowed !important;
+}
+
+div.simple_tabs_content {
+	border: 1px solid #F2F2F2;
+	border-top: 1px solid #F2F2F2;
+	padding-top: 10px;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-bottom: 10px;
+}
+
+div.simple_tabs_loader {
+	text-align: right;
+}
+
+/* END */

@@ -1,0 +1,455 @@
+<script>{
+		"title":
+			".data()",
+		"excerpt":
+			"Store arbitrary data associated with the matched elements or return the value at the named data store for the first element in the set of matched elements.",
+		"termSlugs": {
+			"category": [
+				"data","miscellaneous/data-storage","version/1.2.3","version/1.4","version/1.4.3"
+			]
+		}
+	}</script>Store arbitrary data associated with the matched elements or return the value at the named data store for the first element in the set of matched elements.<div class="toc">
+<h4><span>Contents:</span></h4>
+<ul class="toc-list">
+<li>
+<a href="#data1">.data( key, value )</a><ul>
+<li><a href="#data-key-value">.data( key, value )</a></li>
+<li><a href="#data-obj">.data( obj )</a></li>
+</ul>
+</li>
+<li>
+<a href="#data2">.data( key )</a><ul>
+<li><a href="#data-key">.data( key )</a></li>
+<li><a href="#data">.data()</a></li>
+</ul>
+</li>
+</ul>
+</div><article id="data1" class="entry method"><h2 class="section-title">
+<span class="name">.data( key, value )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#jQuery">jQuery</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Store arbitrary data associated with the matched elements.</p>
+<ul class="signatures">
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.2.3/">1.2.3</a></span><a id="data-key-value" href="#data-key-value"><span class="icon-link"></span>.data( key, value )</a>
+</h4>
+<ul>
+<li>
+<div><strong>key</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>A string naming the piece of data to set.</div>
+</li>
+<li>
+<div><strong>value</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Anything">Anything</a>
+</div>
+<div>The new data value; this can be any Javascript type except <code>undefined</code>.</div>
+</li>
+</ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.4.3/">1.4.3</a></span><a id="data-obj" href="#data-obj"><span class="icon-link"></span>.data( obj )</a>
+</h4>
+<ul><li>
+<div><strong>obj</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Object">Object</a>
+</div>
+<div>An object of key-value pairs of data to update.</div>
+</li></ul>
+</li>
+</ul>
+<div class="longdesc" id="entry-longdesc">
+      <p>The <code>.data()</code> method allows us to attach data of any type to DOM elements in a way that is safe from circular references and therefore from memory leaks.</p>
+      <p>We can set several distinct values for a single element and retrieve them later:</p>
+      <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;body&quot;</span> ).data( <span class="string">&quot;foo&quot;</span>, <span class="number">52</span> );</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;body&quot;</span> ).data( <span class="string">&quot;bar&quot;</span>, { isManual: <span class="literal">true</span> } );</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;body&quot;</span> ).data( { baz: [ <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> ] } );</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;body&quot;</span> ).data( <span class="string">&quot;foo&quot;</span> ); <span class="comment">// 52</span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;body&quot;</span> ).data(); <span class="comment">// { foo: 52, bar: { isManual: true }, baz: [ 1, 2, 3 ] }</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+      <p>Using the <code>data()</code> method to update data does not affect attributes in the DOM. To set a <code>data-*</code> attribute value, use <code><a href="/attr/">attr</a></code>.</p>
+      <p>Prior to jQuery 1.4.3, <code>.data( obj )</code> completely replaced all data. Since jQuery 1.4.3, data is instead extended by shallow merge.</p>
+      <p>Since <strong>jQuery 3</strong>, every two-character sequence of &quot;-&quot; (U+002D) followed by a lowercase ASCII letter in a key is replaced by the uppercase version of the letter, in alignment with the <a href="https://html.spec.whatwg.org/multipage/dom.html#dom-dataset">HTML dataset API</a>. A statement like <code>$( &quot;body&quot; ).data( { &quot;my-name&quot;: &quot;aValue&quot; } ).data();</code> will return <code>{ myName: &quot;aValue&quot; }</code>.</p>
+      <p>Due to the way browsers interact with plugins and external code, the <code>.data()</code> method cannot be used on <code>&lt;object&gt;</code> (unless it&apos;s a Flash plugin), <code>&lt;applet&gt;</code> or <code>&lt;embed&gt;</code> elements.</p>
+    </div>
+<h3>Additional Notes:</h3>
+<div class="longdesc"><ul>
+<li>
+			Note that this method currently does not provide cross-platform support for setting data on XML documents, as Internet Explorer does not allow data to be attached via expando properties.
+		</li>
+<li>
+<code>undefined</code> is not recognized as a data value. Calls such as <code>.data( &quot;name&quot;, undefined )</code> will return the jQuery object that it was called on, allowing for chaining.
+		</li>
+</ul></div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Store then retrieve a value from the div element.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+						<div class="line n32">32</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>data demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css"></span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">div</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">color</span>:<span class="value"> blue;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">span</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">color</span>:<span class="value"> red;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">style</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  The values stored were</code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">span</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  and</code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">span</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;div&quot;</span> ).data( <span class="string">&quot;test&quot;</span>, { first: <span class="number">16</span>, last: <span class="string">&quot;pizza!&quot;</span> } );</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;span:first&quot;</span> ).text( $( <span class="string">&quot;div&quot;</span> ).data( <span class="string">&quot;test&quot;</span> ).first );</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;span:last&quot;</span> ).text( $( <span class="string">&quot;div&quot;</span> ).data( <span class="string">&quot;test&quot;</span> ).last );</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div></section>
+</div></article><article id="data2" class="entry method"><h2 class="section-title">
+<span class="name">.data( key )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Object">Object</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Return arbitrary data associated with the first element in the jQuery collection, as set by data() or by an HTML5 <code>data-*</code> attribute.</p>
+<ul class="signatures">
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.2.3/">1.2.3</a></span><a id="data-key" href="#data-key"><span class="icon-link"></span>.data( key )</a>
+</h4>
+<ul><li>
+<div><strong>key</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>Name of the data stored.</div>
+</li></ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.4/">1.4</a></span><a id="data" href="#data"><span class="icon-link"></span>.data()</a>
+</h4>
+<ul><li><div class="null-signature">This signature does not accept any arguments.</div></li></ul>
+</li>
+</ul>
+<div class="longdesc" id="entry-longdesc-1">
+      <p>The <code>.data()</code> method allows us to read data previously associated with DOM elements. We can retrieve several distinct values for a single element one at a time, or as a set:</p>
+      <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> elem = document.createElement( <span class="string">&quot;span&quot;</span> );</code></div></div><div class="container"><div class="line"><code>$( elem ).data( <span class="string">&quot;foo&quot;</span> ); <span class="comment">// undefined</span></code></div></div><div class="container"><div class="line"><code>$( elem ).data(); <span class="comment">// {}</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$( elem ).data( <span class="string">&quot;foo&quot;</span>, <span class="number">42</span> );</code></div></div><div class="container"><div class="line"><code>$( elem ).data( <span class="string">&quot;foo&quot;</span> ); <span class="comment">// 42</span></code></div></div><div class="container"><div class="line"><code>$( elem ).data(); <span class="comment">// { foo: 42 }</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+      <p>Calling <code>.data()</code> with no parameters returns a JavaScript object containing each stored value as a property. The object can be used directly to get data values (but note that property names originally containing dashes will have been modified as described below).</p>
+      <p>Since <strong>jQuery 3</strong>, every two-character sequence of &quot;-&quot; (U+002D) followed by a lowercase ASCII letter in a key is replaced by the uppercase version of the letter, in alignment with the <a href="https://html.spec.whatwg.org/multipage/dom.html#dom-dataset">HTML dataset API</a>. A statement like <code>$( &quot;body&quot; ).data( { &quot;my-name&quot;: &quot;aValue&quot; } ).data();</code> will return <code>{ myName: &quot;aValue&quot; }</code>.</p>
+      <h4 id="data-html5">
+        <a href="#data-html5">HTML5 <code>data-*</code> Attributes</a>
+      </h4>
+      <p>Since jQuery 1.4.3, <a href="https://html.spec.whatwg.org/multipage/dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes"><code>data-*</code> attributes</a> are used to initialize jQuery data. An element&apos;s <code>data-*</code> attributes are retrieved the first time the <code>data()</code> method is invoked upon it, and then are no longer accessed or mutated (all values are stored internally by jQuery).</p>
+      <p>Every attempt is made to convert the attribute&apos;s string value to a JavaScript value (this includes booleans, numbers, objects, arrays, and null). A string is only converted to a number if doing so doesn&apos;t change its representation (for example, the string &quot;100&quot; is converted to the number 100, but &quot;1E02&quot; and &quot;100.000&quot; are left as strings because their numeric value of 100 serializes to &quot;100&quot;). When a string starts with &apos;{&apos; or &apos;[&apos;, then <code>jQuery.parseJSON</code> is used to parse it; it must follow <a href="https://en.wikipedia.org/wiki/JSON#Data_types.2C_syntax_and_example">valid JSON syntax</a> <em>including quoted property names</em>. A string not parseable as a JavaScript value is not converted.</p>
+      <p>To retrieve a <code>data-*</code> attribute value as an unconverted string, use the <code><a href="/attr/">attr()</a></code> method.</p>
+      <p>Since jQuery 1.6, dashes in <code>data-*</code> attribute names have been processed in alignment with the <a href="https://html.spec.whatwg.org/multipage/dom.html#dom-dataset">HTML dataset API</a>.</p>
+      <p>For example, given the following HTML:</p>
+      <div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">data-role</span>=<span class="value">&quot;page&quot;</span> <span class="attribute">data-last-value</span>=<span class="value">&quot;43&quot;</span> <span class="attribute">data-hidden</span>=<span class="value">&quot;true&quot;</span> <span class="attribute">data-options</span>=<span class="value">&apos;{&quot;name&quot;:&quot;John&quot;}&apos;</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+      <p>The following comparisons are all true:</p>
+      <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;div&quot;</span> ).data( <span class="string">&quot;role&quot;</span> ) === <span class="string">&quot;page&quot;</span>;</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;div&quot;</span> ).data( <span class="string">&quot;lastValue&quot;</span> ) === <span class="number">43</span>;</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;div&quot;</span> ).data( <span class="string">&quot;hidden&quot;</span> ) === <span class="literal">true</span>;</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;div&quot;</span> ).data( <span class="string">&quot;options&quot;</span> ).name === <span class="string">&quot;John&quot;</span>;</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    </div>
+<h3>Additional Notes:</h3>
+<div class="longdesc"><ul><li>
+			Note that this method currently does not provide cross-platform support for setting data on XML documents, as Internet Explorer does not allow data to be attached via expando properties.
+		</li></ul></div>
+<section class="entry-examples" id="entry-examples-1"><header><h2>Example:</h2></header><div class="entry-example" id="example-1-0">
+<p>Get the data named &quot;blah&quot; stored at for an element.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+						<div class="line n32">32</div>
+					
+						<div class="line n33">33</div>
+					
+						<div class="line n34">34</div>
+					
+						<div class="line n35">35</div>
+					
+						<div class="line n36">36</div>
+					
+						<div class="line n37">37</div>
+					
+						<div class="line n38">38</div>
+					
+						<div class="line n39">39</div>
+					
+						<div class="line n40">40</div>
+					
+						<div class="line n41">41</div>
+					
+						<div class="line n42">42</div>
+					
+						<div class="line n43">43</div>
+					
+						<div class="line n44">44</div>
+					
+						<div class="line n45">45</div>
+					
+						<div class="line n46">46</div>
+					
+						<div class="line n47">47</div>
+					
+						<div class="line n48">48</div>
+					
+						<div class="line n49">49</div>
+					
+						<div class="line n50">50</div>
+					
+						<div class="line n51">51</div>
+					
+						<div class="line n52">52</div>
+					
+						<div class="line n53">53</div>
+					
+						<div class="line n54">54</div>
+					
+						<div class="line n55">55</div>
+					
+						<div class="line n56">56</div>
+					
+						<div class="line n57">57</div>
+					
+						<div class="line n58">58</div>
+					
+						<div class="line n59">59</div>
+					
+						<div class="line n60">60</div>
+					
+						<div class="line n61">61</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>data demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css"></span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">div</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">5</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">background</span>:<span class="value"> yellow;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">button</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">5</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">p</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">5</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">color</span>:<span class="value"> blue;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">span</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">color</span>:<span class="value"> red;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">style</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span>&gt;</span>A div<span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">button</span>&gt;</span>Get &quot;blah&quot; from the div<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">button</span>&gt;</span>Set &quot;blah&quot; to &quot;hello&quot;<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">button</span>&gt;</span>Set &quot;blah&quot; to 86<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">button</span>&gt;</span>Remove &quot;blah&quot; from the div<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">p</span>&gt;</span>The &quot;blah&quot; value of this div is <span class="tag">&lt;<span class="title">span</span>&gt;</span>?<span class="tag">&lt;/<span class="title">span</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;button&quot;</span> ).click(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">var</span> value;</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="keyword">switch</span> ( $( <span class="string">&quot;button&quot;</span> ).index( <span class="keyword">this</span> ) ) {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">case</span> <span class="number">0</span> :</code></div></div><div class="container"><div class="line"><code>      value = $( <span class="string">&quot;div&quot;</span> ).data( <span class="string">&quot;blah&quot;</span> );</code></div></div><div class="container"><div class="line"><code>      <span class="keyword">break</span>;</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">case</span> <span class="number">1</span> :</code></div></div><div class="container"><div class="line"><code>      $( <span class="string">&quot;div&quot;</span> ).data( <span class="string">&quot;blah&quot;</span>, <span class="string">&quot;hello&quot;</span> );</code></div></div><div class="container"><div class="line"><code>      value = <span class="string">&quot;Stored!&quot;</span>;</code></div></div><div class="container"><div class="line"><code>      <span class="keyword">break</span>;</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">case</span> <span class="number">2</span> :</code></div></div><div class="container"><div class="line"><code>      $( <span class="string">&quot;div&quot;</span> ).data( <span class="string">&quot;blah&quot;</span>, <span class="number">86</span> );</code></div></div><div class="container"><div class="line"><code>      value = <span class="string">&quot;Stored!&quot;</span>;</code></div></div><div class="container"><div class="line"><code>      <span class="keyword">break</span>;</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">case</span> <span class="number">3</span> :</code></div></div><div class="container"><div class="line"><code>      $( <span class="string">&quot;div&quot;</span> ).removeData( <span class="string">&quot;blah&quot;</span> );</code></div></div><div class="container"><div class="line"><code>      value = <span class="string">&quot;Removed!&quot;</span>;</code></div></div><div class="container"><div class="line"><code>      <span class="keyword">break</span>;</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;span&quot;</span> ).text( <span class="string">&quot;&quot;</span> + value );</code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div></section>
+</div></article>

@@ -1,0 +1,221 @@
+/* Gritter for jQuery Version: 1.7.4.8 :: with fixes by unixman r.20221016 */
+
+#gritter-notice-wrapper {
+	z-index: 2147483000;
+	position: fixed;
+	top: 6px;
+	right: 12px;
+	min-width: 300px !important;
+	width: 400px;
+	max-width: 44vw;
+	max-height: 96vh !important;
+	overflow-y: auto;
+	overflow-x: hidden;
+	opacity: 0.95;
+}
+@media all and (max-width:767px) {
+	#gritter-notice-wrapper {
+		min-width: 275px !important;
+		max-width: 88vw !important;
+	}
+}
+
+#gritter-notice-wrapper.top-left {
+	left: 20px;
+	right: auto;
+}
+#gritter-notice-wrapper.bottom-right {
+	top: auto;
+	left: auto;
+	bottom: 20px;
+	right: 20px;
+}
+#gritter-notice-wrapper.bottom-left {
+	top: auto;
+	right: auto;
+	bottom: 20px;
+	left: 20px;
+}
+
+/* -- */
+
+.gritter-item-wrapper {
+	position: relative;
+	margin: 1px;
+	margin-bottom: 10px;
+	border-radius: 8px;
+	box-shadow: 0 0 1px rgba(170,170,170,0.3);
+}
+.gritter-top {
+	height: 10px;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+}
+.gritter-bottom {
+	height:8px;
+	margin:0;
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+}
+.hover .gritter-bottom {
+	background-position: bottom right;
+}
+.gritter-item {
+	display:block;
+	padding: 2px 11px 8px 11px;
+	font-size: 0.875rem;
+}
+.gritter-item h1 {
+	font-size: 1.75rem;
+}
+.gritter-item h2 {
+	font-size: 1.5rem;
+}
+.gritter-item h3 {
+	font-size: 1.375rem;
+}
+.gritter-item h4 {
+	font-size: 1.25rem;
+}
+.gritter-item h5 {
+	font-size: 1.125rem;
+}
+.gritter-item h6 {
+	font-size: 1rem;
+}
+.hover .gritter-item {
+	background-position: right -40px;
+}
+.gritter-item p, .gritter-item span, .gritter-item div {
+	padding: 0;
+	margin: 0;
+	word-wrap: break-word;
+}
+.gritter-close {
+	display: none;
+	position: absolute;
+	top: 3px;
+	right: 1px;
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
+	font-size: 1rem;
+	font-weight: bold;
+	z-index: 2147483001;
+}
+.gritter-title {
+	font-size: 0.9375rem;
+	font-weight: bold;
+	padding: 0 0 7px 0;
+	display: block;
+}
+.gritter-image {
+	float: left;
+	max-width: 48px;
+	max-height: 48px;
+}
+.gritter-with-image,
+.gritter-without-image {
+	padding: 0;
+}
+.gritter-with-image {
+	float: right;
+	max-width: calc(100% - 52px);
+}
+.gritter-without-image {
+	max-width: 100%;
+}
+
+.gritter-close,
+.gritter-item,
+.gritter-item *,
+.gritter-bottom,
+.gritter-top {
+	background: #D9EDF7;
+	color: #222222;
+}
+
+/* ----- */
+
+/* dark */
+.gritter-dark .gritter-close,
+.gritter-dark .gritter-item,
+.gritter-dark .gritter-item *,
+.gritter-dark .gritter-bottom,
+.gritter-dark .gritter-top {
+	background: #444444;
+	color: #FFFFFF;
+}
+
+/* neutral (aka white) */
+.gritter-neutral .gritter-close,
+.gritter-neutral .gritter-item,
+.gritter-neutral .gritter-item *,
+.gritter-neutral .gritter-bottom,
+.gritter-neutral .gritter-top {
+	background: #FAFAFA;
+	color: #222222;
+	opacity: 0.97;
+}
+
+/* light */
+.gritter-light .gritter-close,
+.gritter-light .gritter-item,
+.gritter-light .gritter-item *,
+.gritter-light .gritter-bottom,
+.gritter-light .gritter-top {
+	background: #FEFF99;
+	color: #111111;
+}
+
+/* blue */
+.gritter-blue .gritter-close,
+.gritter-blue .gritter-item,
+.gritter-blue .gritter-item *,
+.gritter-blue .gritter-bottom,
+.gritter-blue .gritter-top {
+	background: #344A78;
+	color: #FFFFFF;
+}
+
+/* green */
+.gritter-green .gritter-close,
+.gritter-green .gritter-item,
+.gritter-green .gritter-item *,
+.gritter-green .gritter-bottom,
+.gritter-green .gritter-top {
+	background: #7CAE0A;
+	color: #FFFFFF;
+}
+
+/* yellow */
+.gritter-yellow .gritter-close,
+.gritter-yellow .gritter-item,
+.gritter-yellow .gritter-item *,
+.gritter-yellow .gritter-bottom,
+.gritter-yellow .gritter-top {
+	background: #FFCC00;
+	color: #111111;
+}
+
+/* red */
+.gritter-red .gritter-close,
+.gritter-red .gritter-item,
+.gritter-red .gritter-item *,
+.gritter-red .gritter-bottom,
+.gritter-red .gritter-top {
+	background: #C00C00;
+	color: #FFFFFF;
+}
+
+/* pink */
+.gritter-pink .gritter-close,
+.gritter-pink .gritter-item,
+.gritter-pink .gritter-item *,
+.gritter-pink .gritter-bottom,
+.gritter-pink .gritter-top {
+	background: #FF4073;
+	color: #FFFFFF;
+}
+
+/* END */

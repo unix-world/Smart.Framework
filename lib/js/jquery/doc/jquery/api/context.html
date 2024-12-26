@@ -1,0 +1,84 @@
+<script>{
+		"title":
+			".context",
+		"excerpt":
+			"The DOM node context originally passed to jQuery(); if none was passed then context will likely be the document.",
+		"termSlugs": {
+			"category": [
+				"internals","properties/jquery-object-instance-properties","version/1.3","deprecated/deprecated-1.10","removed"
+			]
+		}
+	}</script><article id="context1" class="entry property"><h2 class="section-title">
+<span>context</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Element">Element</a></span><span class="version-details">version deprecated: <a href="/category/version/1.10/">1.10</a>, removed: <a href="/category/version/3.0/">3.0</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>The DOM node context originally passed to <code>jQuery()</code>; if none was passed then context will likely be the document.</p>
+<ul class="signatures"><li class="signature"><h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.3/">1.3</a></span>context</h4></li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>The <code>.context</code> property was deprecated in jQuery 1.10 and is only maintained to the extent needed for supporting <code>.live()</code> in the jQuery Migrate plugin. It may be removed without notice in a future version.</p>
+    <p>The <code>.live()</code> method for binding event handlers uses this property to determine the root element to use for its event delegation needs.</p>
+    <p>The value of this property is typically equal to <code>document</code>, as this is the default context for jQuery objects if none is supplied. The context may differ if, for example, the object was created by searching within an <code>&lt;iframe&gt;</code> or XML document.</p>
+    <p>Note that the context property may only apply to the elements originally selected by <code>jQuery()</code>, as it is possible for the user to add elements to the collection via methods such as <code>.add()</code> and these may have a different context.</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Determine the exact context used.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>context demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>Context: <span class="tag">&lt;<span class="title">ul</span>&gt;</span><span class="tag">&lt;/<span class="title">ul</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;ul&quot;</span> )</code></div></div><div class="container"><div class="line"><code>  .append( <span class="string">&quot;&lt;li&gt;&quot;</span> + $( <span class="string">&quot;ul&quot;</span> ).context + <span class="string">&quot;&lt;/li&gt;&quot;</span> )</code></div></div><div class="container"><div class="line"><code>  .append( <span class="string">&quot;&lt;li&gt;&quot;</span> + $( <span class="string">&quot;ul&quot;</span>, document.body ).context.nodeName + <span class="string">&quot;&lt;/li&gt;&quot;</span> );</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div></section>
+</div></article>

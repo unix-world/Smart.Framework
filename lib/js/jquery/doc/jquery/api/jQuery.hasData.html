@@ -1,0 +1,116 @@
+<script>{
+		"title":
+			"jQuery.hasData()",
+		"excerpt":
+			"Determine whether an element has any jQuery data associated with it.",
+		"termSlugs": {
+			"category": [
+				"data","version/1.5"
+			]
+		}
+	}</script><article id="jQuery-hasData1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.hasData( element )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Boolean">Boolean</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Determine whether an element has any jQuery data associated with it.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.5/">1.5</a></span><a id="jQuery-hasData-element" href="#jQuery-hasData-element"><span class="icon-link"></span>jQuery.hasData( element )</a>
+</h4>
+<ul><li>
+<div><strong>element</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Element">Element</a>
+</div>
+<div>A DOM element to be checked for data.</div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>The <code>jQuery.hasData()</code> method provides a way to determine if an element currently has any values that were set using <code><a href="/jQuery.data/">jQuery.data()</a></code>. If there is no data object associated with an element, the method returns <code>false</code>; otherwise it returns <code>true</code>.</p>
+    <p>The primary advantage of <code>jQuery.hasData(element)</code> is that it does not create and associate a data object with the element if none currently exists. In contrast, <code>jQuery.data(element)</code> always returns a data object to the caller, creating one if no data object previously existed.
+</p>
+    <p>Note that jQuery&apos;s event system uses the jQuery data API to store event handlers. Therefore, binding an event to an element using <code>.on()</code>, <code>.bind()</code>, <code>.live()</code>, <code>.delegate()</code>, or one of the shorthand event methods also associates a data object with that element.
+</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Set data on an element and see the results of hasData.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>jQuery.hasData demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">p</span>&gt;</span>Results: <span class="tag">&lt;/<span class="title">p</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> $p = jQuery( <span class="string">&quot;p&quot;</span> ), p = $p[ <span class="number">0</span> ];</code></div></div><div class="container"><div class="line"><code>$p.append( jQuery.hasData( p ) + <span class="string">&quot; &quot;</span> ); <span class="comment">// false</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$.data( p, <span class="string">&quot;testing&quot;</span>, <span class="number">123</span> );</code></div></div><div class="container"><div class="line"><code>$p.append( jQuery.hasData( p ) + <span class="string">&quot; &quot;</span> ); <span class="comment">// true</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$.removeData( p, <span class="string">&quot;testing&quot;</span> );</code></div></div><div class="container"><div class="line"><code>$p.append( jQuery.hasData( p ) + <span class="string">&quot; &quot;</span> ); <span class="comment">// false</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$p.on( <span class="string">&quot;click&quot;</span>, <span class="keyword">function</span>() {} );</code></div></div><div class="container"><div class="line"><code>$p.append( jQuery.hasData( p ) + <span class="string">&quot; &quot;</span> ); <span class="comment">// true</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$p.off( <span class="string">&quot;click&quot;</span> );</code></div></div><div class="container"><div class="line"><code>$p.append( jQuery.hasData( p ) + <span class="string">&quot; &quot;</span> ); <span class="comment">// false</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div></section>
+</div></article>

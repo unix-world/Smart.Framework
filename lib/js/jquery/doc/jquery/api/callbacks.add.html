@@ -1,0 +1,106 @@
+<script>{
+		"title":
+			"callbacks.add()",
+		"excerpt":
+			"Add a callback or a collection of callbacks to a callback list.",
+		"termSlugs": {
+			"category": [
+				"callbacks-object","version/1.7"
+			]
+		}
+	}</script><article id="callbacks-add1" class="entry method"><h2 class="section-title">
+<span class="name">callbacks.add( callbacks )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Callbacks">Callbacks</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Add a callback or a collection of callbacks to a callback list.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.7/">1.7</a></span><a id="callbacks-add-callbacks" href="#callbacks-add-callbacks"><span class="icon-link"></span>callbacks.add( callbacks )</a>
+</h4>
+<ul><li>
+<div><strong>callbacks</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>() or <a href="http://api.jquery.com/Types/#Array">Array</a>
+</div>
+<div>A function, or array of functions, that are to be added to the callback list.</div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>This method returns the Callbacks object onto which it is attached (<code>this</code>).</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Use <code>callbacks.add()</code> to add new callbacks to a callback list:</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="comment">// A sample logging function to be added to a callbacks list</span></code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> foo = <span class="keyword">function</span>( value ) {</code></div></div><div class="container"><div class="line"><code>  console.log( <span class="string">&quot;foo: &quot;</span> + value );</code></div></div><div class="container"><div class="line"><code>};</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Another function to also be added to the list</span></code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> bar = <span class="keyword">function</span>( value ) {</code></div></div><div class="container"><div class="line"><code>  console.log( <span class="string">&quot;bar: &quot;</span> + value );</code></div></div><div class="container"><div class="line"><code>};</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> callbacks = $.Callbacks();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Add the function &quot;foo&quot; to the list</span></code></div></div><div class="container"><div class="line"><code>callbacks.add( foo );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Fire the items on the list</span></code></div></div><div class="container"><div class="line"><code>callbacks.fire( <span class="string">&quot;hello&quot;</span> );</code></div></div><div class="container"><div class="line"><code><span class="comment">// Outputs: &quot;foo: hello&quot;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Add the function &quot;bar&quot; to the list</span></code></div></div><div class="container"><div class="line"><code>callbacks.add( bar );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Fire the items on the list again</span></code></div></div><div class="container"><div class="line"><code>callbacks.fire( <span class="string">&quot;world&quot;</span> );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Outputs:</span></code></div></div><div class="container"><div class="line"><code><span class="comment">// &quot;foo: world&quot;</span></code></div></div><div class="container"><div class="line"><code><span class="comment">// &quot;bar: world&quot;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

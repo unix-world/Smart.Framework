@@ -1,0 +1,81 @@
+[%%%IF:APP-REALM:==IDX;%%%]
+<!-- partial-template-loader :: r.20210518 -->
+<!-- :: TPL MISC. VARIABLES :: -->
+<!-- Release-Hash:     [###RELEASE-HASH|html###] -->
+<!-- App Env:          [###APP-ENV|html###] -->
+<!-- App Namespace:    [###APP-NAMESPACE|html###] -->
+<!-- App Realm:        [###APP-REALM|html###] -->
+<!-- App Domain:       [###APP-DOMAIN|html###] -->
+<!-- Client-Browser:   [###CLIENT-BROWSER|html###] -->
+<!-- Client-Class:     [###CLIENT-CLASS|html###] -->
+<!-- Client-Is-Mobile: [###CLIENT-IS-MOBILE|html###] -->
+<!-- Client-OS:        [###CLIENT-OS|html###] -->
+<!-- Client-IP:        [###CLIENT-IP|html###] -->
+<!-- Base URL:         [###BASE-URL|html###] -->
+<!-- Base Path:        [###BASE-PATH|html###] -->
+<!-- Base-Domain:      [###BASE-DOMAIN|html###] -->
+<!-- Srv Domain:       [###SRV-DOMAIN|html###] -->
+<!-- Srv IP Addr:      [###SRV-IP-ADDR|html###] -->
+<!-- Srv Proto:        [###SRV-PROTO|html###] -->
+<!-- Net Proto:        [###NET-PROTO|html###] -->
+<!-- Srv Port:         [###SRV-PORT|html###] -->
+<!-- Net Port:         [###NET-PORT|html###] -->
+<!-- Srv Script:       [###SRV-SCRIPT|html###] -->
+<!-- Srv UrlQuery:     [###SRV-URLQUERY|html###] -->
+<!-- Srv ReqUri:       [###SRV-REQURI|html###] -->
+<!-- Debug Mode:       [###DEBUG-MODE|html###] -->
+<style>
+.lds-loader-bars {
+	display: inline-block;
+	position: relative;
+	width: 80px;
+	height: 80px;
+	opacity: 0.7;
+}
+.lds-loader-bars div {
+	display: inline-block;
+	position: absolute;
+	left: 8px;
+	width: 16px;
+	background: #778877;
+	animation: lds-loader-bars 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+}
+.lds-loader-bars div:nth-child(1) {
+	left: 8px;
+	animation-delay: -0.24s;
+}
+.lds-loader-bars div:nth-child(2) {
+	left: 32px;
+	animation-delay: -0.12s;
+}
+.lds-loader-bars div:nth-child(3) {
+	left: 56px;
+	animation-delay: 0;
+}
+@keyframes lds-loader-bars {
+	0% {
+		top: 8px;
+		height: 64px;
+	}
+	50%, 100% {
+		top: 24px;
+		height: 32px;
+	}
+}
+</style>
+<div id="page-loader"><center><div class="lds-loader-bars"><div></div><div></div><div></div></div></center></div>
+<script>
+jQuery('#page-loader').css({
+	position: 'fixed',
+	left: '0px',
+	top: '0px',
+	width: '100vw',
+	height: '100vh',
+	background: '#FFFFFF',
+	opacity: 0.77,
+	'z-index': 2147483001,
+});
+</script>
+<script>$(() => { setTimeout(() => { $('#page-loader').remove().fadeOut('slow').empty().html('').remove(); }, 350); });</script>
+<!-- #END# partial-template-loader -->
+[%%%/IF:APP-REALM%%%]

@@ -1,0 +1,272 @@
+<script>{
+		"title":
+			".finish()",
+		"excerpt":
+			"Stop the currently-running animation, remove all queued animations, and complete all animations for the matched elements.",
+		"termSlugs": {
+			"category": [
+				"effects/custom-effects","version/1.9"
+			]
+		}
+	}</script><article id="finish1" class="entry method"><h2 class="section-title">
+<span class="name">.finish(  [queue ] )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#jQuery">jQuery</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Stop the currently-running animation, remove all queued animations, and complete all animations for the matched elements.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.9/">1.9</a></span><a id="finish-queue" href="#finish-queue"><span class="icon-link"></span>.finish(  [queue ] )</a>
+</h4>
+<ul><li>
+<div>
+<strong>queue</strong> (default: <code>&apos;fx&apos;</code>)</div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>The name of the queue in which to stop animations.</div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>When <code>.finish()</code> is called on an element, the currently-running animation and all queued animations (if any) immediately stop and their CSS properties set to their target values. All queued animations are removed.</p>
+    <p>If the first argument is provided, only the animations in the queue represented by that string will be stopped.</p>
+    <p>The <code>.finish()</code> method is similar to <code>.stop(true, true)</code> in that it clears the queue and the current animation jumps to its end value. It differs, however, in that <code>.finish()</code> also causes the CSS property of all <em>queued</em> animations to jump to their end values, as well.</p>
+    <div class="warning">
+      <p>Animations may be stopped globally by setting the property <code>$.fx.off</code> to <code>true</code>. When this is done, all animation methods will immediately set elements to their final state when called, rather than displaying an effect.</p>
+    </div>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Click the Go button once to start the animation, and then click the other buttons to see how they affect the current and queued animations.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+						<div class="line n32">32</div>
+					
+						<div class="line n33">33</div>
+					
+						<div class="line n34">34</div>
+					
+						<div class="line n35">35</div>
+					
+						<div class="line n36">36</div>
+					
+						<div class="line n37">37</div>
+					
+						<div class="line n38">38</div>
+					
+						<div class="line n39">39</div>
+					
+						<div class="line n40">40</div>
+					
+						<div class="line n41">41</div>
+					
+						<div class="line n42">42</div>
+					
+						<div class="line n43">43</div>
+					
+						<div class="line n44">44</div>
+					
+						<div class="line n45">45</div>
+					
+						<div class="line n46">46</div>
+					
+						<div class="line n47">47</div>
+					
+						<div class="line n48">48</div>
+					
+						<div class="line n49">49</div>
+					
+						<div class="line n50">50</div>
+					
+						<div class="line n51">51</div>
+					
+						<div class="line n52">52</div>
+					
+						<div class="line n53">53</div>
+					
+						<div class="line n54">54</div>
+					
+						<div class="line n55">55</div>
+					
+						<div class="line n56">56</div>
+					
+						<div class="line n57">57</div>
+					
+						<div class="line n58">58</div>
+					
+						<div class="line n59">59</div>
+					
+						<div class="line n60">60</div>
+					
+						<div class="line n61">61</div>
+					
+						<div class="line n62">62</div>
+					
+						<div class="line n63">63</div>
+					
+						<div class="line n64">64</div>
+					
+						<div class="line n65">65</div>
+					
+						<div class="line n66">66</div>
+					
+						<div class="line n67">67</div>
+					
+						<div class="line n68">68</div>
+					
+						<div class="line n69">69</div>
+					
+						<div class="line n70">70</div>
+					
+						<div class="line n71">71</div>
+					
+						<div class="line n72">72</div>
+					
+						<div class="line n73">73</div>
+					
+						<div class="line n74">74</div>
+					
+						<div class="line n75">75</div>
+					
+						<div class="line n76">76</div>
+					
+						<div class="line n77">77</div>
+					
+						<div class="line n78">78</div>
+					
+						<div class="line n79">79</div>
+					
+						<div class="line n80">80</div>
+					
+						<div class="line n81">81</div>
+					
+						<div class="line n82">82</div>
+					
+						<div class="line n83">83</div>
+					
+						<div class="line n84">84</div>
+					
+						<div class="line n85">85</div>
+					
+						<div class="line n86">86</div>
+					
+						<div class="line n87">87</div>
+					
+						<div class="line n88">88</div>
+					
+						<div class="line n89">89</div>
+					
+						<div class="line n90">90</div>
+					
+						<div class="line n91">91</div>
+					
+						<div class="line n92">92</div>
+					
+						<div class="line n93">93</div>
+					
+						<div class="line n94">94</div>
+					
+						<div class="line n95">95</div>
+					
+						<div class="line n96">96</div>
+					
+						<div class="line n97">97</div>
+					
+						<div class="line n98">98</div>
+					
+						<div class="line n99">99</div>
+					
+						<div class="line n100">100</div>
+					
+						<div class="line n101">101</div>
+					
+						<div class="line n102">102</div>
+					
+						<div class="line n103">103</div>
+					
+						<div class="line n104">104</div>
+					
+						<div class="line n105">105</div>
+					
+						<div class="line n106">106</div>
+					
+						<div class="line n107">107</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>finish demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css"></span></code></div></div><div class="container"><div class="line"><code>  <span class="class">.box</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">position</span>:<span class="value"> absolute;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">top</span>:<span class="value"> <span class="number">10</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">left</span>:<span class="value"> <span class="number">10</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">width</span>:<span class="value"> <span class="number">15</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">height</span>:<span class="value"> <span class="number">15</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">background</span>:<span class="value"> black;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="id">#path</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">height</span>:<span class="value"> <span class="number">244</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">70</span>%;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">border-left</span>:<span class="value"> <span class="number">2</span>px dashed red;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">border-bottom</span>:<span class="value"> <span class="number">2</span>px dashed green;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">border-right</span>:<span class="value"> <span class="number">2</span>px dashed blue;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">button</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">width</span>:<span class="value"> <span class="number">12</span>em;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">display</span>:<span class="value"> block;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">text-align</span>:<span class="value"> left;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">0</span> auto;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">style</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">&quot;box&quot;</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">&quot;path&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;go&quot;</span>&gt;</span>Go<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">br</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;bstt&quot;</span> <span class="attribute">class</span>=<span class="value">&quot;b&quot;</span>&gt;</span>.stop( true,true )<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;bcf&quot;</span> <span class="attribute">class</span>=<span class="value">&quot;b&quot;</span>&gt;</span>.clearQueue().finish()<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">br</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;bstf&quot;</span> <span class="attribute">class</span>=<span class="value">&quot;b&quot;</span>&gt;</span>.stop( true, false )<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;bcs&quot;</span> <span class="attribute">class</span>=<span class="value">&quot;b&quot;</span>&gt;</span>.clearQueue().stop()<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">br</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;bsff&quot;</span> <span class="attribute">class</span>=<span class="value">&quot;b&quot;</span>&gt;</span>.stop( false, false )<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;bs&quot;</span> <span class="attribute">class</span>=<span class="value">&quot;b&quot;</span>&gt;</span>.stop()<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">br</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;bsft&quot;</span> <span class="attribute">class</span>=<span class="value">&quot;b&quot;</span>&gt;</span>.stop( false, true )<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">br</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;bf&quot;</span> <span class="attribute">class</span>=<span class="value">&quot;b&quot;</span>&gt;</span>.finish()<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> horiz = $( <span class="string">&quot;#path&quot;</span> ).width() - <span class="number">20</span>,</code></div></div><div class="container"><div class="line"><code>  vert = $( <span class="string">&quot;#path&quot;</span> ).height() - <span class="number">20</span>;</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> btns = {</code></div></div><div class="container"><div class="line"><code>  bstt: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="string">&quot;div.box&quot;</span> ).stop( <span class="literal">true</span>, <span class="literal">true</span> );</code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  bs: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="string">&quot;div.box&quot;</span> ).stop();</code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  bsft: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="string">&quot;div.box&quot;</span> ).stop( <span class="literal">false</span>, <span class="literal">true</span> );</code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  bf: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="string">&quot;div.box&quot;</span> ).finish();</code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  bcf: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="string">&quot;div.box&quot;</span> ).clearQueue().finish();</code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  bsff: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="string">&quot;div.box&quot;</span> ).stop( <span class="literal">false</span>, <span class="literal">false</span> );</code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  bstf: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="string">&quot;div.box&quot;</span> ).stop( <span class="literal">true</span>, <span class="literal">false</span> );</code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  bcs: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="string">&quot;div.box&quot;</span> ).clearQueue().stop();</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>};</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;button.b&quot;</span> ).on( <span class="string">&quot;click&quot;</span>, <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  btns[ <span class="keyword">this</span>.id ]();</code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;#go&quot;</span> ).on( <span class="string">&quot;click&quot;</span>, <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;.box&quot;</span> )</code></div></div><div class="container"><div class="line"><code>    .clearQueue()</code></div></div><div class="container"><div class="line"><code>    .stop()</code></div></div><div class="container"><div class="line"><code>    .css({</code></div></div><div class="container"><div class="line"><code>      left: <span class="number">10</span>,</code></div></div><div class="container"><div class="line"><code>      top: <span class="number">10</span></code></div></div><div class="container"><div class="line"><code>    })</code></div></div><div class="container"><div class="line"><code>    .animate({</code></div></div><div class="container"><div class="line"><code>      top: vert</code></div></div><div class="container"><div class="line"><code>    }, <span class="number">3000</span> )</code></div></div><div class="container"><div class="line"><code>    .animate({</code></div></div><div class="container"><div class="line"><code>      left: horiz</code></div></div><div class="container"><div class="line"><code>    }, <span class="number">3000</span> )</code></div></div><div class="container"><div class="line"><code>    .animate({</code></div></div><div class="container"><div class="line"><code>      top: <span class="number">10</span></code></div></div><div class="container"><div class="line"><code>    }, <span class="number">3000</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div></section>
+</div></article>

@@ -1,0 +1,48 @@
+<!-- start Marker-TPL partial / sub-template v.20210603 -->
+	[%%%COMMENT%%%] Partial / Sub-Template: templating-test.inc.htm [%%%/COMMENT%%%]<!-- comments are removed -->
+	<h5 id="qunit-test-result">Marker-TPL w. Sub-Template Render (Table with #[###TCOUNT|int###] columns):</h5>
+	<table style="border: 1px solid #ECECEC; width: 550px;" id="qunit-test-el">
+	<tr>
+		<th>Column 1<th>
+		<th>Column 2<th>
+		<th>Column 3<th>
+	</tr>
+	[%%%LOOP:TBL%%%]
+	<tr>
+		<td>cell [###TBL.A1|html###]<td>
+		<td>cell [###TBL.A2|html###]<td>
+		<td>cell [###TBL.A3|html###]<td>
+	</tr>
+	[%%%/LOOP:TBL%%%]
+	</table>
+	<ul>
+	[%%%IF:NAVIGATION:@>0;%%%]
+		[%%%LOOP:NAVIGATION%%%]
+		<li><a href="[###NAVIGATION.HREF|html###]" title="maxsize=[###NAVIGATION.-_MAXSIZE_-|html###] ; maxcount=[###NAVIGATION._-MAXCOUNT-_|html###]">[###NAVIGATION.-_INDEX_-|html###]. [###NAVIGATION.CAPTION|html###] ([###NAVIGATION._-ITERATOR-_|html###])</a></li>[%%%|N%%%]
+		[%%%/LOOP:NAVIGATION%%%]
+	[%%%ELSE:NAVIGATION%%%]
+		<li><span style="color:#FF3300;"><b>NOT OK</b></span></li>
+	[%%%/IF:NAVIGATION%%%]
+	</ul>
+	Test Condition#1:
+	[%%%IF:A:==Test-1;%%%]
+		<b>OK</b>
+	[%%%ELSE:A%%%]
+		<span style="color:#FF3300;"><b>NOT OK</b></span>
+	[%%%/IF:A%%%]
+	<br>
+	Test Condition#2:
+	[%%%IF:B:==###A###;(1)%%%]
+		<span style="color:#FF3300;"><b>NOT OK</b></span>
+	[%%%ELSE:B(1)%%%]
+		[%%%IF:B:==Test-1;(2)%%%]
+			<span style="color:#FF3300;"><b>NOT OK</b></span>
+		[%%%ELSE:B(2)%%%]
+			[%%%IF:A:!=Test-1;%%%]
+				<span style="color:#FF3300;"><b>NOT OK</b></span>
+			[%%%ELSE:A%%%]
+				<b>OK</b>
+			[%%%/IF:A%%%]
+		[%%%/IF:B(2)%%%]
+	[%%%/IF:B(1)%%%]
+<!-- end Marker-TPL partial / sub-template -->

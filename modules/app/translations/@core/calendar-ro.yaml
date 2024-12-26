@@ -1,0 +1,26 @@
+# Language File: RO / CORE / Calendar :: r.8.7 / smart.framework.v.8.7
+TRANSLATIONS:
+  @language: RO
+  @area: core
+  @version: 2021-05-26
+  calendar:
+    m_01: 'Ianuarie'
+    m_02: 'Februarie'
+    m_03: 'Martie'
+    m_04: 'Aprilie'
+    m_05: 'Mai'
+    m_06: 'Iunie'
+    m_07: 'Iulie'
+    m_08: 'August'
+    m_09: 'Septembrie'
+    m_10: 'Octombrie'
+    m_11: 'Noiembrie'
+    m_12: 'Decembrie'
+    w_1: 'Duminică'
+    w_2: 'Luni'
+    w_3: 'Marți'
+    w_4: 'Miercuri'
+    w_5: 'Joi'
+    w_6: 'Vineri'
+    w_7: 'Sâmbătă'
+#END

@@ -1,0 +1,185 @@
+<script>{
+		"title":
+			"deferred.promise()",
+		"excerpt":
+			" Return a Deferred's Promise object. ",
+		"termSlugs": {
+			"category": [
+				"deferred-object","version/1.5"
+			]
+		}
+	}</script><article id="deferred-promise1" class="entry method"><h2 class="section-title">
+<span class="name">deferred.promise(  [target ] )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Promise">Promise</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong> Return a Deferred&apos;s Promise object. </p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.5/">1.5</a></span><a id="deferred-promise-target" href="#deferred-promise-target"><span class="icon-link"></span>deferred.promise(  [target ] )</a>
+</h4>
+<ul><li>
+<div><strong>target</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Object">Object</a>
+</div>
+<div>Object onto which the promise methods have to be attached</div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>The <code>deferred.promise()</code> method allows an asynchronous function to prevent other code from interfering with the progress or status of its internal request. The Promise exposes only the Deferred methods needed to attach additional handlers or determine the state (<code>then</code>, <code>done</code>, <code>fail</code>, <code>always</code>, <code>pipe</code>, <code>progress</code>, <code>state</code> and <code>promise</code>), but not ones that change the state (<code>resolve</code>, <code>reject</code>, <code>notify</code>, <code>resolveWith</code>, <code>rejectWith</code>, and <code>notifyWith</code>).</p>
+    <p>If <code>target</code> is provided, <code>deferred.promise()</code> will attach the methods onto it and then return this object rather than create a new one. This can be useful to attach the Promise behavior to an object that already exists.</p>
+    <p>If you are creating a Deferred, keep a reference to the Deferred so that it can be resolved or rejected at some point. Return <em>only</em> the Promise object via <code>deferred.promise()</code> so other code can register callbacks or inspect the current state.</p>
+    <p>For more information, see the documentation for <a href="/category/deferred-object/">Deferred object</a>.</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Examples:</h2></header><div class="entry-example" id="example-0">
+<p>Create a Deferred and set two timer-based functions to either resolve or reject the Deferred after a random interval. Whichever one fires first &quot;wins&quot; and will call one of the callbacks. The second timeout has no effect since the Deferred is already complete (in a resolved or rejected state) from the first timeout action. Also set a timer-based progress notification function, and call a progress handler that adds &quot;working...&quot; to the document body.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+						<div class="line n32">32</div>
+					
+						<div class="line n33">33</div>
+					
+						<div class="line n34">34</div>
+					
+						<div class="line n35">35</div>
+					
+						<div class="line n36">36</div>
+					
+						<div class="line n37">37</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="function"><span class="keyword">function</span> <span class="title">asyncEvent</span><span class="params">()</span> {</span></code></div></div><div class="container"><div class="line"><code>  <span class="keyword">var</span> dfd = jQuery.Deferred();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Resolve after a random interval</span></code></div></div><div class="container"><div class="line"><code>  setTimeout(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    dfd.resolve( <span class="string">&quot;hurray&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  }, Math.floor( <span class="number">400</span> + Math.random() * <span class="number">2000</span> ) );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Reject after a random interval</span></code></div></div><div class="container"><div class="line"><code>  setTimeout(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    dfd.reject( <span class="string">&quot;sorry&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  }, Math.floor( <span class="number">400</span> + Math.random() * <span class="number">2000</span> ) );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Show a &quot;working...&quot; message every half-second</span></code></div></div><div class="container"><div class="line"><code>  setTimeout(<span class="function"><span class="keyword">function</span> <span class="title">working</span><span class="params">()</span> {</span></code></div></div><div class="container"><div class="line"><code>    <span class="keyword">if</span> ( dfd.state() === <span class="string">&quot;pending&quot;</span> ) {</code></div></div><div class="container"><div class="line"><code>      dfd.notify( <span class="string">&quot;working... &quot;</span> );</code></div></div><div class="container"><div class="line"><code>      setTimeout( working, <span class="number">500</span> );</code></div></div><div class="container"><div class="line"><code>    }</code></div></div><div class="container"><div class="line"><code>  }, <span class="number">1</span> );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Return the Promise so caller can&apos;t change the Deferred</span></code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> dfd.promise();</code></div></div><div class="container"><div class="line"><code>}</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Attach a done, fail, and progress handler for the asyncEvent</span></code></div></div><div class="container"><div class="line"><code>$.when( asyncEvent() ).then(</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">function</span>( status ) {</code></div></div><div class="container"><div class="line"><code>    alert( status + <span class="string">&quot;, things are going well&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">function</span>( status ) {</code></div></div><div class="container"><div class="line"><code>    alert( status + <span class="string">&quot;, you fail this time&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">function</span>( status ) {</code></div></div><div class="container"><div class="line"><code>    $( <span class="string">&quot;body&quot;</span> ).append( status );</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>);</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-1">
+<p>Use the target argument to promote an existing object to a Promise:</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="comment">// Existing object</span></code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> obj = {</code></div></div><div class="container"><div class="line"><code>    hello: <span class="keyword">function</span>( name ) {</code></div></div><div class="container"><div class="line"><code>      alert( <span class="string">&quot;Hello &quot;</span> + name );</code></div></div><div class="container"><div class="line"><code>    }</code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Create a Deferred</span></code></div></div><div class="container"><div class="line"><code>  defer = $.Deferred();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Set object as a promise</span></code></div></div><div class="container"><div class="line"><code>defer.promise( obj );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Resolve the deferred</span></code></div></div><div class="container"><div class="line"><code>defer.resolve( <span class="string">&quot;John&quot;</span> );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Use the object as a Promise</span></code></div></div><div class="container"><div class="line"><code>obj.done(<span class="keyword">function</span>( name ) {</code></div></div><div class="container"><div class="line"><code>  obj.hello( name ); <span class="comment">// Will alert &quot;Hello John&quot;</span></code></div></div><div class="container"><div class="line"><code>}).hello( <span class="string">&quot;Karl&quot;</span> ); <span class="comment">// Will alert &quot;Hello Karl&quot;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>jQuery Event Drag Selection</title>
+	<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script src="../../jquery.event.drag.js"></script>
+	<script src="../../jquery.event.drop.js"></script>
+	<style type="text/css">
+	.selection {
+		position: absolute;
+		border: 1px solid #89B;
+		background: #BCE;
+		background-color: #BEC;
+		border-color: #8B9;
+		}
+	.size2 {
+		height: 118px;
+		line-height: 118px;
+		}
+	.size3 {
+		height: 178px;
+		line-height: 178px;
+		}
+	.drop {
+		float: left;
+		border: 1px dashed #888;
+		background: #EEE;
+		text-align: center;
+		padding: 20px;
+		margin: 0 10px 10px 0;
+		}
+	.dropped {
+		background-color: #EBC;
+		border-color: #B89;
+		}
+	.active {
+		background-color: #CEB;
+		border-color: #9B8;
+		}
+	</style>
+</head>
+<body>
+<h1>Selection Drop Demo</h1>
+<p>Click and drag to select any number of dashed boxes.</p>
+<div class="drop">Jack</div>
+<div class="drop">Kate</div>
+<div class="drop">Hugo</div>
+<div class="drop">James</div>
+<div class="drop">John</div>
+<div class="drop">Jin</div>
+<div class="drop">Sun</div>
+<div class="drop">Sayid</div>
+<div class="drop">Walt</div>
+<div class="drop">Michael</div>
+<div class="drop">Claire</div>
+<div class="drop">Keysha</div>
+<div class="drop">Charlie</div>
+<div class="drop">Desmond</div>
+<div class="drop">Penny</div>
+<div class="drop">Ben</div>
+<div class="drop">Juliet</div>
+<div class="drop">Richard</div>
+<div class="drop">Alex</div>
+<div class="drop">Miles</div>
+<div class="drop">Charlotte</div>
+<div class="drop">Daniel</div>
+<div class="drop">Vincent</div>
+<div class="drop">Frank</div>
+<div class="drop">Anakin</div>
+<script>
+$(function() {
+
+	$( document )
+		.drag("start",function( ev, dd ){
+			return $('<div class="selection" />')
+				.css('opacity', .65 )
+				.appendTo( document.body );
+		})
+		.drag(function( ev, dd ){
+			$( dd.proxy ).css({
+				top: Math.min( ev.pageY, dd.startY ),
+				left: Math.min( ev.pageX, dd.startX ),
+				height: Math.abs( ev.pageY - dd.startY ),
+				width: Math.abs( ev.pageX - dd.startX )
+			});
+		})
+		.drag("end",function( ev, dd ){
+			$( dd.proxy ).remove();
+		});
+	$('.drop')
+		.drop("start",function(){
+			$( this ).addClass("active");
+		})
+		.drop(function( ev, dd ){
+			$( this ).toggleClass("dropped");
+		})
+		.drop("end",function(){
+			$( this ).removeClass("active");
+		});
+	$.drop({ multi: true });
+
+});
+</script>
+</body>
+</html>

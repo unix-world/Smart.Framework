@@ -1,0 +1,100 @@
+<!-- Partial Template: TestUnit.Partials.TplSyntaxTest -->
+	<table width="100%" cellpadding="0" cellspacing="0" class="ux-reflow-table">
+		<tr>
+			<td>
+				<h1 style="display:inline;">Marker-TPL, a powerful and secure Templating Engine:</h1>
+			</td>
+			<td> &nbsp;&nbsp;&nbsp; </td>
+			<td align="right">
+				<a href="?/page/samples.templating-test" target="testunit_tpl_test" data-smart="open.modal" class="ux-button ux-button-primary" title="Marker-TPL Engine is the default, built-in Templating Engine in Smart.Framework"><i class="sfi sfi-stack"></i> &nbsp; Marker-TPL Templating Demo</a>
+			</td>
+		</tr>
+	</table>
+	[%%%IF:TPL-ALT-AVAIL:==yes;%%%]
+	<table width="100%" cellpadding="0" cellspacing="0" class="ux-reflow-table">
+		<tr>
+			<td>
+				<div id="operation_info" style="color:#778899!important; font-size:13px!important; line-height:17px!important;">
+					<b>
+					As an alternative to the Marker-TPL Templating Engine syntax (built-in, default) it is possible to use alternatives:
+					Twist Templating Engine (Twig like Grammar but much safer, implementing Liquid like Safety) syntax to render Views of Smart.Framework by using the Smart.Framework.Module: <a href="https://github.com/unix-world/Smart.Framework.Modules/tree/master/mod-tpl-twist" target="smart_mod_tpltwist_reference_tpl" data-smart="open.popup">mod-tpl-twist</a>
+					or is possible to use
+					<a href="https://github.com/twigphp/Twig" target="twig_syntax_reference_tpl" data-smart="open.popup">Twig Templating Engine</a> syntax to render Views of Smart.Framework by using the Smart.Framework.Module: <a href="https://github.com/unix-world/Smart.Framework.Modules/tree/master/mod-tpl-twig" target="smart_mod_tpltwig_reference_tpl" data-smart="open.popup">mod-tpl-twig</a>.
+					<br>
+					And as a premium feature you can use the flavoured XML DOM parser based <a href="https://github.com/TYPO3/Fluid/blob/master/doc/FLUID_SYNTAX.md" target="typo3fluid_reference_tpl" data-smart="open.popup">Typo3-Fluid Templating Engine</a> syntax (which is available in Smart.Framework.Modules: <a href="https://github.com/unix-world/Smart.Framework.Modules/tree/master/mod-tpl-typo3-fluid" target="smart_mod_tplfluid_reference_tpl" data-smart="open.popup">mod-tpl-typo3-fluid</a>).
+					<br>
+					If you are not satisfied with any of these you can <a href="https://github.com/unix-world/Smart.Framework.Modules" target="smart_mod_newmods_reference_tpl" data-smart="open.popup">create new custom Smart.Framework.Modules to integrate other TPL engines such as Smarty or PHP Plates</a> for use with <a href="https://github.com/unix-world/Smart.Framework" target="smart_framework_reference_tpl" data-smart="open.popup">Smart.Framework</a>.
+					</b>
+				</div>
+			</td>
+			<td> &nbsp;&nbsp;&nbsp; </td>
+			<td align="right">
+				[%%%IF:TPL-TWIST-AVAIL:==yes;%%%]
+				<a href="?/page/tpl-twist.test" target="testunit_twist_test" data-smart="open.modal" class="ux-button ux-button-dark" title="Twist Templating Engine is available as an extra module for Smart.Framework and can be used as an alternative to the Marker-TPL Templating Engine"><i class="sfi sfi-stack"></i> &nbsp; Twist Templating Demo (extra modules)</a>
+				<br>
+				[%%%/IF:TPL-TWIST-AVAIL%%%]
+				[%%%IF:TPL-TWIG-AVAIL:==yes;%%%]
+				<a href="?/page/tpl-twig.test" target="testunit_twig_test" data-smart="open.modal" class="ux-button ux-button-regular" title="Twig Templating Engine is available as an extra module for Smart.Framework and can be used as an alternative to the Marker-TPL Templating Engine"><i class="sfi sfi-stack"></i> &nbsp; Twig Templating Demo (extra modules)</a>
+				<br>
+				[%%%/IF:TPL-TWIG-AVAIL%%%]
+				[%%%IF:TPL-TYPO3FLUID-AVAIL:==yes;%%%]
+				<a href="?/page/tpl-typo3-fluid.test" target="testunit_typo3fluid_test" data-smart="open.modal" class="ux-button ux-button-highlight" title="Typo3-Fluid Templating Engine is available as an extra module for Smart.Framework and can be used as an alternative to the Marker-TPL or Twig Templating Engine"><i class="sfi sfi-stack"></i> &nbsp; Typo3-Fluid Templating Demo (extra modules)</a>
+				<br>
+				[%%%/IF:TPL-TYPO3FLUID-AVAIL%%%]
+			</td>
+		</tr>
+	</table>
+	[%%%/IF:TPL-ALT-AVAIL%%%]
+	<div>
+	<div style="font-size:0.8125rem;">
+		<b>Marker-TPL Templating Engine is a very fast and <span class="sf__test__notice" style="color:#333333; cursor:help;" title="If used correctly and all escapes are applied as required ...">100% secure<sup> [*] </sup></span> PHP Templating Engine</b> and is available for both PHP and Javascript<sup> [**] </sup> languages.<br><b><i>Because the Marker-TPL Templating is rendering the Views by injecting plain strings and data arrays directly into these Views (no re-interpreted PHP/Javascript code) there are NO SECURITY RISKS like injecting malicious code into the Views</i></b> like in the case of using the <a class="ux-link" target="twig_reference_tpl" data-smart="open.popup" href="https://twig.sensiolabs.org">Twig Templating for PHP</a> or <a class="ux-link" target="smarty_reference_tpl" data-smart="open.popup" href="http://www.smarty.net">Smarty Templating for PHP</a>. The original concept of <b>Marker-TPL Templating</b> was inspired by <a class="ux-link" href="https://docs.typo3.org/typo3cms/TemplatingTutorial/7.6/Tasks/WorkingHTML/HtmlTemplate/Index.html" target="typo3_reference_markers" data-smart="open.popup">simplistic mark(er)s used in templates by Typo3 CMS</a>. Thereafter, a full new concept was developed from the scratch into Smart.Framework based on this idea as a brand new TPL engine: Marker-TPL.<br>
+		The Marker-TPL Templating Engine, built into Smart.Framework begins by using markers that have a start [ and stop ] limits and marking variables are enclosed in 3 # # #. At the very begining the full escaping syntax was developed for these markers to escape: html, js, url, json, ... and more ... was added a support for loading SUB-TEMPLATES files. Later the support for IF / ELSE, LOOP, SPECIAL CHARACTERS and COMMENTS syntax was finalizing this concept.<br>
+		Currently the <b>TPL Marker Syntax Templating Engine for PHP (and TPL Marker Syntax Templating Engine for Javascript [**])</b> is a mature project, fully developed and maintained inside the code base of Smart.Framework. It is heavily tested in production on web servers serving million+ page views / day.
+	</div>
+	<br>
+	[###HTML-SYNTAX-DESCR###]
+	</div>
+	<br>
+	<center><div>
+		<table class="ux-table ux-reflow-table" style="width:595px;">
+			<tr style="background:#778899; color:#FFFFFF;">
+				<th colspan="3" align="center">
+					TPL Render Test: Marker-TPL Templating - Basic Syntax
+				</th>
+			</tr>
+		[%%%LOOP:LOOPTEST-VAR1%%%]
+			[%%%IF:IF2TEST:!=5;%%%]
+			<tr style="background:[%%%IF:IFTEST:==1;%%%]#666699[%%%ELSE:IFTEST%%%]#003366[%%%/IF:IFTEST%%%]; color:#FFFFFF;" title="This line is displayed conditional using a templating IF syntax ; Values = [[###IFTEST|html###]] / [[###IF2TEST|html###]] ...">
+			[%%%ELSE:IF2TEST%%%]
+			<tr style="background:#FFCC00; color:#000000;" title="This line is displayed conditional using a templating IF syntax ; Values = [[###IFTEST|html###]] / [[###IF2TEST|html###]] ...">
+			[%%%/IF:IF2TEST%%%]
+				<td width="33%">[###LOOPTEST-VAR1.D1|html###]</td>
+				<td width="33%">[###LOOPTEST-VAR1.D2|html###]</td>
+				<td width="33%">[###LOOPTEST-VAR1.D3|html###]</td>
+			</tr>
+		[%%%/LOOP:LOOPTEST-VAR1%%%]
+		</table>
+		<table class="ux-table ux-table-striped ux-reflow-table" style="width:595px;">
+		[%%%LOOP:LOOPTEST-VAR2%%%]
+			<tr>
+				[%%%IF:LOOPTEST-VAR2.C2:==a;%%%]
+					[%%%IF:LOOPTEST-VAR2.C1:<1;%%%]
+						<td width="33%" style="color:#FF3300;">[###LOOPTEST-VAR2.C1|html###] [ &lt; 1 ; C2 = a ]</td>
+					[%%%ELSE:LOOPTEST-VAR2.C1%%%]
+						<td width="33%" style="color:#003399;">[###LOOPTEST-VAR2.C1|html###] [ &gt;= 1 ; C2 = a ]</td>
+					[%%%/IF:LOOPTEST-VAR2.C1%%%]
+				[%%%ELSE:LOOPTEST-VAR2.C2%%%]
+					<td width="33%">[###LOOPTEST-VAR2.C1|html###]</td>
+				[%%%/IF:LOOPTEST-VAR2.C2%%%]
+				<td width="33%">[###LOOPTEST-VAR2.C2|js|html###]</td>
+				<td width="33%">[###LOOPTEST-VAR2.C3|url|html###]</td>
+			</tr>
+		[%%%/LOOP:LOOPTEST-VAR2%%%]
+		</table>
+		<table class="ux-table ux-reflow-table" style="width:595px;">
+			<tr align="center">
+				<td>[###STR-NUM|num###] * [###NUM-NUM|num###] (Numeric Escape)</td>
+			</tr>
+		</table>
+	</div></center>
+<!-- #END# Partial Template: TestUnit.Partials.TplSyntaxTest -->

@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="\SmartPgsqlDb final class \ SmartPgsqlDb { } :: Class: SmartPgsqlDb - provides a Static PostgreSQL DB Server Client that can be used just with the DEFAULT">
+<meta name="keywords" content="smartpgsqldb, final, class, provides, a, static, postgresql, db, server, client, that, can, be, used, just, with, the, default, connection, from, configs, tested, and, stable, on, versions, x, pgpool ii, pgbouncer, all, this, an, easy, convenient, way, to, work, as, methods, are, it, which, must, set, in, etc config php, configs  pgsql, connects, automatically, when, needed, is, lazy, made, avoid, permanent, connections, pgsql, slower, down, app, takes, busy, slots, notice, you, should, never, modify, optional, parameter, always, have, value, of, string, for, actually, not, use, at, reserved, advanced, usage, implement, derived, classes, like, smartpgsqlextdb, language, php, located, lib framework plugins lib db pgsql php, package, plugins database postgresql, namespace, name">
+<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartPgsqlDb">
+<link rel="icon" href="data:,">
+<title>PHP Documentation for: \SmartPgsqlDb</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+		float: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3c4663;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework : PHP Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+		<ul class="menu">
+		<li><a href="index.html#Package--PluginsDatabasePostgreSQL-" title="return to Index">return to Index</a></li>
+	</ul>
+	
+</nav>
+<!-- skip logo -->
+<!-- class r.20220331 -->
+<!-- Styles -->
+<!-- styles r.20220906 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located,
+.doc-version {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-frozen,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	top: 75px;
+	right: 175px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #3C4663;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Headings -->
+<h1 title="PHP class: `\SmartPgsqlDb` @ PHP Namespace: `\`" id="Class--Summary-">
+	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\</span><span class="doc-name">SmartPgsqlDb</span><br>
+	
+	
+	{
+	
+	}&nbsp;::
+</h1>
+<!-- Description -->
+<div class="doc-comments">Class: SmartPgsqlDb - provides a Static PostgreSQL DB Server Client that can be used just with the DEFAULT connection from configs.<br>
+Tested and Stable on PostgreSQL versions: 9.0.x / 9.1.x / 9.2.x / 9.3.x / 9.4.x / 9.5.x / 9.6.x / 10.x / 11.x / 12.x / 13.x / 14.x<br>
+Tested and Stable with PgPool-II versions: 3.0.x / 3.1.x / 3.2.x / 3.3.x / 3.4.x / 3.5.x / 3.6.x / 3.7.x / 4.0.x / 4.1.x / 4.2.x<br>
+Tested and Stable with PgBouncer: all versions<br>
+This class provides an easy and convenient way to work with the PostgreSQL DEFAULT connection, as all methods are static.<br>
+It can be used just with the DEFAULT connection which must be set in etc/config.php: $configs['pgsql'].<br>
+It connects automatically, when needed (the connection is lazy, and is made just when is needed to avoid permanent connections to PgSQL which slower down the app and takes busy the slots).<br>
+NOTICE: You should never modify the (optional) connection parameter which should always have the value of (string) 'DEFAULT' for this static class to work.<br>
+Actually you should not use this parameter at all as it is optional ... This parameter is reserved for advanced usage to implement derived classes like SmartPgsqlExtDb !</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/plugins/lib_db_pgsql.php</span></li>
+		<li><span class="doc-package"><b>Package:</b> Plugins:Database:PostgreSQL</span></li>
+		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> SmartPgsqlDb</span></li>
+		
+		<li><b>Version:</b> v.20231021</li>
+		<li><b>Depends:</b> extensions:  PHP PostgreSQL ; classes: Smart, SmartEnvironment, SmartHashCrypto, SmartUnicode, SmartComponents (optional) : constants: SMART_FRAMEWORK_SQL_CHARSET</li>
+		<li><b>Hints:</b> This  class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !</li>
+		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
+		
+		
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">class Methods</h2>
+</div>
+<!-- methods r.20200121 -->
+<div class="doc-container" id="Method--default_connect">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>default_connect</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	
+	
+	
+			<div class="doc-method-comments">Pre-connects manually to the Default PostgreSQL Server.<br>
+This function is OPTIONAL as the connection on the DEFAULT PostgreSQL Server will be done automatically when needed.<br>
+Anyway, if there is a need to create an explicit connection to the DEFAULT PostgreSQL server earlier, this function can be used by example in App Bootstrap.</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `server_connect()` -->
+<div class="doc-container" id="Method--quote_likes">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>quote_likes</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_string` Parameter is REQUIRED">$y_string</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	
+	
+			<div class="doc-method-ret-params">@param: {STRING} $y_string: A String or a Number to be Quoted for LIKES</div>
+	
+			<div class="doc-method-comments">Fix a string to be compliant with PgSQL LIKE / ILIKE / SIMILAR syntax.<br>
+It will use special quotes for the LIKE / ILIKE / SIMILAR special characters: % _ and \<br>
+This function IS NOT INTENDED TO ESCAPE AGAINST SQL INJECTIONS ; USE IT ONLY WITH PREPARED PARAMS OR USE escape_str() with mode 'likes' / escape_literal() with mode 'likes'</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--quote_regex">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>quote_regex</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_string` Parameter is REQUIRED">$y_string</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	
+	
+			<div class="doc-method-ret-params">@param: {STRING} $y_string: A String or a Number to be Quoted for REGEX</div>
+	
+			<div class="doc-method-comments">Fix a string to be compliant with PgSQL REGEX syntax.<br>
+It will use special quotes for the REGEX special characters: . \ + * ? [ ^ ] $ ( ) { } = ! &lt; &gt; | : -<br>
+This function IS NOT INTENDED TO ESCAPE AGAINST SQL INJECTIONS ; USE IT ONLY WITH PREPARED PARAMS OR USE escape_str() with mode 'regex' / escape_literal() with mode 'regex'</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--escape_str">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>escape_str</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_string` Parameter is REQUIRED">$y_string</span></b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_mode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The Escaped String / Number<br>
+@param: {STRING} $y_string: A String or a Number to be Escaped<br>
+@param: {ENUM} $y_mode: '' = default ; 'likes' = Escape LIKE / ILIKE / SIMILAR Syntax (% _) ; :: '' = default ; 'regex' = Escape ~ ~* !~ !~* Syntax<br>
+@param: {RESOURCE} $y_connection: the connection</div>
+	
+			<div class="doc-method-comments">Escape a string to be compliant and Safe (against SQL Injection) with PgSQL standards.<br>
+This function WILL NOT ADD the SINGLE QUOTES (') arround the string, but just will just escape it to be safe.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--escape_literal">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>escape_literal</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_string` Parameter is REQUIRED">$y_string</span></b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_mode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The Escaped String / Number<br>
+@param: {STRING} $y_string: A String or a Number to be Escaped<br>
+@param: {ENUM} $y_mode: '' = default ; 'likes' = Escape LIKE / ILIKE / SIMILAR Syntax (% _) ; :: '' = default ; 'regex' = Escape ~ ~* !~ !~* Syntax<br>
+@param: {RESOURCE} $y_connection: the connection</div>
+	
+			<div class="doc-method-comments">Escape a variable in the literal way to be compliant and Safe (against SQL Injection) with PgSQL standards.<br>
+This function WILL ADD the SINGLE QUOTES (') arround the string as needed and will escape expressions containing backslashes \ in the postgresql way using E'' escapes.<br>
+This is the preferred way to escape variables inside PostgreSQL SQL Statements, and is better than escape_str().</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--escape_identifier">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>escape_identifier</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_identifier` Parameter is REQUIRED">$y_identifier</span></b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The Escaped Identifier as: &quot;field&quot; / &quot;table&quot;<br>
+@param: {STRING} $y_identifier: The Identifier to be Escaped: field / table<br>
+@param: {RESOURCE} $y_connection: the connection</div>
+	
+			<div class="doc-method-comments">Escape an identifier to be compliant and Safe (against SQL Injection) with PgSQL standards.<br>
+This function WILL ADD the DOUBLE QUOTES (&quot;) arround the identifiers (fields / table names) as needed.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--json_encode">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>json_encode</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_mixed_content` Parameter is REQUIRED">$y_mixed_content</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_depth` Parameter is OPTIONAL, with the Default Value: 512">$y_depth</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>512</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} JSON string<br>
+@param: {STRING} $y_mixed_content: A mixed variable</div>
+	
+			<div class="doc-method-comments">PostgreSQL compliant and Safe Json Encode.<br>
+This should be used with PostgreSQL json / jsonb fields.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--check_if_schema_exists">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>check_if_schema_exists</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_schema` Parameter is REQUIRED">$y_schema</span></b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;0/1
+	
+	
+			<div class="doc-method-ret-params">@return: {0/1} 1 if exists ; 0 if not<br>
+@param: {STRING} $y_schema: The Schema Name<br>
+@param: {RESOURCE} $y_connection: The connection to PgSQL server</div>
+	
+			<div class="doc-method-comments">Check if a Schema Exists in the current Database.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--check_if_table_exists">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>check_if_table_exists</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_table` Parameter is REQUIRED">$y_table</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_schema` Parameter is OPTIONAL, with the Default Value: &quot;public&quot;">$y_schema</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;public&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;0/1
+	
+	
+			<div class="doc-method-ret-params">@return: {0/1} 1 if exists ; 0 if not<br>
+@param: {STRING} $y_table: The Table Name<br>
+@param: {STRING} $y_schema: The Schema Name<br>
+@param: {RESOURCE} $y_connection: The connection to PgSQL server</div>
+	
+			<div class="doc-method-comments">Check if a Table Exists in the current Database.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--count_data">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>count_data</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INTEGER
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} the result of COUNT()<br>
+@param: {STRING} $queryval: the query<br>
+@param: {STRING} $params_or_title: *optional* array of parameters ($1, $2, ... $n) or query title for easy debugging<br>
+@param: {RESOURCE} $y_connection: the connection</div>
+	
+			<div class="doc-method-comments">PgSQL Query :: Count<br>
+This function is intended to be used for count type queries: SELECT COUNT().</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--read_data">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read_data</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} (non-asociative) of results	:: array('column-0-0', 'column-0-1', null, ..., 'column-0-n', 'column-1-0', 'column-1-1', ... 'column-1-n', ..., 'column-m-0', 'column-m-1', ..., 'column-m-n')<br>
+@param: {STRING} $queryval: the query<br>
+@param: {STRING} $params_or_title: *optional* array of parameters ($1, $2, ... $n) or query title for easy debugging<br>
+@param: {RESOURCE} $y_connection: the connection</div>
+	
+			<div class="doc-method-comments">PgSQL Query :: Read (Non-Associative) one or multiple rows.<br>
+This function is intended to be used for read type queries: SELECT.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--read_adata">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read_adata</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} (asociative) of results		:: array(0 =&gt; array('column1' =&gt; 'val1', 'column2' =&gt; null, ... 'column-n' =&gt; 't'), 1 =&gt; array('column1' =&gt; 'val2', 'column2' =&gt; 'val2', ... 'column-n' =&gt; 'f'), ..., m =&gt; array('column1' =&gt; 'valM', 'column2' =&gt; 'xyz', ... 'column-n' =&gt; 't'))<br>
+@param: {STRING} $queryval: the query<br>
+@param: {STRING} $params_or_title: *optional* array of parameters ($1, $2, ... $n) or query title for easy debugging<br>
+@param: {RESOURCE} $y_connection: the connection</div>
+	
+			<div class="doc-method-comments">PgSQL Query :: Read (Associative) one or multiple rows.<br>
+This function is intended to be used for read type queries: SELECT.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--read_asdata">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read_asdata</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+			<div class="doc-method-ret-params">@hints: ALWAYS  use a LIMIT 1 OFFSET 0 with all queries using this function to avoid situations that will return more than 1 rows and will raise ERROR with this function.<br>
+@return: {ARRAY} (asociative) of results		:: Returns just a SINGLE ROW as: array('column1' =&gt; 'val1', 'column2' =&gt; null, ... 'column-n' =&gt; 't')<br>
+@param: {STRING} $queryval: the query<br>
+@param: {STRING} $params_or_title: *optional* array of parameters ($1, $2, ... $n) or query title for easy debugging<br>
+@param: {RESOURCE} $y_connection: the connection</div>
+	
+			<div class="doc-method-comments">PgSQL Query :: Read (Associative) - Single Row (just for 1 row, to easy the use of data from queries).<br>
+!!! This will raise an error if more than one row(s) are returned !!!<br>
+This function does not support multiple rows because the associative data is structured without row iterator.<br>
+For queries that return more than one row use: read_adata() or read_data().<br>
+This function is intended to be used for read type queries: SELECT.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--write_data">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>write_data</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} [ 0 =&gt; 'control-message', 1 =&gt; #affected-rows, 2 =&gt; returning[0,..n]|bool|null ]<br>
+@param: {STRING} $queryval: the query<br>
+@param: {STRING} $params_or_title: *optional* array of parameters ($1, $2, ... $n) or query title for easy debugging<br>
+@param: {RESOURCE} $y_connection: the connection</div>
+	
+			<div class="doc-method-comments">PgSQL Query :: Write.<br>
+This function is intended to be used for write type queries: BEGIN (TRANSACTION) ; COMMIT ; ROLLBACK ; INSERT ; UPDATE ; CREATE SCHEMAS ; CALLING STORED PROCEDURES ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--write_igdata">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>write_igdata</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} [ 0 =&gt; 'control-message', 1 =&gt; #affected-rows ]<br>
+@param: {STRING} $queryval: the query<br>
+@param: {STRING} $params_or_title: *optional* array of parameters ($1, $2, ... $n) or query title for easy debugging<br>
+@param: {RESOURCE} $y_connection: the connection</div>
+	
+			<div class="doc-method-comments">PgSQL Query :: Write Ignore - Catch Duplicate Key Violation or Foreign Key Violation Errors (This is the equivalent of MySQL's INSERT IGNORE / UPDATE IGNORE / DELETE IGNORE, but it can catch UNIQUE violations on any of: INSERT / UPDATE / DELETE statements and also can catch FOREIGN KEY violations).<br>
+This function is intended to be used only for write type queries like: INSERT / UPDATE / DELETE which can be ignored if unique violations or foreign key violations and will return the # of affected rows or zero if an exception raised.<br>
+The catch of PostgreSQL exceptions is handled completely by this function so there is no need for a catch errors outside.<br>
+IMPORTANT:<br>
+This function needs the pgsql notice message tracking enabled in PHP (not ignored); This must be set in php.ini (pgsql.ignore_notice = 0).<br>
+The internal mechanism of this function to catch UNIQUE or FOREIGN KEYS violations is that the EXCEPTIONS are catch at the PostgreSQL level in a DO block.<br>
+This is the best approach to handle safe UPSERT or INSERT IGNORE / UPDATE IGNORE / DELETE IGNORE like queries in high load envionments or to avoid fatal errors when a INSERT / UPDATE / DELETE violates a unique key or a foreign key with PostgreSQL.<br>
+This function can be used inside transactions blocks but never use this function to execute statements as: BEGIN, START TRANSACTION, COMMIT, ROLLBACK or SET statements, as the context is incompatible.<br>
+HINTS:<br>
+On PostgreSQL 9.5/later there is an alternative which can be used directly with write_data() without the need of this function as the following statement: INSERT ... ON CONFLICT DO NOTHING/UPDATE ... (as the equivalent of INSERT IGNORE / UPSERT), but the following statements are still missing (not implemented): UPDATE ... ON CONFLICT DO NOTHING / DELETE ... ON CONFLICT DO NOTHING .<br>
+This function will remain in the future to offer backward compatibility with PostgreSQL 8.4 ... 9.5 even if PostgreSQL at some moment will have ON CONFLICT DO implemented for all 3 INSERT / UPDATE / DELETE.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--prepare_statement">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>prepare_statement</b></span>&nbsp;(
+		<i>ARRAY-associative</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrdata` Parameter is REQUIRED">$arrdata</span></b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$mode` Parameter is REQUIRED">$mode</span></b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The SQL partial Statement<br>
+@param: {ARRAY-associative} $arrdata: associative array: array of form data as $arr=array(); $arr['field1'] = 'a string'; $arr['field2'] = 100; | non-associative array $arr[] = 'some value'; $arr[] = 'other-value', ...<br>
+@param: {ENUM} $mode: mode: 'insert' | 'insert-subselect' | 'update' | 'in-select', 'data-array'<br>
+@param: {RESOURCE} $y_connection: the connection to pgsql server</div>
+	
+			<div class="doc-method-comments">Create Escaped Write SQL Statements from Data - to be used with PgSQL for: INSERT ; INSERT-SUBSELECT ; UPDATE ; IN-SELECT ; DATA-ARRAY<br>
+Can be used with: write_data() or write_igdata() to build INSERT / INSERT (SELECT) / UPDATE queries from an associative array<br>
+or can be used with read_data(), read_adata(), read_asdata(), count_data() to build IN-SELECT / DATA-ARRAY queries from a non-associative array</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--prepare_param_query">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>prepare_param_query</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$query` Parameter is REQUIRED">$query</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$replacements_arr` Parameter is REQUIRED">$replacements_arr</span></b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The SQL processed (partial/full) Statement<br>
+@param: {STRING} $query: SQL Statement to process like '   WHERE (&quot;id&quot; = $1)'<br>
+@param: {ARRAY} $arrdata: The non-associative array as of: $arr=array('a');<br>
+@param: {RESOURCE} $y_connection: the connection to pgsql server</div>
+	
+			<div class="doc-method-comments">Create Escaped SQL Statements from Parameters and Array of Data by replacing $# params<br>
+This can be used for a full SQL statement or just for a part.<br>
+The statement must not contain any Single Quotes to prevent SQL injections which are unpredictable if mixing several statements at once !</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--new_safe_id">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>new_safe_id</b></span>&nbsp;(
+		<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_mode` Parameter is REQUIRED">$y_mode</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$y_id_field` Parameter is REQUIRED">$y_id_field</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_table_name` Parameter is REQUIRED">$y_table_name</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_schema` Parameter is OPTIONAL, with the Default Value: &quot;public&quot;">$y_schema</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;public&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} the generated Unique ID<br>
+@param: {ENUM} $y_mode: mode: uid10str | uid10num | uid10seq | uid12seq | uid13seq | uid15seq | uid32 | uid34 | uid35 | uid37 | uid36 | uid45<br>
+@param: {STRING} $y_field_name: the field name<br>
+@param: {STRING} $y_table_name: the table name<br>
+@param: {STRING} $y_schema: the schema<br>
+@param: {RESOURCE} $y_connection: pgsql connection</div>
+	
+			<div class="doc-method-comments">Get A UNIQUE (SAFE) ID for DB Tables / Schema</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `list_db_tables()` -->
+<!-- Skip Internal-Priv Method: `check_server_version()` -->
+<!-- Skip Internal-Priv Method: `runtime_info()` -->
+<!-- Skip Internal-Priv Method: `conform_config_array()` -->
+<!-- Skip Internal-Priv Method: `connection_hash()` -->
+
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20200121 -->
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20200121 -->
+
+<!-- Sample Code -->
+<br>
+<div class="doc-container" id="SAMPLE--Code-">
+	<h2 class="doc-header">Sample code: PHP</h2>
+</div>
+<div class="doc-code">
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+</span><span style="color: #999999">// The connection to the DEFAULT PostgreSQL Server will be done automatically, when needed, using the config parameters ; but if you want to pre-connect, use SmartPgsqlDb::default_connect() ...
+ </span><span style="color: #FFFFFF">$count </span><span style="color: #FFCC00; font-weight: bold">= (int) </span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">count_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SELECT COUNT("id") FROM "table" WHERE ("active" = \''</span><span style="color: #FFCC00; font-weight: bold">.</span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">escape_str</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'some-id'</span><span style="color: #FFCC00; font-weight: bold">).</span><span style="color: #5F9CCE">'\')'</span><span style="color: #FFCC00; font-weight: bold">);
+ </span><span style="color: #FFFFFF">$non_associative_read_multi_records </span><span style="color: #FFCC00; font-weight: bold">= (array) </span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">read_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SELECT * FROM "table" WHERE "id" = '</span><span style="color: #FFCC00; font-weight: bold">.</span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">escape_literal</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">3</span><span style="color: #FFCC00; font-weight: bold">));
+ </span><span style="color: #FFFFFF">$associative_read_multi_records </span><span style="color: #FFCC00; font-weight: bold">= (array) </span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">read_adata</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SELECT * FROM "table" WHERE "id" = $1'</span><span style="color: #FFCC00; font-weight: bold">, array(</span><span style="color: #5F9CCE">'other-id'</span><span style="color: #FFCC00; font-weight: bold">));
+ </span><span style="color: #FFFFFF">$associative_read_for_just_one_record </span><span style="color: #FFCC00; font-weight: bold">= (array) </span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">read_asdata</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SELECT * FROM "table" WHERE "id" = $1 LIMIT 1 OFFSET 0'</span><span style="color: #FFCC00; font-weight: bold">, array(</span><span style="color: #FFFFFF">99</span><span style="color: #FFCC00; font-weight: bold">)); </span><span style="color: #999999">// NOTICE: this function will return just one record, so always use LIMIT 1 OFFSET 0 (or LIMIT 0,1) ; if the query will return more records will raise an error
+ </span><span style="color: #FFFFFF">$update </span><span style="color: #FFCC00; font-weight: bold">= (array) </span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">write_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'UPDATE "table" SET "active" = 1 WHERE "id" = $1'</span><span style="color: #FFCC00; font-weight: bold">, array(</span><span style="color: #FFFFFF">55</span><span style="color: #FFCC00; font-weight: bold">)); </span><span style="color: #999999">// will return an array[ 0 =&gt; message, 1 =&gt; (integer) affected rows ]
+ </span><span style="color: #FFFFFF">$arr_insert </span><span style="color: #FFCC00; font-weight: bold">= array(
+         </span><span style="color: #5F9CCE">'id' </span><span style="color: #FFCC00; font-weight: bold">=&gt; </span><span style="color: #FFFFFF">100</span><span style="color: #FFCC00; font-weight: bold">,
+         </span><span style="color: #5F9CCE">'active' </span><span style="color: #FFCC00; font-weight: bold">=&gt; </span><span style="color: #FFFFFF">1</span><span style="color: #FFCC00; font-weight: bold">,
+         </span><span style="color: #5F9CCE">'name' </span><span style="color: #FFCC00; font-weight: bold">=&gt; </span><span style="color: #5F9CCE">'Test Record'
+ </span><span style="color: #FFCC00; font-weight: bold">);
+ </span><span style="color: #FFFFFF">$insert </span><span style="color: #FFCC00; font-weight: bold">= (array) </span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">write_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'INSERT INTO "table" '</span><span style="color: #FFCC00; font-weight: bold">.</span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">prepare_statement</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$arr_insert</span><span style="color: #FFCC00; font-weight: bold">, </span><span style="color: #5F9CCE">'insert'</span><span style="color: #FFCC00; font-weight: bold">));
+ </span><span style="color: #FFFFFF">$prepared_sql </span><span style="color: #FFCC00; font-weight: bold">= </span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">prepare_param_query</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SELECT * FROM "table" WHERE "id" = $1'</span><span style="color: #FFCC00; font-weight: bold">, [</span><span style="color: #FFFFFF">99</span><span style="color: #FFCC00; font-weight: bold">]);
+
+</span><span style="color: #999999">// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+</div>
+<!-- Summary List -->
+<br>
+<!-- summary r.20210420 -->
+<script>
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* PHP Class \SmartPgsqlDb # Documentation Index *</option>
+		<optgroup label="Class \SmartPgsqlDb">
+			<option value="Class--Summary-">Class definition</option>
+		</optgroup>
+		<optgroup label="Class Methods">
+			<option value="Methods--Summary-">Methods list</option>
+						<option value="Method--default_connect"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;default_connect()</option>
+			
+			
+			
+			
+						<option value="Method--quote_likes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;quote_likes()</option>
+			
+			
+						<option value="Method--quote_regex"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;quote_regex()</option>
+			
+			
+						<option value="Method--escape_str"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_str()</option>
+			
+			
+						<option value="Method--escape_literal"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_literal()</option>
+			
+			
+						<option value="Method--escape_identifier"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_identifier()</option>
+			
+			
+						<option value="Method--json_encode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;json_encode()</option>
+			
+			
+						<option value="Method--check_if_schema_exists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;check_if_schema_exists()</option>
+			
+			
+						<option value="Method--check_if_table_exists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;check_if_table_exists()</option>
+			
+			
+						<option value="Method--count_data"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;count_data()</option>
+			
+			
+						<option value="Method--read_data"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read_data()</option>
+			
+			
+						<option value="Method--read_adata"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read_adata()</option>
+			
+			
+						<option value="Method--read_asdata"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read_asdata()</option>
+			
+			
+						<option value="Method--write_data"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;write_data()</option>
+			
+			
+						<option value="Method--write_igdata"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;write_igdata()</option>
+			
+			
+						<option value="Method--prepare_statement"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;prepare_statement()</option>
+			
+			
+						<option value="Method--prepare_param_query"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;prepare_param_query()</option>
+			
+			
+						<option value="Method--new_safe_id"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;new_safe_id()</option>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</optgroup>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+			
+		</optgroup>
+				<optgroup label="Class Sample usage">
+			<option value="SAMPLE--Code-">Sample code</option>
+		</optgroup>
+		
+	</select>
+</div>
+<!-- summary-selectjs r.20210420 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div><center>
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
+</center></div>
+</body>
+</html>

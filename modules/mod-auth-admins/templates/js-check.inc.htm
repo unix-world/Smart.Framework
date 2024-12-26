@@ -1,0 +1,12 @@
+<!-- Check JS Runtime :: r.20231018 -->
+<script src="lib/js/check-es-runtime.js?[###RELEASE-HASH|url|html###]"></script>
+<script>
+(function(){
+	var testES6 = checkJsRuntime();
+	if(!testES6) {
+		console.warn('Javascript ES6 Test Not Passed:', testES6);
+		alert('NOTICE: Your browser does not support Javascript ES6 !');
+	}
+})();
+</script>
+<!-- # -->

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>jQuery Event Drag and Drop with Multiple Targets</title>
+	<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script src="../../jquery.event.drag.js"></script>
+	<script src="../../jquery.event.drop.js"></script>
+	<style type="text/css">
+	.drag {
+		position: absolute;
+		border: 1px solid #89B;
+		background: #BCE;
+		height: 58px;
+		width: 58px;
+		text-align: center;
+		line-height: 58px;
+		cursor: move;
+		top: 125px;
+		font-size: 32px;
+	 }
+	.drop {
+		float: right;
+		width: 99px;
+		height: 99px;
+		border: 1px dashed #888;
+		background: #EEE;
+		margin: 0 10px 0 0;
+		text-align: center;
+		line-height: 99px;
+	 }
+	.dropped {
+		background-color: #EBC;
+		border-color: #B89;
+	 }
+	</style>
+</head>
+<body>
+<h1>Dragover Drop Demo</h1>
+<p>Drag the blue boxes, the text changes while dragging over drop targets.</p>
+<div class="drop">C</div>
+<div class="drop">B</div>
+<div class="drop">A</div>
+<div class="drag" style="left:20px;"></div>
+<div class="drag" style="left:100px;"></div>
+<div class="drag" style="left:180px;"></div>
+<script>
+$(function() {
+
+	$('.drag')
+		.drag(function( ev, dd ){
+			$(this).css({
+				top: dd.offsetY,
+				left: dd.offsetX
+			})
+			.text( dd.drop.length ? $( dd.drop ).text() : '' );
+		})
+		.drag("end",function( ev, dd ){
+			$(this).text('');
+		});
+	$('.drop')
+		.drop(function(){
+			$(this).toggleClass("dropped");
+		});
+
+});
+</script>
+</body>
+</html>

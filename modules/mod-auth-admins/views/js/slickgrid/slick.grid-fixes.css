@@ -1,0 +1,18 @@
+
+/* SlickGrid Important Fixes for UxToolkit, Bootstrap and other UI Frameworks v.20231021 */
+
+[class^="slick"],
+[class^="slick"] div {
+	box-sizing: content-box !important;
+	-moz-box-sizing: content-box !important;
+	-webkit-box-sizing: content-box !important;
+}
+
+.slick-cell .ux-button {
+	margin: 0 !important;
+	width: auto !important;
+	min-width: auto !important;
+	max-width: auto !important;
+}
+
+/* END */

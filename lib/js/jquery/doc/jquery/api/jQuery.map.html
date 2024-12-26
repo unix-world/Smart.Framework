@@ -1,0 +1,590 @@
+<script>{
+		"title":
+			"jQuery.map()",
+		"excerpt":
+			"Translate all items in an array or object to new array of items.",
+		"termSlugs": {
+			"category": [
+				"utilities","version/1.0","version/1.6"
+			]
+		}
+	}</script><article id="jQuery-map1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.map( array, callback )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Array">Array</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Translate all items in an array or object to new array of items.</p>
+<ul class="signatures">
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0/">1.0</a></span><a id="jQuery-map-array-callback" href="#jQuery-map-array-callback"><span class="icon-link"></span>jQuery.map( array, callback )</a>
+</h4>
+<ul>
+<li>
+<div><strong>array</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Array">Array</a>
+</div>
+<div>The Array to translate.</div>
+</li>
+<li>
+<div><strong>callback</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Object">Object</a> elementOfArray, <a href="http://api.jquery.com/Types/#Integer">Integer</a> indexInArray )
+			=&gt;
+			<a href="http://api.jquery.com/Types/#Object">Object</a>
+</div>
+<div>The function to process each item against.  The first argument to the function is the array item, the second argument is the index in array The function can return any value. A returned array will be flattened into the resulting array. Within the function, <code>this</code> refers to the global (window) object.</div>
+</li>
+</ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.6/">1.6</a></span><a id="jQuery-map-object-callback" href="#jQuery-map-object-callback"><span class="icon-link"></span>jQuery.map( object, callback )</a>
+</h4>
+<ul>
+<li>
+<div><strong>object</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Object">Object</a>
+</div>
+<div>The Object to translate.</div>
+</li>
+<li>
+<div><strong>callback</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Object">Object</a> propertyOfObject, <a href="http://api.jquery.com/Types/#String">String</a> key )
+			=&gt;
+			<a href="http://api.jquery.com/Types/#Object">Object</a>
+</div>
+<div>The function to process each item against.  The first argument to the function is the value; the second argument is the key of the object property. The function can return any value to add to the array. A returned array will be flattened into the resulting array. Within the function, <code>this</code> refers to the global (window) object. </div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>If you wish to process a jQuery object &#x2014; for example, <code>$(&apos;div&apos;).map( callback );</code> &#x2014; use <a href="/map/">.map()</a> instead. </p>
+    <p>The <code>$.map()</code> method applies a function to each item in an array or object and maps the results into a new array. <strong>Prior to jQuery 1.6</strong>, <code>$.map()</code> supports traversing <em>arrays only</em>. <strong>As of jQuery 1.6</strong> it also traverses objects.</p>
+    <p>Array-like objects &#x2014; those with a <code>.length</code> property <em>and</em> a value on the <code>.length - 1</code> index &#x2014; must be converted to actual arrays before being passed to <code>$.map()</code>. The jQuery library provides <a href="/jQuery.makeArray/">$.makeArray()</a> for such conversions.</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="comment">// The following object masquerades as an array.</span></code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> fakeArray = { <span class="string">&quot;length&quot;</span>: <span class="number">2</span>, <span class="number">0</span>: <span class="string">&quot;Addy&quot;</span>, <span class="number">1</span>: <span class="string">&quot;Subtracty&quot;</span> };</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Therefore, convert it to a real array</span></code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> realArray = $.makeArray( fakeArray )</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Now it can be used reliably with $.map()</span></code></div></div><div class="container"><div class="line"><code>$.map( realArray, <span class="keyword">function</span>( val, i ) {</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Do something</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>The translation function that is provided to this method is called for each top-level element in the array or object and is passed two arguments: The element&apos;s value and its index or key within the array or object.</p>
+    <p>The function can return:</p>
+    <ul>
+      <li>the translated value, which will be mapped to the resulting array</li>
+      <li>
+<code>null</code> or <code>undefined</code>, to remove the item</li>
+      <li>an array of values, which will be flattened into the full array</li>
+    </ul>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Examples:</h2></header><div class="entry-example" id="example-0">
+<p>Use $.map() to change the values of an array.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+						<div class="line n32">32</div>
+					
+						<div class="line n33">33</div>
+					
+						<div class="line n34">34</div>
+					
+						<div class="line n35">35</div>
+					
+						<div class="line n36">36</div>
+					
+						<div class="line n37">37</div>
+					
+						<div class="line n38">38</div>
+					
+						<div class="line n39">39</div>
+					
+						<div class="line n40">40</div>
+					
+						<div class="line n41">41</div>
+					
+						<div class="line n42">42</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>jQuery.map demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css"></span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">div</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">color</span>:<span class="value"> blue;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">p</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">color</span>:<span class="value"> green;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">0</span>;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">span</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">color</span>:<span class="value"> red;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">style</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">p</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">span</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> arr = [ <span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;d&quot;</span>, <span class="string">&quot;e&quot;</span> ];</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;div&quot;</span> ).text( arr.join( <span class="string">&quot;, &quot;</span> ) );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>arr = jQuery.map( arr, <span class="keyword">function</span>( n, i ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> ( n.toUpperCase() + i );</code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;p&quot;</span> ).text( arr.join( <span class="string">&quot;, &quot;</span> ) );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>arr = jQuery.map( arr, <span class="keyword">function</span>( a ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> a + a;</code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;span&quot;</span> ).text( arr.join( <span class="string">&quot;, &quot;</span> ) );</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div>
+<div class="entry-example" id="example-1">
+<p>Map the original array to a new one and add 4 to each value.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.map( [ <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span> ], <span class="keyword">function</span>( n ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> n + <span class="number">4</span>;</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Result:</h4>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>[<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-2">
+<p>Map the original array to a new one, adding 1 to each value if it is bigger then zero and removing it if not.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.map( [ <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span> ], <span class="keyword">function</span>( n ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> n &gt; <span class="number">0</span> ? n + <span class="number">1</span> : <span class="literal">null</span>;</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Result:</h4>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>[ <span class="number">2</span>, <span class="number">3</span> ]</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-3">
+<p>Map the original array to a new one; each element is added with its original value and the value plus one.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.map( [ <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span> ], <span class="keyword">function</span>( n ) {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">return</span> [ n, n + <span class="number">1</span> ];</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Result:</h4>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>[ <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span> ]</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-4">
+<p>Map the original object to a new array and double each value.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> dimensions = { width: <span class="number">10</span>, height: <span class="number">15</span>, length: <span class="number">20</span> };</code></div></div><div class="container"><div class="line"><code>dimensions = $.map( dimensions, <span class="keyword">function</span>( value, index ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> value * <span class="number">2</span>;</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Result:</h4>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>[ <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span> ]</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-5">
+<p>Map an object&apos;s keys to an array.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> dimensions = { width: <span class="number">10</span>, height: <span class="number">15</span>, length: <span class="number">20</span> };</code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> keys = $.map( dimensions, <span class="keyword">function</span>( value, key ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> key;</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Result:</h4>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>[ <span class="string">&quot;width&quot;</span>, <span class="string">&quot;height&quot;</span>, <span class="string">&quot;length&quot;</span> ]</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-6">
+<p>Map the original array to a new one; each element is squared.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.map( [ <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> ], <span class="keyword">function</span>( a ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> a * a;</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Result:</h4>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>[ <span class="number">0</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">9</span> ]</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-7">
+<p>Map the original array to a new one, removing numbers less than 50 by returning <code>null</code> and subtracting 45 from the rest.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.map( [ <span class="number">0</span>, <span class="number">1</span>, <span class="number">52</span>, <span class="number">97</span> ], <span class="keyword">function</span>( a ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> (a &gt; <span class="number">50</span> ? a - <span class="number">45</span> : <span class="literal">null</span>);</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Result:</h4>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>[ <span class="number">7</span>, <span class="number">52</span> ]</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-8">
+<p>Augment the resulting array by returning an array inside the function.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> array = [ <span class="number">0</span>, <span class="number">1</span>, <span class="number">52</span>, <span class="number">97</span> ];</code></div></div><div class="container"><div class="line"><code>array = $.map( array, <span class="keyword">function</span>( a, index ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> [ a - <span class="number">45</span>, index ];</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Result:</h4>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>[ -<span class="number">45</span>, <span class="number">0</span>, -<span class="number">44</span>, <span class="number">1</span>, <span class="number">7</span>, <span class="number">2</span>, <span class="number">52</span>, <span class="number">3</span>]</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

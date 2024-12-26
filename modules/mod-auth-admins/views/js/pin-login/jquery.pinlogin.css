@@ -1,0 +1,51 @@
+/*
+ * (c) 2018 Bob Hageman (https://gitlab.com/b.hageman)
+ * License: MIT
+ * Version 1.0.3
+ *
+ * (c) 2023 unix-world.org
+ * v.20231020
+ * contains fixes by unixman:
+ * 		- fixed some styles
+ */
+
+.pinlogin .pinlogin-field {
+	box-sizing: border-box;
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	margin: 1px;
+	border: 1px solid #EEEEEE;
+	border-radius: 2px;
+	text-align: center;
+	color: #777777;
+	font-size: 0.8125rem !important;
+	font-weight: bold !important;
+}
+
+.pinlogin .pinlogin-field:first-of-type {
+	margin-left: 0;
+}
+
+.pinlogin .pinlogin-field:last-of-type {
+	margin-right: 0;
+}
+
+.pinlogin .pinlogin-field:read-only {
+	border: 1px solid #ECECEC;
+	background: #FAFAFA;
+	cursor: default;
+}
+
+.pinlogin .pinlogin-field.invalid {
+	border: 1px solid #FFCC00;
+	color: #FF3300;
+}
+
+.pinlogin .pinlogin-field:focus {
+	outline: 0;
+	border-color: #129FEA;
+}
+
+/* END */

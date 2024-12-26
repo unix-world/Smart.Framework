@@ -1,0 +1,86 @@
+<script>{
+		"title":
+			"callbacks.has()",
+		"excerpt":
+			"Determine whether or not the list has any callbacks attached. If a callback is provided as an argument, determine whether it is in a list.",
+		"termSlugs": {
+			"category": [
+				"callbacks-object","version/1.7"
+			]
+		}
+	}</script><article id="callbacks-has1" class="entry method"><h2 class="section-title">
+<span class="name">callbacks.has(  [callback ] )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Boolean">Boolean</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Determine whether or not the list has any callbacks attached. If a callback is provided as an argument, determine whether it is in a list.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.7/">1.7</a></span><a id="callbacks-has-callback" href="#callbacks-has-callback"><span class="icon-link"></span>callbacks.has(  [callback ] )</a>
+</h4>
+<ul><li>
+<div><strong>callback</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>The callback to search for.</div>
+</li></ul>
+</li></ul>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Use <code>callbacks.has()</code> to check if a callback list contains a specific callback:</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="comment">// A sample logging function to be added to a callbacks list</span></code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> foo = <span class="keyword">function</span>( value1, value2 ) {</code></div></div><div class="container"><div class="line"><code>  console.log( <span class="string">&quot;Received: &quot;</span> + value1 + <span class="string">&quot;,&quot;</span> + value2 );</code></div></div><div class="container"><div class="line"><code>};</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// A second function which will not be added to the list</span></code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> bar = <span class="keyword">function</span>( value1, value2 ) {</code></div></div><div class="container"><div class="line"><code>  console.log( <span class="string">&quot;foobar&quot;</span> );</code></div></div><div class="container"><div class="line"><code>};</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> callbacks = $.Callbacks();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Add the log method to the callbacks list</span></code></div></div><div class="container"><div class="line"><code>callbacks.add( foo );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Determine which callbacks are in the list</span></code></div></div><div class="container"><div class="line"><code>console.log( callbacks.has( foo ) );</code></div></div><div class="container"><div class="line"><code><span class="comment">// true</span></code></div></div><div class="container"><div class="line"><code>console.log( callbacks.has( bar ) );</code></div></div><div class="container"><div class="line"><code><span class="comment">// false</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

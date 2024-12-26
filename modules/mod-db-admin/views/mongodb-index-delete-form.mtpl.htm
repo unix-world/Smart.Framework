@@ -1,0 +1,59 @@
+<!-- MongoDB Index Delete (Drop) Form -->
+<link rel="stylesheet" href="lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css">
+<style>
+code#hljs-json-area {
+	height: calc(100% - 16px);
+}
+pre.pre-hljs-code {
+	width: calc(100% - 100px) !important;
+	height: calc(100vh - 375px);
+	min-height: 200px;
+	border:1px solid #ECECEC;
+	padding: 0;
+}
+</style>
+[@@@SUB-TEMPLATE:!lib/js/jshilitecode/templates/syntax-hilitecode-init.inc.htm!@@@]
+<script>
+function btnHandlerCancel() {
+	smartJ$Browser.CloseDelayedModalPopUp();
+	return false;
+}
+function btnHandlerSubmit() {
+	var idx = jQuery('#idx-selector').val();
+	if(!idx) {
+		jQuery.alertable.alert('<h5>No Index Selected</h5>', { html:true }).always(function(){});
+		return false;
+	}
+	jQuery.alertable.confirm('<h4><span style="color:#ED2839;">DROP the Index</span> `<span style="color:#003388;">' + smartJ$Utils.escape_html(idx) + '</span>`&nbsp;?</h4><br><h5>This action will <i>permanently DROP</i> the selected <i>Index</i> of this Collection.</h5>', { html:true }).then(function(){
+		smartJ$Browser.SubmitFormByAjax('index_drop_form', '[###ACTIONS-URL|js###]', 'yes');
+	});
+	return false;
+}
+</script>
+<h3>Database:&nbsp;<span style="color:#4D5774; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|int###]">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection:&nbsp;<span style="color:#448FCE;">[###COLLECTION|html###]</span></h3>
+<h4><span style="color:#778899;">MongoDB :: </span>[###THE-TITLE|html|nl2br###]</h4>
+<h6><span style="color:#5E6885;" title="Hint">Select the Index to be Dropped:</span></h6>
+<form id="index_drop_form" name="index_drop_form" class="ux-form" onSubmit="return false;">
+[%%%IF:ARR-INDEXES:@>0;%%%]
+<select id="idx-selector" autocomplete="off" name="frm[drop-index]">
+<option value=""></option>
+[%%%LOOP:ARR-INDEXES%%%]
+<option value="[###ARR-INDEXES._-KEY-_|html###]">[###ARR-INDEXES._-KEY-_|html###]</option>
+[%%%/LOOP:ARR-INDEXES%%%]
+</select>
+[%%%ELSE:ARR-INDEXES%%%]
+<span style="color:#FF3300;"><b>There are No Indexes to be Dropped for this collection.</b></span>
+[%%%/IF:ARR-INDEXES%%%]
+<input type="hidden" name="frm[chk]" value="[###CHECKSUM-HASH|html###]">
+<div id="hljs-json-div" style="width: 80vw !important; max-width: 960px; overflow:auto; min-width:320px !important; text-align:left;"><pre class="pre-hljs-code"><code id="hljs-json-area" data-syntax="mongodb">[###COLLINDEXES|html###]</code></pre></div>
+<script type="text/javascript">
+var SmartViewHelpersSyntaxHighlightAreas = '#hljs-json-div';
+</script>
+[@@@SUB-TEMPLATE:!lib/js/jshilitecode/templates/syntax-hilitecode-process.inc.htm!@@@]
+<br>
+<div class="ux-controls">
+	<button type="button" class="ux-button ux-button-spacing" onClick="btnHandlerCancel();"> Cancel &nbsp; <i style="color:#444444;" class="sfi sfi-spinner11"></i></button>
+	<button type="button" class="ux-button ux-button-special ux-button-spacing" onClick="btnHandlerSubmit();"> [###ACTION-TXT|html###] &nbsp; <i class="sfi sfi-checkmark"></i></button>
+</div>
+</form>
+<!-- # MongoDB Index Delete (Drop) Form -->

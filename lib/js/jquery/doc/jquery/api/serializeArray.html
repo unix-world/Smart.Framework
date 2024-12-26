@@ -1,0 +1,315 @@
+<script>{
+		"title":
+			".serializeArray()",
+		"excerpt":
+			"Encode a set of form elements as an array of names and values.",
+		"termSlugs": {
+			"category": [
+				"forms","ajax/helper-functions","version/1.2"
+			]
+		}
+	}</script><article id="serializeArray1" class="entry method"><h2 class="section-title">
+<span class="name">.serializeArray()</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Array">Array</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Encode a set of form elements as an array of names and values.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.2/">1.2</a></span><a id="serializeArray" href="#serializeArray"><span class="icon-link"></span>.serializeArray()</a>
+</h4>
+<ul><li><div class="null-signature">This method does not accept any arguments.</div></li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>The <code>.serializeArray()</code> method creates a JavaScript array of objects, ready to be encoded as a JSON string. It operates on a jQuery collection of <code>form</code>s and/or form controls. The controls can be of several types:</p>
+    <div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">form</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">div</span>&gt;</span><span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">&quot;text&quot;</span> <span class="attribute">name</span>=<span class="value">&quot;a&quot;</span> <span class="attribute">value</span>=<span class="value">&quot;1&quot;</span> <span class="attribute">id</span>=<span class="value">&quot;a&quot;</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">div</span>&gt;</span><span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">&quot;text&quot;</span> <span class="attribute">name</span>=<span class="value">&quot;b&quot;</span> <span class="attribute">value</span>=<span class="value">&quot;2&quot;</span> <span class="attribute">id</span>=<span class="value">&quot;b&quot;</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">div</span>&gt;</span><span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">&quot;hidden&quot;</span> <span class="attribute">name</span>=<span class="value">&quot;c&quot;</span> <span class="attribute">value</span>=<span class="value">&quot;3&quot;</span> <span class="attribute">id</span>=<span class="value">&quot;c&quot;</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>    <span class="tag">&lt;<span class="title">textarea</span> <span class="attribute">name</span>=<span class="value">&quot;d&quot;</span> <span class="attribute">rows</span>=<span class="value">&quot;8&quot;</span> <span class="attribute">cols</span>=<span class="value">&quot;40&quot;</span>&gt;</span>4<span class="tag">&lt;/<span class="title">textarea</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">div</span>&gt;</span><span class="tag">&lt;<span class="title">select</span> <span class="attribute">name</span>=<span class="value">&quot;e&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>    <span class="tag">&lt;<span class="title">option</span> <span class="attribute">value</span>=<span class="value">&quot;5&quot;</span> <span class="attribute">selected</span>=<span class="value">&quot;selected&quot;</span>&gt;</span>5<span class="tag">&lt;/<span class="title">option</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>    <span class="tag">&lt;<span class="title">option</span> <span class="attribute">value</span>=<span class="value">&quot;6&quot;</span>&gt;</span>6<span class="tag">&lt;/<span class="title">option</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>    <span class="tag">&lt;<span class="title">option</span> <span class="attribute">value</span>=<span class="value">&quot;7&quot;</span>&gt;</span>7<span class="tag">&lt;/<span class="title">option</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">select</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>    <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">&quot;checkbox&quot;</span> <span class="attribute">name</span>=<span class="value">&quot;f&quot;</span> <span class="attribute">value</span>=<span class="value">&quot;8&quot;</span> <span class="attribute">id</span>=<span class="value">&quot;f&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>    <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">&quot;submit&quot;</span> <span class="attribute">name</span>=<span class="value">&quot;g&quot;</span> <span class="attribute">value</span>=<span class="value">&quot;Submit&quot;</span> <span class="attribute">id</span>=<span class="value">&quot;g&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">form</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>The <code>.serializeArray()</code> method uses the standard W3C rules for <a href="https://www.w3.org/TR/html401/interact/forms.html#h-17.13.2">successful controls</a> to determine which elements it should include; in particular the element cannot be disabled and must contain a <code>name</code> attribute. No submit button value is serialized since the form was not submitted using a button. Data from file select elements is not serialized. Elements that do not contain a <code>value</code> attribute are represented with the empty string value.</p>
+    <p>This method can act on a jQuery object that has selected individual form controls, such as <code>&lt;input&gt;</code>, <code>&lt;textarea&gt;</code>, and <code>&lt;select&gt;</code>. However, it is typically easier to select the <code>&lt;form&gt;</code> element itself for serialization:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;form&quot;</span> ).submit(<span class="keyword">function</span>( event ) {</code></div></div><div class="container"><div class="line"><code>  console.log( $( <span class="keyword">this</span> ).serializeArray() );</code></div></div><div class="container"><div class="line"><code>  event.preventDefault();</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>This produces the following data structure (provided that the browser supports <code>console.log</code>):</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>[</code></div></div><div class="container"><div class="line"><code>  {</code></div></div><div class="container"><div class="line"><code>    name: <span class="string">&quot;a&quot;</span>,</code></div></div><div class="container"><div class="line"><code>    value: <span class="string">&quot;1&quot;</span></code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  {</code></div></div><div class="container"><div class="line"><code>    name: <span class="string">&quot;b&quot;</span>,</code></div></div><div class="container"><div class="line"><code>    value: <span class="string">&quot;2&quot;</span></code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  {</code></div></div><div class="container"><div class="line"><code>    name: <span class="string">&quot;c&quot;</span>,</code></div></div><div class="container"><div class="line"><code>    value: <span class="string">&quot;3&quot;</span></code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  {</code></div></div><div class="container"><div class="line"><code>    name: <span class="string">&quot;d&quot;</span>,</code></div></div><div class="container"><div class="line"><code>    value: <span class="string">&quot;4&quot;</span></code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  {</code></div></div><div class="container"><div class="line"><code>    name: <span class="string">&quot;e&quot;</span>,</code></div></div><div class="container"><div class="line"><code>    value: <span class="string">&quot;5&quot;</span></code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>]</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Get the values from a form, iterate through them, and append them to a results display.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+						<div class="line n32">32</div>
+					
+						<div class="line n33">33</div>
+					
+						<div class="line n34">34</div>
+					
+						<div class="line n35">35</div>
+					
+						<div class="line n36">36</div>
+					
+						<div class="line n37">37</div>
+					
+						<div class="line n38">38</div>
+					
+						<div class="line n39">39</div>
+					
+						<div class="line n40">40</div>
+					
+						<div class="line n41">41</div>
+					
+						<div class="line n42">42</div>
+					
+						<div class="line n43">43</div>
+					
+						<div class="line n44">44</div>
+					
+						<div class="line n45">45</div>
+					
+						<div class="line n46">46</div>
+					
+						<div class="line n47">47</div>
+					
+						<div class="line n48">48</div>
+					
+						<div class="line n49">49</div>
+					
+						<div class="line n50">50</div>
+					
+						<div class="line n51">51</div>
+					
+						<div class="line n52">52</div>
+					
+						<div class="line n53">53</div>
+					
+						<div class="line n54">54</div>
+					
+						<div class="line n55">55</div>
+					
+						<div class="line n56">56</div>
+					
+						<div class="line n57">57</div>
+					
+						<div class="line n58">58</div>
+					
+						<div class="line n59">59</div>
+					
+						<div class="line n60">60</div>
+					
+						<div class="line n61">61</div>
+					
+						<div class="line n62">62</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>serializeArray demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css"></span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">body</span>, <span class="tag">select</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">form</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">5</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">p</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">color</span>:<span class="value"> red;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">5</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">b</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">color</span>:<span class="value"> blue;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">style</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">p</span>&gt;</span><span class="tag">&lt;<span class="title">b</span>&gt;</span>Results:<span class="tag">&lt;/<span class="title">b</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">id</span>=<span class="value">&quot;results&quot;</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">form</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">select</span> <span class="attribute">name</span>=<span class="value">&quot;single&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>    <span class="tag">&lt;<span class="title">option</span>&gt;</span>Single<span class="tag">&lt;/<span class="title">option</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>    <span class="tag">&lt;<span class="title">option</span>&gt;</span>Single2<span class="tag">&lt;/<span class="title">option</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">select</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">select</span> <span class="attribute">name</span>=<span class="value">&quot;multiple&quot;</span> <span class="attribute">multiple</span>=<span class="value">&quot;multiple&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>    <span class="tag">&lt;<span class="title">option</span> <span class="attribute">selected</span>=<span class="value">&quot;selected&quot;</span>&gt;</span>Multiple<span class="tag">&lt;/<span class="title">option</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>    <span class="tag">&lt;<span class="title">option</span>&gt;</span>Multiple2<span class="tag">&lt;/<span class="title">option</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>    <span class="tag">&lt;<span class="title">option</span> <span class="attribute">selected</span>=<span class="value">&quot;selected&quot;</span>&gt;</span>Multiple3<span class="tag">&lt;/<span class="title">option</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">select</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">br</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">&quot;checkbox&quot;</span> <span class="attribute">name</span>=<span class="value">&quot;check&quot;</span> <span class="attribute">value</span>=<span class="value">&quot;check1&quot;</span> <span class="attribute">id</span>=<span class="value">&quot;ch1&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">label</span> <span class="attribute">for</span>=<span class="value">&quot;ch1&quot;</span>&gt;</span>check1<span class="tag">&lt;/<span class="title">label</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">&quot;checkbox&quot;</span> <span class="attribute">name</span>=<span class="value">&quot;check&quot;</span> <span class="attribute">value</span>=<span class="value">&quot;check2&quot;</span> <span class="attribute">checked</span>=<span class="value">&quot;checked&quot;</span> <span class="attribute">id</span>=<span class="value">&quot;ch2&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">label</span> <span class="attribute">for</span>=<span class="value">&quot;ch2&quot;</span>&gt;</span>check2<span class="tag">&lt;/<span class="title">label</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">&quot;radio&quot;</span> <span class="attribute">name</span>=<span class="value">&quot;radio&quot;</span> <span class="attribute">value</span>=<span class="value">&quot;radio1&quot;</span> <span class="attribute">checked</span>=<span class="value">&quot;checked&quot;</span> <span class="attribute">id</span>=<span class="value">&quot;r1&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">label</span> <span class="attribute">for</span>=<span class="value">&quot;r1&quot;</span>&gt;</span>radio1<span class="tag">&lt;/<span class="title">label</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">&quot;radio&quot;</span> <span class="attribute">name</span>=<span class="value">&quot;radio&quot;</span> <span class="attribute">value</span>=<span class="value">&quot;radio2&quot;</span> <span class="attribute">id</span>=<span class="value">&quot;r2&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">label</span> <span class="attribute">for</span>=<span class="value">&quot;r2&quot;</span>&gt;</span>radio2<span class="tag">&lt;/<span class="title">label</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">form</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code>  <span class="function"><span class="keyword">function</span> <span class="title">showValues</span><span class="params">()</span> {</span></code></div></div><div class="container"><div class="line"><code>    <span class="keyword">var</span> fields = $( <span class="string">&quot;:input&quot;</span> ).serializeArray();</code></div></div><div class="container"><div class="line"><code>    $( <span class="string">&quot;#results&quot;</span> ).empty();</code></div></div><div class="container"><div class="line"><code>    jQuery.each( fields, <span class="keyword">function</span>( i, field ) {</code></div></div><div class="container"><div class="line"><code>      $( <span class="string">&quot;#results&quot;</span> ).append( field.value + <span class="string">&quot; &quot;</span> );</code></div></div><div class="container"><div class="line"><code>    });</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;:checkbox, :radio&quot;</span> ).click( showValues );</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;select&quot;</span> ).change( showValues );</code></div></div><div class="container"><div class="line"><code>  showValues();</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div></section>
+</div></article>

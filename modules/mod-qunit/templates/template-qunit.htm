@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!-- Version:          r.20210612 -->
+<!-- Template:         [###TEMPLATE-PATH|html###][###TEMPLATE-FILE|html###] -->
+<!-- Charset:          [###CHARSET|html###] -->
+<!-- Srv Script:       [###SRV-SCRIPT|html###] -->
+<!-- App Realm:        [###APP-REALM|html###] -->
+<!-- App Namespace:    [###APP-NAMESPACE|html###] -->
+<!-- TimeoutExecution: [###TIMEOUT-EXECUTION|html###] -->
+<!-- TimeoutNetSocket: [###TIMEOUT-NETSOCKET|html###] -->
+<!-- DateTimeStart:    [###TIME-DATE-START|html###] -->
+<!-- Debug Mode:       [###DEBUG-MODE|html###] -->
+<html>
+<head>
+<meta charset="[###CHARSET|html###]">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Smart.Framework">
+<title>[###TITLE|html###]</title>
+<link rel="icon" href="data:,">
+<!-- CSS and Fonts -->
+<link rel="stylesheet" type="text/css" href="lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css?[###RELEASE-HASH|url|html###]">
+<style type="text/css">
+* {
+	font-family: 'IBM Plex Mono', mono;
+	font-smooth: always;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #EEEEEE;
+	height: 1px;
+}
+#smart-qunit-results {
+	position: fixed;
+	top: 10px;
+	right: 11px;
+	width: 360px;
+	height: 33px;
+	line-height: 15px;
+	padding: 3px;
+	border: 3px solid #2B81AF;
+	border-radius: 5px; opacity:0.75;
+	background: #C6E746;
+	color: #0D3349;
+	font-size: 10px;
+	font-weight: bold;
+	white-space: pre;
+	text-align: center;
+}
+</style>
+<!-- Scripts -->
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-base.inc.htm!@@@]
+<!-- QUnit Js -->
+<link href="modules/mod-qunit/views/js/qunit/qunit.css?[###RELEASE-HASH|html###]" rel="stylesheet">
+<script src="modules/mod-qunit/views/js/qunit/qunit.js?[###RELEASE-HASH|html###]"></script>
+<!-- SmartQUnit -->
+<script src="modules/mod-qunit/views/js/smart-qunit.js?[###RELEASE-HASH|html###]"></script>
+</head>
+<body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+<div id="smart-qunit-results">[[###APP-REALM|html###]] // QUnit Running: [###TIME-DATE-START|html###]<br><img src="lib/framework/img/loading-cylon.svg" width="24" height="24"></div>
+<script>
+var smartQUnitStartDelay = 500; // qunit start delay (if many tests are loader async by ajax calls this time should be increased, ex: 2500)
+var smartQUnitDisabledTests = 0; // init (use it later to register the number of disabled tests)
+var smartQUnitDoneCounter = 0;
+QUnit.config.uxmAllowRerun = true; // this is the default behaviour
+QUnit.config.uxmUniqueModules = true; // force unique module (names) ; using nested modules with this set to TRUE may produce unexpected behaviour
+QUnit.config.urlConfig = [{ id: 'hidepassed', label: 'Display only Errors', tooltip: 'Show only Errors, Hide Passed' }];
+QUnit.config.storage = null; // do not use browser storage
+QUnit.config.autostart = false; // do not start testing (yet)
+QUnit.config.reorder = false; // if TRUE, QUnit will run tests first that failed on a previous run
+QUnit.config.testTimeout = [###TIMEOUT-EXECUTION|int###] * 1000; // max time per test ; specify a global timeout in milliseconds after which all tests will fail with an appropriate message
+QUnit.done((details) => { // done handler (more done handlers can be set later)
+	smartQUnitDoneCounter++;
+	jQuery('#smart-qunit-results').empty().text('[[###APP-REALM|js###]] QUnit DONE (#' + smartQUnitDoneCounter + '). Disabled: ' + parseInt(smartQUnitDisabledTests) + '\n' + 'Total: ' + details.total + ' ; Failed: ' + details.failed + ' ; Passed: ' + details.passed + ' ; RunTime: ' + Math.ceil(details.runtime / 1000) + 's');
+	jQuery('#smart-qunit-done').empty().html('<hr><h1 id="qunit-footer">#&nbsp;END&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[###FOOTER|html###]</h1>');
+});
+</script>
+<script>
+[###MAIN###]
+</script>
+<script>
+jQuery(() => {
+	setTimeout(() => {
+		QUnit.start(); // start here
+	}, Math.ceil(smartQUnitStartDelay));
+});
+</script>
+<div id="smart-qunit-done"></div>
+</body>
+</html>

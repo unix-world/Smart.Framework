@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:,">
+<title>CriptoJS</title>
+<style>
+button {
+	font-size: 1rem;
+	padding: 2px;
+	margin: 5px;
+}
+</style>
+<script src="../core_utils.js"></script>
+	<script src="../crypt_utils.js"></script>
+<script>
+const emptyString = '';
+const isoString = 'Lorem Ipsum dolor sit Amet';
+const unicodeString = 'Unicode String:		şŞţŢăĂîÎâÂșȘțȚ (05-09#';
+const hmacKey = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#|;,_~`"';
+</script>
+<script>
+const sh3a512Test = (str) => {
+	const hashHex = smartJ$CryptoHash.sh3a512(str);
+	const hashB64 = smartJ$CryptoHash.sh3a512(str, true);
+	console.log('SHA3-512', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`');
+};
+const sh3a512HmacTest = (str, key) => {
+	const hashHex = smartJ$CryptoHash.hmac('sha3-512', key, str);
+	const hashB64 = smartJ$CryptoHash.hmac('sha3-512', key, str, true);
+	console.log('SHA3-512-Hmac', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`', 'Key: `' + key + '`');
+};
+
+const sh3a384Test = (str) => {
+	const hashHex = smartJ$CryptoHash.sh3a384(str);
+	const hashB64 = smartJ$CryptoHash.sh3a384(str, true);
+	console.log('SHA3-384', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`');
+};
+const sh3a384HmacTest = (str, key) => {
+	const hashHex = smartJ$CryptoHash.hmac('sha3-384', key, str);
+	const hashB64 = smartJ$CryptoHash.hmac('sha3-384', key, str, true);
+	console.log('SHA3-384-Hmac', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`', 'Key: `' + key + '`');
+};
+
+const sh3a256Test = (str) => {
+	const hashHex = smartJ$CryptoHash.sh3a256(str);
+	const hashB64 = smartJ$CryptoHash.sh3a256(str, true);
+	console.log('SHA3-256', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`');
+};
+const sh3a256HmacTest = (str, key) => {
+	const hashHex = smartJ$CryptoHash.hmac('sha3-256', key, str);
+	const hashB64 = smartJ$CryptoHash.hmac('sha3-256', key, str, true);
+	console.log('SHA3-256-Hmac', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`', 'Key: `' + key + '`');
+};
+
+const sh3a224Test = (str) => {
+	const hashHex = smartJ$CryptoHash.sh3a224(str);
+	const hashB64 = smartJ$CryptoHash.sh3a224(str, true);
+	console.log('SHA3-224', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`');
+};
+const sh3a224HmacTest = (str, key) => {
+	const hashHex = smartJ$CryptoHash.hmac('sha3-224', key, str);
+	const hashB64 = smartJ$CryptoHash.hmac('sha3-224', key, str, true);
+	console.log('SHA3-224-Hmac', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`', 'Key: `' + key + '`');
+};
+
+const sha512Test = (str) => {
+	const hashHex = smartJ$CryptoHash.sha512(str);
+	const hashB64 = smartJ$CryptoHash.sha512(str, true);
+	console.log('SHA512', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`');
+};
+const sha512HmacTest = (str, key) => {
+	const hashHex = smartJ$CryptoHash.hmac('sha512', key, str);
+	const hashB64 = smartJ$CryptoHash.hmac('sha512', key, str, true);
+	console.log('SHA512-Hmac', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`', 'Key: `' + key + '`');
+};
+
+const sha384Test = (str) => {
+	const hashHex = smartJ$CryptoHash.sha384(str);
+	const hashB64 = smartJ$CryptoHash.sha384(str, true);
+	console.log('SHA384', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`');
+};
+const sha384HmacTest = (str, key) => {
+	const hashHex = smartJ$CryptoHash.hmac('sha384', key, str);
+	const hashB64 = smartJ$CryptoHash.hmac('sha384', key, str, true);
+	console.log('SHA384-Hmac', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`', 'Key: `' + key + '`');
+};
+
+const sha256Test = (str) => {
+	const hashHex = smartJ$CryptoHash.sha256(str);
+	const hashB64 = smartJ$CryptoHash.sha256(str, true);
+	console.log('SHA256', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`');
+};
+const sha256HmacTest = (str, key) => {
+	const hashHex = smartJ$CryptoHash.hmac('sha256', key, str);
+	const hashB64 = smartJ$CryptoHash.hmac('sha256', key, str, true);
+	console.log('SHA256-Hmac', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`', 'Key: `' + key + '`');
+};
+
+const sha224Test = (str) => {
+	const hashHex = smartJ$CryptoHash.sha224(str);
+	const hashB64 = smartJ$CryptoHash.sha224(str, true);
+	console.log('SHA224', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`');
+};
+const sha224HmacTest = (str, key) => {
+	const hashHex = smartJ$CryptoHash.hmac('sha224', key, str);
+	const hashB64 = smartJ$CryptoHash.hmac('sha224', key, str, true);
+	console.log('SHA224-Hmac', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`', 'Key: `' + key + '`');
+};
+
+const sha1Test = (str) => {
+	const hashHex = smartJ$CryptoHash.sha1(str);
+	const hashB64 = smartJ$CryptoHash.sha1(str, true);
+	console.log('SHA1', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`');
+};
+const sha1HmacTest = (str, key) => {
+	const hashHex = smartJ$CryptoHash.hmac('sha1', key, str);
+	const hashB64 = smartJ$CryptoHash.hmac('sha1', key, str, true);
+	console.log('SHA1-Hmac', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`', 'Key: `' + key + '`');
+};
+
+const md5Test = (str) => {
+	const hashHex = smartJ$CryptoHash.md5(str);
+	const hashB64 = smartJ$CryptoHash.md5(str, true);
+	console.log('MD5', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`');
+};
+const md5HmacTest = (str, key) => {
+	const hashHex = smartJ$CryptoHash.hmac('md5', key, str);
+	const hashB64 = smartJ$CryptoHash.hmac('md5', key, str, true);
+	console.log('MD5-Hmac', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`', 'Key: `' + key + '`');
+};
+
+const crc32bTest = (str) => {
+	const sumHex = smartJ$CryptoHash.crc32b(str);
+	const sumB36 = smartJ$CryptoHash.crc32b(str, true);
+	console.log('CRC32B', '\n', 'HEX: ' + sumHex, '\n', 'B36: ' + sumB36, '\n', 'String: `' + str + '`');
+};
+
+const pbkdf2Test = (algo, str, key) => {
+	const hashHex = smartJ$CryptoHash.pbkdf2(algo, str, key, 8, 20);
+	const hashB64 = smartJ$CryptoHash.pbkdf2(algo, str, key, 8, 20, true);
+	console.log('PBKDF2-Hash (' + algo + ')', '\n', 'HEX: ' + hashHex, '\n', 'B64: ' + hashB64, '\n', 'String: `' + str + '`', 'Key: `' + key + '`');
+};
+</script>
+</head>
+<body>
+<h1>CriptoJS Test Page</h1>
+<ul>
+	<!-- SHA-3-512 / SHA-3-512-Hmac -->
+	<li>
+		<button type="button" onclick="sh3a512Test(emptyString); return false;">SHA3-512 (Empty)</button>
+		<button type="button" onclick="sh3a512Test(isoString); return false;">SHA3-512 (ISO)</button>
+		<button type="button" onclick="sh3a512Test(unicodeString); return false;">SHA3-512 (Unicode)</button>
+		<!-- Hmac -->|
+		<button type="button" onclick="sh3a512HmacTest(emptyString, hmacKey); return false;">SHA3-512-Hmac (Empty)</button>
+		<button type="button" onclick="sh3a512HmacTest(isoString, hmacKey); return false;">SHA3-512-Hmac (ISO)</button>
+		<button type="button" onclick="sh3a512HmacTest(unicodeString, hmacKey); return false;">SHA3-512-Hmac (Unicode)</button>
+	</li>
+	<!-- SHA-3-384 / SHA-3-384-Hmac -->
+	<li>
+		<button type="button" onclick="sh3a384Test(emptyString); return false;">SHA3-384 (Empty)</button>
+		<button type="button" onclick="sh3a384Test(isoString); return false;">SHA3-384 (ISO)</button>
+		<button type="button" onclick="sh3a384Test(unicodeString); return false;">SHA3-384 (Unicode)</button>
+		<!-- Hmac -->|
+		<button type="button" onclick="sh3a384HmacTest(emptyString, hmacKey); return false;">SHA3-384-Hmac (Empty)</button>
+		<button type="button" onclick="sh3a384HmacTest(isoString, hmacKey); return false;">SHA3-384-Hmac (ISO)</button>
+		<button type="button" onclick="sh3a384HmacTest(unicodeString, hmacKey); return false;">SHA3-384-Hmac (Unicode)</button>
+	</li>
+	<!-- SHA-3-256 / SHA-3-256-Hmac -->
+	<li>
+		<button type="button" onclick="sh3a256Test(emptyString); return false;">SHA3-256 (Empty)</button>
+		<button type="button" onclick="sh3a256Test(isoString); return false;">SHA3-256 (ISO)</button>
+		<button type="button" onclick="sh3a256Test(unicodeString); return false;">SHA3-256 (Unicode)</button>
+		<!-- Hmac -->|
+		<button type="button" onclick="sh3a256HmacTest(emptyString, hmacKey); return false;">SHA3-256-Hmac (Empty)</button>
+		<button type="button" onclick="sh3a256HmacTest(isoString, hmacKey); return false;">SHA3-256-Hmac (ISO)</button>
+		<button type="button" onclick="sh3a256HmacTest(unicodeString, hmacKey); return false;">SHA3-256-Hmac (Unicode)</button>
+	</li>
+	<!-- SHA-3-224 / SHA-3-224-Hmac -->
+	<li>
+		<button type="button" onclick="sh3a224Test(emptyString); return false;">SHA3-224 (Empty)</button>
+		<button type="button" onclick="sh3a224Test(isoString); return false;">SHA3-224 (ISO)</button>
+		<button type="button" onclick="sh3a224Test(unicodeString); return false;">SHA3-224 (Unicode)</button>
+		<!-- Hmac -->|
+		<button type="button" onclick="sh3a224HmacTest(emptyString, hmacKey); return false;">SHA3-224-Hmac (Empty)</button>
+		<button type="button" onclick="sh3a224HmacTest(isoString, hmacKey); return false;">SHA3-224-Hmac (ISO)</button>
+		<button type="button" onclick="sh3a224HmacTest(unicodeString, hmacKey); return false;">SHA3-224-Hmac (Unicode)</button>
+	</li>
+	<!-- SHA512 / SHA512-Hmac -->
+	<li>
+		<button type="button" onclick="sha512Test(emptyString); return false;">SHA512 (Empty)</button>
+		<button type="button" onclick="sha512Test(isoString); return false;">SHA512 (ISO)</button>
+		<button type="button" onclick="sha512Test(unicodeString); return false;">SHA512 (Unicode)</button>
+		<!-- Hmac -->|
+		<button type="button" onclick="sha512HmacTest(emptyString, hmacKey); return false;">SHA512-Hmac (Empty)</button>
+		<button type="button" onclick="sha512HmacTest(isoString, hmacKey); return false;">SHA512-Hmac (ISO)</button>
+		<button type="button" onclick="sha512HmacTest(unicodeString, hmacKey); return false;">SHA512-Hmac (Unicode)</button>
+	</li>
+	<!-- SHA384 / SHA384-Hmac -->
+	<li>
+		<button type="button" onclick="sha384Test(emptyString); return false;">SHA384 (Empty)</button>
+		<button type="button" onclick="sha384Test(isoString); return false;">SHA384 (ISO)</button>
+		<button type="button" onclick="sha384Test(unicodeString); return false;">SHA384 (Unicode)</button>
+		<!-- Hmac -->|
+		<button type="button" onclick="sha384HmacTest(emptyString, hmacKey); return false;">SHA384-Hmac (Empty)</button>
+		<button type="button" onclick="sha384HmacTest(isoString, hmacKey); return false;">SHA384-Hmac (ISO)</button>
+		<button type="button" onclick="sha384HmacTest(unicodeString, hmacKey); return false;">SHA384-Hmac (Unicode)</button>
+	</li>
+	<!-- SHA256 / SHA256-Hmac -->
+	<li>
+		<button type="button" onclick="sha256Test(emptyString); return false;">SHA256 (Empty)</button>
+		<button type="button" onclick="sha256Test(isoString); return false;">SHA256 (ISO)</button>
+		<button type="button" onclick="sha256Test(unicodeString); return false;">SHA256 (Unicode)</button>
+		<!-- Hmac -->|
+		<button type="button" onclick="sha256HmacTest(emptyString, hmacKey); return false;">SHA256-Hmac (Empty)</button>
+		<button type="button" onclick="sha256HmacTest(isoString, hmacKey); return false;">SHA256-Hmac (ISO)</button>
+		<button type="button" onclick="sha256HmacTest(unicodeString, hmacKey); return false;">SHA256-Hmac (Unicode)</button>
+	</li>
+	<!-- SHA224 / SHA224-Hmac -->
+	<li>
+		<button type="button" onclick="sha224Test(emptyString); return false;">SHA224 (Empty)</button>
+		<button type="button" onclick="sha224Test(isoString); return false;">SHA224 (ISO)</button>
+		<button type="button" onclick="sha224Test(unicodeString); return false;">SHA224 (Unicode)</button>
+		<!-- Hmac -->|
+		<button type="button" onclick="sha224HmacTest(emptyString, hmacKey); return false;">SHA224-Hmac (Empty)</button>
+		<button type="button" onclick="sha224HmacTest(isoString, hmacKey); return false;">SHA224-Hmac (ISO)</button>
+		<button type="button" onclick="sha224HmacTest(unicodeString, hmacKey); return false;">SHA224-Hmac (Unicode)</button>
+	</li>
+	<!-- SHA1 / SHA1-Hmac -->
+	<li>
+		<button type="button" onclick="sha1Test(emptyString); return false;">SHA1 (Empty)</button>
+		<button type="button" onclick="sha1Test(isoString); return false;">SHA1 (ISO)</button>
+		<button type="button" onclick="sha1Test(unicodeString); return false;">SHA1 (Unicode)</button>
+		<!-- Hmac -->|
+		<button type="button" onclick="sha1HmacTest(emptyString, hmacKey); return false;">SHA1-Hmac (Empty)</button>
+		<button type="button" onclick="sha1HmacTest(isoString, hmacKey); return false;">SHA1-Hmac (ISO)</button>
+		<button type="button" onclick="sha1HmacTest(unicodeString, hmacKey); return false;">SHA1-Hmac (Unicode)</button>
+	</li>
+	<!-- MD5 / MD5-Hmac -->
+	<li>
+		<button type="button" onclick="md5Test(emptyString); return false;">MD5 (Empty)</button>
+		<button type="button" onclick="md5Test(isoString); return false;">MD5 (ISO)</button>
+		<button type="button" onclick="md5Test(unicodeString); return false;">MD5 (Unicode)</button>
+		<!-- Hmac -->|
+		<button type="button" onclick="md5HmacTest(emptyString, hmacKey); return false;">MD5-Hmac (Empty)</button>
+		<button type="button" onclick="md5HmacTest(isoString, hmacKey); return false;">MD5-Hmac (ISO)</button>
+		<button type="button" onclick="md5HmacTest(unicodeString, hmacKey); return false;">MD5-Hmac (Unicode)</button>
+	</li>
+	<!-- CRC32B -->
+	<li>
+		<button type="button" onclick="crc32bTest(emptyString); return false;">CRC32B (Empty)</button>
+		<button type="button" onclick="crc32bTest(isoString); return false;">CRC32B (ISO)</button>
+		<button type="button" onclick="crc32bTest(unicodeString); return false;">CRC32B (Unicode)</button>
+	</li>
+	<!-- PBKDF2 -->
+	<hr>
+	<li>
+		<button type="button" onclick="pbkdf2Test('sha3-512', unicodeString, isoString); return false;">PBKDF2 / SHA3-512 (Unicode)</button>
+		<button type="button" onclick="pbkdf2Test('sha3-384', unicodeString, isoString); return false;">PBKDF2 / SHA3-384 (Unicode)</button>
+		<button type="button" onclick="pbkdf2Test('sha3-256', unicodeString, isoString); return false;">PBKDF2 / SHA3-256 (Unicode)</button>
+		<button type="button" onclick="pbkdf2Test('sha3-224', unicodeString, isoString); return false;">PBKDF2 / SHA3-224 (Unicode)</button>
+		<br>
+		<button type="button" onclick="pbkdf2Test('sha512', unicodeString, isoString); return false;">PBKDF2 / SHA512 (Unicode)</button>
+		<button type="button" onclick="pbkdf2Test('sha384', unicodeString, isoString); return false;">PBKDF2 / SHA384 (Unicode)</button>
+		<button type="button" onclick="pbkdf2Test('sha256', unicodeString, isoString); return false;">PBKDF2 / SHA256 (Unicode)</button>
+		<button type="button" onclick="pbkdf2Test('sha224', unicodeString, isoString); return false;">PBKDF2 / SHA224 (Unicode)</button>
+		<br>
+		<button type="button" onclick="pbkdf2Test('sha1', unicodeString, isoString); return false;">PBKDF2 / SHA1 (Unicode)</button>
+		<button type="button" onclick="pbkdf2Test('md5', unicodeString, isoString); return false;">PBKDF2 / MD5 (Unicode)</button>
+	</li>
+	<!-- # -->
+</ul>
+</body>
+</html>

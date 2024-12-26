@@ -1,0 +1,9 @@
+# Language File: EN / Mod-Samples / Test
+TRANSLATIONS:
+  @language: EN
+  @area: mod-samples
+  @version: 2020-01-21
+  samples:
+    hello-world: 'Hello World'
+    this-is: 'this is'
+#END

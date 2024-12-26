@@ -1,0 +1,39 @@
+<!-- v.20231119 -->
+[@@@SUB-TEMPLATE:acc-styles-form.mtpl.inc.htm@@@]
+<center><div><table><tr><td>
+<form id="add_form" name="add_form" class="ux-form ux-form-aligned" onSubmit="return false;">
+	<input type="text" name="username" style="background:#FFCC00; display:none;"><!-- fake field to avoid autocomplete -->
+	<input type="password" name="password" style="background:#FF3300; display:none;"><!-- fake field to avoid autocomplete -->
+	<legend><h1>Add New Account</h1></legend>
+	<br>
+	<div class="ux-control-group">
+		<label><i class="sfi sfi-user"></i>&nbsp;UserName&nbsp;/&nbsp;ID</label>
+		<input type="text" autocomplete="off" name="frm[id]" placeholder="user.name" class="ux-input-1-2" required>
+	</div>
+	<div class="ux-control-group">
+		<label>Email</label>
+		<input type="text" autocomplete="off" name="frm[email]" placeholder="email@dom.ext" class="ux-input-1-2">
+	</div>
+	<div class="ux-control-group">
+		<label>Password</label>
+		<input type="password" autocomplete="off" name="frm[pass]" placeholder="Password" class="ux-input-1-2" required>
+	</div>
+	<div class="ux-control-group">
+		<label>Retype Password</label>
+		<input type="password" autocomplete="off" name="frm[repass]" placeholder="Password Retype" class="ux-input-1-2" title="Retype the password" required>
+	</div>
+	<div class="ux-control-group" title="Given Name">
+		<label>First Name</label>
+		<input type="text" autocomplete="off" name="frm[name_f]" placeholder="Given Name" class="ux-input-1-2" required>
+	</div>
+	<div class="ux-control-group" title="Family Name">
+		<label>Last Name</label>
+		<input type="text" autocomplete="off" name="frm[name_l]" placeholder="Family Name" class="ux-input-1-2" required>
+	</div>
+	<legend>&nbsp;</legend>
+	<div class="ux-controls">
+		<button type="button" class="ux-button ux-button-alt ux-button-spacing" onClick="smartJ$Browser.CloseDelayedModalPopUp(); return false;"> Cancel &nbsp; <i style="color:#555555;" class="sfi sfi-spinner11"></i></button>
+		<button type="button" class="ux-button ux-button-info ux-button-spacing" onClick="smartJ$Browser.SubmitFormByAjax('add_form', '[###ACTIONS-URL|js|html###]', 'yes');"> Create &nbsp; <i class="sfi sfi-checkmark"></i></button>
+	</div>
+</form>
+</td></tr></table></div></center>

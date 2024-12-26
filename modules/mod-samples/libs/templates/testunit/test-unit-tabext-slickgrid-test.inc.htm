@@ -1,0 +1,177 @@
+<!-- Partial Template: TestUnit.SlickGrid -->
+<b>Big Data Grid holding <span style="color:#FF5500;">1 Million Rows</span> at once using Virtual &amp; Async Post Rendering</b> (based on SlickGrid, with some fixes and improvements)
+<br>
+<!-- req. just for column reordering -->
+<link rel="stylesheet" type="text/css" href="modules/mod-auth-admins/views/js/ui-interractions/jquery.ui-interractions.css">
+<script src="modules/mod-auth-admins/views/js/ui-interractions/jquery.ui-interractions.js"></script>
+<!-- req. by slickgrid render column -->
+<script src="modules/mod-auth-admins/views/js/jquery.sparkline.js"></script>
+<style>
+.myGrid_AlignCenter {
+	text-align: center;
+}
+.myGrid_AlignRight {
+	text-align: right;
+}
+.myGrid_TheTitle {
+	color: #44619D;
+}
+</style>
+<br>
+<div id="SampleSlickGrid" class="slickgrid-table" style="font-size:10px;width:100%;height:10px;"></div>
+<script>
+// Sample SlickGrid JS
+$(function() {
+
+	//-- ID formatter
+	function formatter_ID(row, cell, value, columnDef, dataContext) {
+		return (value + 1);
+	} //END FUNCTION
+	function postRenderer_formatter_ID(cellNode, row, dataContext, colDef) {
+		var value = dataContext["id"];
+		$(cellNode).empty().html('<a href="javascript:void(0)" onClick="alert(\'This is the row with ID=' + addCommas(value + 1) + '\')">' + addCommas(value + 1) + '</a>');
+	} //END FUNCTION
+
+	function formatter_EffortDriven(row, cell, value, columnDef, dataContext) {
+		return '';
+	} //END FUNCTION
+	function postRenderer_formatter_EffortDriven(cellNode, row, dataContext, colDef) {
+		var value = dataContext["effortDriven"];
+		if(value == true) {
+			$(cellNode).empty().html('<img src="modules/mod-auth-admins/views/js/slickgrid/demo/assets/tick.png">');
+		} else {
+			$(cellNode).empty();
+		} //end if else
+	} //END FUNCTION
+
+	//-- Spark Graph
+	function formatter_ChartRendering(row, cell, value, columnDef, dataContext) {
+		return '';
+	} //END FUNCTION
+	function postRenderer_ChartSparkline(cellNode, row, dataContext, colDef) {
+		var vals = dataContext["chart"].split(',');
+		if(row == 1) {
+			$(cellNode).empty().sparkline(vals, {width: '100%', height: '100%', type: 'bar'});
+		} else if(row == 2) {
+			$(cellNode).empty().sparkline(vals, {width: '100%', height: '100%', type: 'tristate'});
+		} else if(row == 3) {
+			$(cellNode).empty().sparkline(vals, {width: '100%', height: '100%', type: 'bullet'});
+		} else if(row == 4) {
+			$(cellNode).empty().sparkline(vals, {width: '100%', height: '100%', type: 'pie'});
+		} else {
+			$(cellNode).empty().sparkline(vals, {width: '100%', height: '100%', type: 'line'});
+		} //end if else
+	} //END FUNCTION
+	//-- #END Spark Graph
+
+	var grid;
+
+	var columns = [
+		{id:"id", name:"ID", field:"id", sortable:true, width:70, formatter:formatter_ID, rerenderOnResize:true, asyncPostRender:postRenderer_formatter_ID},
+		{id:"title", name:"Title", field:"title", sortable:true, width:125, cssClass:'myGrid_TheTitle'},
+		{id:"duration", name:"Duration", field:"duration", sortable:false, width:90, cssClass:'myGrid_AlignRight'},
+		{id:"percent", name:"% Complete", field:"percentComplete", sortable:true, width:100, cssClass:'myGrid_AlignRight'},
+		{id:"start", name:"Start", field:"start", sortable:true, width:100, cssClass:'myGrid_AlignCenter'},
+		{id:"finish", name:"Finish", field:"finish", sortable:true, width:100, cssClass:'myGrid_AlignCenter'},
+		{id:"effort-driven", name:"Effort Driven", field:"effortDriven", sortable:true, width:100, cssClass:'myGrid_AlignCenter', formatter:formatter_EffortDriven, rerenderOnResize:true, asyncPostRender:postRenderer_formatter_EffortDriven},
+		{id:"chart", name:"Chart", sortable:false, width:100, formatter:formatter_ChartRendering, rerenderOnResize:true, asyncPostRender:postRenderer_ChartSparkline}
+	];
+
+	var options = {
+		enableAddRow: false,
+		enableCellNavigation: true,
+		enableColumnReorder: true,
+		enableAsyncPostRender: true // req. by spark graph
+	};
+
+	function getRandomArbitrary(min, max) {
+		return Math.random() * (max - min) + min;
+	} //END FUNCTION
+
+	function addCommas(nStr) {
+		nStr += '';
+		var x = nStr.split('.');
+		var x1 = x[0];
+		var x2 = x.length > 1 ? '.' + x[1] : '';
+		var rgx = /(\d+)(\d{3})/;
+		while (rgx.test(x1)) {
+			x1 = x1.replace(rgx, '$1' + ',' + '$2');
+		} //end while
+		return x1 + x2;
+	} //END FUNCTION
+
+	var data = [];
+	var sparkdata = '';
+	for(var i = 0; i < 1000000; i++) {
+		var ii = i % 5;
+		if(ii == 0) { // every 5 rows we generate some more random data
+			sparkdata = '' + Math.random() + ',' + Math.random() + ',' + Math.random() + ',' + Math.random() + ',' + Math.random() + '';
+		} else if(ii == 1) {
+			sparkdata = '1,5,2,7,9';
+		} //end if
+		data[i] = {
+			id: i,
+			title: "Task " + (i + 1),
+			duration: "5 days",
+			percentComplete: Math.round(Math.random() * 100),
+			start: "2014-01-01",
+			finish: "2015-12-31",
+			effortDriven: (i%3 == 0),
+			chart: sparkdata
+	   };
+	} //end for
+
+	grid = new Slick.Grid($("#SampleSlickGrid"), data, columns, options);
+	grid.autosizeColumns();
+
+	function dynamicSort(property) {
+		return function (a,b) {
+			return (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+		} //END FUNCTION
+	} //END FUNCTION
+
+	var sortedCol = null;
+	grid.onSort = function(sortCol, sortAsc) {
+		//--
+		sortdir = sortAsc ? 1 : -1;
+		sortcol = sortCol.field;
+		//-- sort
+		if(sortedCol != sortcol) {
+			if((sortcol == 'id') || (sortcol == 'percent')) {
+				data.sort(smartJ$Utils.numericSort(sortcol));
+			} else {
+				data.sort(smartJ$Utils.textSort(sortcol)); // no need to sort using locales
+			} //end if else
+		} else {
+			if(sortAsc == 1) {
+				data.reverse();
+			} //end if else
+		} //end if else
+		if(sortAsc != 1) {
+			data.reverse();
+		} //end if else
+		sortedCol = sortcol;
+		//--
+		grid.removeAllRows();
+		grid.render();
+		//--
+	};
+
+	// Grid sizing
+	var winW = $(window).width();
+	var winH = $(window).height();
+	$('#SampleSlickGrid').css({ 'width': parseInt(winW - 75), 'height': parseInt(winH - 175) });
+	grid.resizeCanvas();
+	grid.autosizeColumns();
+	$(window).resize(function() {
+		winW = $(window).width();
+		winH = $(window).height();
+		$('#SampleSlickGrid').css({ 'width': parseInt(winW - 75), 'height': parseInt(winH - 175) });
+		grid.resizeCanvas();
+		grid.autosizeColumns();
+	});
+
+});
+//#END
+</script>
+<!-- #END :: Partial Template: TestUnit.SlickGrid -->

@@ -1,0 +1,147 @@
+<!-- Pagebuilder / Manage @ List # Filter :: v.20220929 -->
+<style>
+div#pgbld-btn-alt-list img {
+	margin-top: -4px;
+	cursor: pointer;
+	opacity: 0.4;
+}
+div#pgbld-btn-alt-list:hover img {
+	opacity: 0.7;
+}
+div.pgbld-main-btn {
+	margin-top: -8px;
+	cursor: pointer;
+	color: #CCCCCC;
+}
+div.pgbld-main-btn:hover i.sfi {
+	color: #778888;
+}
+</style>
+<div style="height:5px;"></div>
+<form id="filtering" name="filtering" class="ux-form" action="[###LIST-FORM-URL|html###]" method="[###LIST-FORM-METHOD|html###]">
+	[%%%LOOP:LIST-FORM-VARS%%%]<input type="hidden" name="[###LIST-FORM-VARS.NAME|html###]" value="[###LIST-FORM-VARS.VALUE|html###]">[%%%/LOOP:LIST-FORM-VARS%%%]
+	<table style="width:99%;"><tr style="valign:top;">
+	<td style="width:64px;">
+		<div id="pgbld-btn-alt-list" onclick="self.location='admin.php';"><img src="[###PATH-MODULE|html###]libs/views/manager/img/logo.svg" width="42" height="42"></div>
+	</td>
+	<td style="width:1px;">
+		<select name="srcby" id="filter-srcby" class="ux-input-def ux-input-1-4">
+			<option value="" title="[###HINT-0|html###]">* [###TXT-SEARCH-BY|html###] *:</option>
+			[%%%IF:SHOW-FILTER-CTRL:==yes;%%%]
+			<option value="ctrl" title="">[ [###TXT-COL-CTRL|html###] ]</option>
+			[%%%/IF:SHOW-FILTER-CTRL%%%]
+			<option value="id" title="[###HINT-5|html###]">[###TXT-COL-ID|html###]</option>
+			<option value="id-ref" title="[###HINT-1|html###]">[###TXT-COL-REFID|html###]</option>
+			<option value="name" title="">[###TXT-COL-NAME|html###]</option>
+			[%%%IF:ALLOW-PAGES:==yes;%%%]
+			<option value="template" title="">[###TXT-COL-TEMPLATE|html###]</option>
+			[%%%/IF:ALLOW-PAGES%%%]
+			<option value="area" title="">[###TXT-COL-AREA|html###]</option>
+			<option value="code" title="[###HINT-4|html###]">[###TXT-COL-CODE|html###]</option>
+			<option value="data" title="[###HINT-1|html###]">[###TXT-COL-RUNTIME|html###]</option>
+			<option value="tags" title="[###HINT-6|html###]">[###TXT-COL-TAGS|html###]</option>
+			[%%%IF:SHOW-TRANSLATIONS:==yes;%%%]
+			<option value="translations" title="[###HINT-2|html###]">[###TXT-COL-TRANSL|html###]</option>
+			[%%%/IF:SHOW-TRANSLATIONS%%%]
+		</select>
+	</td>
+	<td style="width:1px;">
+		<span style="display:inline-block;"><input type="text" id="filter-src" name="src" placeholder="[###TXT-SEARCH-BY|html###] ..." value="" class="ux-input-def ux-input-1-4" title="[###HINT-3|html###]" autocomplete="off"></span>
+	</td>
+	<td style="width:1px;">&nbsp;</td>
+	<td style="width:1px;"><button type="button" class="ux-button ux-button-details" onClick="try { pageBuilderFormBtnFilter(); } catch(err) { console.log(err); } return false;">[###TXT-FILTER|html###] &nbsp; <i class="sfi sfi-search"></i></button></td>
+	<td style="width:1px;"><button type="button" class="ux-button ux-button-secondary" onClick="try { pageBuilderFormBtnResetFilter(); } catch(err) { console.log(err); } return false;">[###TXT-RESET|html###] &nbsp; <i class="sfi sfi-history"></i></button></td>
+	<td style="width:1px;">
+	[%%%IF:LIST-NEW-URL:!=;%%%]
+	<a class="ux-button ux-button-primary" href="[###LIST-NEW-URL|html###]" data-smart="open.modal">[###TXT-ADD-NEW|html###] &nbsp; <i class="sfi sfi-plus"></i></a>
+	[%%%ELSE:LIST-NEW-URL%%%]
+	&nbsp;
+	[%%%/IF:LIST-NEW-URL%%%]
+	</td>
+	<td style="width:32px;">
+		&nbsp;
+	</td>
+	<td style="width:32px;">
+		<div id="pgbld-btn-mode-list" class="pgbld-main-btn" title="[###TXT-ALT-LINK|html###]" onclick="let ckVal = ''; [%%%IF:LIST-ALT-COOKIE:!=;%%%]try{ ckVal = smartJ$Browser.getCookie('[###LIST-ALT-COOKIE|js|html###]'); if(!ckVal){ ckVal = ''; } if(ckVal){ ckVal = ((ckVal.indexOf('?') == 0) || (ckVal.indexOf('&') == 0)) ? ckVal : '&' + ckVal; } } catch(err){} [%%%/IF:LIST-ALT-COOKIE%%%]self.location='[###LIST-ALT-LINK|js|html###]'+String(ckVal);"><i class="sfi sfi-tree sfi-2x"></i></div>
+	</td>
+	<td style="width:16px;">
+		&nbsp;
+	</td>
+	<td style="width:32px;">
+		<div id="pgbld-btn-files-list" class="pgbld-main-btn" title="[###TXT-WEBDAV-LINK|html###]" onclick="smartJ$Browser.PopUpLink('[###LIST-WEBDAV-LINK|js|html###]', 'pagebuilder_webdav');"><i class="sfi sfi-folder-open sfi-2x"></i></div>
+	</td>
+	[%%%IF:SHOW-TRANSLATIONS:==yes;%%%]
+	<td style="width:16px;">
+		&nbsp;
+	</td>
+	<td style="width:32px;">
+		<div id="pgbld-btn-transl-exp-list" class="pgbld-main-btn" title="[###TXT-EXPT-LINK|html###]" onclick="smartJ$Browser.PopUpLink('[###LIST-EXPT-LINK|js|html###]', 'pagebuilder_transl');"><i class="sfi sfi-download2 sfi-2x"></i></div>
+	</td>
+	<td style="width:16px;">
+		&nbsp;
+	</td>
+	<td style="width:32px;">
+		<div id="pgbld-btn-transl-imp-list" class="pgbld-main-btn" title="[###TXT-IMPT-LINK|html###]" onclick="smartJ$Browser.PopUpLink('[###LIST-IMPT-LINK|js|html###]', 'pagebuilder_transl');"><i class="sfi sfi-upload2 sfi-2x"></i></div>
+	</td>
+	[%%%/IF:SHOW-TRANSLATIONS%%%]
+	<td style="width:16px;">
+		&nbsp;
+	</td>
+	<td style="width:32px;">
+		[%%%IF:IS-DEV-MODE:==yes;%%%]
+		<div id="pgbld-btn-reset-cnt" class="pgbld-main-btn" title="[###TXT-RESET-COUNTER|html###]" onclick="smartJ$Browser.ConfirmDialog('<i class=&quot;sfi sfi-meter2&quot;></i> &nbsp; Do you want to Reset the Hit Counter on All PageBuilder Objects ?', function(){ smartJ$Browser.SubmitFormByAjax(false, 'admin.php?page=page-builder.manage&op=reset-counter&back=[###LIST-CRR-LINK|url|js###]', 'yes'); }, 'Reset the PageBuilder Objects Hit Counter', 550, 155); return false;"><i class="sfi sfi-meter2 sfi-2x"></i></div>
+		[%%%ELSE:IS-DEV-MODE%%%]
+		&nbsp;
+		[%%%/IF:IS-DEV-MODE%%%]
+	</td>
+	<td style="width:30%; text-align:center;">
+		<span style="color:#3B4250; line-height:1.5rem; font-size:1.5rem; font-weight:bold;">[###LIST-TTL|html###]</span>
+	</td>
+	<td style="width:20%; text-align:right; padding-right:10px;">
+		<span style="color:#E0E0E0; line-height:1.25rem; font-size:1.25rem; font-weight:bold;">[###LIST-RECORDS|html###]&nbsp;[###TXT-RECORDS|html###]<br><span id="infoTotalRows">[###FMT-LIST|html###]</span></span>
+	</td>
+	<td style="width:32px; text-align:right;">
+		[%%%IF:DB-TYPE:==pgsql;%%%]
+		<img width="48" height="48" src="lib/core/img/db/postgresql-logo.svg" alt="Powered by PostgreSQL DataBase" title="Powered by PostgreSQL DataBase" style="opacity:0.5; cursor:help;">
+		[%%%ELSE:DB-TYPE%%%]
+		<img width="48" height="48" src="lib/core/img/db/sqlite-logo.svg" alt="Powered by SQLite DataBase" title="Powered by SQLite DataBase" style="opacity:0.5; cursor:help;">
+		[%%%/IF:DB-TYPE%%%]
+	</td>
+	</tr></table>
+	[%%%IF:SHOW-FILTER-CTRL:!=yes;%%%]
+	<h5 style="display:inline-block; color:#444444;">[&nbsp;Controller&nbsp;]:</h5>&nbsp;&nbsp;<select name="ctrl" id="filter-ctrl" class="ux-field" style="min-width: 275px; max-width: 750px;">
+		<option value="" title="No Controller Selected"></option>
+	[%%%LOOP:CTRLS%%%]
+		[%%%IF:CTRLS.CTRL:==;%%%]
+		<option value=" ">[###TXT-CTRL-NONE|html###] &nbsp;::&nbsp; ( [###CTRLS.OBJECTS|int###] )</option>
+		[%%%ELSE:CTRLS.CTRL%%%]
+		<option value="[###CTRLS.CTRL|html###]">[ [###CTRLS.CTRL|html###] ] &nbsp;::&nbsp; ( [###CTRLS.OBJECTS|int###] )</option>
+		[%%%/IF:CTRLS.CTRL%%%]
+	[%%%/LOOP:CTRLS%%%]
+	</select>
+	[%%%/IF:SHOW-FILTER-CTRL%%%]
+</form><!-- #END -->
+<script>
+jQuery(function() {
+	jQuery('#filter-src').bind('keydown', function(e) {
+		if(e.keyCode == 13) {
+			e.preventDefault();
+		}
+	});
+	var fixFilterTitle = function() {
+		var elem = jQuery('#filter-srcby').find('option:selected');
+		if(!elem) {
+			return;
+		}
+		var title = elem.attr('title');
+		if(!title) {
+			return;
+		}
+		jQuery('#filter-src').attr('title', String(title));
+	}
+	fixFilterTitle();
+	jQuery('#filter-srcby').change(function(){
+		fixFilterTitle();
+	});
+});
+</script>

@@ -1,0 +1,12 @@
+<!-- AuthAdmins Realms # v.20241105 -->
+<select title="Available Logon Namespaces for [###LOGIN-AREA|ucfirst|html###] Area" id="auth-admins-select-area" size="1" class="ux-field ux-field-xl" style="min-width:300px !important;">
+[%%%LOOP:LOGIN-NSPACES%%%]<option value="[###LOGIN-NSPACES._-VAL-_|html###]">[###LOGIN-NSPACES._-KEY-_|html|nbsp###]</option>[%%%|N%%%][%%%/LOOP:LOGIN-NSPACES%%%]
+</select>
+<button class="ux-button ux-button-super ux-button-details" onClick="(() => { const url = jQuery('#auth-admins-select-area').val(); if(url != undefined) { self.location = String(url); } })();"> <i class="sfi sfi-xl sfi-[%%%IF:AREA:==tsk;%%%]cogs[%%%ELSE:AREA%%%]user-check[%%%/IF:AREA%%%]"></i> &nbsp; Logon to selected NameSpace </button>
+<script>
+(() => {
+	jQuery('#info-area').empty().html('<table><tr><td title="Authentication Info"><img src="lib/framework/img/sign-important.svg" width="32" height="32" style="cursor:help;"></td><td>&nbsp;</td><td><span style="color:#7BC043; font-size: 1.5rem; font-weight:bold;" title="Auth ID: `[###AUTH-ID|html###]`">[###LOGIN-AREA|ucfirst|html|js###] Area :: Auth UserName: `[###AUTH-USERNAME|html###]`</span></td></tr></table>');
+	smartJ$Browser.GrowlNotificationAdd('You are Signed-In `[###LOGIN-AREA|ucfirst|html|nbsp|js###] Area`<br>Your UserName: `[###AUTH-USERNAME|html###]`', '<b><i>Select</i></b> a <b>Logon NameSpace</b> from the list with the available NameSpaces and <b><i>Click</i></b> the <b>Logon button</b> (nearest to the list) to proceed ...', 'lib/framework/img/sign-ok.svg', 0, true, 'dark', null, true);
+})();
+</script>
+<!-- # AuthAdmins Realms -->

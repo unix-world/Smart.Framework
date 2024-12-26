@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<!-- AppCodeUnpack # Smart.Framework Code Release Manager # v.20220928 -->
+<!-- (c) 2013-2022 unix-world.org - all rights reserved -->
+<html>
+<head>
+<meta charset="[###CHARSET|html###]">
+<meta http-equiv="Content-Type" content="text/html; charset=[###CHARSET|html###]">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="AppCodeUnpack (standalone), Smart.Framework">
+<link rel="icon" href="data:,">
+<title>[###TITLE|html###]</title>
+<!-- Font Styles -->
+<style type="text/css">* { font-family: 'IBM Plex Sans', 'Noto Sans', arial, sans-serif; }</style>
+<!-- Toolkit Styles -->
+[###CSS-TOOLKIT-STYLES###]
+<!-- Base Styles -->
+[###CSS-BASE-STYLES###]
+<!-- Notif. Styles -->
+[###CSS-NOTIF-STYLES###]
+<!-- Local Styles -->
+[###CSS-LOCAL-STYLES###]
+<!-- JS jQuery -->
+[###JS-JQUERY###]
+<script>jQuery.ajaxSetup({ timeout: 0, cache: false });</script>
+<!-- JS Smart Utils, Date, Crypto -->
+[###JS-SMART-UTILS###]
+[###JS-SMART-DATE###]
+[###JS-SMART-CRYPTO###]
+<!-- CSS and JS Gritter -->
+[###CSS-GRITTER###]
+[###JS-GRITTER###]
+<!-- CSS and JS Alertable -->
+[###CSS-ALERTABLE###]
+[###JS-ALERTABLE###]
+<!-- AppCodeUnpack CSS and JS -->
+[###CSS-APPCODEUNPACK###]
+[###JS-APPCODEUNPACK###]
+<!-- Local JS Functions -->
+<script>
+const disableHomeLinks = () => {
+	$('#appcodepack-img').off('click').removeClass('pointerCursor');
+	$('#appcodepack-txt').off('click').removeClass('pointerCursor');
+	$('#netarchive-logo').off('click').removeClass('pointerCursor');
+	$('#php-logo').off('click').removeClass('pointerCursor');
+};
+const enableHomeLinks = () => {
+	$('#appcodepack-img').on('click', () => {
+		$.alertable.confirm('<div class="operation_important"><center>Logout ?</center></div>', { html:true, width:300, height:130 }).then(() => {
+			self.location = '[###SCRIPT|js###]?logout=yes';
+		});
+	}).addClass('pointerCursor');
+	$('#appcodepack-txt').on('click', () => { self.location = '[###SCRIPT|js###]'; }).addClass('pointerCursor');
+	$('#netarchive-logo').on('click', () => { self.location = AppJs.url_add_suffix('[###SCRIPT|js###]', 'action=deploys-list'); }).addClass('pointerCursor');
+	$('#php-logo').on('click', () => { self.location = AppJs.url_add_suffix('[###SCRIPT|js###]', 'action=logs-list'); }).addClass('pointerCursor');
+};
+const hideLoader = () => {
+	$('#Loader-Img').hide();
+}
+const showLoader = () => {
+	$('#Loader-Img').show();
+}
+const hideForm = (the_form_id) => {
+	the_form_id = AppJs.stringPureVal(the_form_id, true);
+	if(the_form_id == '') {
+		console.error('hideForm', 'The FormID empty');
+		return;
+	}
+	disableHomeLinks();
+	showLoader();
+	const $form = $('form#' + the_form_id);
+	if(typeof($form.get(0)) == 'undefined') {
+		return;
+	}
+	$form.find('button').each((idx, el) => {
+		$(el).prop('disabled', true);
+	});
+	$form.hide();
+};
+const showForm = (the_form_id) => {
+	the_form_id = AppJs.stringPureVal(the_form_id, true);
+	if(the_form_id == '') {
+		console.error('showForm', 'The FormID empty');
+		return;
+	}
+	setTimeout(() => {
+		hideLoader();
+		enableHomeLinks();
+		const $form = $('form#' + the_form_id);
+		if(typeof($form.get(0)) == 'undefined') {
+			return;
+		}
+		$form.show();
+		$form.find('button').each((idx, el) => {
+			$(el).prop('disabled', false);
+		});
+	}, 2000);
+};
+const filterList = (isFiltering) => {
+	isFiltering = !! isFiltering;
+	let expr = '';
+	const $fld = $('input#filter-list');
+	if(isFiltering === true) {
+		expr = AppJs.stringPureVal($fld.val(), true);
+	}
+	let rowsShown = 0;
+	$('div.filter-search-container').each((idx, el) => {
+		const $el = $(el);
+		const txt = $el.find('span.filter-search-value').text();
+		if(expr != '') {
+			if(txt.indexOf(expr) === -1) {
+				$el.hide();
+			} else {
+				$el.show();
+				rowsShown++;
+			}
+		} else {
+			$el.show();
+		}
+	});
+	$filterInfo = $('#filter-info');
+	if(expr) {
+		if(rowsShown > 0) {
+			$filterInfo.empty().text('Displaying FILTERED Results: Found: #' + rowsShown + ' result(s)');
+		} else {
+			$filterInfo.empty().text('Displaying FILTERED Results: NO Results Found');
+		}
+	} else {
+		$filterInfo.empty().text('Displaying ALL Results');
+	}
+};
+</script>
+<!-- #.# -->
+</head>
+<body>
+<div id="app-container"><!-- app container: start# -->
+<table style="width:100%;">
+	<tr>
+		<td width="64">
+			<img id="appcodepack-img" width="48" height="48" alt="logo" title="[ CLICK HERE TO LOGOUT ][%%%|N%%%][%%%|N%%%][%%%|T%%%]#[%%%|SPACE%%%][###NAME|html###][%%%|N%%%][%%%|T%%%]#[%%%|SPACE%%%][###VERSION|html###]" src="data:image/svg+xml,[###APPCODEUNPACK-SVG|url|html###]">
+		</td>
+		<td>
+			<h1 id="appcodepack-txt" class="headingText">
+				<span class="colorSmart">Smart</span><span class="colorDoubleColon">::</span><span class="colorNamePrefix">[###NAME-PREFIX|html###]</span><span class="colorDot">.</span><span class="colorNameSuffix">[###NAME-SUFFIX|html###]</span>
+			</h1>
+		</td>
+		<td> &nbsp; &nbsp; &nbsp; </td>
+		<td align="right">
+			<img width="48" height="48" alt="NetArchive-Logo" title="Deployments List" src="data:image/svg+xml,[###NETARCH-SVG|url|html###]" class="helpCursor" id="netarchive-logo">
+			&nbsp;
+			<img width="48" height="48" alt="PHP-Logo" title="PHP [[###PHP-VER|html###]] App Error Logs" src="data:image/svg+xml,[###PHP-SVG|url|html###]" class="helpCursor" id="php-logo">
+			&nbsp;
+			<img width="48" height="48" alt="Apache-Logo" title="Apache HTTP/S Server [[###APACHE-VER|html###]] :: deploy system path: [%%%|N%%%]`[###REALPATH-CRR|html###]`" src="data:image/svg+xml,[###APACHE-SVG|url|html###]" class="helpCursor">
+			&nbsp;
+		</td>
+		<td align="right">
+			&nbsp;
+			<img width="48" height="48" alt="Smart.Framework-Logo" title="Standalone App powered by Smart.Framework # [###SF-VER|html###]" src="data:image/svg+xml,[###SF-SVG|url|html###]" class="helpCursor">
+			&nbsp;
+		</td>
+	</tr>
+</table>
+<hr>
+<div class="boxTable blueTable">
+	<table width="width:100%;">
+		<tr valign="top">
+			<td>Auth Allowed IPs: `[###AUTH-IP-LIST|html###]`</td>
+		</tr>
+		<tr valign="top">
+			<td>Auth UserName: `[###AUTH-USER-ID|html###]` ; Auth Enforce HTTPS: `[###AUTH-ENF-HTTPS|html###]`</td>
+		</tr>
+		<tr valign="top">
+			<td>List of Managed AppIDs: `[###APP-IDS-LST|html###]`</td>
+		</tr>
+	</table>
+</div>
+<div class="sTaskTitle">
+<center>
+	<h2 id="title">[###OP-TITLE|html###]</h2>
+</center>
+</div>
+<hr>
+[###MAIN###]
+<br>
+<hr>
+<div align="right"><small class="colorCopyright">(c) 2013-[###YEAR|html###] unix-world.org</small></div>
+</div><!-- #end: app container -->
+<img id="Loader-Img" width="64" height="64" alt="Loading..." title="Loading..." src="data:image/svg+xml,[###LOADING-SVG|url|html###]" style="display:none; position:fixed; top:5px; left:48vw;">
+<script>
+enableHomeLinks();
+hideLoader();
+[%%%IF:SHOW-LOADER:==yes;%%%]
+$(() => {
+	setTimeout(() => { showLoader(); }, 250);
+});
+[%%%/IF:SHOW-LOADER%%%]
+</script>
+</body>
+</html>
+<!-- script: [###SCRIPT|html###] -->

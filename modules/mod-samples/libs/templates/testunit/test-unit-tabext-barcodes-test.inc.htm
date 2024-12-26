@@ -1,0 +1,52 @@
+<!-- Partial Template: TestUnit.BarCodes -->
+<style>
+div.barcode1d,
+div.barcode2d {
+	margin-top: 5px;
+}
+</style>
+<!-- barcodes 1d -->
+<h1 class="inline">Barcodes 1D</h1>
+<table cellspacing="0" cellpadding="25" style="background:#FFFFFF;">
+	<tr valign="top">
+		<td><b>EAN / UPC (PNG)</b><div class="barcode1d" id="test_barcodes_1d_eanupc"></div></td>
+		<td><b>Code 128B (SVG)</b><div class="barcode1d" id="test_barcodes_1d_128"></div></td>
+		<td><b>Code 93 (SVG)</b><div class="barcode1d" id="test_barcodes_1d_93"></div></td>
+		<td><b>Code 39 (SVG)</b><div class="barcode1d" id="test_barcodes_1d_39"></div></td>
+		<td><b>RMS4 CBC (SVG)</b><div class="barcode1d" id="test_barcodes_1d_rms"></div></td>
+		<td><b>RMS4 KIX (PNG)</b><div class="barcode1d" id="test_barcodes_1d_kix"></div></td>
+	</tr>
+</table>
+<script>
+jQuery(function() {
+	smartJ$Browser.LoadElementContentByAjax('test_barcodes_1d_eanupc', 'lib/framework/img/loading-bubbles.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-eanupc', 'GET', 'html');
+	smartJ$Browser.LoadElementContentByAjax('test_barcodes_1d_128', 'lib/framework/img/loading-bubbles.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-code128', 'GET', 'html');
+	smartJ$Browser.LoadElementContentByAjax('test_barcodes_1d_93', 'lib/framework/img/loading-bubbles.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-code93', 'GET', 'html');
+	smartJ$Browser.LoadElementContentByAjax('test_barcodes_1d_39', 'lib/framework/img/loading-bubbles.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-code39', 'GET', 'html');
+	smartJ$Browser.LoadElementContentByAjax('test_barcodes_1d_rms', 'lib/framework/img/loading-bubbles.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-rm4cbc', 'GET', 'html');
+	smartJ$Browser.LoadElementContentByAjax('test_barcodes_1d_kix', 'lib/framework/img/loading-bubbles.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-rm4kix', 'GET', 'html');
+});
+</script>
+<!-- barcodes 2d -->
+<hr>
+<h1 class="inline">Barcodes 2D</h1>
+<table cellspacing="0" cellpadding="25" style="background:#FFFFFF;">
+	<tr valign="top">
+		<td><b>Mini QRCode (SVG)</b><div class="barcode2d" id="test_barcodes_2d_mqr"></div></td>
+		<td><b>QRCode (SVG)</b><div class="barcode2d" id="test_barcodes_2d_qr"></div></td>
+		<td><b>Aztec (SVG)</b><div class="barcode2d" id="test_barcodes_2d_aztec"></div></td>
+		<td><b>Semacode DataMatrix (SVG)</b><div class="barcode2d" id="test_barcodes_2d_sema"></div></td>
+		<td><b>PDF 417 (PNG)</b><div class="barcode2d" id="test_barcodes_2d_p417"></div></td>
+	</tr>
+</table>
+<script>
+$(() => {
+	smartJ$Browser.LoadElementContentByAjax('test_barcodes_2d_mqr', 'lib/framework/img/loading-spin.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-mqrcode', 'GET', 'html');
+	smartJ$Browser.LoadElementContentByAjax('test_barcodes_2d_qr', 'lib/framework/img/loading-spin.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-qrcode', 'GET', 'html');
+	smartJ$Browser.LoadElementContentByAjax('test_barcodes_2d_aztec', 'lib/framework/img/loading-spin.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-aztec', 'GET', 'html');
+	smartJ$Browser.LoadElementContentByAjax('test_barcodes_2d_sema', 'lib/framework/img/loading-spokes.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-semcode', 'GET', 'html');
+	smartJ$Browser.LoadElementContentByAjax('test_barcodes_2d_p417', 'lib/framework/img/loading-cylon.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-pdf417', 'GET', 'html');
+});
+</script>
+<!-- end :: barcodes -->
+<!-- #END :: Partial Template: TestUnit.BarCodes -->

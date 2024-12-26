@@ -1,0 +1,187 @@
+<!-- #START :: SMART.FRAMEWORK / DEBUG FOOTER :: v.20231010 -->
+<script>
+	smart_debug_bar_panel_visible = '';
+</script>
+<div id="SmartFramework___Debug_InfoBar" align="left" class="smartframework_debugbar_bar">
+	<!-- Toggle and Refresh Buttons -->
+	<div id="SmartFramework___Debug_BtnClose" title="Toggle :: Debug Bar" class="smartframework_debugbar_switcher" style="left: 0;" onClick="SmartDebugToggleDebugBar();">
+		<svg class="oct-icon" version="1.1" viewBox="0 0 16 16">
+			<g id="Oct-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+				<g id="eye" fill="#403F6F">
+					<path d="M8.06,2 C3,2 0,8 0,8 C0,8 3,14 8.06,14 C13,14 16,8 16,8 C16,8 13,2 8.06,2 L8.06,2 Z M8,12 C5.8,12 4,10.22 4,8 C4,5.8 5.8,4 8,4 C10.22,4 12,5.8 12,8 C12,10.22 10.22,12 8,12 L8,12 Z M10,8 C10,9.11 9.11,10 8,10 C6.89,10 6,9.11 6,8 C6,6.89 6.89,6 8,6 C9.11,6 10,6.89 10,8 L10,8 Z" id="Shape"></path>
+				</g>
+			</g>
+		</svg>
+	</div>
+	<div id="SmartFramework___Debug_BtnRefresh" title="Refresh :: Debug Bar (Loaded @ [###DEBUG-TIME|html###])" class="smartframework_debugbar_refresher" style="left: 50px;" onClick="document.getElementById('SmartFramework__Debug__Profiler').innerHTML = ''; setTimeout(function(){ SmartDebugProfilerRefreshPanel(); }, 250);">
+		<svg class="oct-icon" version="1.1" viewBox="0 0 12 16">
+			<g id="Oct-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+				<g id="sync" fill="#D09D5D">
+					<path d="M10.24,7.4 C10.43,8.68 10.04,10.02 9.04,11 C7.57,12.45 5.3,12.63 3.63,11.54 L4.8,10.4 L0.5,9.8 L1.1,14 L2.41,12.74 C4.77,14.48 8.11,14.31 10.25,12.2 C11.49,10.97 12.06,9.35 11.99,7.74 L10.24,7.4 L10.24,7.4 Z M2.96,5 C4.43,3.55 6.7,3.37 8.37,4.46 L7.2,5.6 L11.5,6.2 L10.9,2 L9.59,3.26 C7.23,1.52 3.89,1.69 1.74,3.8 C0.5,5.03 -0.06,6.65 0.01,8.26 L1.76,8.61 C1.57,7.33 1.96,5.98 2.96,5 L2.96,5 Z" id="Shape"></path>
+				</g>
+			</g>
+		</svg>
+	</div>
+	<!-- Active Buttons -->
+	<div id="SmartFramework___Debug_AreaRuntime" title="Debug :: Client / Server RUNTIME" class="smartframework_debugbar_element" style="left: 100px;" onClick="SmartDebugProfilerDisableActivePanel(this); SmartDebugProfilerEnablePanel(this);">
+		<svg class="oct-icon" version="1.1" viewBox="0 0 14 16">
+			<g id="Oct-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+				<g id="gear" fill="#302E32">
+					<path d="M14,8.77 L14,7.17 L12.06,6.53 L11.61,5.44 L12.49,3.6 L11.36,2.47 L9.55,3.38 L8.46,2.93 L7.77,1.01 L6.17,1.01 L5.54,2.95 L4.43,3.4 L2.59,2.52 L1.46,3.65 L2.37,5.46 L1.92,6.55 L0,7.23 L0,8.82 L1.94,9.46 L2.39,10.55 L1.51,12.39 L2.64,13.52 L4.45,12.61 L5.54,13.06 L6.23,14.98 L7.82,14.98 L8.45,13.04 L9.56,12.59 L11.4,13.47 L12.53,12.34 L11.61,10.53 L12.08,9.44 L14,8.75 L14,8.77 Z M7,11 C5.34,11 4,9.66 4,8 C4,6.34 5.34,5 7,5 C8.66,5 10,6.34 10,8 C10,9.66 8.66,11 7,11 L7,11 Z" id="Shape"></path>
+				</g>
+			</g>
+		</svg>
+	</div>
+	<div id="SmartFramework___Debug_AreaConfigs" title="Debug :: Configuration Variables and Constants" class="smartframework_debugbar_element" style="left: 150px;" onClick="SmartDebugProfilerDisableActivePanel(this); SmartDebugProfilerEnablePanel(this);">
+		<svg class="oct-icon" version="1.1" viewBox="0 0 16 16">
+			<g id="Oct-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+				<g id="tools" fill="#302E32">
+					<path d="M4.48,7.27 C4.74,7.53 5.76,8.6 5.76,8.6 L6.32,8.02 L5.44,7.11 L7.13,5.31 C7.13,5.31 6.37,4.57 6.7,4.86 C7.02,3.67 6.73,2.35 5.83,1.42 C4.93,0.5 3.66,0.2 2.52,0.51 L4.45,2.51 L3.94,4.47 L2.05,4.99 L0.12,2.99 C-0.19,4.17 0.1,5.48 1,6.4 C1.94,7.38 3.29,7.66 4.48,7.27 L4.48,7.27 Z M10.92,9.21 L8.59,11.51 L12.43,15.49 C12.74,15.82 13.16,15.98 13.57,15.98 C13.98,15.98 14.39,15.82 14.71,15.49 C15.34,14.84 15.34,13.79 14.71,13.14 L10.92,9.21 L10.92,9.21 Z M16,2.53 L13.55,0 L6.33,7.46 L7.21,8.37 L2.9,12.83 L1.91,13.36 L0.52,15.63 L0.87,16 L3.07,14.56 L3.58,13.54 L7.9,9.08 L8.78,9.99 L16,2.53 L16,2.53 Z" id="Shape"></path>
+				</g>
+			</g>
+		</svg>
+	</div>
+	<div id="SmartFramework___Debug_AreaAjx" title="Debug :: Ajax Sub-Requests" class="smartframework_debugbar_element" style="left: 200px;" onClick="SmartDebugProfilerDisableActivePanel(this); SmartDebugProfilerEnablePanel(this);">
+		<svg class="oct-icon" version="1.1" viewBox="0 0 14 16">
+			<g id="Oct-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+				<g id="globe" fill="#302E32">
+					<path d="M7,1 C3.14,1 0,4.14 0,8 C0,11.86 3.14,15 7,15 C7.48,15 7.94,14.95 8.38,14.86 C8.21,14.78 8.18,14.13 8.36,13.77 C8.55,13.36 9.17,12.32 8.56,11.97 C7.95,11.62 8.12,11.47 7.75,11.06 C7.38,10.65 7.53,10.59 7.5,10.48 C7.42,10.14 7.86,9.59 7.89,9.54 C7.91,9.48 7.91,9.27 7.89,9.21 C7.89,9.13 7.62,8.99 7.55,8.98 C7.49,8.98 7.44,9.09 7.35,9.11 C7.26,9.13 6.85,8.86 6.76,8.78 C6.67,8.7 6.62,8.55 6.49,8.44 C6.36,8.31 6.35,8.41 6.16,8.33 C5.97,8.25 5.36,8.02 4.88,7.85 C4.4,7.66 4.36,7.38 4.36,7.19 C4.34,6.99 4.06,6.72 3.94,6.52 C3.8,6.32 3.78,6.05 3.74,6.11 C3.7,6.17 3.99,6.89 3.94,6.92 C3.89,6.94 3.78,6.72 3.64,6.54 C3.5,6.35 3.78,6.45 3.34,5.59 C2.9,4.73 3.48,4.29 3.51,3.84 C3.54,3.39 3.89,4.01 3.7,3.71 C3.51,3.41 3.7,2.82 3.56,2.6 C3.43,2.38 2.68,2.85 2.68,2.85 C2.7,2.63 3.37,2.27 3.84,1.93 C4.31,1.59 4.62,1.87 5,1.98 C5.39,2.11 5.41,2.07 5.28,1.93 C5.15,1.8 5.34,1.76 5.64,1.8 C5.92,1.85 6.02,2.21 6.47,2.16 C6.94,2.13 6.52,2.25 6.58,2.38 C6.64,2.51 6.52,2.49 6.2,2.68 C5.9,2.88 6.22,2.9 6.75,3.29 C7.28,3.68 7.13,3.04 7.06,2.74 C6.99,2.44 7.45,2.68 7.45,2.68 C7.78,2.9 7.72,2.7 7.95,2.76 C8.18,2.82 8.86,3.4 8.86,3.4 C8.03,3.84 8.55,3.88 8.69,3.99 C8.83,4.1 8.41,4.29 8.41,4.29 C8.24,4.12 8.22,4.31 8.11,4.37 C8,4.43 8.09,4.59 8.09,4.59 C7.53,4.68 7.65,5.28 7.67,5.42 C7.67,5.56 7.29,5.78 7.2,6 C7.11,6.2 7.45,6.64 7.26,6.66 C7.07,6.69 6.92,6 5.95,6.25 C5.65,6.33 5.01,6.66 5.36,7.33 C5.72,8.02 6.28,7.14 6.47,7.24 C6.66,7.34 6.41,7.77 6.45,7.79 C6.49,7.81 6.98,7.81 7.01,8.4 C7.04,8.99 7.78,8.93 7.93,8.95 C8.1,8.95 8.63,8.51 8.7,8.5 C8.76,8.47 9.08,8.22 9.73,8.59 C10.39,8.95 10.71,8.9 10.93,9.06 C11.15,9.22 11.01,9.53 11.21,9.64 C11.41,9.75 12.27,9.61 12.49,9.95 C12.71,10.29 11.61,12.04 11.27,12.23 C10.93,12.42 10.79,12.87 10.43,13.15 C10.07,13.43 9.62,13.79 9.16,14.06 C8.75,14.29 8.69,14.72 8.5,14.86 C11.64,14.16 13.98,11.36 13.98,8.02 C13.98,4.16 10.84,1.02 6.98,1.02 L7,1 Z M8.64,7.56 C8.55,7.59 8.36,7.78 7.86,7.48 C7.38,7.18 7.05,7.25 7,7.2 C7,7.2 6.95,7.09 7.17,7.06 C7.61,7.01 8.15,7.47 8.28,7.47 C8.41,7.47 8.47,7.34 8.69,7.42 C8.91,7.5 8.74,7.55 8.64,7.56 L8.64,7.56 Z M6.34,1.7 C6.29,1.67 6.37,1.62 6.43,1.56 C6.46,1.53 6.45,1.45 6.48,1.42 C6.59,1.31 7.09,1.17 7,1.45 C6.89,1.72 6.42,1.75 6.34,1.7 L6.34,1.7 Z M7.57,2.59 C7.38,2.57 6.99,2.54 7.05,2.45 C7.35,2.17 6.96,2.07 6.71,2.07 C6.46,2.05 6.37,1.91 6.49,1.88 C6.61,1.85 7.1,1.9 7.19,1.96 C7.27,2.02 7.71,2.21 7.74,2.34 C7.76,2.47 7.74,2.59 7.57,2.59 L7.57,2.59 Z M9.04,2.54 C8.9,2.63 8.21,2.13 8.09,2.02 C7.53,1.54 7.2,1.71 7.09,1.61 C6.98,1.51 7.01,1.42 7.2,1.27 C7.39,1.12 7.89,1.33 8.2,1.36 C8.5,1.39 8.86,1.63 8.86,1.91 C8.88,2.16 9.19,2.41 9.05,2.54 L9.04,2.54 Z" id="Shape"></path>
+				</g>
+			</g>
+		</svg>
+	</div>
+	<div id="SmartFramework___Debug_AreaRes" title="Debug :: Script Execution / Resources" class="smartframework_debugbar_element" style="left: 250px;" onClick="SmartDebugProfilerDisableActivePanel(this); SmartDebugProfilerEnablePanel(this);">
+		<svg class="oct-icon" version="1.1" viewBox="0 0 16 16">
+			<g id="Oct-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+				<g id="graph" fill="#302E32">
+					<path d="M16,14 L16,15 L0,15 L0,0 L1,0 L1,14 L16,14 L16,14 Z M5,13 L3,13 L3,8 L5,8 L5,13 L5,13 Z M9,13 L7,13 L7,3 L9,3 L9,13 L9,13 Z M13,13 L11,13 L11,6 L13,6 L13,13 L13,13 Z" id="Shape"></path>
+				</g>
+			</g>
+		</svg>
+	</div>
+	<div id="SmartFramework___Debug_AreaHeads" title="Debug :: Request / Response Headers" class="smartframework_debugbar_element" style="left: 300px;" onClick="SmartDebugProfilerDisableActivePanel(this); SmartDebugProfilerEnablePanel(this);">
+		<svg class="oct-icon" version="1.1" viewBox="0 0 14 16">
+			<g id="Oct-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+				<g id="unfold" fill="#302E32">
+					<path d="M11.5,7.5 L14,10 C14,10.55 13.55,11 13,11 L9,11 L9,10 L12.5,10 L10.5,8 L3.5,8 L1.5,10 L5,10 L5,11 L1,11 C0.45,11 0,10.55 0,10 L2.5,7.5 L0,5 C0,4.45 0.45,4 1,4 L5,4 L5,5 L1.5,5 L3.5,7 L10.5,7 L12.5,5 L9,5 L9,4 L13,4 C13.55,4 14,4.45 14,5 L11.5,7.5 L11.5,7.5 Z M6,6 L8,6 L8,3 L10,3 L7,0 L4,3 L6,3 L6,6 L6,6 Z M8,9 L6,9 L6,12 L4,12 L7,15 L10,12 L8,12 L8,9 L8,9 Z" id="Shape"></path>
+				</g>
+			</g>
+		</svg>
+	</div>
+	<div id="SmartFramework___Debug_AreaEnv" title="Debug :: Request / Environment Variables" class="smartframework_debugbar_element" style="left: 350px;" onClick="SmartDebugProfilerDisableActivePanel(this); SmartDebugProfilerEnablePanel(this);">
+		<svg class="oct-icon" version="1.1" viewBox="0 0 16 16">
+			<g id="Oct-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+				<g id="settings" fill="#302E32">
+					<path d="M4,7 L3,7 L3,2 L4,2 L4,7 L4,7 Z M3,14 L4,14 L4,11 L3,11 L3,14 L3,14 Z M8,14 L9,14 L9,8 L8,8 L8,14 L8,14 Z M13,14 L14,14 L14,12 L13,12 L13,14 L13,14 Z M14,2 L13,2 L13,8 L14,8 L14,2 L14,2 Z M9,2 L8,2 L8,4 L9,4 L9,2 L9,2 Z M5,8 L2,8 C1.45,8 1,8.45 1,9 C1,9.55 1.45,10 2,10 L5,10 C5.55,10 6,9.55 6,9 C6,8.45 5.55,8 5,8 L5,8 Z M10,5 L7,5 C6.45,5 6,5.45 6,6 C6,6.55 6.45,7 7,7 L10,7 C10.55,7 11,6.55 11,6 C11,5.45 10.55,5 10,5 L10,5 Z M15,9 L12,9 C11.45,9 11,9.45 11,10 C11,10.55 11.45,11 12,11 L15,11 C15.55,11 16,10.55 16,10 C16,9.45 15.55,9 15,9 L15,9 Z" id="Shape"></path>
+				</g>
+			</g>
+		</svg>
+	</div>
+	<div id="SmartFramework___Debug_AreaSess" title="Debug :: Session Variables" class="smartframework_debugbar_element" style="left: 400px;" onClick="SmartDebugProfilerDisableActivePanel(this); SmartDebugProfilerEnablePanel(this);">
+		<svg class="oct-icon" version="1.1" viewBox="0 0 16 16">
+			<g id="Oct-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+				<g id="mirror" fill="#302E32">
+					<path d="M15.5,4.7 L8.5,0 L1.5,4.7 C1.2,4.89 1,5.15 1,5.5 L1,16 L8.5,12 L16,16 L16,5.5 C16,5.16 15.8,4.89 15.5,4.7 L15.5,4.7 Z M15,14.5 L9,11.25 L9,10 L8,10 L8,11.25 L2,14.5 L2,5.5 L8,1.5 L8,6 L9,6 L9,1.5 L15,5.5 L15,14.5 L15,14.5 Z M6,7 L11,7 L11,5 L14,8 L11,11 L11,9 L6,9 L6,11 L3,8 L6,5 L6,7 L6,7 Z" id="Shape"></path>
+				</g>
+			</g>
+		</svg>
+	</div>
+	<div id="SmartFramework___Debug_AreaAuth" title="Debug :: Authentication Metadata" class="smartframework_debugbar_element" style="left: 450px;" onClick="SmartDebugProfilerDisableActivePanel(this); SmartDebugProfilerEnablePanel(this);">
+		<svg class="oct-icon" version="1.1" viewBox="0 0 16 16">
+			<g id="Oct-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+				<g id="organization" fill="#302E32">
+					<path d="M16,12.999 C16,13.438 15.55,13.999 15,13.999 L7.995,13.999 C7.456,13.999 7.001,13.552 7,13 L1,13 C0.46,13 0,12.439 0,12 C0,9.366 3,8 3,8 C3,8 3.229,7.591 3,7 C2.159,6.379 1.942,6.41 2,4 C2.058,1.581 3.367,1 4.5,1 C5.633,1 6.942,1.58 7,4 C7.058,6.41 6.841,6.379 6,7 C5.771,7.59 6,8 6,8 C6,8 7.549,8.711 8.42,10.088 C9.196,9.369 10,8.999 10,8.999 C10,8.999 10.229,8.59 10,7.999 C9.159,7.379 8.942,7.409 9,4.999 C9.058,2.58 10.367,1.999 11.5,1.999 C12.633,1.999 13.937,2.58 13.995,4.999 C14.054,7.409 13.837,7.379 12.995,7.999 C12.766,8.589 12.995,8.999 12.995,8.999 C12.995,8.999 16,10.365 16,12.999" id="Shape"></path>
+				</g>
+			</g>
+		</svg>
+	</div>
+	<div id="SmartFramework___Debug_AreaExtra" title="Debug :: App Extra Log" class="smartframework_debugbar_element" style="left: 500px;" onClick="SmartDebugProfilerDisableActivePanel(this); SmartDebugProfilerEnablePanel(this);">
+		<svg class="oct-icon" version="1.1" viewBox="0 0 16 16">
+			<g id="Oct-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+				<g id="beaker" fill="#302E32">
+					<path d="M14.3797254,14.59 L10.9997254,7 L10.9997254,3 L11.9997254,3 L11.9997254,2 L2.99972539,2 L2.99972539,3 L3.99972539,3 L3.99972539,7 L0.62972539,14.59 C0.32972539,15.25 0.81972539,16 1.53972539,16 L13.4797254,16 C14.1997254,16 14.6797254,15.25 14.3897254,14.59 L14.3797254,14.59 Z M3.74972539,10 L4.99972539,7 L4.99972539,3 L9.99972539,3 L9.99972539,7 L11.2497254,10 L3.74972539,10 L3.74972539,10 Z M7.99972539,8 L8.99972539,8 L8.99972539,9 L7.99972539,9 L7.99972539,8 L7.99972539,8 Z M6.99972539,7 L5.99972539,7 L5.99972539,6 L6.99972539,6 L6.99972539,7 L6.99972539,7 Z M6.99972539,4 L7.99972539,4 L7.99972539,5 L6.99972539,5 L6.99972539,4 L6.99972539,4 Z M6.99972539,1 L5.99972539,1 L5.99972539,0 L6.99972539,0 L6.99972539,1 L6.99972539,1 Z" id="Shape"></path>
+				</g>
+			</g>
+		</svg>
+	</div>
+	<div id="SmartFramework___Debug_AreaDBs" title="Debug :: Database Log" class="smartframework_debugbar_element" style="left: 550px;" onClick="SmartDebugProfilerDisableActivePanel(this); SmartDebugProfilerEnablePanel(this);">
+		<svg class="oct-icon" version="1.1" viewBox="0 0 12 16">
+			<g id="Oct-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+				<g id="database" fill="#302E32">
+					<path d="M6,15 C2.69,15 0,14.1 0,13 L0,11 C0,10.83 0.09,10.66 0.21,10.5 C0.88,11.36 3.21,12 6,12 C8.79,12 11.12,11.36 11.79,10.5 C11.92,10.66 12,10.83 12,11 L12,13 C12,14.1 9.31,15 6,15 L6,15 Z M6,11 C2.69,11 0,10.1 0,9 L0,7 C0,6.89 0.04,6.79 0.09,6.69 L0.09,6.69 C0.12,6.63 0.16,6.56 0.21,6.5 C0.88,7.36 3.21,8 6,8 C8.79,8 11.12,7.36 11.79,6.5 C11.84,6.56 11.88,6.63 11.91,6.69 L11.91,6.69 C11.96,6.79 12,6.9 12,7 L12,9 C12,10.1 9.31,11 6,11 L6,11 Z M6,7 C2.69,7 0,6.1 0,5 L0,4 L0,3 C0,1.9 2.69,1 6,1 C9.31,1 12,1.9 12,3 L12,4 L12,5 C12,6.1 9.31,7 6,7 L6,7 Z M6,2 C3.79,2 2,2.45 2,3 C2,3.55 3.79,4 6,4 C8.21,4 10,3.55 10,3 C10,2.45 8.21,2 6,2 L6,2 Z" id="Shape"></path>
+				</g>
+			</g>
+		</svg>
+	</div>
+	<div id="SmartFramework___Debug_AreaMail" title="Debug :: Mailer Log" class="smartframework_debugbar_element" style="left: 600px;" onClick="SmartDebugProfilerDisableActivePanel(this); SmartDebugProfilerEnablePanel(this);">
+		<svg class="oct-icon" version="1.1" viewBox="0 0 14 16">
+			<g id="Oct-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+				<g id="mail-read" fill="#302E32">
+					<path d="M6,5 L4,5 L4,4 L6,4 L6,5 L6,5 Z M9,6 L4,6 L4,7 L9,7 L9,6 L9,6 Z M14,5.52 L14,14 C14,14.55 13.55,15 13,15 L1,15 C0.45,15 0,14.55 0,14 L0,5.52 C0,5.19 0.16,4.89 0.42,4.71 L2,3.58 L2,3 C2,2.45 2.45,2 3,2 L4.2,2 L7,0 L9.8,2 L11,2 C11.55,2 12,2.45 12,3 L12,3.58 L13.58,4.71 C13.85,4.9 14,5.19 14,5.52 L14,5.52 Z M3,7.5 L7,10 L11,7.5 L11,3 L3,3 L3,7.5 L3,7.5 Z M1,13.5 L5.5,10.5 L1,7.5 L1,13.5 L1,13.5 Z M12,14 L7,11 L2,14 L12,14 L12,14 Z M13,7.5 L8.5,10.5 L13,13.5 L13,7.5 L13,7.5 Z" id="Shape"></path>
+				</g>
+			</g>
+		</svg>
+	</div>
+	<div id="SmartFramework___Debug_AreaMods" title="Debug :: Modules Log" class="smartframework_debugbar_element" style="left: 650px;" onClick="SmartDebugProfilerDisableActivePanel(this); SmartDebugProfilerEnablePanel(this);">
+		<svg class="oct-icon" version="1.1" viewBox="0 0 14 16">
+			<g id="Oct-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+				<g id="git-compare" fill="#302E32">
+					<path d="M5,12 L4,12 C3.73,11.98 3.52,11.89 3.31,11.69 C3.1,11.49 3.01,11.27 3,11 L3,4.72 C3.59,4.38 4,3.74 4,3 C4,1.89 3.11,1 2,1 C0.89,1 0,1.89 0,3 C0,3.73 0.41,4.38 1,4.72 L1,11 C1.03,11.78 1.34,12.47 1.94,13.06 C2.54,13.65 3.22,13.97 4,14 L5,14 L5,16 L8,13 L5,10 L5,12 L5,12 Z M2,1.8 C2.66,1.8 3.2,2.35 3.2,3 C3.2,3.65 2.65,4.2 2,4.2 C1.35,4.2 0.8,3.65 0.8,3 C0.8,2.35 1.35,1.8 2,1.8 L2,1.8 Z M13,11.28 L13,5 C12.97,4.22 12.66,3.53 12.06,2.94 C11.46,2.35 10.78,2.03 10,2 L9,2 L9,0 L6,3 L9,6 L9,4 L10,4 C10.27,4.02 10.48,4.11 10.69,4.31 C10.9,4.51 10.99,4.73 11,5 L11,11.28 C10.41,11.62 10,12.26 10,13 C10,14.11 10.89,15 12,15 C13.11,15 14,14.11 14,13 C14,12.27 13.59,11.62 13,11.28 L13,11.28 Z M12,14.2 C11.34,14.2 10.8,13.65 10.8,13 C10.8,12.35 11.35,11.8 12,11.8 C12.65,11.8 13.2,12.35 13.2,13 C13.2,13.65 12.65,14.2 12,14.2 L12,14.2 Z" id="Shape"></path>
+				</g>
+			</g>
+		</svg>
+	</div>
+	<div id="SmartFramework___Debug_AreaOptim" title="Debug :: Optimization Hints" class="smartframework_debugbar_element" style="left: 700px;" onClick="SmartDebugProfilerDisableActivePanel(this); SmartDebugProfilerEnablePanel(this);">
+		<svg class="oct-icon" version="1.1" viewBox="0 0 12 16">
+			<g id="Oct-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+				<g id="flame" fill="#302E32">
+					<path d="M5.05,0.31 C5.86,2.48 5.46,3.69 4.53,4.62 C3.55,5.67 1.98,6.45 0.9,7.98 C-0.55,10.03 -0.8,14.51 4.43,15.68 C2.23,14.52 1.76,11.16 4.13,9.07 C3.52,11.1 4.66,12.4 6.07,11.93 C7.46,11.46 8.37,12.46 8.34,13.6 C8.32,14.38 8.03,15.04 7.21,15.41 C10.63,14.82 11.99,11.99 11.99,9.85 C11.99,7.01 9.46,6.63 10.74,4.24 C9.22,4.37 8.71,5.37 8.85,6.99 C8.94,8.07 7.83,8.79 6.99,8.32 C6.32,7.91 6.33,7.13 6.93,6.54 C8.18,5.31 8.68,2.45 5.05,0.32 L5.03,0.3 L5.05,0.31 Z" id="Shape"></path>
+				</g>
+			</g>
+		</svg>
+	</div>
+	<!-- Signature -->
+	<div class="smartframework_debugbar_txt" title="Smart.Framework :: Profiler (c) unix-world.org"> &nbsp; Smart.Framework :: Profiler</div>
+	<!-- Panels -->
+	<div id="SmartFramework___Debug_AreaRuntime_Panel" class="smartframework_debugbar_panel">[###DEBUG-RUNTIME###]</div>
+	<div id="SmartFramework___Debug_AreaConfigs_Panel" class="smartframework_debugbar_panel">[###DEBUG-CONFIGS###]</div>
+	<div id="SmartFramework___Debug_AreaAjx_Panel" class="smartframework_debugbar_panel">
+		<div class="smartframework_debugbar_status smartframework_debugbar_status_title"><font size="5"><b># DEBUG List :: AJAX SUB-REQUESTS #</b></font></div>
+		<div id="SmartFramework___Debug_AreaAjx_InfoArea"></div>
+		<div class="smartframework_debugbar_status smartframework_debugbar_status_title"><font size="3"><b># DEBUG # END #</b></font></div>
+	</div>
+	<div id="SmartFramework___Debug_AreaRes_Panel" class="smartframework_debugbar_panel">[###DEBUG-RESOURCES###]</div>
+	<div id="SmartFramework___Debug_AreaHeads_Panel" class="smartframework_debugbar_panel">[###DEBUG-HEADERS###]</div>
+	<div id="SmartFramework___Debug_AreaEnv_Panel" class="smartframework_debugbar_panel">[###DEBUG-ENVIRONMENT###]</div>
+	<div id="SmartFramework___Debug_AreaSess_Panel" class="smartframework_debugbar_panel">[###DEBUG-SESSION###]</div>
+	<div id="SmartFramework___Debug_AreaAuth_Panel" class="smartframework_debugbar_panel">[###DEBUG-AUTH###]</div>
+	<div id="SmartFramework___Debug_AreaExtra_Panel" class="smartframework_debugbar_panel">[###DEBUG-EXTRA###]</div>
+	<div id="SmartFramework___Debug_AreaDBs_Panel" class="smartframework_debugbar_panel">[###DEBUG-DATABASE###]</div>
+	<div id="SmartFramework___Debug_AreaMail_Panel" class="smartframework_debugbar_panel">[###DEBUG-MAIL###]</div>
+	<div id="SmartFramework___Debug_AreaMods_Panel" class="smartframework_debugbar_panel">[###DEBUG-MODULES###]</div>
+	<div id="SmartFramework___Debug_AreaOptim_Panel" class="smartframework_debugbar_panel">[###DEBUG-OPTIMIZATIONS###]</div>
+	<!-- #END -->
+</div>
+<script>
+	var SmartDebugAjaxDebugDiv = document.getElementById('SmartFramework___Debug_AreaAjx_InfoArea');
+	var SmartDebugAjaxDebugStatus = '';
+	if(SmartDebugAjaxCalls.length > 0) {
+		SmartDebugAjaxDebugDiv.innerHTML = '';
+		for(var i=0; i<SmartDebugAjaxCalls.length; i++) {
+			if(SmartDebugAjaxCalls[i].status == '200') {
+				SmartDebugAjaxDebugStatus = 'smartframework_debugbar_status_head';
+			} else {
+				SmartDebugAjaxDebugStatus = 'smartframework_debugbar_status_warn';
+			} //end if else
+			SmartDebugAjaxDebugDiv.innerHTML += '<div class="smartframework_debugbar_inforow">' + ' &nbsp;&nbsp; ' + '<span class="' + SmartDebugAjaxDebugStatus + '" style="padding: 3px; font-weight:bold;">' + SmartDebugHTMLSpecialChars(SmartDebugAjaxCalls[i].status) + '</span>' + ' ' + '<span class="smartframework_debugbar_status_title" style="padding: 3px;">' + SmartDebugHTMLSpecialChars(SmartDebugAjaxCalls[i].method) + '</span>' + ' ' + '<span class="smartframework_debugbar_status_highlight" style="padding: 3px; font-weight:bold;">' + SmartDebugHTMLSpecialChars(SmartDebugAjaxCalls[i].time) + '&nbsp;ms.' + '</span>' + ' &nbsp;&nbsp; ' + SmartDebugHTMLSpecialChars(SmartDebugAjaxCalls[i].url) + '</div>';
+		} //end for
+	} else {
+		SmartDebugAjaxDebugDiv.innerHTML = '<div class="smartframework_debugbar_status smartframework_debugbar_status_warn" style="width: 100px; text-align: center;"><font size="2"><b>N/A</b></font></div>';
+	} //end if else
+	try { // clear debug bar in iframes or in small windows
+		if(self.innerWidth < 650) {
+			document.getElementById('SmartFramework__Debug__Profiler').innerHTML = '';
+		} //end if
+	} catch(err){}
+</script>
+<!-- #END :: SMART.FRAMEWORK / DEBUG FOOTER -->

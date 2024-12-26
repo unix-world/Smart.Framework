@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<!-- r.20220918 -->
+<html>
+<head>
+[@@@SUB-TEMPLATE:!etc/templates/default/tpl-head.inc.htm!@@@]
+[@@@SUB-TEMPLATE:partial-custom-ui.inc.htm@@@]
+[%%%IF:SEMAPHORE:&*<load:js-uix>;%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-uix.inc.htm!@@@][%%%ELSE:SEMAPHORE%%%]<!-- UIx: skip -->[%%%/IF:SEMAPHORE%%%]
+</head>
+<body>
+[@@@SUB-TEMPLATE:partial-template-loader.inc.htm@@@]
+[###HEADER###]
+<div id="app-container" class="app-box">
+[###MAIN###][###ASIDE###]
+</div>
+[###FOOTER###]
+[@@@SUB-TEMPLATE:!etc/templates/default/tpl-foot.inc.htm!@@@]
+</body>
+</html>

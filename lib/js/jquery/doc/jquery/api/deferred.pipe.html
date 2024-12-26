@@ -1,0 +1,183 @@
+<script>{
+		"title":
+			"deferred.pipe()",
+		"excerpt":
+			" Utility method to filter and/or chain Deferreds.  ",
+		"termSlugs": {
+			"category": [
+				"deferred-object","version/1.6","version/1.7","version/1.8","deprecated/deprecated-1.8"
+			]
+		}
+	}</script><article id="deferred-pipe1" class="entry method"><h2 class="section-title">
+<span class="name">deferred.pipe(  [doneFilter ] [, failFilter ] )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Promise">Promise</a></span><span class="version-details">version deprecated: <a href="/category/version/1.8/">1.8</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong> Utility method to filter and/or chain Deferreds.  </p>
+<ul class="signatures">
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.6/">1.6</a></span><a id="deferred-pipe-doneFilter-failFilter" href="#deferred-pipe-doneFilter-failFilter"><span class="icon-link"></span>deferred.pipe(  [doneFilter ] [, failFilter ] )</a>
+</h4>
+<ul>
+<li>
+<div><strong>doneFilter</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>
+        An optional function that is called when the Deferred is resolved.
+      </div>
+</li>
+<li>
+<div><strong>failFilter</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>
+        An optional function that is called when the Deferred is rejected.
+      </div>
+</li>
+</ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.7/">1.7</a></span><a id="deferred-pipe-doneFilter-failFilter-progressFilter" href="#deferred-pipe-doneFilter-failFilter-progressFilter"><span class="icon-link"></span>deferred.pipe(  [doneFilter ] [, failFilter ] [, progressFilter ] )</a>
+</h4>
+<ul>
+<li>
+<div><strong>doneFilter</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>
+        An optional function that is called when the Deferred is resolved.
+      </div>
+</li>
+<li>
+<div><strong>failFilter</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>
+        An optional function that is called when the Deferred is rejected.
+      </div>
+</li>
+<li>
+<div><strong>progressFilter</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>
+        An optional function that is called when progress notifications are sent to the Deferred.
+      </div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="longdesc" id="entry-longdesc">
+    <p><strong>Deprecation Notice:</strong>As of jQuery 1.8, the deferred.pipe() method is deprecated. The <code>deferred.then()</code> method, which replaces it, should be used instead.</p>
+    <p>The <code>deferred.pipe()</code> method returns a new promise that filters the status and values of a deferred through a function.  The <code>doneFilter</code> and <code>failFilter</code> functions filter the original deferred&apos;s resolved / rejected status and values. <strong>As of jQuery 1.7</strong>, the method also accepts a <code>progressFilter</code> function to filter any calls to the original deferred&apos;s <code>notify</code> or <code>notifyWith</code> methods. These filter functions can return a new value to be passed along to the piped promise&apos;s <code>done()</code> or <code>fail()</code> callbacks, or they can return another observable object (Deferred, Promise, etc) which will pass its resolved / rejected status and values to the piped promise&apos;s callbacks. If the filter function used is <code>null</code>, or not specified, the piped promise will be resolved or rejected with the same values as the original.</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Examples:</h2></header><div class="entry-example" id="example-0">
+<p>Filter resolve value:</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> defer = $.Deferred(),</code></div></div><div class="container"><div class="line"><code>  filtered = defer.pipe(<span class="keyword">function</span>( value ) {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">return</span> value * <span class="number">2</span>;</code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>defer.resolve( <span class="number">5</span> );</code></div></div><div class="container"><div class="line"><code>filtered.done(<span class="keyword">function</span>( value ) {</code></div></div><div class="container"><div class="line"><code>  alert( <span class="string">&quot;Value is ( 2*5 = ) 10: &quot;</span> + value );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-1">
+<p>Filter reject value:</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> defer = $.Deferred(),</code></div></div><div class="container"><div class="line"><code>  filtered = defer.pipe( <span class="literal">null</span>, <span class="keyword">function</span>( value ) {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">return</span> value * <span class="number">3</span>;</code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>defer.reject( <span class="number">6</span> );</code></div></div><div class="container"><div class="line"><code>filtered.fail(<span class="keyword">function</span>( value ) {</code></div></div><div class="container"><div class="line"><code>  alert( <span class="string">&quot;Value is ( 3*6 = ) 18: &quot;</span> + value );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-2">
+<p>Chain tasks:</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> request = $.ajax( url, { dataType: <span class="string">&quot;json&quot;</span> } ),</code></div></div><div class="container"><div class="line"><code>  chained = request.pipe(<span class="keyword">function</span>( data ) {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">return</span> $.ajax( url2, { data: { user: data.userId } } );</code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>chained.done(<span class="keyword">function</span>( data ) {</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// data retrieved from url2 as provided by the first request</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

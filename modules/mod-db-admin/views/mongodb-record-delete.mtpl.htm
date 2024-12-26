@@ -1,0 +1,44 @@
+<!-- MongoDB Record View / Delete -->
+<link rel="stylesheet" href="lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css">
+<style>
+code#hljs-json-area {
+	height: calc(100% - 16px);
+}
+pre.pre-hljs-code {
+	width: calc(100% - 100px) !important;
+	height: calc(100vh - 295px);
+	min-height: 200px;
+	border:1px solid #ECECEC;
+	padding: 0;
+}
+</style>
+[@@@SUB-TEMPLATE:!lib/js/jshilitecode/templates/syntax-hilitecode-init.inc.htm!@@@]
+<script>
+const btnHandlerCancel = () => {
+	smartJ$Browser.CloseDelayedModalPopUp();
+	return false;
+};
+const btnHandlerSubmit = () => {
+	jQuery.alertable.confirm('<h5><span style="color:#ED2839;">DELETE this Record</span>&nbsp;?<br><br>This action will <i>permanent DELETE</i> the selected <i>Record</i> from the Collection.</h5>', { html:true }).then(() => {
+		smartJ$Browser.SubmitFormByAjax('record_form', '[###ACTIONS-URL|js###]', 'yes');
+	});
+	return false;
+}
+</script>
+<h3>Database:&nbsp;<span style="color:#4D5774; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|int###]">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection:&nbsp;<span style="color:#448FCE;">[###COLLECTION|html###]</span></h3>
+<h4><span style="color:#778899;">MongoDB :: </span>[###THE-TITLE|html|nl2br###]</h4>
+[%%%IF:RECORD-ID:!=;%%%]<h6>UUID: <span style="color:#5E6885;" title="Record UID">[###RECORD-ID|html###]</span></h6>[%%%/IF:RECORD-ID%%%]
+<form id="record_form" name="record_form" class="ux-form" onSubmit="return false;">
+<input type="hidden" name="frm[chk]" value="[###CHECKSUM-HASH|html###]">
+</form>
+<div id="hljs-json-div" style="width: 90vw !important; min-width:320px !important; overflow:auto; text-align:left;"><pre class="pre-hljs-code"><code id="hljs-json-area" data-syntax="json">[###DATA-JSON|html###]</code></pre></div>
+<script type="text/javascript">
+var SmartViewHelpersSyntaxHighlightAreas = '#hljs-json-div';
+</script>
+[@@@SUB-TEMPLATE:!lib/js/jshilitecode/templates/syntax-hilitecode-process.inc.htm!@@@]
+<br>
+<div class="ux-controls">
+	<button type="button" class="ux-button ux-button-spacing" onClick="btnHandlerCancel();"> Cancel &nbsp; <i style="color:#444444;" class="sfi sfi-spinner11"></i></button>
+	<button type="button" class="ux-button ux-button-special ux-button-spacing" onClick="btnHandlerSubmit();"> [###ACTION-TXT|html###] &nbsp; <i class="sfi sfi-bin2"></i></button>
+</div>
+<!-- # MongoDB Record View / Delete -->

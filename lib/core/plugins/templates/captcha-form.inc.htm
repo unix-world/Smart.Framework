@@ -1,0 +1,138 @@
+<!-- Partial Template: Plugins.CaptchaForm r.20231117 ; Form: [###CAPTCHA-FORM|html###] ; Seed: [###CAPTCHA-RAND|html###] -->
+[%%%IF:ALL-REQUIREMENTS:==yes;%%%]
+<!-- Sf.Icons --><link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/css/toolkit/sf-icons.css?[###RELEASE-HASH|url|html###]">
+<!-- jQuery --><script src="[###BASE-URL|html###]lib/js/jquery/jquery.js?[###RELEASE-HASH|url|html###]"></script><script>jQuery.ajaxSetup({ timeout: 0, cache: false });</script><script src="[###BASE-URL|html###]lib/js/jquery/jquery.smart.compat.js?[###RELEASE-HASH|url|html###]"></script>
+<!-- Notifications Growl (toastr) --><link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/js/jquery/growl/jquery.toastr.css?[###RELEASE-HASH|url|html###]"><script src="[###BASE-URL|html###]lib/js/jquery/growl/jquery.toastr.js?[###RELEASE-HASH|url|html###]"></script>
+<!-- Notifications Dialog --><link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/js/jquery/jquery.alertable.css?[###RELEASE-HASH|url|html###]"><script src="[###BASE-URL|html###]lib/js/jquery/jquery.alertable.js?[###RELEASE-HASH|url|html###]"></script>
+<!-- Js Framework -->
+<script>
+const smartJ$Options = {
+	BrowserUtils: {
+		LanguageId: '[###LANG|js###]',
+		Charset: '[###CHARSET|js###]',
+		CookieLifeTime: [###CLIENT-UID-COOKIE-LIFETIME|int###],
+		CookieDomain: '[###CLIENT-UID-COOKIE-DOMAIN|js###]',
+		CookieSameSitePolicy: '[###CLIENT-UID-COOKIE-SAMESITE|js###]',
+		Notifications: 'growl',
+		NotificationDialogType: 'alertable',
+		ModalBoxProtected: true,
+		NotifyLoadError: true,
+	},
+};
+Object.freeze(smartJ$Options); // sec.
+window.smartJ$Options = smartJ$Options; // g-exp.
+</script>
+<script src="[###BASE-URL|html###]lib/js/framework/smart-framework.pak.js?[###RELEASE-HASH|url|html###]"></script>
+<!-- # -->
+[%%%ELSE:ALL-REQUIREMENTS%%%]
+<!-- standalone deps: skip -->
+[%%%/IF:ALL-REQUIREMENTS%%%]
+<script>const smartCaptchaType = 'smart'; window.smartCaptchaType = smartCaptchaType;</script>
+<link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/core/plugins/templates/captcha.css?[###RELEASE-HASH|html###]">
+<link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/js/jscaptcha/jquery.iconsCaptcha.css?[###RELEASE-HASH|html###]">
+<script src="[###BASE-URL|html###]lib/js/jscaptcha/jquery.iconsCaptcha.js?[###RELEASE-HASH|html###]"></script>
+<link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/js/jscaptcha/jquery.motionCaptcha.css?[###RELEASE-HASH|html###]">
+<script src="[###BASE-URL|html###]lib/js/jscaptcha/jquery.motionCaptcha.js?[###RELEASE-HASH|html###]"></script>
+<script src="[###BASE-URL|html###]lib/core/plugins/templates/captcha-form-input.js?[###RELEASE-HASH|html###]"></script>
+<script src="[###BASE-URL|html###]lib/core/plugins/templates/captcha-form.js?[###RELEASE-HASH|html###]"></script>
+<script>
+jQuery(() => {
+
+	if(!window) {
+		return;
+	}
+
+	if(typeof(window.smartCaptchaInputHandler) != 'object') {
+		console.error('Window Captha Input Handler is Undefined !');
+		return;
+	}
+	if(typeof(window.smartCaptchaFormHandler) != 'object') {
+		console.error('Window Captha Form Handler is Undefined !');
+		return;
+	}
+
+	[###CAPTCHA-JS-EXPORTS###]
+	const mutation$Observer = (t, k) => c$d(k, u$.b64Dec(t));
+	const event$Observer = window.smartCaptchaInputHandler.eventObserver;
+	const pointer$Observer = window.smartCaptchaInputHandler.pointerObserver;
+	const get$DhKx = window.smartCaptchaInputHandler.getDhKx;
+	const dhkx$KE = window.smartCaptchaInputHandler.dhkxKE;
+
+	const Smart$Captcha$Options = {
+		uuid: '[###RELEASE-UUID|htmid|js###]',
+		dhkx: '[###RELEASE-DHKX|js###]',
+		tHelper: '[###CAPTCHA-TXT-ENTER|js###]',
+		tQHelper: '[###CAPTCHA-QR-HELPER|js###]',
+		tQCode: '[###CAPTCHA-TXT-QRCODE|js###]',
+		ldrEImg: 'lib/framework/img/sign-error.svg',
+		iIcns: '[###CAPTCHA-TXT-ICONS|js###]',
+		iIcnsDone: '[###CAPTCHA-TXT-ICONS-DONE|js###]',
+		iIcnsLst: 'lib/css/toolkit/sf-icons.txt',
+		tMotion: '[###CAPTCHA-TXT-MOTION|js###]',
+		tMotionErr: '[###CAPTCHA-TXT-MOTION-ERR|js###]',
+		tMotionWarn: '[###CAPTCHA-TXT-MOTION-WARN|js###]',
+		tMotionDone: '[###CAPTCHA-TXT-MOTION-DONE|js###]',
+		motionSvg: 'lib/js/jscaptcha/jquery.motionCaptcha.svg',
+		tImg: '[###CAPTCHA-TXT-IMG|js###]',
+		tPassed: '[###CAPTCHA-PASSED|js###]',
+		imgTick: 'lib/framework/img/sign-done.svg',
+		imgDone: 'lib/framework/img/sign-ok.svg',
+		bclass: '[###CAPTCHA-UA-BC|js###]',
+		bwid: '[###CAPTCHA-UA-BW|js###]',
+		bmobile: '[###CAPTCHA-UA-MOBILE|js###]',
+		ldrImg: 'lib/framework/img/loading-spin.svg',
+		exports: '[###CAPTCHA-JS-EXPORTS|js###]',
+		imUrl: '[###CAPTCHA-IM-URL|js###]',
+		iqURL: '[###CAPTCHA-IQ-URL|js###]',
+		baseURL: '[###BASE-URL|js###]',
+		msgSec: 'Invalid Object Definition',
+	};
+	Object.freeze(Smart$Captcha$Options);
+
+	window.smartCaptchaFormHandler.handleForm(
+		'[###CAPTCHA-FORM|js###]',
+		Smart$Captcha$Options,
+		u$,
+		d$,
+		z$,
+		h$,
+		c$e,
+		c$d,
+		b$,
+		s$,
+		dhkx$KE,
+		get$DhKx,
+		data$Handler,
+		mutation$Observer,
+		event$Observer,
+		pointer$Observer,
+		'[###CAPTCHA-CHKSUM|js###]'
+	);
+
+});
+</script>
+<div id="Smart-Captcha-Area-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Area" title="Smart.Captcha">
+	<div id="Smart-Captcha-Container-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Container">
+		<div id="Smart-Captcha-Plugin-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Plugin">
+			<div id="Smart-Captcha-Check-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Check">
+				<div id="Smart-Captcha-Check-Info-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Check-Info">[###CAPTCHA-TXT-EASY|html###]<div class="Smart-Captcha-Check-Info-Symbols" title="Smart.Captcha: [###CAPTCHA-TXT-TICK|html###]"><i class="sfi sfi-infinite"></i>&nbsp;&nbsp;<i id="Smart-Captcha-Check-Helper" class="sfi sfi-clock2" style="cursor:help;"></i></div></div>
+				<div id="Smart-Captcha-Check-Timer-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Check-Timer"></div>
+				<canvas id="Smart-Captcha-Check-Canvas-[###RELEASE-UUID|htmid|html###]" width="160" height="40" class="Smart-Captcha-Check-Canvas" style="cursor:default!important;"></canvas>
+			</div>
+			<div id="Smart-Captcha-Icons-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Icons" style="display:none;">
+				<br><center><div id="Smart-Captcha-Icons-Container-[###RELEASE-UUID|htmid|html###]" class="iCaptcha-container"></div></center><br>
+			</div>
+			<div id="Smart-Captcha-Motion-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Motion" style="display:none;">
+				<canvas id="Smart-Captcha-Motion-Canvas-[###RELEASE-UUID|htmid|html###]" class="mc-canvas"></canvas>
+			</div>
+		</div>
+		<div id="Smart-Captcha-Input-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Input">
+			<span>[###CAPTCHA-TXT-CONFIRM|html###]</span><br>
+			[@@@SUB-TEMPLATE:!lib/core/plugins/templates/captcha-form-input.inc.htm!@@@]
+			<div id="Smart-Captcha-Info-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Info">[###CAPTCHA-TXT-TICK|html###]</div>
+			<div id="Smart-Captcha-Accessibility-Context-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Accessibility-Context" title="[###CAPTCHA-TXT-ACCESSIBILITY|html###]"><i class="sfi sfi-qrcode barcode"></i>&nbsp;<br><i class="sfi sfi-headphones"></i>&nbsp;<i class="sfi sfi-accessibility"></i></div>
+		</div>
+	</div>
+	<img src="[###BASE-URL|html###]lib/framework/img/sf-logo.svg" width="24" height="24" class="Smart-Captcha-Logo">
+</div>
+<!-- #END :: Partial Template: Plugins.CaptchaForm -->

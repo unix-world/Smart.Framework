@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Toastr demo</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<style type="text/css">* { font-family: 'IBM Plex Sans',arial,sans-serif; }</style>
+	<script src="../../jquery.js"></script>
+	<link href="../jquery.toastr.css" rel="stylesheet" type="text/css">
+	<script src="../jquery.toastr.js"></script>
+	<style>
+		.area {
+			padding: 10px;
+			line-height: 2;
+		}
+		.area button {
+			margin: 10px;
+		}
+		.options {
+			margin-top: 25px;
+		}
+		.options pre {
+			font-size: 0.75rem;
+		}
+		.row {
+			margin-left: 0;
+		}
+	</style>
+</head>
+
+<body class="container">
+<section class="row area">
+	<h1>Toastr Demo</h1>
+	<div class="well row">
+		<div class="row">
+			<div class="span4">
+				<div class="control-group">
+					<div class="controls" style="display:flex;">
+						<label class="control-label" for="title">Title</label>
+						<input id="title" type="text" class="input-large" placeholder="Enter a title ..." style="height:1rem; margin-left:7px; margin-right:15px;">
+						<label class="control-label" for="message">Message</label>
+						<textarea class="input-large" id="message" rows="3" placeholder="Enter a message ..." style="height:50px; margin-left:7px; margin-right:15px;"></textarea>
+					</div>
+				</div>
+				<div class="control-group">
+					<div class="controls">
+						<label class="checkbox" for="closeButton">
+							<input id="closeButton" type="checkbox" value="checked" class="input-mini">Close Button
+						</label>
+					</div>
+					<div class="controls">
+						<label class="checkbox" for="addBehaviorOnToastClick">
+							<input id="addBehaviorOnToastClick" type="checkbox" value="checked" class="input-mini">Add behavior on toast click
+						</label>
+					</div>
+					<div class="controls">
+						<label class="checkbox" for="debugInfo">
+							<input id="debugInfo" type="checkbox" value="checked" class="input-mini">Debug
+						</label>
+					</div>
+					<div class="controls">
+						<label class="checkbox" for="progressBar">
+							<input id="progressBar" type="checkbox" value="checked" class="input-mini">Progress Bar
+						</label>
+					</div>
+					<div class="controls">
+						<label class="checkbox" for="preventDuplicates">
+							<input id="preventDuplicates" type="checkbox" value="checked" class="input-mini">Prevent Duplicates
+						</label>
+					</div>
+					<div class="controls">
+						<label class="checkbox" for="addClear">
+							<input id="addClear" type="checkbox" value="checked" class="input-mini">Add button to force clearing a toast, ignoring focus
+						</label>
+					</div>
+					<div class="controls">
+						<label class="checkbox" for="newestOnTop">
+							<input id="newestOnTop" type="checkbox" value="checked" class="input-mini">Newest on top
+						</label>
+					</div>
+				</div>
+			</div>
+			<div class="span2">
+				<div class="control-group" id="toastTypeGroup">
+					<div class="controls">
+						<label>Toast Type</label>
+						<label class="radio">
+							<input type="radio" name="toasts" value="success" checked>Success
+						</label>
+						<label class="radio">
+							<input type="radio" name="toasts" value="info">Info
+						</label>
+						<label class="radio">
+							<input type="radio" name="toasts" value="warning">Warning
+						</label>
+						<label class="radio">
+							<input type="radio" name="toasts" value="error">Error
+						</label>
+						<label class="radio">
+							<input type="radio" name="toasts" value="notice">Notice
+						</label>
+						<label class="radio">
+							<input type="radio" name="toasts" value="darknote">Dark Note
+						</label>
+						<label class="radio">
+							<input type="radio" name="toasts" value="light">Light
+						</label>
+						<label class="radio">
+							<input type="radio" name="toasts" value="colored">Colored
+						</label>
+						<label class="radio">
+							<input type="radio" name="toasts" value="">Default
+						</label>
+					</div>
+				</div>
+				<div class="control-group" id="positionGroup">
+					<div class="controls">
+						<label>Position</label>
+						<label class="radio">
+							<input type="radio" name="positions" value="toast-top-right" checked>Top Right
+						</label>
+						<label class="radio">
+							<input type="radio" name="positions" value="toast-bottom-right">Bottom Right
+						</label>
+						<label class="radio">
+							<input type="radio" name="positions" value="toast-bottom-left">Bottom Left
+						</label>
+						<label class="radio">
+							<input type="radio" name="positions" value="toast-top-left">Top Left
+						</label>
+						<label class="radio">
+							<input type="radio" name="positions" value="toast-top-full-width">Top Full Width
+						</label>
+						<label class="radio">
+							<input type="radio" name="positions" value="toast-bottom-full-width">Bottom Full Width
+						</label>
+						<label class="radio">
+							<input type="radio" name="positions" value="toast-top-center">Top Center
+						</label>
+						<label class="radio">
+							<input type="radio" name="positions" value="toast-bottom-center">Bottom Center
+						</label>
+					</div>
+				</div>
+			</div>
+			<div class="span2">
+				<div class="control-group">
+					<div class="controls">
+						<label class="control-label" for="showEasing">Show Easing</label>
+						<input id="showEasing" type="text" placeholder="swing, linear" class="input-mini" value="swing">
+						<label class="control-label" for="hideEasing">Hide Easing</label>
+						<input id="hideEasing" type="text" placeholder="swing, linear" class="input-mini" value="linear">
+						<label class="control-label" for="showMethod">Show Method</label>
+						<input id="showMethod" type="text" placeholder="show, fadeIn, slideDown" class="input-mini" value="fadeIn">
+						<label class="control-label" for="hideMethod">Hide Method</label>
+						<input id="hideMethod" type="text" placeholder="hide, fadeOut, slideUp" class="input-mini" value="fadeOut">
+					</div>
+				</div>
+			</div>
+			<div class="span3">
+				<div class="control-group">
+					<div class="controls">
+						<label class="control-label" for="showDuration">Show Duration</label>
+						<input id="showDuration" type="text" placeholder="ms" class="input-mini" value="300">
+
+						<label class="control-label" for="hideDuration">Hide Duration</label>
+						<input id="hideDuration" type="text" placeholder="ms" class="input-mini" value="1000">
+
+						<label class="control-label" for="timeOut">Time out</label>
+						<input id="timeOut" type="text" placeholder="ms" class="input-mini" value="5000">
+
+						<label class="control-label" for="extendedTimeOut">Extended time out</label>
+						<input id="extendedTimeOut" type="text" placeholder="ms" class="input-mini" value="1000">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<button type="button" class="btn btn-primary" id="showtoast">Show Toast</button>
+			<button type="button" class="btn btn-danger" id="cleartoasts">Clear Toasts</button>
+			<button type="button" class="btn btn-danger" id="clearlasttoast">Clear Last Toast</button>
+		</div>
+		<div class="row options">
+			<pre id='toastrOptions'></pre>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">
+	$(function () { // v.3.1.7
+
+		if(typeof jQuery.toastr == 'undefined') {
+			alert('jQuery.toastr is N/A');
+			return;
+		} //end if
+		if(typeof toastr != 'undefined') {
+			alert('window toastr is detected ...');
+			return;
+		} //end if
+
+		var i = -1;
+		var toastCount = 0;
+		var $toastlast;
+
+		var getMessage = function () {
+			var msgs = [
+				'There are two ways of spreading light: to be the candle or the mirror that reflects it.',
+				'<div><input class="input-small" value="textbox">&nbsp;<a href="http://johnpapa.net" target="_blank">This is a hyperlink</a></div><div><button type="button" id="okBtn" class="btn btn-primary">Close me</button><button type="button" id="surpriseBtn" class="btn" style="margin: 0 8px 0 8px">Surprise me</button></div>',
+				'You do not find the happy life. You make it.',
+				'Stay close to anything that makes you glad you are alive.',
+				'Make each day your masterpiece.',
+				'Happiness often sneaks in through a door you didn`t know you left open.',
+			];
+			i++;
+			if (i === msgs.length) {
+				i = 0;
+			}
+
+			return msgs[i];
+		};
+
+		var getMessageWithClearButton = function (msg) {
+			msg = msg ? msg : 'Clear itself?';
+			msg += '<br><br><button type="button" class="btn clear">Yes</button>';
+			return msg;
+		};
+
+		$('#showtoast').click(function () {
+			var theCssClass = $("#toastTypeGroup input:radio:checked").val();
+			var msg = $('#message').val();
+			var title = $('#title').val() || '';
+			var $showDuration = $('#showDuration');
+			var $hideDuration = $('#hideDuration');
+			var $timeOut = $('#timeOut');
+			var $extendedTimeOut = $('#extendedTimeOut');
+			var $showEasing = $('#showEasing');
+			var $hideEasing = $('#hideEasing');
+			var $showMethod = $('#showMethod');
+			var $hideMethod = $('#hideMethod');
+			var toastIndex = toastCount++;
+			var addClear = $('#addClear').prop('checked');
+
+			theOptions = {
+				closeButton: $('#closeButton').prop('checked'),
+				debug: $('#debugInfo').prop('checked'),
+				newestOnTop: $('#newestOnTop').prop('checked'),
+				progressBar: $('#progressBar').prop('checked'),
+				positionClass: $('#positionGroup input:radio:checked').val() || 'toast-top-right',
+				preventDuplicates: $('#preventDuplicates').prop('checked'),
+				onclick: null,
+				onBeforeVisible: function() {
+					console.log('onBeforeVisible Toastr');
+				},
+				onVisible: function() {
+					console.log('onVisible Toastr');
+				},
+				onBeforeHidden: function() {
+					console.log('onBeforeHidden Toastr');
+				},
+				onHidden: function() {
+					console.log('onHidden Toastr');
+				},
+			};
+
+			if ($('#addBehaviorOnToastClick').prop('checked')) {
+				theOptions.onclick = function () {
+					alert('You can perform some custom action after a toast goes away');
+				};
+			}
+
+			if ($showDuration.val().length) {
+				theOptions.showDuration = $showDuration.val();
+			}
+
+			if ($hideDuration.val().length) {
+				theOptions.hideDuration = $hideDuration.val();
+			}
+
+			if ($timeOut.val().length) {
+				theOptions.timeOut = addClear ? 0 : $timeOut.val();
+			}
+
+			if ($extendedTimeOut.val().length) {
+				theOptions.extendedTimeOut = addClear ? 0 : $extendedTimeOut.val();
+			}
+
+			if ($showEasing.val().length) {
+				theOptions.showEasing = $showEasing.val();
+			}
+
+			if ($hideEasing.val().length) {
+				theOptions.hideEasing = $hideEasing.val();
+			}
+
+			if ($showMethod.val().length) {
+				theOptions.showMethod = $showMethod.val();
+			}
+
+			if ($hideMethod.val().length) {
+				theOptions.hideMethod = $hideMethod.val();
+			}
+
+			if (addClear) {
+				msg = getMessageWithClearButton(msg);
+				theOptions.tapToDismiss = false;
+			}
+			if (!msg) {
+				msg = getMessage();
+			}
+
+			$('#toastrOptions').text('Command: toastr["'
+				+ theCssClass
+				+ '"]("'
+				+ msg
+				+ (title ? '", "' + title : '')
+				+ '")\n\ntheOptions = '
+				+ JSON.stringify(theOptions, null, 2)
+			);
+
+			theCssClass = $.toastr.translateCssClasses(theCssClass);
+
+			theOptions.title = title;
+			theOptions.message = msg;
+			if(theCssClass) {
+				theOptions.appearanceClass = theCssClass;
+			}
+
+			var $toast = $.toastr.notify(theOptions); // Wire up an event handler to a button in the toast, if it exists
+			if(typeof $toast === 'undefined'){
+				alert('Could no create a toastr ...');
+				return;
+			}
+
+			$toastlast = $toast;
+
+			if ($toast.find('#okBtn').length) {
+				$toast.delegate('#okBtn', 'click', function () {
+					alert('you clicked me. i was toast #' + toastIndex + '. goodbye!');
+					$toast.remove();
+				});
+			}
+			if ($toast.find('#surpriseBtn').length) {
+				$toast.delegate('#surpriseBtn', 'click', function () {
+					alert('Surprise! you clicked me. i was toast #' + toastIndex + '. You could perform an action here.');
+				});
+			}
+			if ($toast.find('.clear').length) {
+				$toast.delegate('.clear', 'click', function () {
+					toastr.clear($toast, { force: true });
+				});
+			}
+		});
+
+		function getLastToast(){
+			return $toastlast;
+		}
+		$('#clearlasttoast').click(function () {
+			try {
+				let toast = getLastToast();
+				jQuery.toastr.clear(toast);
+			} catch(err) {
+				console.warn(err);
+			}
+		});
+		$('#cleartoasts').click(function () {
+			try {
+				jQuery.toastr.clear();
+			} catch(err) {
+				console.warn(err);
+			}
+		});
+
+	})
+</script>
+</body>
+</html>

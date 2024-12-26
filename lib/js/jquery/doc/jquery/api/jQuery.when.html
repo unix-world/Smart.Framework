@@ -1,0 +1,245 @@
+<script>{
+		"title":
+			"jQuery.when()",
+		"excerpt":
+			"Provides a way to execute callback functions based on zero or more Thenable objects, usually Deferred objects that represent asynchronous events.",
+		"termSlugs": {
+			"category": [
+				"core","deferred-object","version/1.5"
+			]
+		}
+	}</script><article id="jQuery-when1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.when( deferreds )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Promise">Promise</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Provides a way to execute callback functions based on zero or more Thenable objects, usually <a href="/category/deferred-object/">Deferred</a> objects that represent asynchronous events.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.5/">1.5</a></span><a id="jQuery-when-deferreds" href="#jQuery-when-deferreds"><span class="icon-link"></span>jQuery.when( deferreds )</a>
+</h4>
+<ul><li>
+<div><strong>deferreds</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Deferred">Deferred</a> or <a href="http://api.jquery.com/Types/#Promise">Promise</a> or <a href="http://api.jquery.com/Types/#Thenable">Thenable</a>
+</div>
+<div>Zero or more Thenable objects.</div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>If no arguments are passed to <code>jQuery.when()</code>, it will return a resolved Promise.</p>
+    <p>If a single Deferred is passed to <code>jQuery.when()</code>, its Promise object (a subset of the Deferred methods) is returned by the method. Additional methods of the Promise object can be called to attach callbacks, such as <a href="/deferred.then/"><code>deferred.then</code></a>. When the Deferred is resolved or rejected, usually by the code that created the Deferred originally, the appropriate callbacks will be called. For example, the jqXHR object returned by <code>jQuery.ajax()</code> is a Promise-compatible object and can be used this way:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.when( $.ajax( <span class="string">&quot;test.aspx&quot;</span> ) ).then(<span class="keyword">function</span>( data, textStatus, jqXHR ) {</code></div></div><div class="container"><div class="line"><code>  alert( jqXHR.status ); <span class="comment">// Alerts 200</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>If a single argument is passed to <code>jQuery.when()</code> and it is not a Deferred or a Promise, it will be treated as a resolved Deferred and any doneCallbacks attached will be executed immediately. The doneCallbacks are passed the original argument. In this case any failCallbacks you might set are never called since the Deferred is never rejected. For example:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.when( { testing: <span class="number">123</span> } ).done(<span class="keyword">function</span>( x ) {</code></div></div><div class="container"><div class="line"><code>  alert( x.testing ); <span class="comment">// Alerts &quot;123&quot;</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>If you don&apos;t pass it any arguments at all, <code>jQuery.when()</code> will return a resolved promise.</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.when().then(<span class="keyword">function</span>( x ) {</code></div></div><div class="container"><div class="line"><code>  alert( <span class="string">&quot;I fired immediately&quot;</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>In the case where multiple Deferred objects are passed to <code>jQuery.when()</code>, the method returns the Promise from a new &quot;master&quot; Deferred object that tracks the aggregate state of all the Deferreds it has been passed. The method will resolve its master Deferred as soon as all the Deferreds resolve, or reject the master Deferred as soon as one of the Deferreds is rejected. If the master Deferred is resolved, the doneCallbacks for the master Deferred are executed. The arguments passed to the doneCallbacks provide the resolved values for each of the Deferreds, and matches the order the Deferreds were passed to <code>jQuery.when()</code>. For example:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> d1 = $.Deferred();</code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> d2 = $.Deferred();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$.when( d1, d2 ).done(<span class="function"><span class="keyword">function</span> <span class="params">( v1, v2 )</span> {</span></code></div></div><div class="container"><div class="line"><code>    console.log( v1 ); <span class="comment">// &quot;Fish&quot;</span></code></div></div><div class="container"><div class="line"><code>    console.log( v2 ); <span class="comment">// &quot;Pizza&quot;</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>d1.resolve( <span class="string">&quot;Fish&quot;</span> );</code></div></div><div class="container"><div class="line"><code>d2.resolve( <span class="string">&quot;Pizza&quot;</span> );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>In the event a Deferred was resolved with no value, the corresponding doneCallback argument will be undefined. If a Deferred resolved to a single value, the corresponding argument will hold that value. In the case where a Deferred resolved to multiple values, the corresponding argument will be an array of those values. For example:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> d1 = $.Deferred();</code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> d2 = $.Deferred();</code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> d3 = $.Deferred();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$.when( d1, d2, d3 ).done(<span class="function"><span class="keyword">function</span> <span class="params">( v1, v2, v3 )</span> {</span></code></div></div><div class="container"><div class="line"><code>    console.log( v1 ); <span class="comment">// v1 is undefined</span></code></div></div><div class="container"><div class="line"><code>    console.log( v2 ); <span class="comment">// v2 is &quot;abc&quot;</span></code></div></div><div class="container"><div class="line"><code>    console.log( v3 ); <span class="comment">// v3 is an array [ 1, 2, 3, 4, 5 ]</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>d1.resolve();</code></div></div><div class="container"><div class="line"><code>d2.resolve( <span class="string">&quot;abc&quot;</span> );</code></div></div><div class="container"><div class="line"><code>d3.resolve( <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span> );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>In the multiple-Deferreds case where one of the Deferreds is rejected, <code>jQuery.when()</code> immediately fires the failCallbacks for its master Deferred. Note that some of the Deferreds may still be unresolved at that point. The arguments passed to the failCallbacks match the signature of the failCallback for the Deferred that was rejected. If you need to perform additional processing for this case, such as canceling any unfinished Ajax requests, you can keep references to the underlying jqXHR objects in a closure and inspect/cancel them in the failCallback.</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Examples:</h2></header><div class="entry-example" id="example-0">
+<p>Execute a function after two Ajax requests are successful. (See the jQuery.ajax() documentation for a complete description of success and error cases for an ajax request).</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.when( $.ajax( <span class="string">&quot;/page1.php&quot;</span> ), $.ajax( <span class="string">&quot;/page2.php&quot;</span> ) ).done(<span class="keyword">function</span>( a1, a2 ) {</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// a1 and a2 are arguments resolved for the page1 and page2 ajax requests, respectively.</span></code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Each argument is an array with the following structure: [ data, statusText, jqXHR ]</span></code></div></div><div class="container"><div class="line"><code>  <span class="keyword">var</span> data = a1[ <span class="number">0</span> ] + a2[ <span class="number">0</span> ]; <span class="comment">// a1[ 0 ] = &quot;Whip&quot;, a2[ 0 ] = &quot; It&quot;</span></code></div></div><div class="container"><div class="line"><code>  <span class="keyword">if</span> ( <span class="regexp">/Whip It/</span>.test( data&#xA0;) ) {</code></div></div><div class="container"><div class="line"><code>    alert( <span class="string">&quot;We got what we came for!&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-1">
+<p>Execute the function <code>myFunc</code> when both ajax requests are successful, or <code>myFailure</code> if either one has an error.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.when( $.ajax( <span class="string">&quot;/page1.php&quot;</span> ), $.ajax( <span class="string">&quot;/page2.php&quot;</span> ) )</code></div></div><div class="container"><div class="line"><code>  .then( myFunc, myFailure );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

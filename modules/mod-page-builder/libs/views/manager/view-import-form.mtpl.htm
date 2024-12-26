@@ -1,0 +1,25 @@
+<!-- Pagebuilder / Manage @ Import.Form / Records :: v.20220915 -->
+<script>
+function smartModJS_PgBldr_Validate_Form() {
+	var xl03xmlfile = jQuery('#sel-xl03xmlfile').val();
+	if(!xl03xmlfile) {
+		smartJ$Browser.AlertDialog('Please select an XL03 XML Spreadsheet for upload', null, 'Notification');
+		return false;
+	}
+	return true;
+}
+</script>
+<center><div>
+	<h1>Import <i>[###APP-NAME|html###]</i> Translations</h1>
+	<br>
+	<form id="import_form" name="import_form" method="post" action="[###URL-FORM-ACTION|html###]" enctype="multipart/form-data" class="ux-form" autocomplete="off">
+		<input type="hidden" name="tpl" value="[###TPL-VAR|html###]">
+		<input id="sel-xl03xmlfile" class="ux-button" type="file" name="import_file" accept=".xml" title="XL03 XML Spreadsheet (.xml): application/vnd.ms-excel@XML">
+		<br>
+		<span style="color:#CCCCCC;"><b>Upload an XL03 XML Spreadsheet</b></span>
+		<br>
+		<br>
+		<button type="submit" class="ux-button ux-button-special" onClick="return smartModJS_PgBldr_Validate_Form();"><i class="sfi sfi-upload2" style="margin-right:10px;"></i> Import Translations</button>
+	</form>
+</div></center>
+<!-- #END -->

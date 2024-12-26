@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="\SmartMailerImap4Client final class \ SmartMailerImap4Client { } -&gt; Class: SmartMailerImap4Client - provides an IMAP4 Mail Client with SSL/TLS support.">
+<meta name="keywords" content="smartmailerimap4client, final, class, provides, an, imap4, mail, client, with, ssl tls, support, language, php, located, at, lib framework plugins lib mail get php, package, plugins mailer, namespace, name, version, v, depends, classes, smart, smartunicode, hints, after, each, operation, on, the, server, should, check, imap4- error, string, and, if, non empty, stop, disconnect, to, free, socket, usage, dynamic, object, new, class   - method, this, only, methods, public, function, construct, buffer, constructor, is connected and logged in, get, connected, logged, in, status, get selected mailbox, selected, mailbox, will, be, available, just, connect, login, select, clear last error, clear, last, error, set ssl tls ca file, cafile, void, return, param, relative, path, a, ssl, certificate, authority, file, ex, store, within, smart framework etc certificates, specify, as, etc certificates ca pem">
+<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartMailerImap4Client">
+<link rel="icon" href="data:,">
+<title>PHP Documentation for: \SmartMailerImap4Client</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+		float: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3c4663;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework : PHP Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+		<ul class="menu">
+		<li><a href="index.html#Package--PluginsMailer-" title="return to Index">return to Index</a></li>
+	</ul>
+	
+</nav>
+<!-- skip logo -->
+<!-- class r.20220331 -->
+<!-- Styles -->
+<!-- styles r.20220906 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located,
+.doc-version {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-frozen,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	top: 75px;
+	right: 175px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #3C4663;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Headings -->
+<h1 title="PHP class: `\SmartMailerImap4Client` @ PHP Namespace: `\`" id="Class--Summary-">
+	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\</span><span class="doc-name">SmartMailerImap4Client</span><br>
+	
+	
+	{
+	
+	}&nbsp;-&gt;
+</h1>
+<!-- Description -->
+<div class="doc-comments">Class: SmartMailerImap4Client - provides an IMAP4 Mail Client with SSL/TLS support.</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/plugins/lib_mail_get.php</span></li>
+		<li><span class="doc-package"><b>Package:</b> Plugins:Mailer</span></li>
+		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> SmartMailerImap4Client</span></li>
+		
+		<li><b>Version:</b> v.20231003</li>
+		<li><b>Depends:</b> classes:  Smart, SmartUnicode</li>
+		<li><b>Hints:</b> After  each operation on the IMAP4 Server should check the $imap4-&gt;error string and if non-empty stop and disconnect to free the socket</li>
+		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
+		
+		
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">class Methods</h2>
+</div>
+<!-- methods r.20200121 -->
+<div class="doc-container" id="Method--__construct">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
+		<span class="doc-param-name"><b><span class="doc-param-optional" title="`$buffer` Parameter is OPTIONAL, with the Default Value: 0">$buffer</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
+	
+	
+	
+			<div class="doc-method-comments">IMAP4 Client Class constructor</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--is_connected_and_logged_in">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>is_connected_and_logged_in</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+			<div class="doc-method-comments">Get The Connected + Logged In Status</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_selected_mailbox">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_selected_mailbox</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+			<div class="doc-method-comments">Get The Selected MailBox (on IMAP4 will be available just after connect + login + select mailbox)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--clear_last_error">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>clear_last_error</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+			<div class="doc-method-comments">Clear the Last Error</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--set_ssl_tls_ca_file">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>set_ssl_tls_ca_file</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$cafile` Parameter is REQUIRED">$cafile</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;VOID
+	
+	
+			<div class="doc-method-ret-params">@return: {VOID}<br>
+@param: {STRING} $cafile: Relative Path to a SSL Certificate Authority File (Ex: store within smart-framework/etc/certificates ; specify as 'etc/certificates/ca.pem') ; IMPORTANT: in this case the 'etc/certificates/' directory must be protected with a .htaccess to avoid being public readable - the directory and any files within this directory ...)</div>
+	
+			<div class="doc-method-comments">Set a SSL/TLS Certificate Authority File<br>
+If not set but SMART_FRAMEWORK_SSL_CA_FILE is defined will use the SMART_FRAMEWORK_SSL_CA_FILE</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--connect">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>connect</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$server` Parameter is REQUIRED">$server</span></b></span>, 
+	<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$port` Parameter is OPTIONAL, with the Default Value: 143">$port</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>143</b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$sslversion` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$sslversion</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INTEGER+
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER+} 1 on success, 0 on fail<br>
+@param: {STRING} $server: The Server Hostname or IP address<br>
+@param: {INTEGER+} $port: *Optional* The Server Port ; Default is: 143<br>
+@param: {ENUM} $sslversion: To connect using SSL mode this must be set to any of these accepted values: '', 'starttls', 'starttls:1.0', 'starttls:1.1', 'starttls:1.2', 'tls', 'tls:1.0', 'tls:1.1', 'tls:1.2', 'ssl', 'sslv3' ; If empty string is set here it will be operate in unsecure mode (NOT using any SSL/TLS Mode)</div>
+	
+			<div class="doc-method-comments">Will try to open a socket to the specified IMAP4 Server using the host/ip and port ; If a SSL option is selected will try to establish a SSL socket or fail</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--noop">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>noop</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INTEGER+
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER+} 1 on Success or 0 on Error</div>
+	
+			<div class="doc-method-comments">Ping the IMAP4 Server<br>
+Sends the command NOOP to the Server</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--reset">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>reset</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INTEGER+
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER+} 1 on Success or 0 on Error</div>
+	
+			<div class="doc-method-comments">Reset the IMAP4 server connection (includding all messages marked to be deleted)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--quit">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>quit</b></span>&nbsp;(
+		<span class="doc-param-name"><b><span class="doc-param-optional" title="`$expunge` Parameter is OPTIONAL, with the Default Value: false">$expunge</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INTEGER+
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER+} 1 on Success or 0 on Error</div>
+	
+			<div class="doc-method-comments">Sends the CLOSE/UNSELECT/LOGOUT commands set to the IMAP4 server<br>
+Closes the communication socket after sending LOGOUT command</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--login">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>login</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$username` Parameter is REQUIRED">$username</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$pass` Parameter is REQUIRED">$pass</span></b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$mode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INTEGER+
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER+} 1 on Success or 0 on Failure or Error<br>
+@param: {STRING} $username: The authentication username<br>
+@param: {STRING} $pass: The authentication password<br>
+@param: {ENUM} $mode: *Optional* The authentication mode ; can be set to any of: 'login', 'auth:plain', 'auth:cram-md5', 'auth:xoauth2' ; Default is 'auth:plain'</div>
+	
+			<div class="doc-method-comments">Try to Login/Authenticate on the IMAP4 Server with a username and password (or token for auth:xoauth2)<br>
+Sends both user and pass to the Server</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--select_mailbox">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>select_mailbox</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$mbox_name` Parameter is REQUIRED">$mbox_name</span></b></span>, 
+	<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$allow_create` Parameter is OPTIONAL, with the Default Value: false">$allow_create</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INTEGER+
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER+} 1 on Success or 0 on Failure or Error<br>
+@param: {STRING} $mbox_name: The MailBox to Select ; Ex: 'Inbox' or 'Sent' or 'Trash' or 'Spam' or ... 'Sent Items', ...<br>
+@param: {BOOLEAN} $allow_create: If MailBox does not exists and this param is set to TRUE then MailBox will be created</div>
+	
+			<div class="doc-method-comments">Selects a MailBox after login on the IMAP4 Server<br>
+Unlike the POP3 servers the IMAP4 servers can operate on multiple MailBoxes over the same account</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_metadata">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_metadata</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} Which contains the following keys [ 'uivalidity' =&gt; 'CurrentUIV', 'count' =&gt; 101, 'recent' =&gt; '', 'size' =&gt; 1024 ]</div>
+	
+			<div class="doc-method-comments">Get all the IMAP4 MetaData for the selected account MailBox</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--count">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>count</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} Which contains the following keys [ 'size' =&gt; 1024, 'count' =&gt; 101, 'recent' =&gt; '' ]</div>
+	
+			<div class="doc-method-comments">Get The Count Information for the selected account MailBox</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--uid">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>uid</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$msg_num` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$msg_num</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} A unique UID or a list with multiple (ar all) UIDs ; returns empty string on error<br>
+@param: {STRING} $msg_num: *Optional* A specific UID for a specific message or leave empty to get the list with all UIDs</div>
+	
+			<div class="doc-method-comments">Get the list of UIDs or a specific UID for the selected message<br>
+The UID(s) will be formated as this library does: 'IMAP4-UIV-@num@-UID-@uid@'<br>
+A list with multiple UIDs provided by this method can be parsed using $imap4-&gt;parse_uidls($list)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--parse_uidls">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>parse_uidls</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_list` Parameter is REQUIRED">$y_list</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ASSOCIATIVE
+	
+	
+			<div class="doc-method-ret-params">@hints: Some  IMAP4 servers have non-standard responses for the format of $mailget-&gt;uid() and in this case you may have to build your own parser ...<br>
+@return: {ASSOCIATIVE} ARRAY the list of parsed UIDs as [ id1 =&gt; uid1, id2 =&gt; uid2, ..., idN =&gt; uidN ]<br>
+@param: {STRING} $y_list: The UIDs list given by the IMAP4 server with command: $mailget-&gt;uid() ; Expects a format similar with: ID[SPACE]UID\n</div>
+	
+			<div class="doc-method-comments">Parse the (standard) list of UIDs supplied IMAP4 protocol<br>
+The UIDs will be formated as this library does: 'IMAP4-UIV-@num@-UID-@uid@'</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--size">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>size</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$msg_num` Parameter is REQUIRED">$msg_num</span></b></span>, 
+	<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$by_uid` Parameter is OPTIONAL, with the Default Value: false">$by_uid</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@hints: Some  servers may not comply with this method and may return empty result<br>
+@return: {STRING} the size of the selected message (ussualy in Bytes) or empty string if Error<br>
+@param: {STRING} $msg_num: The Message Number<br>
+@param: {BOOLEAN} $by_uid: *Optional* ; Default is FALSE ; If TRUE a Message UID should be supplied for 1st param ; If FALSE a Message Number should be supplied for 1st param</div>
+	
+			<div class="doc-method-comments">Get the size for the selected message</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--delete">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>delete</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$msg_num` Parameter is REQUIRED">$msg_num</span></b></span>, 
+	<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$by_uid` Parameter is OPTIONAL, with the Default Value: false">$by_uid</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INTEGER+
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER+} 1 on Success or 0 on Failure or Error<br>
+@param: {STRING} $msg_num: The Message Number or Message UID if 2nd param is set to TRUE<br>
+@param: {BOOLEAN} $by_uid: *Optional* ; Default is FALSE ; If TRUE a Message UID should be supplied for 1st param ; If FALSE a Message Number should be supplied for 1st param</div>
+	
+			<div class="doc-method-comments">Delete a message stored on the IMAP4 Server</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--header">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>header</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$msg_num` Parameter is REQUIRED">$msg_num</span></b></span>, 
+	<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$by_uid` Parameter is OPTIONAL, with the Default Value: false">$by_uid</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$read_lines` Parameter is OPTIONAL, with the Default Value: 5">$read_lines</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>5</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The first lines of the message body or empty string on ERROR<br>
+@param: {STRING} $msg_num: The Message Number<br>
+@param: {BOOLEAN} $by_uid: *Optional* ; Default is FALSE ; If TRUE a Message UID should be supplied for 1st param ; If FALSE a Message Number should be supplied for 1st param<br>
+@param: {INTEGER+} $read_lines: The number of lines to retrieve 1..255</div>
+	
+			<div class="doc-method-comments">Get the Message Head Lines (first lines of the message body)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--read">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$msg_num` Parameter is REQUIRED">$msg_num</span></b></span>, 
+	<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$by_uid` Parameter is OPTIONAL, with the Default Value: false">$by_uid</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The full message containing the Message Headers and Body as stored on the server or empty string on ERROR<br>
+@param: {STRING} $msg_num: The Message Number or Message UID if 2nd param is set to TRUE<br>
+@param: {BOOLEAN} $by_uid: *Optional* ; Default is FALSE ; If TRUE a Message UID should be supplied for 1st param ; If FALSE a Message Number should be supplied for 1st param</div>
+	
+			<div class="doc-method-comments">Get the Entire Message from Server</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--copy">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>copy</b></span>&nbsp;(
+		<span class="doc-param-name"><b><span title="`$msg_uid` Parameter is REQUIRED">$msg_uid</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$dest_mbox` Parameter is REQUIRED">$dest_mbox</span></b></span>, 
+	<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$by_uid` Parameter is OPTIONAL, with the Default Value: false">$by_uid</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INTEGER+
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER+} 1 on Success or 0 on Failure or Error<br>
+@param: {STRING} $msg_num: The Message Number or Message UID if 3rd param is set to TRUE<br>
+@param: {STRING} $dest_mbox: The destination MailBox name ; Ex: 'Trash' or 'Deleted Messages' or 'Archive', ...<br>
+@param: {BOOLEAN} $by_uid: *Optional* ; Default is FALSE ; If TRUE a Message UID should be supplied for 1st param ; If FALSE a Message Number should be supplied for 1st param</div>
+	
+			<div class="doc-method-comments">COPY a Message from the current selected MailBox to another (destination) MailBox</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--append">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>append</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$message` Parameter is REQUIRED">$message</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The UID of the new uploaded message or Empty string on Error<br>
+@param: {STRING} $message: The full message containing the headers and the body as stored locally</div>
+	
+			<div class="doc-method-comments">STORE an uploaded Message to the current selected MailBox</div>
+	
+	
+	
+</div>
+
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20200121 -->
+<div class="doc-container" id="Property--buffer">
+	<span class="doc-modifiers">public</span> <b>$buffer</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>2048</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>INT</i>
+			<div class="doc-method-comments">socket read buffer</div>
+	
+</div>
+<div class="doc-container" id="Property--timeout">
+	<span class="doc-modifiers">public</span> <b>$timeout</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>30</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>INT</i>
+			<div class="doc-method-comments">socket timeout in seconds</div>
+	
+</div>
+<div class="doc-container" id="Property--debug">
+	<span class="doc-modifiers">public</span> <b>$debug</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>FALSE</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>BOOLEAN</i>
+			<div class="doc-method-comments">debug on/off</div>
+	
+</div>
+<div class="doc-container" id="Property--error">
+	<span class="doc-modifiers">public</span> <b>$error</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>''</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>STRING</i>
+			<div class="doc-method-comments">This should be checked after each operation on the server<br>
+The error message(s) will be collected here<br>
+do not SET a value here, but just GET the result</div>
+	
+</div>
+<div class="doc-container" id="Property--log">
+	<span class="doc-modifiers">public</span> <b>$log</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>''</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>STRING</i>
+			<div class="doc-method-comments">The operations log (only if debug is enabled)<br>
+Do not SET a value here, but just GET the result</div>
+	
+</div>
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20200121 -->
+
+<!-- Sample Code -->
+
+<!-- Summary List -->
+<br>
+<!-- summary r.20210420 -->
+<script>
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* PHP Class \SmartMailerImap4Client # Documentation Index *</option>
+		<optgroup label="Class \SmartMailerImap4Client">
+			<option value="Class--Summary-">Class definition</option>
+		</optgroup>
+		<optgroup label="Class Methods">
+			<option value="Methods--Summary-">Methods list</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+			
+			
+						<option value="Method--is_connected_and_logged_in"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;is_connected_and_logged_in()</option>
+			
+			
+						<option value="Method--get_selected_mailbox"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_selected_mailbox()</option>
+			
+			
+						<option value="Method--clear_last_error"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;clear_last_error()</option>
+			
+			
+						<option value="Method--set_ssl_tls_ca_file"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;set_ssl_tls_ca_file()</option>
+			
+			
+						<option value="Method--connect"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;connect()</option>
+			
+			
+						<option value="Method--noop"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;noop()</option>
+			
+			
+						<option value="Method--reset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;reset()</option>
+			
+			
+						<option value="Method--quit"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;quit()</option>
+			
+			
+						<option value="Method--login"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;login()</option>
+			
+			
+						<option value="Method--select_mailbox"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;select_mailbox()</option>
+			
+			
+						<option value="Method--get_metadata"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_metadata()</option>
+			
+			
+						<option value="Method--count"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;count()</option>
+			
+			
+						<option value="Method--uid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;uid()</option>
+			
+			
+						<option value="Method--parse_uidls"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;parse_uidls()</option>
+			
+			
+						<option value="Method--size"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;size()</option>
+			
+			
+						<option value="Method--delete"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;delete()</option>
+			
+			
+						<option value="Method--header"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;header()</option>
+			
+			
+						<option value="Method--read"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read()</option>
+			
+			
+						<option value="Method--copy"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;copy()</option>
+			
+			
+						<option value="Method--append"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;append()</option>
+			
+			
+			
+		</optgroup>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+						<option value="Property--buffer"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$buffer</option>
+			
+						<option value="Property--timeout"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$timeout</option>
+			
+						<option value="Property--debug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$debug</option>
+			
+						<option value="Property--error"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$error</option>
+			
+						<option value="Property--log"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$log</option>
+			
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+			
+		</optgroup>
+		
+	</select>
+</div>
+<!-- summary-selectjs r.20210420 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div><center>
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
+</center></div>
+</body>
+</html>

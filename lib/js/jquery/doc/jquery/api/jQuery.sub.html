@@ -1,0 +1,229 @@
+<script>{
+		"title":
+			"jQuery.sub()",
+		"excerpt":
+			"Creates a new copy of jQuery whose properties and methods can be modified without affecting the original jQuery object.",
+		"termSlugs": {
+			"category": [
+				"core","version/1.5","deprecated/deprecated-1.7","removed"
+			]
+		}
+	}</script><article id="jQuery-sub1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.sub()</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#jQuery">jQuery</a></span><span class="version-details">version deprecated: <a href="/category/version/1.7/">1.7</a>, removed: <a href="/category/version/1.9/">1.9</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Creates a new copy of jQuery whose properties and methods can be modified without affecting the original jQuery object.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.5/">1.5</a></span><a id="jQuery-sub" href="#jQuery-sub"><span class="icon-link"></span>jQuery.sub()</a>
+</h4>
+<ul><li><div class="null-signature">This method does not accept any arguments.</div></li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>
+      <strong>This method is deprecated as of jQuery 1.7 and will be moved to a plugin in jQuery 1.8.</strong>
+    </p>
+    <p>There are two specific use cases for which jQuery.sub() was created. The first was for providing a painless way of overriding jQuery methods without completely destroying the original methods and another was for helping to do encapsulation and basic namespacing for jQuery plugins.</p>
+    <p>Note that jQuery.sub() doesn&apos;t attempt to do any sort of isolation - that&apos;s not its intention. All the methods on the sub&apos;d version of jQuery will still point to the original jQuery (events bound and triggered will still be through the main jQuery, data will be bound to elements through the main jQuery, Ajax queries and events will run through the main jQuery, etc.).</p>
+    <p>Note that if you&apos;re looking to use this for plugin development you should first <i>strongly</i> consider using something like the jQuery UI widget factory which manages both state and plugin sub-methods. <a href="http://blog.nemikor.com/2010/05/15/building-stateful-jquery-plugins/">Some examples of using the jQuery UI widget factory</a> to build a plugin.</p>
+    <p>The particular use cases of this method can be best described through some examples.</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Examples:</h2></header><div class="entry-example" id="example-0">
+<p>Adding a method to a jQuery sub so that it isn&apos;t exposed externally:</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>(<span class="keyword">function</span>(){</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">var</span> sub$ = jQuery.sub();</code></div></div><div class="container"><div class="line"><code>  sub$.fn.myCustomMethod = <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">return</span> <span class="string">&quot;just for me&quot;</span>;</code></div></div><div class="container"><div class="line"><code>  };</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  sub$( document ).ready(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    sub$( <span class="string">&quot;body&quot;</span> ).myCustomMethod() <span class="comment">// &quot;just for me&quot;</span></code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code>})();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="keyword">typeof</span> jQuery( <span class="string">&quot;body&quot;</span> ).myCustomMethod <span class="comment">// undefined</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-1">
+<p>Override some jQuery methods to provide new functionality.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">var</span> myjQuery = jQuery.sub();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  myjQuery.fn.remove = <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>    <span class="comment">// New functionality: Trigger a remove event</span></code></div></div><div class="container"><div class="line"><code>    <span class="keyword">this</span>.trigger( <span class="string">&quot;remove&quot;</span> );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>    <span class="comment">// Be sure to call the original jQuery remove method</span></code></div></div><div class="container"><div class="line"><code>    <span class="keyword">return</span> jQuery.fn.remove.apply( <span class="keyword">this</span>, arguments );</code></div></div><div class="container"><div class="line"><code>  };</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  myjQuery(<span class="keyword">function</span>( $ ) {</code></div></div><div class="container"><div class="line"><code>    $( <span class="string">&quot;.menu&quot;</span> ).click(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>      $( <span class="keyword">this</span> ).find( <span class="string">&quot;.submenu&quot;</span> ).remove();</code></div></div><div class="container"><div class="line"><code>    });</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>    <span class="comment">// A new remove event is now triggered from this copy of jQuery</span></code></div></div><div class="container"><div class="line"><code>    $( document ).on( <span class="string">&quot;remove&quot;</span>, <span class="keyword">function</span>( event ) {</code></div></div><div class="container"><div class="line"><code>      $( event.target ).parent().hide();</code></div></div><div class="container"><div class="line"><code>    });</code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code>})();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Regular jQuery doesn&apos;t trigger a remove event when removing an element</span></code></div></div><div class="container"><div class="line"><code><span class="comment">// This functionality is only contained within the modified &apos;myjQuery&apos;.</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-2">
+<p>Create a plugin that returns plugin-specific methods.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Create a new copy of jQuery using sub()</span></code></div></div><div class="container"><div class="line"><code>  <span class="keyword">var</span> plugin = jQuery.sub();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Extend that copy with the new plugin methods</span></code></div></div><div class="container"><div class="line"><code>  plugin.fn.extend({</code></div></div><div class="container"><div class="line"><code>    open: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>      <span class="keyword">return</span> <span class="keyword">this</span>.show();</code></div></div><div class="container"><div class="line"><code>    },</code></div></div><div class="container"><div class="line"><code>    close: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>      <span class="keyword">return</span> <span class="keyword">this</span>.hide();</code></div></div><div class="container"><div class="line"><code>    }</code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Add our plugin to the original jQuery</span></code></div></div><div class="container"><div class="line"><code>  jQuery.fn.myplugin = <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">this</span>.addClass( <span class="string">&quot;plugin&quot;</span> );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>    <span class="comment">// Make sure our plugin returns our special plugin version of jQuery</span></code></div></div><div class="container"><div class="line"><code>    <span class="keyword">return</span> plugin( <span class="keyword">this</span> );</code></div></div><div class="container"><div class="line"><code>  };</code></div></div><div class="container"><div class="line"><code>})();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$( document ).ready(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Call the plugin, open method now exists</span></code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;#main&quot;</span> ).myplugin().open();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Note: Calling just $( &quot;#main&quot; ).open() won&apos;t work as open doesn&apos;t exist!</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

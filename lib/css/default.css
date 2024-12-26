@@ -1,0 +1,153 @@
+
+/* -- CSS Start :: Smart.Framework / Default :: r.20220918 -- */
+
+* {
+	font-family: 'IBM Plex Sans', 'Noto Sans', arial, sans-serif;
+	font-smooth: always;
+}
+
+html, body {
+	margin: 0px;
+	padding: 0px;
+}
+
+body {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+/* sync:start styles css */
+
+/* ----- resets ----- */
+
+body {
+	background: #FFFFFF;
+	color: #222222;
+	font-size: 1rem; /* 16px */
+	line-height: 1.75;
+}
+
+nav, section, article,
+header, main, aside, footer,
+figure, figcaption,
+pre, div, p, ol, ul, blockquote,
+form, fieldset,
+address, dl, dt, dd {
+	display: block;
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.5;
+}
+code, kbd, samp {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.5;
+}
+
+ul, ol, dl {
+	margin-top: 0;
+	margin-bottom: 1rem;
+}
+ul ul, ul ol,
+ol ol, ol ul {
+	margin-bottom: 0;
+}
+ul {
+	list-style-type: square;
+}
+ol {
+	list-style-type: decimal;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+	margin-bottom: 0.25rem;
+}
+li li {
+	margin-bottom: 0;
+}
+
+small {
+	font-size: 0.75rem;
+}
+
+/* ----- headings ----- */
+
+h1 {
+	font-size: 2.5rem; /* 40px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2.125rem; /* 34px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.875rem; /* 30px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.625rem; /* 26px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h5 {
+	font-size: 1.375rem; /* 22px */
+	margin-top: 0.125rem; /* 2px */
+	margin-bottom: 0.125rem; /* 2px */
+}
+h6 {
+	font-size: 1.0625rem; /* 17px */
+	margin-top: 0.0625rem; /* 1px */
+	margin-bottom: 0.0625rem; /* 1px */
+}
+
+/* ----- misc ----- */
+
+img {
+	border: 0;
+	vertical-align: middle;
+}
+
+svg {
+	overflow: hidden;
+	vertical-align: middle;
+}
+
+hr {
+	border: none 0;
+	border-top: 1px solid #EEEEEE;
+	height: 1px;
+}
+
+/* ----- tables ----- */
+
+table { /* do not mark as block, breaks some other table defaults */
+	font-size: 0.875rem; /* 14px */
+	line-height: 1.25;
+	font-weight: normal;
+	text-align: left;
+}
+
+th {
+	font-weight: bold;
+}
+
+td {
+	font-weight: normal;
+}
+
+/* ----- links ----- */
+
+a, a:link, a:visited, a:hover {
+	color: #000000;
+}
+
+/* ----- forms ----- */
+
+input[type="text"]:disabled {
+	background-color: #FFFFFF;
+}
+
+/* #end:sync */
+
+/* -- CSS End -- */

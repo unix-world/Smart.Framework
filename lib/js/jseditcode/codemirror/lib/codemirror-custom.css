@@ -1,0 +1,58 @@
+/* Customizations # Smart.Framework # r.20220920 */
+
+@import url("../../../../../lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css");
+
+.CodeMirror * {
+	font-family: 'IBM Plex Mono',monospace,courier !important;
+	font-size: 0.875rem !important;
+}
+
+.CodeMirror {
+	text-align: left;
+	border: 1px solid #DDDDDD;
+}
+
+.CodeMirror-rtl {
+	text-align: right;
+	border: 1px solid #DDDDDD;
+}
+
+.CodeMirror-scroll {
+/*	max-height: 200px; */
+}
+
+.CodeMirror pre {
+	padding-left: 5px;
+	padding-right: 7px;
+	line-height: 1.25;
+}
+
+.CodeMirror-selected {
+	background: #FEFB8A;
+}
+.CodeMirror-focused .CodeMirror-selected {
+	background: #FEFF99;
+}
+
+/* show tabs indentation */
+.cm-tab:before {
+	color: #DDDDDD;
+	content: '\21E5';
+}
+
+/* Trailing Spaces */
+.cm-trailingspace:before {
+	color: #BBBBBB;
+	content: '\00B7';
+}
+.cm-trailingspace {
+	border-bottom: 1px dotted #BBBBBB;
+}
+
+/*
+// CR: 		content: '\240D';
+// CRLF: 	content: '\240D\240A';
+// LF: 		content: '\240A';
+*/
+
+/* END */

@@ -1,0 +1,13 @@
+<!-- Partial Template: Plugins.UIListMulti r.20220114 -->
+<script>
+jQuery(() => {
+	if(typeof(smartJ$UI) != 'undefined') {
+		try {
+			smartJ$UI.SelectList('[###ID|js###]', [###WIDTH|int###], [###HEIGHT|int###], [###IS-MULTI|bool###], [###HAVE-FILTER|bool###]);
+		} catch(err) {
+			console.warn('UI List Multi Select ERR:', err);
+		}
+	}
+});
+</script>
+<!-- #END :: Partial Template: Plugins.UIListMulti -->

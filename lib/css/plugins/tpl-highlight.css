@@ -1,0 +1,29 @@
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */

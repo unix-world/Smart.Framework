@@ -1,0 +1,192 @@
+<!-- Pagebuilder / Manage @ TreeList / Records :: v.20230123 -->
+<script src="modules/mod-auth-admins/views/js/tree/simpletree.js?[###RELEASE-HASH|url|html###]"></script>
+<style>
+.simpletree-toggle, .simpletree-notoggle {
+	display: inline-block;
+	width: 25px;
+}
+.simpletree-tree .simpletree-button {
+	cursor: pointer;
+}
+ul.pagebuilder-tree {
+	margin-top: 0 !important;
+	margin-left: 0 !important;
+}
+ul.pagebuilder-tree, ul.pagebuilder-tree li {
+	list-style-type: none;
+}
+ul.pagebuilder-tree a {
+	text-decoration: none !important;
+}
+span.simpletree-highlight {
+	background: #333333;
+	color: #FFFFFF;
+}
+span.simpletree-item-active {
+	font-weight: bold;
+	color: #111111;
+}
+span.simpletree-item-inactive {
+	font-weight: bold;
+	color: #BBBBBB;
+}
+span.simpletree-ids {
+	font-weight: bold;
+	color: #666699;
+}
+span.simple-tree-light-text {
+	font-weight: bold;
+	color: #CCCCCC;
+}
+span.simpletree-ctrl {
+	font-size: 1.125rem;
+	line-height: 1.25;
+	font-weight: bold;
+	color: #333333;
+}
+</style>
+<style>
+div.scroll-top {
+	position: fixed;
+	right: 15px;
+	bottom: 25px;
+	width: 36px;
+	height: 36px;
+	line-height: 32px;
+	background: #000000;
+	color: #FFFFFF;
+	opacity: 0.25;
+	border-radius: 3px;
+	text-align: center;
+	cursor: pointer;
+}
+div.scroll-top:hover {
+	opacity: 0.35;
+}
+</style>
+<div title="Scroll Top" class="scroll-top" onClick="jQuery('html, body').animate({scrollTop: 0}, 300);"><i class="sfi sfi-arrow-up"></i></div>
+<script>
+function pageBuilderFormBtnFilter() {
+	jQuery('#filtering').submit();
+}
+function pageBuilderFormBtnResetFilter() {
+	self.location = '[###LIST-BTN-RESET|js###]';
+}
+</script>
+[@@@SUB-TEMPLATE:view-list-filter-form.mtpl.inc.htm@@@]
+[%%%IF:HAVE-FULLTREE:==yes;%%%]<div style="padding-left:0;"><h5 style="display:inline-block;">Display Full-Tree</h5>&nbsp;&nbsp;<input type="checkbox" id="display-fulltree" value="[###VALUE-FULLTREE|html###]"></div><br>[%%%/IF:HAVE-FULLTREE%%%]
+[%%%COMMENT%%%]<!-- [%%%IF:HAVE-DATASETS:==yes;%%%]<div style="padding-left:0;"><h5 style="display:inline-block;">Hide {Data-Set-Controllers}</h5>&nbsp;&nbsp;<input type="checkbox" id="display-datasets" value="[###VALUE-DATASETS|html###]"></div><br>[%%%/IF:HAVE-DATASETS%%%] -->[%%%/COMMENT%%%]
+<script>
+	var theFilterListSrcBy = '[###LIST-VAL-SRCBY|js###]';
+	if(theFilterListSrcBy != 'ctrl') {
+		jQuery('#filter-src').val('[###LIST-VAL-SRC|js###]');
+		jQuery('#filter-srcby').val(String(theFilterListSrcBy));
+	}
+	jQuery('#filter-ctrl').val('[###CTRL-SEL|js###]');
+</script>
+<ul class="pagebuilder-tree">
+	[%%%LOOP:DATA%%%]
+	<!-- start CTRL: [###DATA._-KEY-_|html###] -->
+	<li data-simpletree="[%%%IF:DATA._-KEY-_:^~{;%%%][###SPECIAL-COLLAPSE|html###][%%%ELSE:DATA._-KEY-_%%%][###FILTER-COLLAPSE|html###][%%%/IF:DATA._-KEY-_%%%]">
+		<span class="simpletree-ctrl">[%%%IF:DATA._-KEY-_:!=;%%%][###DATA._-KEY-_|html###][%%%ELSE:DATA._-KEY-_%%%]<i class="sfi sfi-question" title="[###TXT-CTRL-NONE|html###]"></i> <span style="color:#778899;">UNASSIGNED</span>[%%%/IF:DATA._-KEY-_%%%]</span>
+		[%%%LOOP:DATA._-VAL-_%%%]
+		<ul>
+			<li title="[###DATA._-VAL-_.ID|html###]" class="simpletree-item" id="item-[###DATA._-VAL-_.HASH-ID|htmid###]" data-simpletree="[###COLLAPSE|html###]">
+				<a href="[###LIST-RECORD-URL|html###][###DATA._-VAL-_.ID|url|html###]" data-smart="open.modal"><img src="[###DATA._-VAL-_.ICON-TYPE|html###]">&nbsp;[%%%IF:DATA._-VAL-_.IMG-TYPE-HTML:!=;%%%][###DATA._-VAL-_.IMG-TYPE-HTML###][%%%/IF:DATA._-VAL-_.IMG-TYPE-HTML%%%]</a> &nbsp; <span class="[###DATA._-VAL-_.STYLE-CLASS|html###]">[###DATA._-VAL-_.NAME|html###]</span> <span class="simple-tree-light-text">:: [###DATA._-VAL-_.SPECIAL|int###] ::</span> <span class="simpletree-ids" id="id-[###DATA._-VAL-_.HASH-ID|htmid###]">[%%%IF:DATA._-VAL-_.IS-SEGMENT:==1;%%%]<i>[%%%/IF:DATA._-VAL-_.IS-SEGMENT%%%][###DATA._-VAL-_.ID|html###][%%%IF:DATA._-VAL-_.IS-SEGMENT:==1;%%%]</i>[%%%/IF:DATA._-VAL-_.IS-SEGMENT%%%]</span> &nbsp; <span class="simple-tree-light-text">(<i class="sfi sfi-feed"></i>&nbsp;[###DATA._-VAL-_.COUNTER|html###])</span>
+				[%%%IF:DATA._-VAL-_.REF-CHILDS:@>0;%%%]
+					[%%%LOOP:DATA._-VAL-_.REF-CHILDS%%%]
+					<ul>
+						<li title="[###DATA._-VAL-_.REF-CHILDS.ID|html###]" class="simpletree-item" id="item-[###DATA._-VAL-_.REF-CHILDS.HASH-ID|htmid###]" data-simpletree="[###COLLAPSE|html###]">
+							<a href="[###LIST-RECORD-URL|html###][###DATA._-VAL-_.REF-CHILDS.ID|url|html###]" data-smart="open.modal"><img src="[###DATA._-VAL-_.REF-CHILDS.ICON-TYPE|html###]">&nbsp;[%%%IF:DATA._-VAL-_.REF-CHILDS.IMG-TYPE-HTML:!=;%%%][###DATA._-VAL-_.REF-CHILDS.IMG-TYPE-HTML###][%%%/IF:DATA._-VAL-_.REF-CHILDS.IMG-TYPE-HTML%%%]</a> &nbsp; <span class="[###DATA._-VAL-_.REF-CHILDS.STYLE-CLASS|html###]">[###DATA._-VAL-_.REF-CHILDS.NAME|html###]</span> <span class="simple-tree-light-text">:: [###DATA._-VAL-_.REF-CHILDS.SPECIAL|int###] ::</span> <span class="simpletree-ids" id="id-[###DATA._-VAL-_.REF-CHILDS.HASH-ID|htmid###]">[%%%IF:DATA._-VAL-_.REF-CHILDS.IS-SEGMENT:==1;%%%]<i>[%%%/IF:DATA._-VAL-_.REF-CHILDS.IS-SEGMENT%%%][###DATA._-VAL-_.REF-CHILDS.ID|html###][%%%IF:DATA._-VAL-_.REF-CHILDS.IS-SEGMENT:==1;%%%]</i>[%%%/IF:DATA._-VAL-_.REF-CHILDS.IS-SEGMENT%%%]</span> &nbsp; <span class="simple-tree-light-text">(<i class="sfi sfi-feed"></i>&nbsp;[###DATA._-VAL-_.REF-CHILDS.COUNTER|html###])</span>
+							[%%%IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS:@>0;%%%]
+								[%%%LOOP:DATA._-VAL-_.REF-CHILDS.REF-CHILDS%%%]
+								<ul>
+									<li title="[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.ID|html###]" class="simpletree-item" id="item-[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.HASH-ID|htmid###]" data-simpletree="">
+										<a href="[###LIST-RECORD-URL|html###][###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.ID|url|html###]" data-smart="open.modal"><img src="[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.ICON-TYPE|html###]">&nbsp;[%%%IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IMG-TYPE-HTML:!=;%%%][###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IMG-TYPE-HTML###][%%%/IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IMG-TYPE-HTML%%%]</a> &nbsp; <span class="[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.STYLE-CLASS|html###]">[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.NAME|html###]</span> <span class="simple-tree-light-text">:: [###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.SPECIAL|int###] ::</span> <span class="simpletree-ids" id="id-[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.HASH-ID|htmid###]">[%%%IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IS-SEGMENT:==1;%%%]<i>[%%%/IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IS-SEGMENT%%%][###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.ID|html###][%%%IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IS-SEGMENT:==1;%%%]</i>[%%%/IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IS-SEGMENT%%%]</span> &nbsp; <span class="simple-tree-light-text">(<i class="sfi sfi-feed"></i>&nbsp;[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.COUNTER|html###])</span>
+									</li>
+								</ul>
+								[%%%/LOOP:DATA._-VAL-_.REF-CHILDS.REF-CHILDS%%%]
+							[%%%/IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS%%%]
+						</li>
+					</ul>
+					[%%%/LOOP:DATA._-VAL-_.REF-CHILDS%%%]
+				[%%%/IF:DATA._-VAL-_.REF-CHILDS%%%]
+			</li>
+		</ul>
+		[%%%/LOOP:DATA._-VAL-_%%%]
+	</li>
+	<!-- end CTRL: [###DATA._-KEY-_|html###] -->
+	[%%%/LOOP:DATA%%%]
+</ul>
+[%%%IF:FILTER:@>0;%%%]
+<script>
+	var foundItems = [];
+	[%%%LOOP:FILTER%%%]
+	foundItems.push('id-[###FILTER.HASH-ID|js###]');[%%%|N%%%]
+	[%%%/LOOP:FILTER%%%]
+	jQuery('li.simpletree-item').each(function() {
+		var foundItem = jQuery(this);
+		foundItem.find('span.simpletree-ids').each(function() {
+			var foundId = jQuery(this);
+			if(foundItems.indexOf(String(foundId.attr('id'))) >= 0) {
+				jQuery(this).attr('class', 'simpletree-highlight').attr('data-simpletree', '');
+			}
+			foundId = null;
+		});
+		foundItem = null;
+	});
+	foundItems = null;
+	jQuery('span.simpletree-highlight').parents('li').attr('data-simpletree', '');
+</script>
+[%%%ELSE:FILTER%%%]
+<!-- no js highlights -->
+[%%%/IF:FILTER%%%]
+<script>
+	jQuery('ul.pagebuilder-tree').simpletree({
+		useAnimation: false,
+		signCollapsed: '<i class="sfi sfi-folder-plus sfi-lg" style="color:#555555;"></i>',
+		signExpanded: '<i class="sfi sfi-folder-open sfi-lg" style="color:#555555;"></i>'
+	});
+</script>
+[%%%IF:HAVE-FULLTREE:==yes;%%%]
+<script>
+	jQuery(document).ready(function(){
+		var isFullTreeCheckboxChecked = false;
+		if(smartJ$Browser.getCookie('[###COOKIE-FULLTREE|js###]') === '[###VALUE-FULLTREE|js###]') {
+			isFullTreeCheckboxChecked = true;
+		} //end if
+		jQuery('#display-fulltree').prop("checked", isFullTreeCheckboxChecked);
+	});
+	jQuery('#display-fulltree').change(function() {
+		var displayFullTree = '';
+		if(jQuery(this).is(':checked')) {
+			jQuery('#filter-ctrl').val('');
+			displayFullTree = jQuery(this).val() || '';
+		} //end if else
+		smartJ$Browser.setCookie('[###COOKIE-FULLTREE|js###]', displayFullTree);
+		pageBuilderFormBtnFilter();
+	});
+</script>
+[%%%/IF:HAVE-FULLTREE%%%]
+[%%%COMMENT%%%]
+[%%%IF:HAVE-DATASETS:==yes;%%%]
+<script>
+	jQuery(document).ready(function(){
+		var isDataSetCheckboxChecked = false;
+		if(smartJ$Browser.getCookie('[###COOKIE-DATASETS|js###]') === '[###VALUE-DATASETS|js###]') {
+			isDataSetCheckboxChecked = true;
+		} //end if
+		jQuery('#display-datasets').prop("checked", isDataSetCheckboxChecked);
+	});
+	jQuery('#display-datasets').change(function() {
+		var displayDataSets = '';
+		if(jQuery(this).is(':checked')) {
+			displayDataSets = jQuery(this).val() || '';
+		} //end if else
+		smartJ$Browser.setCookie('[###COOKIE-DATASETS|js###]', displayDataSets);
+		pageBuilderFormBtnFilter();
+	});
+</script>
+[%%%/IF:HAVE-DATASETS%%%]
+[%%%/COMMENT%%%]
+<!-- #END -->

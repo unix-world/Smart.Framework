@@ -1,0 +1,16 @@
+[@@@SUB-TEMPLATE:!modules/mod-app-release/views/partials/app-release-styles.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-app-release/views/partials/app-release-top.inc.htm!@@@]
+<hr>
+[@@@SUB-TEMPLATE:!modules/mod-app-release/views/partials/app-release-info.inc.htm!@@@]
+<div class="sTaskTitle">
+<h2 id="title">TASK: [###TITLE|html###]</h2>
+</div>
+[%%%IF:APP-DETAILS:!=no;%%%]
+<hr>
+<div class="sTaskDetails">
+<h4>Optimizations Strategy: [###APP-STRATEGY|html###]</h4>
+<pre>[###APP-FOLDERS|html###]</pre>
+<pre>[###APP-FILES|html###]</pre>
+</div>
+[%%%/IF:APP-DETAILS%%%]
+<hr><!-- v.20220928 -->

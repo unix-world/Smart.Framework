@@ -1,0 +1,37 @@
+[
+	{
+		"id":"1",
+		"value":"C1",
+		"label":"Company 1",
+		"data": {
+			"record": "one",
+			"extended-name": "Company no. 1"
+		}
+	},
+	{
+		"id":"2",
+		"value":"C2",
+		"label":[
+			"Company 2",
+			"The Company 2"
+		],
+		"data": {
+			"record": "two"
+		}
+	},
+	{
+		"id":"3",
+		"value":"C3",
+		"label":[
+			"Company 3",
+			{
+				"text":"The Company 3",
+				"color":"#FF5500"
+			},
+		"Descr. of Company 3"
+		],
+		"data": {
+			"record": "three"
+		}
+	}
+]

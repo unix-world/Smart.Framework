@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>HiliteJs - Templating Engines - Demo</title>
+
+  <link rel="stylesheet" href="../prism/fonts.css">
+  <link rel="stylesheet" href="../prism/prism.css">
+  <script type="text/javascript" src="../prism/prism.js"></script>
+
+  <script type="text/javascript" src="../../jquery/jquery.js"></script>
+  <script>
+  jQuery(document).ready(() => {
+    jQuery('div pre code').each((i, el) => {
+      $(el).parent().addClass('line-numbers');
+      Prism.highlightElement(el);
+    });
+  });
+  </script>
+</head>
+<body>
+
+<h1>HiliteJs Demo: Templating Engines</h1>
+<hr>
+
+<!-- Marker-TPL -->
+
+<div>
+<h2>Marker-TPL</h2>
+<pre><code class="language-markertpl">
+This is a line [###VAR1|html###] [###VAR2|subtxt255|html###]
+This is an URL: https://test.dom/test/?v=[###VAR1|url|html###]
+&lt;a id=&quot;test&quot;&gt;This is a link&lt;/a&gt;
+[%%%IF:VAR2:==###VAR4###;%%%]
+	[%%%IF:VAR5:==This-is:==a;Text;%%%]
+		[%%%IF:VAR6:!=;%%%]
+			[%%%IF:VAR7:%2;(1)%%%]
+				[###VAR7|int###]
+			[%%%ELSE:VAR7(1)%%%]
+				[%%%IF:VAR7:%5;(2)%%%]
+					[###VAR8|int###]
+				[%%%/IF:VAR7(2)%%%]
+			[%%%/IF:VAR7(1)%%%]
+		[%%%ELSE:VAR6%%%]
+			[###VAR6|upper|html###]
+		[%%%/IF:VAR6%%%]
+	[%%%/IF:VAR5%%%]
+[%%%/IF:VAR2%%%]
+[%%%IF:VAR3:==yes;(1)%%%]
+	[%%%LOOP:VAR4%%%]
+		[###VAR4.NAME|html###], [###VAR4.PNAME|htmid|html###]
+	[%%%/LOOP:VAR4%%%]
+	[%%%LOOP:VAR10(1)%%%]
+		[###VAR10.TYPE|html###]
+	[%%%/LOOP:VAR10(1)%%%]
+[%%%ELSE:VAR3(1)%%%]
+	No Data
+[%%%/IF:VAR3(1)%%%]
+[@@@SUB-TEMPLATE:%test%@@@]
+[@@@SUB-TEMPLATE:%test%|syntax@@@]
+[@@@SUB-TEMPLATE:%test%|html-no-subtpls@@@]
+[@@@SUB-TEMPLATE:test.mtpl.htm@@@]
+[@@@SUB-TEMPLATE:test.mtpl.htm|syntax@@@]
+[@@@SUB-TEMPLATE:test.mtpl.htm|html-no-subtpls@@@]
+[@@@SUB-TEMPLATE:!path/to/test.mtpl.htm!@@@]
+[@@@SUB-TEMPLATE:!path/to/test.mtpl.htm!|syntax@@@]
+[@@@SUB-TEMPLATE:!path/to/test.mtpl.htm!|html-no-subtpls@@@]
+[@@@SUB-TEMPLATE:?!path/to/test.mtpl.htm!@@@]
+[@@@SUB-TEMPLATE:?!path/to/test.mtpl.htm!|syntax@@@]
+[@@@SUB-TEMPLATE:?!path/to/test.mtpl.htm!|html-no-subtpls@@@]
+[%%%|R%%%][%%%|N%%%][%%%|T%%%][%%%|SB-L%%%][%%%|SPACE%%%][%%%|SB-R%%%]
+[%%%COMMENT%%%]
+This is a comment
+[%%%/COMMENT%%%]
+[:::PLACEHOLDER:::]
+</code></pre>
+</div>
+
+<!-- Twig -->
+
+<div>
+<h2>Twig (PHP Templating)</h2>
+<pre><code class="language-twig">{% if posts|length %}
+  {% for article in articles %}
+  &amp;lt;div&amp;gt;
+  {{ article.title|upper() }}
+
+  {# outputs &#39;WELCOME&#39; #}
+  &amp;lt;/div&amp;gt;
+  {% endfor %}
+{% endif %}
+
+{% set user = json_encode(user) %}
+
+{{ random([&#39;apple&#39;, &#39;orange&#39;, &#39;citrus&#39;]) }}
+
+{{ include(template_from_string(&quot;Hello {{ name }}&quot;)) }}
+
+&lt;table&gt;
+&lt;tr class=&quot;stripped&quot;&gt;
+  &lt;td&gt;{{ article }}&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+{#
+Comments may be long and multiline.
+Markup is &amp;lt;em&amp;gt;not&amp;lt;/em&amp;gt; highlighted within comments.
+#}
+</code></pre>
+</div>
+
+<!-- TEX -->
+
+<div>
+<h2>LaTeX</h2>
+<pre><code class="language-tex">\documentclass{article}
+\usepackage[koi8-r]{inputenc}
+\hoffset=0pt
+\voffset=.3em
+\tolerance=400
+\newcommand{\eTiX}{\TeX}
+\begin{document}
+\section*{Highlight.js}
+\begin{table}[c|c]
+$\frac 12\, + \, \frac 1{x^3}\text{Hello \! world}$ &amp; \textbf{Goodbye\~ world} \\\eTiX $ \pi=400 $
+\end{table}
+Ch\&#39;erie, \c{c}a ne me pla\^\i t pas! % comment \b
+G\&quot;otterd\&quot;ammerung~45\%=34.
+$$
+    \int\limits_{0}^{\pi}\frac{4}{x-7}=3
+$$
+\end{document}
+</code></pre>
+</div>
+
+<!-- #END -->
+<br>
+<hr>
+<br>
+
+</body>
+</html>

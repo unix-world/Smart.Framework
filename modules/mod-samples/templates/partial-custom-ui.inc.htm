@@ -1,0 +1,7 @@
+<!-- CustomUI: Semaphore: [###SEMAPHORE|smartlist|html###] -->
+[%%%IF:SEMAPHORE:&*<skip:js-ui>;(1)%%%]
+	[%%%IF:SEMAPHORE:&*<load:jqueryui>;(2)%%%]
+		[@@@SUB-TEMPLATE:?!modules/mod-ui-jqueryui/views/js-ui.inc.htm!@@@]
+	[%%%/IF:SEMAPHORE(2)%%%]
+[%%%/IF:SEMAPHORE(1)%%%]
+<!-- # -->

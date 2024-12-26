@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="icon" href="data:,">
+	<title>SimpleTree Demo</title>
+	<style>
+	.simpletree-toggle, .simpletree-notoggle {
+		display: inline-block;
+		width: 15px;
+	}
+	.simpletree-tree .simpletree-button {
+		cursor: pointer;
+	}
+	ul, ul li {
+		list-style-type: none;
+	}
+	</style>
+
+	<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+
+	<script src="../simpletree.js"></script>
+</head>
+
+<body>
+	<h1>
+		<a href="https://github.com/innoq/simpletree" style="color:#669999!important;">SimpleTree</a>
+		Demo
+	</h1>
+	<p>intentionally basic, with highlight on word 'lorem' (e.g. no custom styling) ; modified by unixman, for Smart.Framework</p>
+
+	<b>this tree is sortable</b>
+	<ul class="hierarchy">
+		<li>hello</li>
+		<li>
+			world
+			<ul>
+				<li>foo</li>
+				<li data-simpletree="collapsed">
+					bar
+					<ul>
+						<li>lorem</li>
+						<li>ipsum</li>
+					</ul>
+				</li>
+				<li>baz</li>
+			</ul>
+		</li>
+	</ul>
+
+	<hr>
+
+	<ul class="selection">
+		<li><label><input type="checkbox"> hello</label></li>
+		<li>
+			<label><input type="checkbox"> world</label>
+			<ul>
+				<li><label><input type="checkbox"> foo</label></li>
+				<li>
+					<label><input type="checkbox"> bar</label>
+					<ul>
+						<li><label><input type="checkbox"> lorem</label></li>
+						<li><label><input type="checkbox"> ipsum</label></li>
+					</ul>
+				</li>
+				<li><label><input type="checkbox"> baz</label></li>
+			</ul>
+		</li>
+	</ul>
+
+	<script>
+		jQuery('ul.hierarchy').simpletree({
+			useAnimation: true
+		}).sortable();
+		jQuery('ul.selection').simpletree({
+			signCollapsed: '+',
+			signExpanded: '-'
+		});
+		jQuery('p').highlight('lorem', 'jqtxthighlight');
+		jQuery('ul').highlight('lorem', 'jqtxthighlight');
+	//	jQuery('ul li').highlight('lorem', 'jqtxthighlight'); // check redundant
+	//	jQuery('li').highlight('lorem', 'jqtxthighlight'); // check redundant
+	</script>
+
+</body>
+</html>

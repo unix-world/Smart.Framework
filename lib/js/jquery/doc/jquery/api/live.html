@@ -1,0 +1,294 @@
+<script>{
+		"title":
+			".live()",
+		"excerpt":
+			"Attach an event handler for all elements which match the current selector, now and in the future.",
+		"termSlugs": {
+			"category": [
+				"events/event-handler-attachment","version/1.3","deprecated/deprecated-1.7","removed"
+			]
+		}
+	}</script><article id="live1" class="entry method"><h2 class="section-title">
+<span class="name">.live( events, handler )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#jQuery">jQuery</a></span><span class="version-details">version deprecated: <a href="/category/version/1.7/">1.7</a>, removed: <a href="/category/version/1.9/">1.9</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Attach an event handler for all elements which match the current selector, now and in the future.</p>
+<ul class="signatures">
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.3/">1.3</a></span><a id="live-events-handler" href="#live-events-handler"><span class="icon-link"></span>.live( events, handler )</a>
+</h4>
+<ul>
+<li>
+<div><strong>events</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>A string containing a JavaScript event type, such as &quot;click&quot; or &quot;keydown.&quot; As of jQuery 1.4 the string can contain multiple, space-separated event types or custom event names.</div>
+</li>
+<li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Event">Event</a> eventObject )</div>
+<div>A function to execute at the time the event is triggered.</div>
+</li>
+</ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.4/">1.4</a></span><a id="live-events-data-handler" href="#live-events-data-handler"><span class="icon-link"></span>.live( events [, data ], handler )</a>
+</h4>
+<ul>
+<li>
+<div><strong>events</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>A string containing a JavaScript event type, such as &quot;click&quot; or &quot;keydown.&quot; As of jQuery 1.4 the string can contain multiple, space-separated event types or custom event names.</div>
+</li>
+<li>
+<div><strong>data</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a>
+</div>
+<div>An object containing data that will be passed to the event handler.</div>
+</li>
+<li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Event">Event</a> eventObject )</div>
+<div>A function to execute at the time the event is triggered.</div>
+</li>
+</ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.4.3/">1.4.3</a></span><a id="live-events" href="#live-events"><span class="icon-link"></span>.live( events )</a>
+</h4>
+<ul><li>
+<div><strong>events</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a>
+</div>
+<div>A plain object of one or more JavaScript event types and functions to execute for them.</div>
+</li></ul>
+</li>
+</ul>
+<div class="longdesc" id="entry-longdesc">
+    <p><strong>As of jQuery 1.7</strong>, the <code>.live()</code> method is deprecated. Use <a href="/on/"><code>.on()</code></a> to attach event handlers. Users of older versions of jQuery should use <a href="/delegate/"><code>.delegate()</code></a> in preference to <code>.live()</code>.</p>
+    <p>This method provides a means to attach delegated event handlers to the <code>document</code> element of a page, which simplifies the use of event handlers when content is dynamically added to a page. See the discussion of direct versus delegated events in the <a href="/on/"><code>.on()</code></a> method for more information. </p>
+    <p>Rewriting the <code>.live()</code> method in terms of its successors is straightforward; these are templates for equivalent calls for all three event attachment methods:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( selector ).live( events, data, handler );                <span class="comment">// jQuery 1.3+</span></code></div></div><div class="container"><div class="line"><code>$( document ).delegate( selector, events, data, handler );  <span class="comment">// jQuery 1.4.3+</span></code></div></div><div class="container"><div class="line"><code>$( document ).on( events, selector, data, handler );        <span class="comment">// jQuery 1.7+</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>The <code>events</code> argument can either be a space-separated list of event type names and optional namespaces, or an object of event name strings and handlers. The <code>data</code> argument is optional and can be omitted. For example, the following three method calls are functionally equivalent (but see below for more effective and performant ways to attach delegated event handlers):</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;a.offsite&quot;</span> ).live( <span class="string">&quot;click&quot;</span>, <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  alert( <span class="string">&quot;Goodbye!&quot;</span> ); <span class="comment">// jQuery 1.3+</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code>$( document ).delegate( <span class="string">&quot;a.offsite&quot;</span>, <span class="string">&quot;click&quot;</span>, <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  alert( <span class="string">&quot;Goodbye!&quot;</span> ); <span class="comment">// jQuery 1.4.3+</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code>$( document ).on( <span class="string">&quot;click&quot;</span>, <span class="string">&quot;a.offsite&quot;</span>, <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  alert( <span class="string">&quot;Goodbye!&quot;</span> );  <span class="comment">// jQuery 1.7+</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>Use of the <code>.live()</code> method is no longer recommended since later versions of jQuery offer better methods that do not have its drawbacks. In particular, the following issues arise with the use of <code>.live()</code>:</p>
+    <ul>
+      <li>jQuery attempts to retrieve the elements specified by the selector before calling the <code>.live()</code> method, which may be time-consuming on large documents.</li>
+      <li>Chaining methods is not supported. For example, <code>$( &quot;a&quot; ).find( &quot;.offsite, .external&quot; ).live( ... ); </code> is <em>not</em> valid and does not work as expected.</li>
+      <li>Since all <code>.live()</code> events are attached at the <code>document</code> element, events take the longest and slowest possible path before they are handled.</li>
+      <li>On mobile iOS (iPhone, iPad and iPod Touch) the <code>click</code> event does not bubble to the document body for most elements and cannot be used with <code>.live()</code> without applying one of the following workarounds:
+        <ol>
+          <li>Use natively clickable elements such as <code>a</code> or <code>button</code>, as both of these do bubble to <code>document</code>.</li>
+          <li>Use <code>.on()</code> or <code>.delegate()</code> attached to an element below the level of <code>document.body</code>, since mobile iOS does bubble within the body.</li>
+          <li>Apply the CSS style <code>cursor:pointer</code> to the element that needs to bubble clicks (or a parent including <code>document.documentElement</code>). Note however, this will disable copy\paste on the element and cause it to be highlighted when touched.</li>
+        </ol>
+      </li>
+      <li>Calling <a href="/event.stopPropagation/"><code>event.stopPropagation()</code></a> in the event handler is ineffective in stopping event handlers attached lower in the document; the event has already propagated to <code>document</code>.</li>
+      <li>The <code>.live()</code> method interacts with other event methods in ways that can be surprising, e.g., <code>$( document ).off( &quot;click&quot; )</code> removes all click handlers attached by any call to <code>.live()</code>!</li>
+    </ul>
+    <p>For pages still using <code>.live()</code>, this list of version-specific differences may be helpful:</p>
+    <ul>
+      <li>Before jQuery 1.7, to stop further handlers from executing after one bound using <code>.live()</code>, the handler must return <code>false</code>. Calling <code>.stopPropagation()</code> will not accomplish this.</li>
+      <li>As of <b>jQuery 1.4</b> the <code>.live()</code> method supports custom events as well as <em>all JavaScript events that bubble</em>. It also supports certain events that don&apos;t bubble, including <code>change</code>, <code>submit</code>, <code>focus</code> and <code>blur</code>.</li>
+      <li>In <b>jQuery 1.3.x</b> only the following JavaScript events could be bound: <code>click</code>, <code>dblclick</code>, <code>keydown</code>, <code>keypress</code>, <code>keyup</code>, <code>mousedown</code>, <code>mousemove</code>, <code>mouseout</code>, <code>mouseover</code>, and <code>mouseup</code>.</li>
+    </ul>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Examples:</h2></header><div class="entry-example" id="example-0">
+<p>Cancel a default action and prevent it from bubbling up by returning false.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;a&quot;</span> ).live( <span class="string">&quot;click&quot;</span>, <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> <span class="literal">false</span>;</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-1">
+<p>Cancel only the default action by using the preventDefault method.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;a&quot;</span> ).live( <span class="string">&quot;click&quot;</span>, <span class="keyword">function</span>( event ) {</code></div></div><div class="container"><div class="line"><code>  event.preventDefault();</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-2">
+<p>Bind custom events with .live().</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;p&quot;</span> ).live( <span class="string">&quot;myCustomEvent&quot;</span>, <span class="keyword">function</span>( event, myName, myValue ) {</code></div></div><div class="container"><div class="line"><code>  $( <span class="keyword">this</span> ).text( <span class="string">&quot;Hi there!&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;span&quot;</span> )</code></div></div><div class="container"><div class="line"><code>    .stop()</code></div></div><div class="container"><div class="line"><code>    .css( <span class="string">&quot;opacity&quot;</span>, <span class="number">1</span> )</code></div></div><div class="container"><div class="line"><code>    .text( <span class="string">&quot;myName = &quot;</span> + myName )</code></div></div><div class="container"><div class="line"><code>    .fadeIn( <span class="number">30</span> )</code></div></div><div class="container"><div class="line"><code>    .fadeOut( <span class="number">1000</span> );</code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;button&quot;</span> ).click(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;p&quot;</span> ).trigger( <span class="string">&quot;myCustomEvent&quot;</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-3">
+<p>Use an object to bind multiple live event handlers. Note that .live() calls the click, mouseover, and mouseout event handlers for all paragraphs--even new ones.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;p&quot;</span> ).live({</code></div></div><div class="container"><div class="line"><code>  click: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="keyword">this</span> ).after( <span class="string">&quot;&lt;p&gt;Another paragraph!&lt;/p&gt;&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  mouseover: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="keyword">this</span> ).addClass( <span class="string">&quot;over&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  mouseout: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="keyword">this</span> ).removeClass( <span class="string">&quot;over&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

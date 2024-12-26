@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="\SmartViewHtmlHelpers final class \ SmartViewHtmlHelpers { } :: Class: SmartViewHtmlHelpers - Easy to use HTML ViewHelper Components. Language: PHP">
+<meta name="keywords" content="smartviewhtmlhelpers, final, class, easy, to, use, html, viewhelper, components, language, php, located, at, lib core plugins lib viewhelpers php, package, application plugins viewcomponents, namespace, name, version, v, depends, classes, smart, usage, static, object, class method, this, provides, only, methods, public, function, html js preview iframe, string, yid, y contents, y width, 720px, y height, 300px, bool, y maximized, false, y sandbox, allow popups, allow same origin, html jsload hilitecodesyntax, dom selector, theme, use absolute url, return, code, param, a, valid, jquery, html dom, selector, as, container s, for, pre code, see, can, be, body, id element, enum, the, visual, css, load, by, default, is, set, which, loads, list, of, available, themes, light, dark, if, true, will, full, url, prefix, and, javascripts, javascript, required, prism js, dom">
+<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartViewHtmlHelpers">
+<link rel="icon" href="data:,">
+<title>PHP Documentation for: \SmartViewHtmlHelpers</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+		float: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3c4663;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework : PHP Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+		<ul class="menu">
+		<li><a href="index.html#Package--ApplicationPluginsViewComponents-" title="return to Index">return to Index</a></li>
+	</ul>
+	
+</nav>
+<!-- skip logo -->
+<!-- class r.20220331 -->
+<!-- Styles -->
+<!-- styles r.20220906 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located,
+.doc-version {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-frozen,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	top: 75px;
+	right: 175px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #3C4663;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Headings -->
+<h1 title="PHP class: `\SmartViewHtmlHelpers` @ PHP Namespace: `\`" id="Class--Summary-">
+	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\</span><span class="doc-name">SmartViewHtmlHelpers</span><br>
+	
+	
+	{
+	
+	}&nbsp;::
+</h1>
+<!-- Description -->
+<div class="doc-comments">Class: SmartViewHtmlHelpers - Easy to use HTML ViewHelper Components.</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_viewhelpers.php</span></li>
+		<li><span class="doc-package"><b>Package:</b> Application:Plugins:ViewComponents</span></li>
+		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> SmartViewHtmlHelpers</span></li>
+		
+		<li><b>Version:</b> v.20240119</li>
+		<li><b>Depends:</b> classes:  Smart</li>
+		
+		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
+		
+		
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">class Methods</h2>
+</div>
+<!-- methods r.20200121 -->
+<div class="doc-container" id="Method--html_js_preview_iframe">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>html_js_preview_iframe</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$yid` Parameter is REQUIRED">$yid</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_contents` Parameter is REQUIRED">$y_contents</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;720px&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;720px&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_height` Parameter is OPTIONAL, with the Default Value: &quot;300px&quot;">$y_height</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;300px&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_maximized` Parameter is OPTIONAL, with the Default Value: false">$y_maximized</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_sandbox` Parameter is OPTIONAL, with the Default Value: &quot;allow-popups allow-same-origin&quot;">$y_sandbox</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;allow-popups allow-same-origin&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--html_jsload_hilitecodesyntax">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>html_jsload_hilitecodesyntax</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$dom_selector` Parameter is REQUIRED">$dom_selector</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$theme` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$theme</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$use_absolute_url` Parameter is OPTIONAL, with the Default Value: false">$use_absolute_url</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} [HTML Code]<br>
+@param: {STRING} $dom_selector: A valid jQuery HTML-DOM Selector as container(s) for Pre&gt;Code (see jQuery ...) ; Can be: 'body', '#id-element', ...<br>
+@param: {ENUM} $theme: The Visual CSS Theme to Load ; By default is set to '' which loads the default theme ; List of Available Themes: 'light', 'dark'<br>
+@param: {BOOL} $use_absolute_url: If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE</div>
+	
+			<div class="doc-method-comments">Return the HTML / CSS / Javascript code to Load the required Javascripts for the prism.js<br>
+If a valid DOM Selector is specified all code areas in that dom selector will be highlighted<br>
+This function should not be rendered more than once in a HTML page</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--html_jsload_editarea">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>html_jsload_editarea</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_use_absolute_url` Parameter is OPTIONAL, with the Default Value: false">$y_use_absolute_url</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$custom_themes` Parameter is OPTIONAL, with the Default Value: []">$custom_themes</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} [HTML Code]<br>
+@param: {BOOL} $y_use_absolute_url: If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE<br>
+@param: {ARRAY} $custom_themes: An array with custom themes to load from available themes like [ 'theme1', 'theme2', ... ]</div>
+	
+			<div class="doc-method-comments">Return the HTML / Javascript code to Load the required Javascripts for the Code Editor (Edit Area).<br>
+Should be called just once, before calling one or many ::html_js_editarea()</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--html_js_editarea">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>html_js_editarea</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$yid` Parameter is REQUIRED">$yid</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$yvarname` Parameter is REQUIRED">$yvarname</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$yvalue` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$yvalue</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_mode` Parameter is OPTIONAL, with the Default Value: &quot;text&quot;">$y_mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;text&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_editable` Parameter is OPTIONAL, with the Default Value: true">$y_editable</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;720px&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;720px&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_height` Parameter is OPTIONAL, with the Default Value: &quot;300px&quot;">$y_height</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;300px&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_line_numbers` Parameter is OPTIONAL, with the Default Value: true">$y_line_numbers</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$custom_theme` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$custom_theme</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} [HTML Code]<br>
+@param: {STRING} $yid: [Unique HTML Page Element ID]<br>
+@param: {STRING} $yvarname: [HTML Form Variable Name]<br>
+@param: {STRING} $yvalue: [HTML Data]<br>
+@param: {ENUM} $y_mode: [Parser mode: css, javascript, json, json-ld, html, xml, yaml, markdown, sql, php, ini, shell, go, text, gpg]<br>
+@param: {BOOLEAN} $y_editable: [Editable: true / Not Editable: false]<br>
+@param: {INTEGER+} $ywidth: [Area Width: (Example) 720px or 75%]<br>
+@param: {INTEGER+} $yheight: [Area Height (Example) 480px or 50%]<br>
+@param: {BOOLEAN} $y_line_numbers: [Display line numbers: true ; Hide line numbersL false]<br>
+@param: {STRING} $custom_theme: A custom theme to load from the available themes</div>
+	
+			<div class="doc-method-comments">Return the HTML / Javascript code with a special TextArea with a built-in javascript Code Editor (Edit Area).<br>
+Supported syntax parsers: CSS, Javascript, Json, HTML, XML, YAML, Markdown, SQL, PHP, Text (default).</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--html_navpager">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>html_navpager</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$link` Parameter is REQUIRED">$link</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$total` Parameter is REQUIRED">$total</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$limit` Parameter is REQUIRED">$limit</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$current` Parameter is REQUIRED">$current</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$display_if_empty` Parameter is OPTIONAL, with the Default Value: false">$display_if_empty</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$adjacents` Parameter is OPTIONAL, with the Default Value: 3">$adjacents</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>3</b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$options` Parameter is OPTIONAL, with the Default Value: []">$options</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@hints: $link  = 'some-script.php?ofs={{{offset}}}';<br>
+@return: {STRING} [HTML Code]</div>
+	
+			<div class="doc-method-comments">Creates a navigation pager<br>
+The style of the pager can be set overall in: $configs['nav']['pager'], and can be: arrows or numeric</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--html_js_limited_text_area">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>html_js_limited_text_area</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_field_id` Parameter is REQUIRED">$y_field_id</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_var_name` Parameter is REQUIRED">$y_var_name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_var_value` Parameter is REQUIRED">$y_var_value</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_limit` Parameter is REQUIRED">$y_limit</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_css_w` Parameter is OPTIONAL, with the Default Value: &quot;125px&quot;">$y_css_w</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;125px&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_css_h` Parameter is OPTIONAL, with the Default Value: &quot;50px&quot;">$y_css_h</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;50px&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_placeholder` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_placeholder</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_wrap` Parameter is OPTIONAL, with the Default Value: &quot;physical&quot;">$y_wrap</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;physical&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_rawval` Parameter is OPTIONAL, with the Default Value: &quot;no&quot;">$y_rawval</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;no&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+			<div class="doc-method-comments">Function: Draw Limited Text Area</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--html_selector_true_false">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>html_selector_true_false</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_var` Parameter is REQUIRED">$y_var</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_val` Parameter is REQUIRED">$y_val</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} HTML Code<br>
+@param: {STRING} $y_var: HTML Var Name<br>
+@param: {STRING} $y_val: '' | '0' | '1'</div>
+	
+			<div class="doc-method-comments">HTML Selector: TRUE / FALSE<br>
+Display True=1/False=0 Selector</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--html_selector_yes_no">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>html_selector_yes_no</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_var` Parameter is REQUIRED">$y_var</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_val` Parameter is REQUIRED">$y_val</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} HTML Code<br>
+@param: {STRING} $y_var: HTML Var Name<br>
+@param: {STRING} $y_val: '' | 'y' | 'n'</div>
+	
+			<div class="doc-method-comments">HTML Selector: YES / NO<br>
+Display Yes=y/No=n Selector</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--js_code_wnd_redirect">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>js_code_wnd_redirect</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_redir_url` Parameter is REQUIRED">$y_redir_url</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$delay` Parameter is OPTIONAL, with the Default Value: -1">$delay</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>-1</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} JS Code<br>
+@param: {STRING} $y_redir_url: URL to redirect page to<br>
+@param: {INTEGER} $delay: *optional* ; if &gt; 0 will use Delayed Redirect, otherwise Instant Redirect</div>
+	
+			<div class="doc-method-comments">Redirect to URL</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--js_code_wnd_refresh_parent">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>js_code_wnd_refresh_parent</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_redir_url` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_redir_url</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} JS Code<br>
+@param: {STRING} $y_redir_url: *optional* URL to redirect by refresh page to</div>
+	
+			<div class="doc-method-comments">Refresh Parent</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--js_code_wnd_close_modal_popup">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>js_code_wnd_close_modal_popup</b></span>&nbsp;(
+		<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_delay` Parameter is OPTIONAL, with the Default Value: -1">$y_delay</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>-1</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} JS Code<br>
+@param: {INTEGER} $y_delay: *optional* ; if &gt; 0 will use Delayed Close, otherwise Instant Close</div>
+	
+			<div class="doc-method-comments">(Delayed) close Pop-Up / Modal</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--js_code_notification_add">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>js_code_notification_add</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_title` Parameter is REQUIRED">$y_title</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_text` Parameter is REQUIRED">$y_text</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_image` Parameter is REQUIRED">$y_image</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_time` Parameter is OPTIONAL, with the Default Value: &quot;5000&quot;">$y_time</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;5000&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_sticky` Parameter is OPTIONAL, with the Default Value: &quot;false&quot;">$y_sticky</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;false&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_class` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_class</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} JS Code<br>
+@param: {STRING} $y_title: The Growl Title (Plain Text)<br>
+@param: {STRING} $y_text: The Growl Body (HTML code)<br>
+@param: {STRING} $y_image: The Growl Image (can be empty)<br>
+@param: {INTEGER+} $y_time: *optional* ; default is 5000 (5 seconds) ; The Display Time in microseconds<br>
+@param: {ENUM} $y_sticky: *optional* ; default is 'false' ; If set to 'false' will be not sticky ; if set to 'true' will be sticky<br>
+@param: {STRING} $y_class: *optional* the CSS class</div>
+	
+			<div class="doc-method-comments">Returns the JS Code to add (raise) a Growl Notification (sticky or not)<br>
+Must be enclosed in a &lt;script&gt;...&lt;/script&gt; html tag or can be used for a JS action (ex: onClick=&quot;...&quot;)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--js_code_notification_remove">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>js_code_notification_remove</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_id` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_id</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} JS Code<br>
+@param: {STRING} $y_id: *optional* the Growl ID ; default is '' ; if non empty will remove just the Growl that match the ID ; otherwise will remove ALL Growl instances</div>
+	
+			<div class="doc-method-comments">Returns the JS Code to remove a Growl Notification (sticky or not)<br>
+Must be enclosed in a &lt;script&gt;...&lt;/script&gt; html tag or can be used for a JS action (ex: onClick=&quot;...&quot;)</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `js_code_ui_confirm_dialog()` -->
+<!-- Skip Internal-Priv Method: `js_code_ui_alert_dialog()` -->
+<div class="doc-container" id="Method--js_ajax_submit_html_form">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>js_ajax_submit_html_form</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_form_id` Parameter is REQUIRED">$y_form_id</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_script_url` Parameter is REQUIRED">$y_script_url</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_confirm_question` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_confirm_question</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_js_evcode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_js_evcode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_js_everrcode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_js_everrcode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_js_evfailcode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_js_evfailcode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_failalertable` Parameter is OPTIONAL, with the Default Value: false">$y_failalertable</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} [javascript code]</div>
+	
+			<div class="doc-method-comments">Return the JS Code to Submit a HTML Form by Ajax<br>
+Expects a standardized (json) reply created with SmartViewHtmlHelpers::js_ajax_replyto_html_form()<br>
+Must be enclosed in a &lt;script&gt;...&lt;/script&gt; html tag or can be used for a JS action (ex: onClick=&quot;...&quot;)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--js_ajax_replyto_html_form">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>js_ajax_replyto_html_form</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_status` Parameter is REQUIRED">$y_status</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_title` Parameter is REQUIRED">$y_title</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_redirect_url` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_redirect_url</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_replace_div` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_replace_div</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_replace_html` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_replace_html</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_js_evcode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_js_evcode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_hide_form_on_success` Parameter is OPTIONAL, with the Default Value: false">$y_hide_form_on_success</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} [JSON data string]</div>
+	
+			<div class="doc-method-comments">Reply back to the HTML Form submited by Ajax by returning a Json answer<br>
+Creates a standardized (json) reply for SmartViewHtmlHelpers::js_ajax_submit_html_form()<br>
+NOTICE:<br>
+- if OK: and redirect URL have been provided, the replace div is not handled<br>
+- if ERROR: no replace div or redirect is handled</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `js_code_confirm_form_submit()` -->
+<!-- Skip Internal-Priv Method: `js_code_init_away_page()` -->
+<!-- Skip Internal-Priv Method: `js_code_disable_away_page()` -->
+
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20200121 -->
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20200121 -->
+
+<!-- Sample Code -->
+
+<!-- Summary List -->
+<br>
+<!-- summary r.20210420 -->
+<script>
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* PHP Class \SmartViewHtmlHelpers # Documentation Index *</option>
+		<optgroup label="Class \SmartViewHtmlHelpers">
+			<option value="Class--Summary-">Class definition</option>
+		</optgroup>
+		<optgroup label="Class Methods">
+			<option value="Methods--Summary-">Methods list</option>
+						<option value="Method--html_js_preview_iframe"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;html_js_preview_iframe()</option>
+			
+			
+						<option value="Method--html_jsload_hilitecodesyntax"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;html_jsload_hilitecodesyntax()</option>
+			
+			
+						<option value="Method--html_jsload_editarea"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;html_jsload_editarea()</option>
+			
+			
+						<option value="Method--html_js_editarea"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;html_js_editarea()</option>
+			
+			
+						<option value="Method--html_navpager"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;html_navpager()</option>
+			
+			
+						<option value="Method--html_js_limited_text_area"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;html_js_limited_text_area()</option>
+			
+			
+						<option value="Method--html_selector_true_false"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;html_selector_true_false()</option>
+			
+			
+						<option value="Method--html_selector_yes_no"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;html_selector_yes_no()</option>
+			
+			
+						<option value="Method--js_code_wnd_redirect"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;js_code_wnd_redirect()</option>
+			
+			
+						<option value="Method--js_code_wnd_refresh_parent"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;js_code_wnd_refresh_parent()</option>
+			
+			
+						<option value="Method--js_code_wnd_close_modal_popup"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;js_code_wnd_close_modal_popup()</option>
+			
+			
+						<option value="Method--js_code_notification_add"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;js_code_notification_add()</option>
+			
+			
+						<option value="Method--js_code_notification_remove"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;js_code_notification_remove()</option>
+			
+			
+			
+			
+			
+			
+						<option value="Method--js_ajax_submit_html_form"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;js_ajax_submit_html_form()</option>
+			
+			
+						<option value="Method--js_ajax_replyto_html_form"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;js_ajax_replyto_html_form()</option>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</optgroup>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+			
+		</optgroup>
+		
+	</select>
+</div>
+<!-- summary-selectjs r.20210420 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:46 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div><center>
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
+</center></div>
+</body>
+</html>

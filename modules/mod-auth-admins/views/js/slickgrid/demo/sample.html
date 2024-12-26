@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="icon" href="data:,">
+		<title>SlickGrid Example: Grid</title>
+
+		<link rel="stylesheet" type="text/css" href="../slick.grid.css">
+		<link rel="stylesheet" type="text/css" href="../slick.grid-fixes.css">
+
+		<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+		<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.smart.compat.js"></script>
+
+		<!-- Required just if enableColumnReorder option is set to TRUE -->
+		<link rel="stylesheet" href="../../ui-interractions/jquery.ui-interractions.css" type="text/css">
+		<script type="text/javascript" src="../../ui-interractions/jquery.ui-interractions.js"></script>
+		<script type="text/javascript" src="../../ui-interractions/jquery.ui-touch-punch.js"></script>
+
+		<script type="text/javascript" src="../../../../../../lib/js/framework/smart-framework.pak.js"></script>
+
+		<script type="text/javascript" src="../../jquery.event.drag.js"></script>
+		<script type="text/javascript" src="../../jquery.event.drop.js"></script>
+		<script type="text/javascript" src="../slick.grid.js"></script>
+		<script type="text/javascript" src="../../jquery.sparkline.js"></script>
+
+		<script type="text/javascript" src="../slick.editors.js"></script>
+		<style>
+		.style-id {
+			background: #333333 !important;
+			color:#FFFFFF !important;
+		}
+		</style>
+	</head>
+	<body>
+		<table width="100%">
+		<tr>
+			<td valign="top" width="50%">
+				<div id="myGrid" style="font-size:10px;width:700px;height:450px;"></div>
+			</td>
+			<td valign="top">
+				<h2>Demonstrates:</h2>
+				<ul>
+					<li>basic grid with minimal configuration</li>
+				</ul>
+			</td>
+		</tr>
+		</table>
+
+		<script>
+
+		// v.20190205
+
+		//-- ID
+		function displayID(row, cell, value, columnDef, dataContext) {
+			return '<a href="#">' + value + '</a>';
+		} //END FUNCTION
+		//-- Spark Graph
+		function waitingFormatter(row, cell, value, columnDef, dataContext) {
+			return "wait...";
+		} //END FUNCTION
+		function renderSparkline(cellNode, row, dataContext, colDef) {
+			var vals = dataContext["chart"].split(',');
+			if(row == 1) {
+				$(cellNode).empty().sparkline(vals, {width: '100%', type: 'bar'});
+			} else if(row == 2) {
+				$(cellNode).empty().sparkline(vals, {width: '100%', type: 'tristate'});
+			} else if(row == 3) {
+				$(cellNode).empty().sparkline(vals, {width: '100%', type: 'bullet'});
+			} else if(row == 4) {
+				$(cellNode).empty().sparkline(vals, {width: '100%', type: 'box'});
+			} else {
+				$(cellNode).empty().sparkline(vals, {width: '100%', type: 'line'});
+			} //end if else
+		} //END FUNCTION
+		//-- #END Spark Graph
+
+		var grid;
+
+		var columns = [
+			{id:"id", name:"ID", field:"id", sortable:false, formatter:displayID, cssHeadClass:"style-id"},
+			{id:"title", name:"&raquo; Title &laquo;", field:"title", sortable:true, editor:TextCellSelector},
+			{id:"duration", name:"Duration", field:"duration", sortable:false},
+			{id:"percent", name:"% Complete", field:"percentComplete", sortable:true, editor:IntegerCellEditor},
+			{id:"start", name:"Start", field:"start", sortable:true, editor:LongTextCellEditor},
+			{id:"finish", name:"Finish", field:"finish", sortable:true, editor:TextCellEditor},
+			{id:"effort-driven", name:"Effort Driven", field:"effortDriven", sortable:true, editor:YesNoSelectCellEditor},
+			{id:"chart", name:"Chart", sortable:false, width:125, formatter:waitingFormatter, rerenderOnResize:true, asyncPostRenderDelay:50, asyncPostRender:renderSparkline}
+		];
+
+		var options = {
+			enableAddRow: false,
+			enableCellNavigation: true,
+			enableColumnReorder: true,
+			enableAsyncPostRender: true, // req. by spark graph
+			editable: true,
+			autoEdit: false,
+			enableCellRangeSelection: true
+		};
+
+		$(function() {
+
+			var data = [];
+
+			for(var i = 0; i < 50000; i++) {
+				var ii = i % 5;
+				if(ii == 0) {
+
+				} else if(ii == 1) {
+
+				}
+				data[i] = {
+					id: '<u>' + (i + 1) + '</u>',
+					title: "Task " + (i + 1),
+					duration: "5 days",
+					percentComplete: Math.round(Math.random() * 100),
+					start: "01/01/2019",
+					finish: "01/05/2019",
+					effortDriven: (ii == 0),
+					chart: '1,2,3,4,5'
+			   };
+			} //end for
+
+			grid = new Slick.Grid($("#myGrid"), data, columns, options);
+
+			function dynamicSort(property) {
+				return function (a,b) {
+					return (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+				} //END FUNCTION
+			} //END FUNCTION
+
+			grid.onSort = function(sortCol, sortAsc) {
+				//--
+				sortdir = sortAsc ? 1 : -1;
+				sortcol = sortCol.field;
+				//-- sort
+				data.sort(dynamicSort(sortcol));
+				if(sortAsc != 1) {
+					data.reverse();
+				} //end if else
+				//--
+				grid.invalidate();
+				//-- or laternative to invalidate:
+			//	grid.removeAllRows();
+			//	grid.render();
+				//--
+			};
+
+
+		})
+
+		</script>
+
+	</body>
+</html>

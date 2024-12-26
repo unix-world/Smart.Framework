@@ -1,0 +1,28 @@
+/*
+// Smart Code Mirror JS
+// (c) 2016-2023 unix-world.org
+// r.20231107
+*/
+
+.CodeMirror-SmartMenu-default {
+	height: 22px !important;
+	background: #FCFCFC !important;
+	border: 1px solid #DDDDDD !important;
+	border-bottom: 0 !important;
+	text-align: center !important;
+}
+
+.CodeMirror-SmartMenu-default img {
+	vertical-align: baseline !important;
+}
+
+.CodeMirror-SmartMenu-fullscreen {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: auto;
+	border-bottom: 1px solid #ECECEC !important;
+	z-index: 99999;
+}
+
+/* END */

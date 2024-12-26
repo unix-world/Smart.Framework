@@ -1,0 +1,152 @@
+<script>{
+		"title":
+			".blur()",
+		"excerpt":
+			"Bind an event handler to the \"blur\" JavaScript event, or trigger that event on an element.",
+		"termSlugs": {
+			"category": [
+				"events/form-events","forms","version/1.0","version/1.4.3"
+			]
+		}
+	}</script><article id="blur1" class="entry method"><h2 class="section-title">
+<span class="name">.blur( handler )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#jQuery">jQuery</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Bind an event handler to the &quot;blur&quot; JavaScript event, or trigger that event on an element.</p>
+<ul class="signatures">
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0/">1.0</a></span><a id="blur-handler" href="#blur-handler"><span class="icon-link"></span>.blur( handler )</a>
+</h4>
+<ul><li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Event">Event</a> eventObject )</div>
+<div>A function to execute each time the event is triggered.</div>
+</li></ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.4.3/">1.4.3</a></span><a id="blur-eventData-handler" href="#blur-eventData-handler"><span class="icon-link"></span>.blur(  [eventData ], handler )</a>
+</h4>
+<ul>
+<li>
+<div><strong>eventData</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Anything">Anything</a>
+</div>
+<div>An object containing data that will be passed to the event handler.</div>
+</li>
+<li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Event">Event</a> eventObject )</div>
+<div>A function to execute each time the event is triggered.</div>
+</li>
+</ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0/">1.0</a></span><a id="blur" href="#blur"><span class="icon-link"></span>.blur()</a>
+</h4>
+<ul><li><div class="null-signature">This signature does not accept any arguments.</div></li></ul>
+</li>
+</ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>This method is a shortcut for <code>.on( &quot;blur&quot;, handler )</code> in the first two variations, and <code>.trigger( &quot;blur&quot; )</code> in the third.</p>
+    <p>The <code>blur</code> event is sent to an element when it loses focus. Originally, this event was only applicable to form elements, such as <code>&lt;input&gt;</code>. In recent browsers, the domain of the event has been extended to include all element types. An element can lose focus via keyboard commands, such as the Tab key, or by mouse clicks elsewhere on the page.</p>
+    <p>For example, consider the HTML:</p>
+    <div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">form</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">input</span> <span class="attribute">id</span>=<span class="value">&quot;target&quot;</span> <span class="attribute">type</span>=<span class="value">&quot;text&quot;</span> <span class="attribute">value</span>=<span class="value">&quot;Field 1&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">&quot;text&quot;</span> <span class="attribute">value</span>=<span class="value">&quot;Field 2&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">form</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">&quot;other&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  Trigger the handler</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>The event handler can be bound to the first input field:</code></div></div><div class="container"><div class="line"><code>$( &quot;#target&quot; ).blur(function() {</code></div></div><div class="container"><div class="line"><code>  alert( &quot;Handler for .blur() called.&quot; );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>Now if the first field has the focus, clicking elsewhere or tabbing away from it displays the alert:</p>
+    <p>
+      <samp>Handler for .blur() called.</samp>
+    </p>
+    <p>To trigger the event programmatically, apply <code>.blur()</code> without an argument:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;#other&quot;</span> ).click(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;#target&quot;</span> ).blur();</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>After this code executes, clicks on <samp>Trigger the handler</samp> will also alert the message.</p>
+    <p>The <code>blur</code> event does not bubble in Internet Explorer. Therefore, scripts that rely on event delegation with the <code>blur</code> event will not work consistently across browsers. As of version 1.4.2, however, jQuery works around this limitation by mapping <code>blur</code> to the <code>focusout</code> event in its event delegation methods, <a href="/live/"><code>.live()</code></a> and <a href="/delegate/"><code>.delegate()</code></a>.</p>
+  </div>
+<h3>Additional Notes:</h3>
+<div class="longdesc"><ul><li>
+			As the <code>.blur()</code> method is just a shorthand for <code>.on( &quot;blur&quot;, handler )</code>, detaching is possible using <code>.off( &quot;blur&quot; )</code>.
+		</li></ul></div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>To trigger the blur event on all paragraphs:</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;p&quot;</span> ).blur();</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

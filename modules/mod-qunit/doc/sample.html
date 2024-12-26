@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>QUnit Sample</title>
+	<link href="../views/js/qunit/qunit.css" rel="stylesheet">
+	<script src="../views/js/qunit/qunit.js"></script>
+</head>
+<body>
+	<div id="qunit"></div>
+	<div id="qunit-fixture"></div>
+	<script>
+	QUnit.config.reorder = false;
+	QUnit.test("sample test ok", function(assert) {
+		assert.ok(1 == "1", "Passed!");
+	});
+	QUnit.test("sample test with error", function(assert) {
+		var value = "halo";
+		assert.equal(value, "hello", "Expected value: hello");
+	});
+	</script>
+</body>
+</html>

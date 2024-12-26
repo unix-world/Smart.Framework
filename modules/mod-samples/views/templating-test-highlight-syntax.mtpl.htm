@@ -1,0 +1,25 @@
+<!-- start Marker-TPL highlight syntax template -->
+[%%%COMMENT%%%]
+Template: templating-test-highlight-syntax.mtpl.htm # v.20210608
+[%%%/COMMENT%%%]
+<style>
+.hilite pre {
+	border: 1px solid #F0F0F0;
+	background: #F9F9F9;
+	padding: 3px;
+	white-space: pre;
+	overflow: auto;
+}
+.hilite code {
+	white-space: pre;
+}
+</style>
+[###HTML-HIGHLIGHT###]
+<h1>Marker-TPL [###TPL-TYPE|html###] Source:<br><i>[###TPL-PATH|html###]</i></h1>
+<hr>
+<div class="hilite">
+<pre><code data-syntax="markertpl">[@@@SUB-TEMPLATE:%the-tpl%|html-no-subtpls@@@]</code></pre>
+</div>
+<hr>
+<br>
+<!-- end Marker-TPL highlight syntax template -->

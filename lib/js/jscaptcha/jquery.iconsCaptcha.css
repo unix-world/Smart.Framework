@@ -1,0 +1,95 @@
+
+/*
+// Icons Captcha: v1.0
+// (c) 2021-2023 unix-world.org
+// License: BSD
+// r.20231117
+// jquery.iconsCaptcha.css
+*/
+
+.iCaptcha-container {
+	width: 150px;
+	height: 100px;
+	line-height: 48px !important;
+	background: #FFFFFF;
+	border: 1px solid #EAEAEA;
+	padding: 4px;
+	opacity: 0.77 !important;
+	border-radius: 2px;
+	text-shadow: none;
+}
+
+.iCaptcha-container .iCaptcha-error {
+	padding: 10px !important;
+	background: #FFFFFF !important;
+	color: #EF4756 !important;
+	font-size: 10px !important;
+	font-weight: bold !important;
+	cursor: help !important;
+}
+.iCaptcha-container .iCaptcha-error img {
+	width: 64px !important;
+	height: 64px !important;
+}
+
+.iCaptcha-container.iCaptcha-overlay {
+	opacity: 0.53 !important;
+}
+
+.iCaptcha-container .iCaptcha-ldr {
+	margin-top: 16px;
+}
+.iCaptcha-container .iCaptcha-ldr img {
+	width: 64px !important;
+	height: 64px !important;
+}
+
+.iCaptcha-container .iCaptcha-box {
+	width: 100%;
+	display: block;
+}
+
+.iCaptcha-container .iCaptcha-line {
+	display: block;
+	height: 48px;
+	padding: 0;
+	text-align: center !important;
+	box-sizing: border-box;
+}
+
+.iCaptcha-container .iCaptcha-line .iCaptcha-icon {
+	font-size: 2rem !important; /* sync with sfi-2x */
+	cursor: pointer;
+	display: inline-block;
+	height: 48px;
+	width: 48px;
+	color: #5E6885;
+	border: 1px dashed #F0F0F0;
+	border-right: none;
+	box-sizing: border-box;
+}
+
+.iCaptcha-container .iCaptcha-line div.iCaptcha-icon:nth-child(3n) {
+	border-right: 1px dashed #F0F0F0;
+}
+
+.iCaptcha-container .iCaptcha-line .iCaptcha-icon:hover {
+	color: #EF4756;
+	border-bottom: 2px solid #777777;
+	transition: border 0.1s linear;
+}
+
+.iCaptcha-container .iCaptcha-line .iCaptcha-icon.iCaptcha-selected {
+	color: #EF4756 !important;
+}
+
+.iCaptcha-container .iCaptcha-line .iCaptcha-icon.iCaptcha-disabled {
+	cursor: default;
+}
+
+.iCaptcha-container .iCaptcha-line .iCaptcha-icon.iCaptcha-disabled:hover {
+	color: #777777;
+	border-bottom: none;
+}
+
+/* END */

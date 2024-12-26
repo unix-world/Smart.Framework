@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="128" height="128" viewBox="0 0 128 128" id="android">
+	<g id="grp1">
+		<g transform="matrix(0.34867844,0,0,0.34867844,64,28.274015)" id="g1479">
+			<g style="fill:#a4c639" id="g17">
+				<use height="100%" width="100%" y="0" x="0" style="stroke:#ffffff;stroke-width:14.39999962" xlink:href="#b" id="use2"/>
+				<use height="100%" width="100%" y="0" x="0" xlink:href="#a" transform="scale(-1,1)" id="use4"/>
+				<g style="stroke:#ffffff;stroke-width:7.19999981" id="a">
+					<rect rx="6.5" transform="rotate(29)" height="86" width="13" y="-86" x="14" id="rect6"/>
+					<rect id="c" rx="24" height="133" width="48" y="41" x="-143"/>
+					<use height="100%" width="100%" y="97" x="85" xlink:href="#c" id="use9"/>
+				</g>
+				<g id="b">
+					<ellipse cx="0" cy="41" rx="91" ry="84" id="ellipse12"/>
+					<rect rx="22" height="182" width="182" y="20" x="-91" id="rect14"/>
+				</g>
+			</g>
+			<g style="fill:#ffffff;stroke:#ffffff;stroke-width:7.19999981" id="g25">
+				<path d="M -95,44.5 H 95" id="path19"/>
+				<circle cy="0" cx="-42" r="4" id="circle21"/>
+				<circle cy="0" cx="42" r="4" id="circle23"/>
+			</g>
+		</g>
+	</g>
+</svg>

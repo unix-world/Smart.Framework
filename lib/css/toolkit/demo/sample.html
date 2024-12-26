@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<!-- Smart UX CSS Toolkit :: r.8.7 / smart.framework.v.8.7 -->
+<!-- extended by unixman, (c) 2015-present unix-world.org :: License: BSD :: based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc. ; based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com -->
+<html>
+<head>
+<!-- basepath -->
+<meta charset="UTF-8">
+<title>Smart :: UX CSS Toolkit / Test</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" type="text/css" href="../../../core/plugins/fonts/typo/sans/ibm-plex-sans.css">
+<link rel="stylesheet" href="../../default.css">
+<link rel="stylesheet" href="../sf-icons.css">
+<link rel="stylesheet" href="../ux-toolkit.css">
+<link rel="stylesheet" href="../ux-toolkit-responsive.css">
+<style>
+* {
+	font-family: 'IBM Plex Sans',arial,sans-serif;
+	font-smooth: always;
+}
+.ux-button-custom:hover,
+.ux-button-custom:focus {
+	background-color: #555555;
+	color: #EEEEEE;
+}
+.ux-button-custom:active {
+	background-color: #222222;
+	color: #FFFFFF;
+	box-shadow: none;
+}
+</style>
+<script src="../../../js/jquery/jquery.js" type="text/javascript"></script>
+<script src="../../../js/framework/smart-framework.pak.js"></script>
+<script>
+jQuery(() => {
+	smartJ$Browser.DateSmartsFields('ux-date-field');
+});
+</script>
+</head>
+<body>
+<br>
+<div style="width:100% !important; padding-left:10px; padding-top:2px; padding-right:10px; box-sizing: border-box !important; -moz-box-sizing: border-box !important; -webkit-box-sizing: border-box !important;">
+
+	<div class="ux-section">
+		<h1>UX Toolkit <span style="color:#CCCCCC!important; font-weight:normal!important; font-size:75%!important;">r.20241223</span> - Overview</h1>
+	</div>
+
+	<br>
+
+<!-- Buttons -->
+
+	<div class="ux-subsection"><h2>Buttons</h2></div>
+
+	<h3>Regular (Light) Buttons</h3>
+	<p>
+		<button class="ux-button">Regular Button</button>
+		<a class="ux-button" href="#">Regular anchor Button</a>
+		<button class="ux-button ux-button-disabled" disabled>Regular Button disabled</button>
+		<a class="ux-button ux-button-disabled" href="#">Regular anchor Button disabled</a>
+	</p>
+	<h3>Regular (Light) Alternate Buttons</h3>
+	<p>
+		<button class="ux-button ux-button-alt">Regular Alternate Button</button>
+		<a class="ux-button ux-button-alt" href="#">Regular Alternate anchor Button</a>
+		<button class="ux-button ux-button-alt ux-button-disabled" disabled>Regular Alternate Button disabled</button>
+		<a class="ux-button ux-button-alt ux-button-disabled" href="#">Regular Alternate anchor Button disabled</a>
+	</p>
+	<h3>Dark Buttons</h3>
+	<p>
+		<button class="ux-button ux-button-dark">Dark Button</button>
+		<a class="ux-button ux-button-dark" href="#">Dark anchor Button</a>
+		<button class="ux-button ux-button-dark ux-button-disabled">Dark Button disabled</button>
+		<a class="ux-button ux-button-dark ux-button-disabled" href="#">Dark anchor Button disabled</a>
+	</p>
+	<h3>Details Buttons</h3>
+	<p>
+		<button class="ux-button ux-button-details">Details Button</button>
+		<a class="ux-button ux-button-details" href="#">Details anchor Button</a>
+		<button class="ux-button ux-button-details ux-button-disabled">Details Button disabled</button>
+		<a class="ux-button ux-button-details ux-button-disabled" href="#">Details anchor Button disabled</a>
+	</p>
+	<h3>Primary Buttons</h3>
+	<p>
+		<button class="ux-button ux-button-primary">Primary Button</button>
+		<a class="ux-button ux-button-primary" href="#">Primary anchor Button</a>
+		<button class="ux-button ux-button-primary ux-button-disabled">Primary Button disabled</button>
+		<a class="ux-button ux-button-primary ux-button-disabled" href="#">Primary anchor Button disabled</a>
+	</p>
+	<h3>Secondary Buttons</h3>
+	<p>
+		<button class="ux-button ux-button-secondary">Secondary Button</button>
+		<a class="ux-button ux-button-secondary" href="#">Secondary anchor Button</a>
+		<button class="ux-button ux-button-secondary ux-button-disabled">Secondary Button disabled</button>
+		<a class="ux-button ux-button-secondary ux-button-disabled" href="#">Secondary anchor Button disabled</a>
+	</p>
+	<h3>Styled Buttons</h3>
+	<p>
+		<button class="ux-button ux-button-regular">Regular Button</button>
+		<a class="ux-button ux-button-regular" href="#">Regular anchor Button</a>
+		<button class="ux-button ux-button-regular ux-button-disabled">Regular Button disabled</button>
+		<a class="ux-button ux-button-regular ux-button-disabled" href="#">Regular anchor Button disabled</a>
+	</p>
+	<p>
+		<button class="ux-button ux-button-highlight">Highlight Button</button>
+		<a class="ux-button ux-button-highlight" href="#">Highlight anchor Button</a>
+		<button class="ux-button ux-button-highlight ux-button-disabled">Highlight Button disabled</button>
+		<a class="ux-button ux-button-highlight ux-button-disabled" href="#">Highlight anchor Button disabled</a>
+	</p>
+	<p>
+		<button class="ux-button ux-button-special">Special Button</button>
+		<a class="ux-button ux-button-special" href="#">Special anchor Button</a>
+		<button class="ux-button ux-button-special ux-button-disabled">Special Button disabled</button>
+		<a class="ux-button ux-button-special ux-button-disabled" href="#">Special anchor Button disabled</a>
+	</p>
+	<p>
+		<button class="ux-button ux-button-info">Info Button</button>
+		<a class="ux-button ux-button-info" href="#">Info anchor Button</a>
+		<button class="ux-button ux-button-info ux-button-disabled">Info Button disabled</button>
+		<a class="ux-button ux-button-info ux-button-disabled" href="#">Info anchor Button disabled</a>
+	</p>
+
+	<h3>Custom Buttons with Various Icons</h3>
+	<p>
+		<button class="ux-button ux-button-custom ux-button-responsive">
+			<i class="sfi sfi-bullhorn"></i> &nbsp;
+			Custom Button
+		</button>
+		<a class="ux-button ux-button-custom ux-button-responsive" href="#">
+			<span style="color:#5CB85C;"><i class="sfi sfi-bullhorn"></i> &nbsp; </span>
+			Custom anchor Button
+		</a>
+		<button class="ux-button ux-button-custom ux-button-disabled ux-button-responsive">
+			<span style="color:#FF6600;"><i class="sfi sfi-bullhorn"></i> &nbsp; </span>
+			Custom Button disabled
+		</button>
+		<a class="ux-button ux-button-custom ux-button-disabled ux-button-responsive" href="#">
+			<i class="sfi sfi-bullhorn"></i> &nbsp;
+			Custom anchor Button disabled
+		</a>
+	</p>
+
+	<h3>Send Buttons</h3>
+	<p>
+		<button class="ux-button ux-button-primary ux-button-xlarge"><i class="sfi sfi-arrow-up sfi-xl"></i> &nbsp; Submit Button</button> &nbsp;
+		<button class="ux-button ux-button-large"><i class="sfi sfi-arrow-up sfi-lg"></i> &nbsp; Submit Button</button> &nbsp;
+		<button class="ux-button ux-button-regular"><i class="sfi sfi-arrow-up"></i> &nbsp; Submit (Button)</button> &nbsp;
+		<button class="ux-button ux-button-highlight ux-button-small"><i class="sfi sfi-arrow-up sfi-sm"></i> &nbsp; Submit Button</button> &nbsp;
+		<button class="ux-button ux-button-special ux-button-xsmall"><i class="sfi sfi-arrow-up sfi-xs"></i> &nbsp; Submit Button</button> &nbsp;
+		<button class="ux-button ux-button-secondary ux-button-super"><i class="sfi sfi-arrow-up"></i> &nbsp; Submit Button</button> &nbsp;
+		<br>
+		<input class="ux-button ux-button-special ux-button-xlarge" type="submit" value="Submit Input"> &nbsp;
+		<input class="ux-button ux-button-info ux-button-large" type="button" value="Submit Input"> &nbsp;
+		<input class="ux-button ux-button-dark" type="reset" value="Submit Input"> &nbsp;
+		<input class="ux-button ux-button-small" type="button" value="Submit Input"> &nbsp;
+		<input class="ux-button ux-button-secondary ux-button-xsmall" type="submit" value="Submit Input"> &nbsp;
+		<input class="ux-button ux-button-regular ux-button-super" type="submit" value="Submit Input"> &nbsp;
+	</p>
+
+	<br>
+
+<!-- Grid -->
+
+	<div class="ux-subsection"><h2>Fluid Responsive Layout Grid, 12 columns, featuring screens: v=very-small ; s=small ; m=medium ; l=large</h2></div>
+	<div title="Responsive Fluid Grid" class="ux-border">
+		<div class="ux-grid-row">
+			<div class="ux-grid-col s1 ux-center">1</div>
+			<div class="ux-grid-col s1 ux-center" style="background:#ECECEC;">2</div>
+			<div class="ux-grid-col s1 ux-center">3</div>
+			<div class="ux-grid-col s1 ux-center" style="background:#ECECEC;">4</div>
+			<div class="ux-grid-col s1 ux-center">5</div>
+			<div class="ux-grid-col s1 ux-center" style="background:#ECECEC;">6</div>
+			<div class="ux-grid-col s1 ux-center">7</div>
+			<div class="ux-grid-col s1 ux-center" style="background:#ECECEC;">8</div>
+			<div class="ux-grid-col s1 ux-center">9</div>
+			<div class="ux-grid-col s1 ux-center" style="background:#ECECEC;">10</div>
+			<div class="ux-grid-col s1 ux-center">11</div>
+			<div class="ux-grid-col s1 ux-center" style="background:#ECECEC;">12</div>
+		</div>
+		<div class="ux-grid-row">
+			<div class="ux-grid-col s6 m4 l3" style="color:#111111; background:#DDEEFF; height:225px;">
+				<p>This part will occupy 12 columns on a very small screen, 6 on a small, 4 on a medium screen, and 3 on a large screen.</p>
+			</div>
+			<div class="ux-grid-col s6 m8 l9" style="color:#333333; background:#FFFFDD; height:225px;">
+				<p>This part will occupy 12 columns on a very small screen, 6 on a small, 8 on a medium screen, and 9 on a large screen.</p>
+				<p>This part will occupy 12 columns on a very small screen, 6 on a small, 8 on a medium screen, and 9 on a large screen.</p>
+			</div>
+		</div>
+		<div class="ux-grid-row">
+			<div class="ux-grid-col s1 ux-center v-hidden">1</div>
+			<div class="ux-grid-col s1 ux-center v-hidden" style="background:#ECECEC;">2</div>
+			<div class="ux-grid-col s1 ux-center v-hidden">3</div>
+			<div class="ux-grid-col s1 ux-center v-hidden" style="background:#ECECEC;">4</div>
+			<div class="ux-grid-col s1 ux-center v-hidden">5</div>
+			<div class="ux-grid-col s1 ux-center v-hidden" style="background:#ECECEC;">6</div>
+			<div class="ux-grid-col s1 ux-center v-hidden">7</div>
+			<div class="ux-grid-col s1 ux-center v-hidden" style="background:#ECECEC;">8</div>
+			<div class="ux-grid-col s1 ux-center v-hidden">9</div>
+			<div class="ux-grid-col s1 ux-center v-hidden" style="background:#ECECEC;">10</div>
+			<div class="ux-grid-col s1 ux-center v-hidden">11</div>
+			<div class="ux-grid-col s1 ux-center v-hidden" style="background:#ECECEC;">12</div>
+		</div>
+	</div>
+
+<!-- Tables -->
+
+	<br>
+	<br>
+
+	<div class="ux-subsection"><h2>Fluid (Div Based) Responsive Table</h2></div>
+
+	<style type="text/css">
+	#myFluidTable {
+		width: 100%;
+	}
+	#myFluidTable div.ux-fluid-tbl-cell {
+		border: 1px solid #ECECEC;
+		padding: 3px;
+	}
+	@media all and (max-width: 640px) {
+		#myFluidTable {
+			width: 100% !important;
+		}
+		#myFluidTable div.ux-fluid-tbl-row {
+			display: block !important;
+		}
+		#myFluidTable div.ux-fluid-tbl-cell {
+			display: inline-block !important;
+			width: 100% !important;
+		}
+	}
+	</style>
+	<div id="myFluidTable" class="ux-fluid-table">
+		<div class="ux-fluid-tbl-row">
+			<div class="ux-fluid-tbl-cell" style="background:#ECECEC;">
+				Cell 1.1
+				<br>
+				Another Line
+			</div>
+			<div class="ux-fluid-tbl-cell" style="text-align:center;">
+				Cell 1.2
+			</div>
+		</div>
+		<div class="ux-fluid-tbl-row">
+			<div class="ux-fluid-tbl-cell" style="text-align:right;">
+				Cell 2.1
+			</div>
+			<div class="ux-fluid-tbl-cell">
+				Cell 2.2 this_is_a_very_long_word_to_display_in_the_table_cell_to_test_the_overflow
+			</div>
+		</div>
+	</div>
+	<br>
+
+	<style type="text/css">
+	#myFluid2Table {
+		width: 75% !important;
+	}
+	#myFluid2Table div.ux-fluid-tbl-cell {
+		border: 1px solid #EEEEEE;
+		padding: 5px;
+	}
+	@media all and (max-width: 480px) {
+		#myFluid2Table {
+			width: 75% !important;
+		}
+		#myFluid2Table div.ux-fluid-tbl-row {
+			display: display: block !important;
+			width: 100% !important;
+		}
+		#myFluid2Table div.ux-fluid-tbl-cell {
+			width: 100%;
+			display: block;
+			margin-bottom: 5px;
+		}
+	}
+	</style>
+	<div id="myFluid2Table" class="ux-fluid-table">
+		<div class="ux-fluid-tbl-row">
+			<div class="ux-fluid-tbl-cell">
+				Cell 1.1
+			</div>
+			<div class="ux-fluid-tbl-cell" style="text-align:right;">
+				Cell 1.2
+			</div>
+		</div>
+		<div class="ux-fluid-tbl-row">
+			<div class="ux-fluid-tbl-cell" style="background:#CCDDEE; text-align:center;">
+				Cell 2.1
+			</div>
+			<div class="ux-fluid-tbl-cell" style="background:#CCDDEE;">
+				Cell 2.2
+				<br>
+				Another Line
+			</div>
+		</div>
+	</div>
+
+	<br>
+	<br>
+
+	<div class="ux-subsection"><h2>Misc Tables</h2></div>
+
+	<h3>Default Table</h3>
+
+	<table class="ux-table">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Make</th>
+				<th>Model</th>
+				<th>Year</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>Honda</td>
+				<td>Accord</td>
+				<td>2009</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>Toyota</td>
+				<td>Camry</td>
+				<td>2012</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>Hyundai</td>
+				<td>Elantra</td>
+				<td>2010</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Table using width, alignment, reflow</h3>
+
+	<table class="ux-table ux-table-bordered ux-reflow-table" width="500">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Make</th>
+				<th>Model</th>
+				<th>Year</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr valign="top">
+				<td align="left">Left</td>
+				<td align="center">Center</td>
+				<td align="right">Right</td>
+				<td>Default</td>
+			</tr>
+			<tr valign="middle">
+				<td align="left">Left</td>
+				<td align="center">Center</td>
+				<td align="right">Right</td>
+				<td>Default</td>
+			</tr>
+			<tr valign="bottom">
+				<td align="left">Left</td>
+				<td align="center">Center</td>
+				<td align="right">Right</td>
+				<td>Default</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Bordered Table</h3>
+
+	<table class="ux-table ux-table-bordered">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Make</th>
+				<th>Model</th>
+				<th>Year</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>Honda</td>
+				<td>Accord</td>
+				<td>2009</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>Toyota</td>
+				<td>Camry</td>
+				<td>2012</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>Hyundai</td>
+				<td>Elantra</td>
+				<td>2010</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Bordered Table with rowspan</h3>
+
+	<table class="ux-table ux-table-bordered">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Make</th>
+				<th>Model</th>
+				<th>Year</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td rowspan="3">1</td>
+				<td>Honda</td>
+				<td>Accord</td>
+				<td>2009</td>
+			</tr>
+			<tr>
+				<td>Toyota</td>
+				<td>Camry</td>
+				<td>2012</td>
+			</tr>
+			<tr>
+				<td>Hyundai</td>
+				<td>Elantra</td>
+				<td>2010</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Bordered Table with colspan</h3>
+
+	<table class="ux-table ux-table-bordered">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Make</th>
+				<th>Model</th>
+				<th>Year</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>Toyota</td>
+				<td>Camry</td>
+				<td>2012</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td colspan="3">[ redacted ]</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>Hyundai</td>
+				<td>Elantra</td>
+				<td>2010</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Table with Horizontal Borders</h3>
+
+	<table class="ux-table ux-table-horizontal">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Make</th>
+				<th>Model</th>
+				<th>Year</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>Honda</td>
+				<td>Accord</td>
+				<td>2009</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>Toyota</td>
+				<td>Camry</td>
+				<td>2012</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>Hyundai</td>
+				<td>Elantra</td>
+				<td>2010</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Striped Table</h3>
+
+	<table class="ux-table">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Make</th>
+				<th>Model</th>
+				<th>Year</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="ux-tr-odd">
+				<td>1</td>
+				<td>Honda</td>
+				<td>Accord</td>
+				<td>2009</td>
+			</tr>
+			<tr class="ux-tr-odd">
+				<td>2</td>
+				<td>Toyota</td>
+				<td>Camry</td>
+				<td>2012</td>
+			</tr>
+			<tr class="ux-tr-even">
+				<td>3</td>
+				<td>Hyundai</td>
+				<td>Elantra</td>
+				<td>2010</td>
+			</tr>
+			<tr class="ux-tr-even">
+				<td>4</td>
+				<td>Ford</td>
+				<td>Focus</td>
+				<td>2008</td>
+			</tr>
+			<tr class="ux-tr-odd">
+				<td>5</td>
+				<td>Nissan</td>
+				<td>Sentra</td>
+				<td>2011</td>
+			</tr>
+			<tr class="ux-tr-odd">
+				<td>6</td>
+				<td>BMW</td>
+				<td>M3</td>
+				<td>2009</td>
+			</tr>
+			<tr class="ux-tr-even">
+				<td>7</td>
+				<td>Honda</td>
+				<td>Civic</td>
+				<td>2010</td>
+			</tr>
+			<tr class="ux-tr-even">
+				<td>8</td>
+				<td>Kia</td>
+				<td>Soul</td>
+				<td>2010</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Nth Child Striped Table</h3>
+
+	<table class="ux-table ux-table-striped">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Make</th>
+				<th>Model</th>
+				<th>Year</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>Honda</td>
+				<td>Accord</td>
+				<td>2009</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>Toyota</td>
+				<td>Camry</td>
+				<td>2012</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>Hyundai</td>
+				<td>Elantra</td>
+				<td>2010</td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td>Ford</td>
+				<td>Focus</td>
+				<td>2008</td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td>Nissan</td>
+				<td>Sentra</td>
+				<td>2011</td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td>BMW</td>
+				<td>M3</td>
+				<td>2009</td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td>Honda</td>
+				<td>Civic</td>
+				<td>2010</td>
+			</tr>
+			<tr>
+				<td>8</td>
+				<td>Kia</td>
+				<td>Soul</td>
+				<td>2010</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Nested Table</h3>
+
+	<table class="ux-table ux-table-bordered">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Make</th>
+				<th>Model</th>
+				<th>Type</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>Honda</td>
+				<td>Accord</td>
+				<td>
+					<table class="ux-table ux-table-bordered">
+						<thead>
+							<tr>
+								<th>Fuel</th>
+								<th>Year</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Diesel</td>
+								<td>2009</td>
+							</tr>
+							<tr>
+								<td>Petrol</td>
+								<td>2009</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>Toyota</td>
+				<td>Camry</td>
+				<td>
+					<table class="ux-table ux-table-bordered">
+						<thead>
+							<tr>
+								<th>Fuel</th>
+								<th>Year</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Diesel</td>
+								<td>2012</td>
+							</tr>
+							<tr>
+								<td>Petrol</td>
+								<td>2012</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>Hyundai</td>
+				<td>Elantra</td>
+				<td>
+					<table class="ux-table ux-table-bordered">
+						<thead>
+							<tr>
+								<th>Fuel</th>
+								<th>Year</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Diesel</td>
+								<td>2010</td>
+							</tr>
+							<tr>
+								<td>Petrol</td>
+								<td>2010</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<br>
+	<br>
+
+<!-- Forms -->
+
+	<div class="ux-subsection"><h2>Form Elements</h2></div>
+
+	<h3>Date Input</h3>
+
+	<div style="padding:8px;">
+		<div class="ux-flex-center">
+			<div class="ux-grid-row ux-flex-center-container">
+				<div class="ux-grid-col c12">
+					<div style="width:200px;">
+						<input type="date" class="ux-field ux-date-field" name="doc-date" id="input-date" value="2024-12-21" min="2024-11-01" max="2024-12-31" step="2" title="Click to change the Date" autocomplete="off">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<h3>Form Elements outside a form, centered</h3>
+
+	<div style="padding:8px;">
+		<div class="ux-flex-center">
+			<div class="ux-grid-row ux-flex-center-container">
+				<div class="ux-grid-col c12">
+					<div>
+						<select name="fooselect" class="ux-field ux-field-xl">
+							<option value="CA">CA</option>
+							<option value="NY">NY</option>
+						<select>
+						<button class="ux-button ux-button-super ux-button-details">Test Button</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<h3>Form Input normalization</h3>
+
+	<form class="ux-form">
+		<fieldset>
+			<legend>An inline form. Check for alignment and input/select sizing.</legend>
+			<input type="text" placeholder="text input">
+			<input type="search" placeholder="search input">
+			<select name="fooselect">
+				<option value="CA">CA</option>
+				<option value="NY">NY</option>
+			<select>
+		</fieldset>
+		<fieldset>
+			<textarea rows="7" cols="50">This is some text ...</textarea>
+		</fieldset>
+		<fieldset>
+			<button type="submit" class="ux-button ux-button-dark ux-button-responsive">Sign out &nbsp; <i class="sfi sfi-exit"></i></button>
+		</fieldset>
+	</form>
+
+	<h3>Default Form</h3>
+
+	<form class="ux-form">
+		<fieldset>
+			<legend>A default inline form.</legend>
+
+			<input type="text" placeholder="Email">
+			<!-- input type="pass --><!-- word" placeholder="Pass --> <!-- word" -->
+
+			<label>
+				<input type="checkbox"> Remember me
+			</label>
+
+			<button type="submit" class="ux-button">Sign in &nbsp; <i class="sfi sfi-enter"></i></button>
+		</fieldset>
+	</form>
+
+
+	<h3>Multi-Column Form with Grids</h3>
+
+	<form class="ux-form ux-form-stacked">
+		<fieldset>
+			<legend>Legend</legend>
+
+			<div class="ux-g">
+				<div class="ux-u-1 ux-u-md-1-3">
+					<label>First Name</label>
+					<input type="text">
+				</div>
+				<!-- div class="ux-u-1 ux-u-md-1-3">
+					<label>Pass --><!-- word</label>
+					<input type="pass --><!-- word">
+				</div -->
+				<div class="ux-u-1 ux-u-md-1-3">
+					<label>E-Mail * (required)</label>
+					<input type="email" required>
+				</div>
+				<div class="ux-u-1 ux-u-md-1-3">
+					<label>City</label>
+					<input type="text">
+				</div>
+				<div class="ux-u-1 ux-u-md-1-3">
+					<label>State</label>
+					<select>
+						<option>AL</option>
+						<option>CA</option>
+						<option>IL</option>
+						<option>MD</option>
+						<option>NY</option>
+					</select>
+				</div>
+			</div>
+
+			<label class="ux-checkbox">
+				<input type="checkbox"> I've read the terms and conditions
+			</label>
+
+			<button type="submit" class="ux-button ux-button-primary">Submit &nbsp; <i class="sfi sfi-checkmark"></i></button>
+			<button type="reset" class="ux-button ux-button-special">Reset &nbsp; <i class="sfi sfi-cross"></i></button>
+		</fieldset>
+	</form>
+
+
+	<h3>Stacked Form</h3>
+
+	<form class="ux-form ux-form-stacked">
+		<fieldset>
+			<legend>Legend</legend>
+
+			<label>First Name</label>
+			<input type="text">
+
+			<!-- label>Pass --><!-- word</label>
+			<input type="pass --><!-- word" -->
+
+			<label>E-Mail</label>
+			<input type="email" required>
+			<aside class="ux-help-inline">This is a required field.</aside>
+
+			<label>City</label>
+			<input type="text">
+			<aside class="ux-form-message">This is another required field.</aside>
+
+			<label>State</label>
+			<select>
+				<option>AL</option>
+				<option>CA</option>
+				<option>IL</option>
+				<option>MD</option>
+				<option>NY</option>
+			</select>
+
+			<label>Color</label>
+			<input type="color" style="width:60px; height:40px;">
+
+			<label class="ux-checkbox">
+				<input type="checkbox"> I've read the terms and conditions
+			</label>
+
+			<button type="submit" class="ux-button notice">Submit &nbsp; <i class="sfi sfi-checkmark2"></i></button>
+			<button type="reset" class="ux-button">Reset &nbsp; <i class="sfi sfi-cancel-circle"></i></button>
+		</fieldset>
+	</form>
+
+
+	<h3>Aligned Form</h3>
+
+	<form class="ux-form ux-form-aligned">
+		<fieldset>
+			<div class="ux-control-group">
+				<label>Username</label>
+				<input type="text" placeholder="Username">
+				<aside class="ux-form-message-inline">This is a <code>ux-form-message-inline</code> field.</aside>
+			</div>
+
+			<!-- div class="ux-control-group">
+				<label>Pass --><!-- word</label>
+				<input type="pass --><!-- word" placeholder="Pass --><!-- word">
+				<aside class="ux-help-inline">This is a <code>ux-help-inline</code> field. Deprecated.</aside>
+			</div -->
+
+			<div class="ux-control-group">
+				<label>Email Address</label>
+				<input type="text" placeholder="Email Address">
+			</div>
+
+			<div class="ux-control-group">
+				<label>Here's a button</label>
+				<input type="button" value="Button" class="ux-button ux-button-info">
+			</div>
+
+			<div class="ux-control-group">
+				<label>Supercalifragilistic Label</label>
+				<input type="text" placeholder="Enter something here...">
+			</div>
+
+			<div class="ux-controls">
+				<label class="ux-checkbox">
+					<input type="checkbox"> Remember Me
+				</label>
+
+				<button type="submit" class="ux-button ux-button-primary">Submit &nbsp; <i class="sfi sfi-arrow-up2"></i></button>
+			</div>
+		</fieldset>
+	</form>
+
+
+	<h3>Grouped Inputs</h3>
+
+	<form class="ux-form">
+		<fieldset class="ux-group">
+			<input type="text" class="ux-input-1-2" placeholder="Username">
+			<!-- input type="text" class="ux-input-1-2" placeholder="Pass --><!-- word" -->
+			<input type="text" class="ux-input-1-2" placeholder="Email">
+		</fieldset>
+
+		<fieldset class="ux-group">
+			<input type="text" class="ux-input-1-2" placeholder="Another Group">
+			<textarea class="ux-input-1-2" placeholder="Textareas can work here too"></textarea>
+			<input type="text" class="ux-input-1-2" placeholder="Even More Stuff">
+			<input type="text" class="ux-input-1-2" placeholder="Last Item">
+		</fieldset>
+		<button type="submit" class="ux-button ux-button-primary ux-input-1-2">Sign in &nbsp; <i class="sfi sfi-enter"></i></button>
+	</form>
+
+
+	<h3>Dynamic Grouped Inputs</h3>
+
+	<form class="ux-form" onsubmit="return false">
+		<script>
+		function testDynamicGroupAdd() {
+			var g = document.getElementById('test-dynamic-group');
+			var newNode = g.getElementsByTagName("input")[0].cloneNode();
+			g.appendChild(newNode);
+		}
+		function testDynamicGroupRemove() {
+			var g = document.getElementById('test-dynamic-group');
+			var nodeCount = g.getElementsByTagName("input").length;
+			if(nodeCount > 1) {
+				g.removeChild(g.lastChild);
+			}
+		}
+		</script>
+		<fieldset class="ux-group">
+			<button type="submit" class="ux-button ux-button-dark" onclick="testDynamicGroupAdd()"><i class="sfi sfi-plus"></i> &nbsp; Add field</button>
+			<button type="submit" class="ux-button ux-button-secondary" onclick="testDynamicGroupRemove()"><i class="sfi sfi-minus"></i> &nbsp; Remove field</button>
+		</fieldset>
+		<fieldset class="ux-group" id="test-dynamic-group">
+			<input type="text" class="ux-input-1-3" placeholder="Add or remove fields to test">
+		</fieldset>
+	</form>
+
+
+	<h3>Form Input Sizing</h3>
+
+	<form class="ux-form">
+		<input class="ux-input-1-1" type="text" placeholder=".ux-input-1-1" style="margin-bottom:3px;"><br>
+		<input class="ux-input-2-3" type="text" placeholder=".ux-input-2-3" style="margin-bottom:3px;"><br>
+		<input class="ux-input-1-2" type="text" placeholder=".ux-input-1-2" style="margin-bottom:3px;"><br>
+		<input class="ux-input-1-3" type="text" placeholder=".ux-input-1-3" style="margin-bottom:3px;"><br>
+		<input class="ux-input-1-4" type="text" placeholder=".ux-input-1-4" style="margin-bottom:3px;"><br>
+	</form>
+
+
+	<h3>Invalid Form Inputs</h3>
+
+	<form class="ux-form">
+		<input type="email" placeholder="Requires an email" required>
+	</form>
+
+
+	<h3>Disabled Form Inputs</h3>
+
+	<form class="ux-form">
+		<input class="ux-input-xlarge" type="text" placeholder="Disabled input here..." value="Foo bar baz" disabled>
+	</form>
+
+
+	<h3>ReadOnly Form Inputs</h3>
+
+	<form class="ux-form">
+		<input class="ux-input-xlarge" type="text" placeholder="Readonly input here..." value="Foo bar baz" readonly>
+	</form>
+
+
+	<h3>Rounded Form Inputs</h3>
+
+	<form class="ux-form ux-form-stacked">
+		<label>Subject</label>
+		<input type="text" class="ux-input-rounded" placeholder="Subject">
+		<label>Message</label>
+		<textarea class="ux-input-rounded" rows="5" cols="40" placeholder="Message..."></textarea>
+		<button type="submit" class="ux-button ux-button-details"><i class="sfi sfi-search"></i> &nbsp; Search</button>
+		<button type="reset" class="ux-button">Reset &nbsp; <i class="sfi sfi-cancel-circle"></i></button>
+	</form>
+
+
+	<h3>Form XL Fields</h3>
+
+	<form>
+		<select class="ux-field ux-field-xl">
+			<option>Brazil</option>
+			<option>Canada</option>
+			<option>United States</option>
+			<option>United Kingdom</option>
+			<option>Venezuela</option>
+		</select>
+		<br>
+		<br>
+		<select multiple="multiple" class="ux-field ux-field-xl">
+			<option>Brazil</option>
+			<option>Canada</option>
+			<option>United States</option>
+			<option>United Kingdom</option>
+			<option>Venezuela</option>
+		</select>
+		<br>
+		<br>
+		<input type="text" class="ux-field ux-field-xl" placeholder="XL">
+	</form>
+
+
+	<h3>Form Checkboxes and Radios</h3>
+
+	<form class="ux-form">
+		<label class="ux-checkbox">
+			<input type="checkbox" value="">
+			Here's option one.
+		</label>
+
+		<label class="ux-radio">
+			<input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+			Here's a radio button. You can choose this one...
+		</label>
+
+		<label class="ux-radio">
+			<input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+			...Or this one!
+		</label>
+	</form>
+
+
+	<h3>Form Help text</h3>
+
+	<form class="ux-form ux-form-stacked">
+		<fieldset>
+			<label>Last Name</label>
+			<input type="text">
+			<aside class="ux-form-message">Block help text</aside>
+		</fieldset>
+	</form>
+
+
+	<h3>Form Button</h3>
+
+	<form class="ux-form">
+		<a class="ux-button"><i class="sfi sfi-magnet"></i> &nbsp; Anchor</a>
+		<a class="ux-button ux-button-special" href="#">&raquo; &nbsp; Link</a>
+		<button class="ux-button ux-button-primary">Button &nbsp; &middot;</button>
+		<a class="ux-button ux-button-dark" href="#">&laquo; &nbsp; Link</a>
+		<button type="submit" class="ux-button ux-button-info">Search</button>
+		<button type="submit" class="ux-button ux-button-secondary"><i class="sfi sfi-compass"></i> &nbsp; Submit</button>
+		<input type="button" class="ux-button ux-button-regular" value="Input Button">
+		<input type="reset" class="ux-button ux-button-highlight" value="Reset">
+		<input type="submit" class="ux-button ux-button-details" value="Filter">
+	</form>
+
+
+	<h3>Buttons Group</h3>
+
+	<div class="ux-button-group" role="group" aria-label="...">
+		<button class="ux-button">A Default Button</button>
+		<button class="ux-button">Another Button</button>
+		<button class="ux-button">Again a Button</button>
+	</div>
+
+	<div class="ux-button-group" role="group" aria-label="...">
+		<button class="ux-button ux-button-primary">Primary Button</button>
+		<button class="ux-button ux-button-info">Info Button</button>
+		<button class="ux-button ux-button-secondary">Secondary Button</button>
+		<button class="ux-button ux-button-regular">Regular Button</button>
+		<button class="ux-button ux-button-highlight">Highlight Button</button>
+		<button class="ux-button ux-button-special">Special Button</button>
+		<button class="ux-button ux-button-details">Details Button</button>
+		<button class="ux-button ux-button-dark">Dark Button</button>
+	</div>
+
+	<br>
+	<br>
+	<br>
+
+<!-- Simple Navs -->
+
+	<div class="ux-subsection"><h2>Simple Navs</h2></div>
+
+	<br>
+
+	<nav class="ux-navy">
+		<input type="checkbox" id="navy-checkbox">
+		<ul class="horizontal">
+			<li><span class="img"><img id="img-logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgaWQ9InNtYXJ0LmZyYW1ld29yay1sb2dvIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMjggMTI4IiBoZWlnaHQ9IjEyOHB4IiB3aWR0aD0iMTI4cHgiPgo8ZGVmcyBpZD0iZGVmczE0NjYiLz4KPGcgaWQ9ImxheWVyMSI+CiAgICA8ZyBpZD0iZzMzNDYiIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7ZmlsbC1ydWxlOmV2ZW5vZGQ7c3Ryb2tlOm5vbmUiIHRyYW5zZm9ybT0ibWF0cml4KDEuNjg5NTgwMywwLDAsMS42ODk1ODAzLDIuOTY0ODQ2OSwyLjk2NDg0NzcpIj4KICAgICAgICA8cGF0aCBzdHlsZT0iZmlsbDojRUQyODM5O2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpldmVub2RkO3N0cm9rZTojRUQyODM5O3N0cm9rZS13aWR0aDoxNC4xMjEwODUxNztzdHJva2Utb3BhY2l0eToxIiBpZD0icGF0aDMwMTEiIGQ9Im0gNjIuOTMwNTczLDM2LjEyNDQ0NiBhIDI2LjgwNjEyOCwyNi44MDYxMjggMCAxIDEgLTUzLjYxMjI1MzEsMCAyNi44MDYxMjgsMjYuODA2MTI4IDAgMSAxIDUzLjYxMjI1MzEsMCB6Ii8+CiAgICAgICAgPGcgaWQ9InRleHQzNzU4IiBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lIi8+CiAgICAgICAgPGcgaWQ9InRleHQxNDQyIiBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lO3N0cm9rZS13aWR0aDowLjU0OTcyODYzIiB0cmFuc2Zvcm09InNjYWxlKDAuOTI4ODEwNjYsMS4wNzY2NDU3KSIgYXJpYS1sYWJlbD0iUzpmIj4KICAgICAgICAgICAgPHBhdGggaWQ9InBhdGgxNDQ0IiBzdHlsZT0iZmlsbDojZmZmZmZmO3N0cm9rZS13aWR0aDowLjU0OTcyODYzIiBkPSJNIDEyLjEzNTgzNSw0Ni45MTY5NzUgViA0MC4zNDYgbCAyLjIyMjUzNSwwLjAxOTMzIHEgMC4wOTY2MywzLjI4NTQ4NyAxLjg5Mzk4Nyw0Ljg3MDI1MSAxLjgxNjY4MSwxLjU2NTQzOSA1LjUwODAyMywxLjU2NTQzOSAzLjQ0MDA5OSwwIDUuMjM3NDU0LC0xLjM1Mjg0OCAxLjgxNjY4MSwtMS4zNzIxNzQgMS44MTY2ODEsLTMuOTgxMjM4IDAsLTIuMDg3MjUxIC0xLjEwMTYwNSwtMy4yMDgxODIgLTEuMDgyMjc4LC0xLjEyMDkzMSAtNC41OTk2ODIsLTIuMTgzODgyIGwgLTMuODA3MywtMS4xNDAyNTggcSAtNC4xMzU4NDksLTEuMjU2MjE1IC01LjgzNjU3MiwtMy4xMzA4NzYgLTEuNjgxMzk2LC0xLjg3NDY2IC0xLjY4MTM5NiwtNS4xNDA4MjEgMCwtMy42NzIwMTYgMi42MDkwNjMsLTUuNzAxMjg3IDIuNjA5MDY0LC0yLjAyOTI3MiA3LjMyNDcwNCwtMi4wMjkyNzIgMi4wMDk5NDYsMCA0LjQwNjQxOSwwLjQ0NDUwNyAyLjM5NjQ3MywwLjQyNTE4MSA1LjEwMjE2OCwxLjI1NjIxNiB2IDYuMTQ1Nzk0IGggLTIuMTgzODgyIHEgLTAuMzI4NTQ5LC0zLjA1MzU3MSAtMi4wNDg1OTgsLTQuNDA2NDE4IC0xLjcwMDcyMywtMS4zNzIxNzQgLTUuMTk4ODAxLC0xLjM3MjE3NCAtMy4wNTM1NzEsMCAtNC42NTc2NjIsMS4yNTYyMTUgLTEuNTg0NzY0LDEuMjM2ODkgLTEuNTg0NzY0LDMuNjE0MDM2IDAsMi4wNjc5MjUgMS4xOTgyMzcsMy4yNDY4MzUgMS4xOTgyMzYsMS4xNzg5MSA1LjA4Mjg0MiwyLjMzODQ5NCBsIDMuNTc1MzgzLDEuMDYyOTUyIHEgMy45MjMyNTgsMS4xNzg5MSA1LjU4NTMyOSwzLjAxNDkxOCAxLjY4MTM5NiwxLjgxNjY4MSAxLjY4MTM5Niw0Ljg4OTU3OCAwLDQuMTkzODI4IC0yLjY4NjM2OSw2LjMxOTczMSAtMi42ODYzNjksMi4xMjU5MDQgLTguMDAxMTI4LDIuMTI1OTA0IC0yLjM3NzE0NywwIC00Ljg1MDkyNiwtMC40ODMxNiAtMi40NTQ0NTIsLTAuNDgzMTYgLTUuMDA1NTM2LC0xLjQ2ODgwNiB6Ii8+CiAgICAgICAgICAgIDxwYXRoIGlkPSJwYXRoMTQ0NiIgc3R5bGU9ImZpbGw6I0MyMjAzRjtzdHJva2Utd2lkdGg6MC41NDk3Mjg2MyIgZD0ibSAzOS43MTQ2MDIsNDYuMjk4NTMgcSAwLC0xLjA4MjI3OCAwLjczNDQwMywtMS44MzYwMDcgMC43NTM3MywtMC43NTM3MyAxLjgzNjAwOCwtMC43NTM3MyAxLjA4MjI3OCwwIDEuODE2NjgxLDAuNzUzNzMgMC43NTM3MywwLjc1MzcyOSAwLjc1MzczLDEuODM2MDA3IDAsMS4wODIyNzggLTAuNzM0NDA0LDEuODM2MDA4IC0wLjczNDQwMywwLjczNDQwMyAtMS44MzYwMDcsMC43MzQ0MDMgLTEuMTAxNjA1LDAgLTEuODM2MDA4LC0wLjczNDQwMyAtMC43MzQ0MDMsLTAuNzUzNzMgLTAuNzM0NDAzLC0xLjgzNjAwOCB6IG0gMCwtMTIuNjAwODEgcSAwLC0xLjA4MjI3OCAwLjczNDQwMywtMS44MTY2ODEgMC43NTM3MywtMC43NTM3MyAxLjgzNjAwOCwtMC43NTM3MyAxLjEwMTYwNCwwIDEuODM2MDA3LDAuNzM0NDAzIDAuNzM0NDA0LDAuNzM0NDAzIDAuNzM0NDA0LDEuODM2MDA4IDAsMS4xMDE2MDQgLTAuNzM0NDA0LDEuODM2MDA4IC0wLjczNDQwMywwLjczNDQwMyAtMS44MzYwMDcsMC43MzQ0MDMgLTEuMDgyMjc4LDAgLTEuODM2MDA4LC0wLjczNDQwMyAtMC43MzQ0MDMsLTAuNzUzNzMgLTAuNzM0NDAzLC0xLjgzNjAwOCB6Ii8+CiAgICAgICAgICAgIDxwYXRoIGlkPSJwYXRoMTQ0OCIgc3R5bGU9ImZpbGw6IzIyMjIyMjtzdHJva2Utd2lkdGg6MC41NDk3Mjg2MyIgZD0ibSA2NS45OTg1LDIzLjA4NzUyOCBoIC0xLjg3NDY2MSBxIC0wLjAxOTMzLC0xLjQ0OTQ3OSAtMC44MzEwMzUsLTIuMjAzMjA5IC0wLjc5MjM4MiwtMC43NTM3MjkgLTIuMzE5MTY3LC0wLjc1MzcyOSAtMS45OTA2MTksMCAtMi44MDIzMjgsMS4xMDE2MDQgLTAuODExNzA4LDEuMDgyMjc4IC0wLjgxMTcwOCwzLjg4NDYwNiB2IDIuNjQ3NzE2IGggNS43Mzk5MzkgdiAyLjA2NzkyNSBoIC01LjczOTkzOSB2IDE2LjQyNzQzNiBoIDQuNTYxMDI5IHYgMi4wNDg1OTggSCA1MC40MDIwOTggdiAtMi4wNDg1OTggaCAzLjQwMTQ0NiBWIDI5LjgzMjQ0MSBoIC0zLjQwMTQ0NiB2IC0yLjA2NzkyNSBoIDMuNDAxNDQ2IHYgLTIuNTcwNDEgcSAwLC0zLjQ0MDA5OSAxLjc3ODAyOCwtNS4xOTg4MDEgMS43OTczNTUsLTEuNzU4NzAyIDUuMjU2NzgsLTEuNzU4NzAyIDEuMjk0ODY5LDAgMi41ODk3MzcsMC4yMzE5MTcgMS4yOTQ4NjksMC4yMzE5MTYgMi41NzA0MTEsMC43MTUwNzYgeiIvPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9nPgo8L3N2Zz4=" alt="App.Logo" title="App.Logo" width="44" height="44"></span></li>
+			<li><label for="navy-checkbox"><span class="toggle"><var>&#9776;</var></span></label></li>
+			<li><a href="#">Home<i class="icon sfi sfi-home"></i></a></li>
+			<li><a href="#">News</a></li>
+			<li class="w-space"><div></div></li>
+			<li><a href="#" class="active">About</a></li>
+			<li class="a-right"><a href="#">Contact</a></li>
+		</ul>
+	</nav>
+
+	<br>
+
+	<nav class="ux-navy green-navy">
+		<input type="checkbox" id="navy-checkbox2">
+		<ul class="horizontal">
+			<li><span class="img"><img id="img-logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgaWQ9InNtYXJ0LmZyYW1ld29yay1sb2dvIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMjggMTI4IiBoZWlnaHQ9IjEyOHB4IiB3aWR0aD0iMTI4cHgiPgo8ZGVmcyBpZD0iZGVmczE0NjYiLz4KPGcgaWQ9ImxheWVyMSI+CiAgICA8ZyBpZD0iZzMzNDYiIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7ZmlsbC1ydWxlOmV2ZW5vZGQ7c3Ryb2tlOm5vbmUiIHRyYW5zZm9ybT0ibWF0cml4KDEuNjg5NTgwMywwLDAsMS42ODk1ODAzLDIuOTY0ODQ2OSwyLjk2NDg0NzcpIj4KICAgICAgICA8cGF0aCBzdHlsZT0iZmlsbDojRUQyODM5O2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpldmVub2RkO3N0cm9rZTojRUQyODM5O3N0cm9rZS13aWR0aDoxNC4xMjEwODUxNztzdHJva2Utb3BhY2l0eToxIiBpZD0icGF0aDMwMTEiIGQ9Im0gNjIuOTMwNTczLDM2LjEyNDQ0NiBhIDI2LjgwNjEyOCwyNi44MDYxMjggMCAxIDEgLTUzLjYxMjI1MzEsMCAyNi44MDYxMjgsMjYuODA2MTI4IDAgMSAxIDUzLjYxMjI1MzEsMCB6Ii8+CiAgICAgICAgPGcgaWQ9InRleHQzNzU4IiBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lIi8+CiAgICAgICAgPGcgaWQ9InRleHQxNDQyIiBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lO3N0cm9rZS13aWR0aDowLjU0OTcyODYzIiB0cmFuc2Zvcm09InNjYWxlKDAuOTI4ODEwNjYsMS4wNzY2NDU3KSIgYXJpYS1sYWJlbD0iUzpmIj4KICAgICAgICAgICAgPHBhdGggaWQ9InBhdGgxNDQ0IiBzdHlsZT0iZmlsbDojZmZmZmZmO3N0cm9rZS13aWR0aDowLjU0OTcyODYzIiBkPSJNIDEyLjEzNTgzNSw0Ni45MTY5NzUgViA0MC4zNDYgbCAyLjIyMjUzNSwwLjAxOTMzIHEgMC4wOTY2MywzLjI4NTQ4NyAxLjg5Mzk4Nyw0Ljg3MDI1MSAxLjgxNjY4MSwxLjU2NTQzOSA1LjUwODAyMywxLjU2NTQzOSAzLjQ0MDA5OSwwIDUuMjM3NDU0LC0xLjM1Mjg0OCAxLjgxNjY4MSwtMS4zNzIxNzQgMS44MTY2ODEsLTMuOTgxMjM4IDAsLTIuMDg3MjUxIC0xLjEwMTYwNSwtMy4yMDgxODIgLTEuMDgyMjc4LC0xLjEyMDkzMSAtNC41OTk2ODIsLTIuMTgzODgyIGwgLTMuODA3MywtMS4xNDAyNTggcSAtNC4xMzU4NDksLTEuMjU2MjE1IC01LjgzNjU3MiwtMy4xMzA4NzYgLTEuNjgxMzk2LC0xLjg3NDY2IC0xLjY4MTM5NiwtNS4xNDA4MjEgMCwtMy42NzIwMTYgMi42MDkwNjMsLTUuNzAxMjg3IDIuNjA5MDY0LC0yLjAyOTI3MiA3LjMyNDcwNCwtMi4wMjkyNzIgMi4wMDk5NDYsMCA0LjQwNjQxOSwwLjQ0NDUwNyAyLjM5NjQ3MywwLjQyNTE4MSA1LjEwMjE2OCwxLjI1NjIxNiB2IDYuMTQ1Nzk0IGggLTIuMTgzODgyIHEgLTAuMzI4NTQ5LC0zLjA1MzU3MSAtMi4wNDg1OTgsLTQuNDA2NDE4IC0xLjcwMDcyMywtMS4zNzIxNzQgLTUuMTk4ODAxLC0xLjM3MjE3NCAtMy4wNTM1NzEsMCAtNC42NTc2NjIsMS4yNTYyMTUgLTEuNTg0NzY0LDEuMjM2ODkgLTEuNTg0NzY0LDMuNjE0MDM2IDAsMi4wNjc5MjUgMS4xOTgyMzcsMy4yNDY4MzUgMS4xOTgyMzYsMS4xNzg5MSA1LjA4Mjg0MiwyLjMzODQ5NCBsIDMuNTc1MzgzLDEuMDYyOTUyIHEgMy45MjMyNTgsMS4xNzg5MSA1LjU4NTMyOSwzLjAxNDkxOCAxLjY4MTM5NiwxLjgxNjY4MSAxLjY4MTM5Niw0Ljg4OTU3OCAwLDQuMTkzODI4IC0yLjY4NjM2OSw2LjMxOTczMSAtMi42ODYzNjksMi4xMjU5MDQgLTguMDAxMTI4LDIuMTI1OTA0IC0yLjM3NzE0NywwIC00Ljg1MDkyNiwtMC40ODMxNiAtMi40NTQ0NTIsLTAuNDgzMTYgLTUuMDA1NTM2LC0xLjQ2ODgwNiB6Ii8+CiAgICAgICAgICAgIDxwYXRoIGlkPSJwYXRoMTQ0NiIgc3R5bGU9ImZpbGw6I0MyMjAzRjtzdHJva2Utd2lkdGg6MC41NDk3Mjg2MyIgZD0ibSAzOS43MTQ2MDIsNDYuMjk4NTMgcSAwLC0xLjA4MjI3OCAwLjczNDQwMywtMS44MzYwMDcgMC43NTM3MywtMC43NTM3MyAxLjgzNjAwOCwtMC43NTM3MyAxLjA4MjI3OCwwIDEuODE2NjgxLDAuNzUzNzMgMC43NTM3MywwLjc1MzcyOSAwLjc1MzczLDEuODM2MDA3IDAsMS4wODIyNzggLTAuNzM0NDA0LDEuODM2MDA4IC0wLjczNDQwMywwLjczNDQwMyAtMS44MzYwMDcsMC43MzQ0MDMgLTEuMTAxNjA1LDAgLTEuODM2MDA4LC0wLjczNDQwMyAtMC43MzQ0MDMsLTAuNzUzNzMgLTAuNzM0NDAzLC0xLjgzNjAwOCB6IG0gMCwtMTIuNjAwODEgcSAwLC0xLjA4MjI3OCAwLjczNDQwMywtMS44MTY2ODEgMC43NTM3MywtMC43NTM3MyAxLjgzNjAwOCwtMC43NTM3MyAxLjEwMTYwNCwwIDEuODM2MDA3LDAuNzM0NDAzIDAuNzM0NDA0LDAuNzM0NDAzIDAuNzM0NDA0LDEuODM2MDA4IDAsMS4xMDE2MDQgLTAuNzM0NDA0LDEuODM2MDA4IC0wLjczNDQwMywwLjczNDQwMyAtMS44MzYwMDcsMC43MzQ0MDMgLTEuMDgyMjc4LDAgLTEuODM2MDA4LC0wLjczNDQwMyAtMC43MzQ0MDMsLTAuNzUzNzMgLTAuNzM0NDAzLC0xLjgzNjAwOCB6Ii8+CiAgICAgICAgICAgIDxwYXRoIGlkPSJwYXRoMTQ0OCIgc3R5bGU9ImZpbGw6IzIyMjIyMjtzdHJva2Utd2lkdGg6MC41NDk3Mjg2MyIgZD0ibSA2NS45OTg1LDIzLjA4NzUyOCBoIC0xLjg3NDY2MSBxIC0wLjAxOTMzLC0xLjQ0OTQ3OSAtMC44MzEwMzUsLTIuMjAzMjA5IC0wLjc5MjM4MiwtMC43NTM3MjkgLTIuMzE5MTY3LC0wLjc1MzcyOSAtMS45OTA2MTksMCAtMi44MDIzMjgsMS4xMDE2MDQgLTAuODExNzA4LDEuMDgyMjc4IC0wLjgxMTcwOCwzLjg4NDYwNiB2IDIuNjQ3NzE2IGggNS43Mzk5MzkgdiAyLjA2NzkyNSBoIC01LjczOTkzOSB2IDE2LjQyNzQzNiBoIDQuNTYxMDI5IHYgMi4wNDg1OTggSCA1MC40MDIwOTggdiAtMi4wNDg1OTggaCAzLjQwMTQ0NiBWIDI5LjgzMjQ0MSBoIC0zLjQwMTQ0NiB2IC0yLjA2NzkyNSBoIDMuNDAxNDQ2IHYgLTIuNTcwNDEgcSAwLC0zLjQ0MDA5OSAxLjc3ODAyOCwtNS4xOTg4MDEgMS43OTczNTUsLTEuNzU4NzAyIDUuMjU2NzgsLTEuNzU4NzAyIDEuMjk0ODY5LDAgMi41ODk3MzcsMC4yMzE5MTcgMS4yOTQ4NjksMC4yMzE5MTYgMi41NzA0MTEsMC43MTUwNzYgeiIvPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9nPgo8L3N2Zz4=" alt="App.Logo" title="App.Logo" width="44" height="44"></span></li>
+			<li><label for="navy-checkbox2"><span class="toggle"><var>&#9776;</var></span></label></li>
+			<li><a href="#">Home<i class="icon sfi sfi-home"></i></a></li>
+			<li><a href="#">News</a></li>
+			<li class="w-space"><div></div></li>
+			<li><a href="#" class="active">About</a></li>
+			<li class="a-right"><a href="#">Contact</a></li>
+		</ul>
+	</nav>
+
+	<br>
+
+	<nav class="ux-navy blue-navy">
+		<input type="checkbox" id="navy-checkbox2">
+		<ul class="horizontal">
+			<li><span class="img"><img id="img-logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgaWQ9InNtYXJ0LmZyYW1ld29yay1sb2dvIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMjggMTI4IiBoZWlnaHQ9IjEyOHB4IiB3aWR0aD0iMTI4cHgiPgo8ZGVmcyBpZD0iZGVmczE0NjYiLz4KPGcgaWQ9ImxheWVyMSI+CiAgICA8ZyBpZD0iZzMzNDYiIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7ZmlsbC1ydWxlOmV2ZW5vZGQ7c3Ryb2tlOm5vbmUiIHRyYW5zZm9ybT0ibWF0cml4KDEuNjg5NTgwMywwLDAsMS42ODk1ODAzLDIuOTY0ODQ2OSwyLjk2NDg0NzcpIj4KICAgICAgICA8cGF0aCBzdHlsZT0iZmlsbDojRUQyODM5O2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpldmVub2RkO3N0cm9rZTojRUQyODM5O3N0cm9rZS13aWR0aDoxNC4xMjEwODUxNztzdHJva2Utb3BhY2l0eToxIiBpZD0icGF0aDMwMTEiIGQ9Im0gNjIuOTMwNTczLDM2LjEyNDQ0NiBhIDI2LjgwNjEyOCwyNi44MDYxMjggMCAxIDEgLTUzLjYxMjI1MzEsMCAyNi44MDYxMjgsMjYuODA2MTI4IDAgMSAxIDUzLjYxMjI1MzEsMCB6Ii8+CiAgICAgICAgPGcgaWQ9InRleHQzNzU4IiBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lIi8+CiAgICAgICAgPGcgaWQ9InRleHQxNDQyIiBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lO3N0cm9rZS13aWR0aDowLjU0OTcyODYzIiB0cmFuc2Zvcm09InNjYWxlKDAuOTI4ODEwNjYsMS4wNzY2NDU3KSIgYXJpYS1sYWJlbD0iUzpmIj4KICAgICAgICAgICAgPHBhdGggaWQ9InBhdGgxNDQ0IiBzdHlsZT0iZmlsbDojZmZmZmZmO3N0cm9rZS13aWR0aDowLjU0OTcyODYzIiBkPSJNIDEyLjEzNTgzNSw0Ni45MTY5NzUgViA0MC4zNDYgbCAyLjIyMjUzNSwwLjAxOTMzIHEgMC4wOTY2MywzLjI4NTQ4NyAxLjg5Mzk4Nyw0Ljg3MDI1MSAxLjgxNjY4MSwxLjU2NTQzOSA1LjUwODAyMywxLjU2NTQzOSAzLjQ0MDA5OSwwIDUuMjM3NDU0LC0xLjM1Mjg0OCAxLjgxNjY4MSwtMS4zNzIxNzQgMS44MTY2ODEsLTMuOTgxMjM4IDAsLTIuMDg3MjUxIC0xLjEwMTYwNSwtMy4yMDgxODIgLTEuMDgyMjc4LC0xLjEyMDkzMSAtNC41OTk2ODIsLTIuMTgzODgyIGwgLTMuODA3MywtMS4xNDAyNTggcSAtNC4xMzU4NDksLTEuMjU2MjE1IC01LjgzNjU3MiwtMy4xMzA4NzYgLTEuNjgxMzk2LC0xLjg3NDY2IC0xLjY4MTM5NiwtNS4xNDA4MjEgMCwtMy42NzIwMTYgMi42MDkwNjMsLTUuNzAxMjg3IDIuNjA5MDY0LC0yLjAyOTI3MiA3LjMyNDcwNCwtMi4wMjkyNzIgMi4wMDk5NDYsMCA0LjQwNjQxOSwwLjQ0NDUwNyAyLjM5NjQ3MywwLjQyNTE4MSA1LjEwMjE2OCwxLjI1NjIxNiB2IDYuMTQ1Nzk0IGggLTIuMTgzODgyIHEgLTAuMzI4NTQ5LC0zLjA1MzU3MSAtMi4wNDg1OTgsLTQuNDA2NDE4IC0xLjcwMDcyMywtMS4zNzIxNzQgLTUuMTk4ODAxLC0xLjM3MjE3NCAtMy4wNTM1NzEsMCAtNC42NTc2NjIsMS4yNTYyMTUgLTEuNTg0NzY0LDEuMjM2ODkgLTEuNTg0NzY0LDMuNjE0MDM2IDAsMi4wNjc5MjUgMS4xOTgyMzcsMy4yNDY4MzUgMS4xOTgyMzYsMS4xNzg5MSA1LjA4Mjg0MiwyLjMzODQ5NCBsIDMuNTc1MzgzLDEuMDYyOTUyIHEgMy45MjMyNTgsMS4xNzg5MSA1LjU4NTMyOSwzLjAxNDkxOCAxLjY4MTM5NiwxLjgxNjY4MSAxLjY4MTM5Niw0Ljg4OTU3OCAwLDQuMTkzODI4IC0yLjY4NjM2OSw2LjMxOTczMSAtMi42ODYzNjksMi4xMjU5MDQgLTguMDAxMTI4LDIuMTI1OTA0IC0yLjM3NzE0NywwIC00Ljg1MDkyNiwtMC40ODMxNiAtMi40NTQ0NTIsLTAuNDgzMTYgLTUuMDA1NTM2LC0xLjQ2ODgwNiB6Ii8+CiAgICAgICAgICAgIDxwYXRoIGlkPSJwYXRoMTQ0NiIgc3R5bGU9ImZpbGw6I0MyMjAzRjtzdHJva2Utd2lkdGg6MC41NDk3Mjg2MyIgZD0ibSAzOS43MTQ2MDIsNDYuMjk4NTMgcSAwLC0xLjA4MjI3OCAwLjczNDQwMywtMS44MzYwMDcgMC43NTM3MywtMC43NTM3MyAxLjgzNjAwOCwtMC43NTM3MyAxLjA4MjI3OCwwIDEuODE2NjgxLDAuNzUzNzMgMC43NTM3MywwLjc1MzcyOSAwLjc1MzczLDEuODM2MDA3IDAsMS4wODIyNzggLTAuNzM0NDA0LDEuODM2MDA4IC0wLjczNDQwMywwLjczNDQwMyAtMS44MzYwMDcsMC43MzQ0MDMgLTEuMTAxNjA1LDAgLTEuODM2MDA4LC0wLjczNDQwMyAtMC43MzQ0MDMsLTAuNzUzNzMgLTAuNzM0NDAzLC0xLjgzNjAwOCB6IG0gMCwtMTIuNjAwODEgcSAwLC0xLjA4MjI3OCAwLjczNDQwMywtMS44MTY2ODEgMC43NTM3MywtMC43NTM3MyAxLjgzNjAwOCwtMC43NTM3MyAxLjEwMTYwNCwwIDEuODM2MDA3LDAuNzM0NDAzIDAuNzM0NDA0LDAuNzM0NDAzIDAuNzM0NDA0LDEuODM2MDA4IDAsMS4xMDE2MDQgLTAuNzM0NDA0LDEuODM2MDA4IC0wLjczNDQwMywwLjczNDQwMyAtMS44MzYwMDcsMC43MzQ0MDMgLTEuMDgyMjc4LDAgLTEuODM2MDA4LC0wLjczNDQwMyAtMC43MzQ0MDMsLTAuNzUzNzMgLTAuNzM0NDAzLC0xLjgzNjAwOCB6Ii8+CiAgICAgICAgICAgIDxwYXRoIGlkPSJwYXRoMTQ0OCIgc3R5bGU9ImZpbGw6IzIyMjIyMjtzdHJva2Utd2lkdGg6MC41NDk3Mjg2MyIgZD0ibSA2NS45OTg1LDIzLjA4NzUyOCBoIC0xLjg3NDY2MSBxIC0wLjAxOTMzLC0xLjQ0OTQ3OSAtMC44MzEwMzUsLTIuMjAzMjA5IC0wLjc5MjM4MiwtMC43NTM3MjkgLTIuMzE5MTY3LC0wLjc1MzcyOSAtMS45OTA2MTksMCAtMi44MDIzMjgsMS4xMDE2MDQgLTAuODExNzA4LDEuMDgyMjc4IC0wLjgxMTcwOCwzLjg4NDYwNiB2IDIuNjQ3NzE2IGggNS43Mzk5MzkgdiAyLjA2NzkyNSBoIC01LjczOTkzOSB2IDE2LjQyNzQzNiBoIDQuNTYxMDI5IHYgMi4wNDg1OTggSCA1MC40MDIwOTggdiAtMi4wNDg1OTggaCAzLjQwMTQ0NiBWIDI5LjgzMjQ0MSBoIC0zLjQwMTQ0NiB2IC0yLjA2NzkyNSBoIDMuNDAxNDQ2IHYgLTIuNTcwNDEgcSAwLC0zLjQ0MDA5OSAxLjc3ODAyOCwtNS4xOTg4MDEgMS43OTczNTUsLTEuNzU4NzAyIDUuMjU2NzgsLTEuNzU4NzAyIDEuMjk0ODY5LDAgMi41ODk3MzcsMC4yMzE5MTcgMS4yOTQ4NjksMC4yMzE5MTYgMi41NzA0MTEsMC43MTUwNzYgeiIvPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9nPgo8L3N2Zz4=" alt="App.Logo" title="App.Logo" width="44" height="44"></span></li>
+			<li><label for="navy-checkbox2"><span class="toggle"><var>&#9776;</var></span></label></li>
+			<li><a href="#">Home<i class="icon sfi sfi-home"></i></a></li>
+			<li><a href="#">News</a></li>
+			<li class="w-space"><div></div></li>
+			<li><a href="#" class="active">About</a></li>
+			<li class="a-right"><a href="#">Contact</a></li>
+		</ul>
+	</nav>
+
+	<br>
+
+	<nav class="ux-navy alt-navy">
+		<input type="checkbox" id="navy-checkbox2">
+		<ul class="horizontal">
+			<li><span class="img"><img id="img-logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgaWQ9InNtYXJ0LmZyYW1ld29yay1sb2dvIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMjggMTI4IiBoZWlnaHQ9IjEyOHB4IiB3aWR0aD0iMTI4cHgiPgo8ZGVmcyBpZD0iZGVmczE0NjYiLz4KPGcgaWQ9ImxheWVyMSI+CiAgICA8ZyBpZD0iZzMzNDYiIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7ZmlsbC1ydWxlOmV2ZW5vZGQ7c3Ryb2tlOm5vbmUiIHRyYW5zZm9ybT0ibWF0cml4KDEuNjg5NTgwMywwLDAsMS42ODk1ODAzLDIuOTY0ODQ2OSwyLjk2NDg0NzcpIj4KICAgICAgICA8cGF0aCBzdHlsZT0iZmlsbDojRUQyODM5O2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpldmVub2RkO3N0cm9rZTojRUQyODM5O3N0cm9rZS13aWR0aDoxNC4xMjEwODUxNztzdHJva2Utb3BhY2l0eToxIiBpZD0icGF0aDMwMTEiIGQ9Im0gNjIuOTMwNTczLDM2LjEyNDQ0NiBhIDI2LjgwNjEyOCwyNi44MDYxMjggMCAxIDEgLTUzLjYxMjI1MzEsMCAyNi44MDYxMjgsMjYuODA2MTI4IDAgMSAxIDUzLjYxMjI1MzEsMCB6Ii8+CiAgICAgICAgPGcgaWQ9InRleHQzNzU4IiBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lIi8+CiAgICAgICAgPGcgaWQ9InRleHQxNDQyIiBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lO3N0cm9rZS13aWR0aDowLjU0OTcyODYzIiB0cmFuc2Zvcm09InNjYWxlKDAuOTI4ODEwNjYsMS4wNzY2NDU3KSIgYXJpYS1sYWJlbD0iUzpmIj4KICAgICAgICAgICAgPHBhdGggaWQ9InBhdGgxNDQ0IiBzdHlsZT0iZmlsbDojZmZmZmZmO3N0cm9rZS13aWR0aDowLjU0OTcyODYzIiBkPSJNIDEyLjEzNTgzNSw0Ni45MTY5NzUgViA0MC4zNDYgbCAyLjIyMjUzNSwwLjAxOTMzIHEgMC4wOTY2MywzLjI4NTQ4NyAxLjg5Mzk4Nyw0Ljg3MDI1MSAxLjgxNjY4MSwxLjU2NTQzOSA1LjUwODAyMywxLjU2NTQzOSAzLjQ0MDA5OSwwIDUuMjM3NDU0LC0xLjM1Mjg0OCAxLjgxNjY4MSwtMS4zNzIxNzQgMS44MTY2ODEsLTMuOTgxMjM4IDAsLTIuMDg3MjUxIC0xLjEwMTYwNSwtMy4yMDgxODIgLTEuMDgyMjc4LC0xLjEyMDkzMSAtNC41OTk2ODIsLTIuMTgzODgyIGwgLTMuODA3MywtMS4xNDAyNTggcSAtNC4xMzU4NDksLTEuMjU2MjE1IC01LjgzNjU3MiwtMy4xMzA4NzYgLTEuNjgxMzk2LC0xLjg3NDY2IC0xLjY4MTM5NiwtNS4xNDA4MjEgMCwtMy42NzIwMTYgMi42MDkwNjMsLTUuNzAxMjg3IDIuNjA5MDY0LC0yLjAyOTI3MiA3LjMyNDcwNCwtMi4wMjkyNzIgMi4wMDk5NDYsMCA0LjQwNjQxOSwwLjQ0NDUwNyAyLjM5NjQ3MywwLjQyNTE4MSA1LjEwMjE2OCwxLjI1NjIxNiB2IDYuMTQ1Nzk0IGggLTIuMTgzODgyIHEgLTAuMzI4NTQ5LC0zLjA1MzU3MSAtMi4wNDg1OTgsLTQuNDA2NDE4IC0xLjcwMDcyMywtMS4zNzIxNzQgLTUuMTk4ODAxLC0xLjM3MjE3NCAtMy4wNTM1NzEsMCAtNC42NTc2NjIsMS4yNTYyMTUgLTEuNTg0NzY0LDEuMjM2ODkgLTEuNTg0NzY0LDMuNjE0MDM2IDAsMi4wNjc5MjUgMS4xOTgyMzcsMy4yNDY4MzUgMS4xOTgyMzYsMS4xNzg5MSA1LjA4Mjg0MiwyLjMzODQ5NCBsIDMuNTc1MzgzLDEuMDYyOTUyIHEgMy45MjMyNTgsMS4xNzg5MSA1LjU4NTMyOSwzLjAxNDkxOCAxLjY4MTM5NiwxLjgxNjY4MSAxLjY4MTM5Niw0Ljg4OTU3OCAwLDQuMTkzODI4IC0yLjY4NjM2OSw2LjMxOTczMSAtMi42ODYzNjksMi4xMjU5MDQgLTguMDAxMTI4LDIuMTI1OTA0IC0yLjM3NzE0NywwIC00Ljg1MDkyNiwtMC40ODMxNiAtMi40NTQ0NTIsLTAuNDgzMTYgLTUuMDA1NTM2LC0xLjQ2ODgwNiB6Ii8+CiAgICAgICAgICAgIDxwYXRoIGlkPSJwYXRoMTQ0NiIgc3R5bGU9ImZpbGw6I0MyMjAzRjtzdHJva2Utd2lkdGg6MC41NDk3Mjg2MyIgZD0ibSAzOS43MTQ2MDIsNDYuMjk4NTMgcSAwLC0xLjA4MjI3OCAwLjczNDQwMywtMS44MzYwMDcgMC43NTM3MywtMC43NTM3MyAxLjgzNjAwOCwtMC43NTM3MyAxLjA4MjI3OCwwIDEuODE2NjgxLDAuNzUzNzMgMC43NTM3MywwLjc1MzcyOSAwLjc1MzczLDEuODM2MDA3IDAsMS4wODIyNzggLTAuNzM0NDA0LDEuODM2MDA4IC0wLjczNDQwMywwLjczNDQwMyAtMS44MzYwMDcsMC43MzQ0MDMgLTEuMTAxNjA1LDAgLTEuODM2MDA4LC0wLjczNDQwMyAtMC43MzQ0MDMsLTAuNzUzNzMgLTAuNzM0NDAzLC0xLjgzNjAwOCB6IG0gMCwtMTIuNjAwODEgcSAwLC0xLjA4MjI3OCAwLjczNDQwMywtMS44MTY2ODEgMC43NTM3MywtMC43NTM3MyAxLjgzNjAwOCwtMC43NTM3MyAxLjEwMTYwNCwwIDEuODM2MDA3LDAuNzM0NDAzIDAuNzM0NDA0LDAuNzM0NDAzIDAuNzM0NDA0LDEuODM2MDA4IDAsMS4xMDE2MDQgLTAuNzM0NDA0LDEuODM2MDA4IC0wLjczNDQwMywwLjczNDQwMyAtMS44MzYwMDcsMC43MzQ0MDMgLTEuMDgyMjc4LDAgLTEuODM2MDA4LC0wLjczNDQwMyAtMC43MzQ0MDMsLTAuNzUzNzMgLTAuNzM0NDAzLC0xLjgzNjAwOCB6Ii8+CiAgICAgICAgICAgIDxwYXRoIGlkPSJwYXRoMTQ0OCIgc3R5bGU9ImZpbGw6IzIyMjIyMjtzdHJva2Utd2lkdGg6MC41NDk3Mjg2MyIgZD0ibSA2NS45OTg1LDIzLjA4NzUyOCBoIC0xLjg3NDY2MSBxIC0wLjAxOTMzLC0xLjQ0OTQ3OSAtMC44MzEwMzUsLTIuMjAzMjA5IC0wLjc5MjM4MiwtMC43NTM3MjkgLTIuMzE5MTY3LC0wLjc1MzcyOSAtMS45OTA2MTksMCAtMi44MDIzMjgsMS4xMDE2MDQgLTAuODExNzA4LDEuMDgyMjc4IC0wLjgxMTcwOCwzLjg4NDYwNiB2IDIuNjQ3NzE2IGggNS43Mzk5MzkgdiAyLjA2NzkyNSBoIC01LjczOTkzOSB2IDE2LjQyNzQzNiBoIDQuNTYxMDI5IHYgMi4wNDg1OTggSCA1MC40MDIwOTggdiAtMi4wNDg1OTggaCAzLjQwMTQ0NiBWIDI5LjgzMjQ0MSBoIC0zLjQwMTQ0NiB2IC0yLjA2NzkyNSBoIDMuNDAxNDQ2IHYgLTIuNTcwNDEgcSAwLC0zLjQ0MDA5OSAxLjc3ODAyOCwtNS4xOTg4MDEgMS43OTczNTUsLTEuNzU4NzAyIDUuMjU2NzgsLTEuNzU4NzAyIDEuMjk0ODY5LDAgMi41ODk3MzcsMC4yMzE5MTcgMS4yOTQ4NjksMC4yMzE5MTYgMi41NzA0MTEsMC43MTUwNzYgeiIvPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9nPgo8L3N2Zz4=" alt="App.Logo" title="App.Logo" width="44" height="44"></span></li>
+			<li><label for="navy-checkbox2"><span class="toggle"><var>&#9776;</var></span></label></li>
+			<li><a href="#">Home<i class="icon sfi sfi-home"></i></a></li>
+			<li><a href="#">News</a></li>
+			<li class="w-space"><div></div></li>
+			<li><a href="#" class="active">About</a></li>
+			<li class="a-right"><a href="#">Contact</a></li>
+		</ul>
+	</nav>
+
+	<br>
+	<br>
+
+<!-- Menu Bars -->
+
+	<div class="ux-subsection"><h2>Menu Bars</h2></div>
+
+	<br>
+
+	<nav class="ux-navbar">
+		<div id="logo"><span>&#9776; </span>Menu <span class="display">TITLE</span></div>
+		<label id="alt-logo" for="drop-0" class="toggle">&#9776; &nbsp; Menu</label>
+		<input type="checkbox" id="drop-0">
+		<ul class="menu">
+			<li><a href="#">Home</a></li>
+			<li>
+				<!-- First Tier Drop Down -->
+				<label for="drop-1" class="toggle">Service</label>
+				<a href="#">Service</a>
+				<input type="checkbox" id="drop-1">
+				<ul>
+					<li><a href="#">Service 1</a></li>
+					<li><a href="#">Service 2</a></li>
+					<li><a href="#">Service 3</a></li>
+				</ul>
+			</li>
+			<li>
+				<!-- First Tier Drop Down -->
+				<label for="drop-2" class="toggle">Portfolio</label>
+				<a href="#">Portfolio</a>
+				<input type="checkbox" id="drop-2">
+				<ul>
+					<li><a href="#">Portfolio 1</a></li>
+					<li><a href="#">Portfolio 2</a></li>
+					<li>
+						<!-- Second Tier Drop Down -->
+						<label for="drop-3" class="toggle">Works</label>
+						<a href="#">Works</a>
+						<input type="checkbox" id="drop-3">
+						<ul>
+							<li><a href="#">HTML/CSS</a></li>
+							<li><a href="#">Javascript</a></li>
+							<li><a href="#">PHP Scripting Language</a></li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li><a href="#">Blog</a></li>
+			<li><a href="#">Submit</a></li>
+			<li><a href="#">Contact</a></li>
+			<li><a href="#">About</a></li>
+			<li><label class="notoggle">&nbsp;</label></li>
+		</ul>
+	</nav>
+
+	<br>
+
+	<nav class="ux-navbar navbar-green">
+		<div id="logo"><span>&#9776; </span>Menu <span class="display">TITLE</span></div>
+		<label id="alt-logo" for="drop-10" class="toggle">&#9776; &nbsp; Menu</label>
+		<input type="checkbox" id="drop-10">
+		<ul class="menu">
+			<li><a href="#">Home</a></li>
+			<li>
+				<!-- First Tier Drop Down -->
+				<label for="drop-11" class="toggle">Service</label>
+				<a href="#">Service</a>
+				<input type="checkbox" id="drop-11">
+				<ul>
+					<li><a href="#">Service 1</a></li>
+					<li><a href="#">Service 2</a></li>
+					<li><a href="#">Service 3</a></li>
+				</ul>
+			</li>
+			<li>
+				<!-- First Tier Drop Down -->
+				<label for="drop-12" class="toggle">Portfolio</label>
+				<a href="#">Portfolio</a>
+				<input type="checkbox" id="drop-12">
+				<ul>
+					<li><a href="#">Portfolio 1</a></li>
+					<li><a href="#">Portfolio 2</a></li>
+					<li>
+						<!-- Second Tier Drop Down -->
+						<label for="drop-13" class="toggle">Works</label>
+						<a href="#">Works</a>
+						<input type="checkbox" id="drop-13">
+						<ul>
+							<li><a href="#">HTML/CSS</a></li>
+							<li><a href="#">Javascript</a></li>
+							<li><a href="#">PHP Scripting Language</a></li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li><a href="#">Blog</a></li>
+			<li><a href="#">Submit</a></li>
+			<li><a href="#">Contact</a></li>
+			<li><a href="#">About</a></li>
+			<li><label class="notoggle">&nbsp;</label></li>
+		</ul>
+	</nav>
+
+	<br>
+
+	<nav class="ux-navbar navbar-black">
+		<div id="logo"><span>&#9776; </span>Menu <span class="display">TITLE</span></div>
+		<img id="img-logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgaWQ9InNtYXJ0LmZyYW1ld29yay1sb2dvIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMjggMTI4IiBoZWlnaHQ9IjEyOHB4IiB3aWR0aD0iMTI4cHgiPgo8ZGVmcyBpZD0iZGVmczE0NjYiLz4KPGcgaWQ9ImxheWVyMSI+CiAgICA8ZyBpZD0iZzMzNDYiIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7ZmlsbC1ydWxlOmV2ZW5vZGQ7c3Ryb2tlOm5vbmUiIHRyYW5zZm9ybT0ibWF0cml4KDEuNjg5NTgwMywwLDAsMS42ODk1ODAzLDIuOTY0ODQ2OSwyLjk2NDg0NzcpIj4KICAgICAgICA8cGF0aCBzdHlsZT0iZmlsbDojRUQyODM5O2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpldmVub2RkO3N0cm9rZTojRUQyODM5O3N0cm9rZS13aWR0aDoxNC4xMjEwODUxNztzdHJva2Utb3BhY2l0eToxIiBpZD0icGF0aDMwMTEiIGQ9Im0gNjIuOTMwNTczLDM2LjEyNDQ0NiBhIDI2LjgwNjEyOCwyNi44MDYxMjggMCAxIDEgLTUzLjYxMjI1MzEsMCAyNi44MDYxMjgsMjYuODA2MTI4IDAgMSAxIDUzLjYxMjI1MzEsMCB6Ii8+CiAgICAgICAgPGcgaWQ9InRleHQzNzU4IiBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lIi8+CiAgICAgICAgPGcgaWQ9InRleHQxNDQyIiBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lO3N0cm9rZS13aWR0aDowLjU0OTcyODYzIiB0cmFuc2Zvcm09InNjYWxlKDAuOTI4ODEwNjYsMS4wNzY2NDU3KSIgYXJpYS1sYWJlbD0iUzpmIj4KICAgICAgICAgICAgPHBhdGggaWQ9InBhdGgxNDQ0IiBzdHlsZT0iZmlsbDojZmZmZmZmO3N0cm9rZS13aWR0aDowLjU0OTcyODYzIiBkPSJNIDEyLjEzNTgzNSw0Ni45MTY5NzUgViA0MC4zNDYgbCAyLjIyMjUzNSwwLjAxOTMzIHEgMC4wOTY2MywzLjI4NTQ4NyAxLjg5Mzk4Nyw0Ljg3MDI1MSAxLjgxNjY4MSwxLjU2NTQzOSA1LjUwODAyMywxLjU2NTQzOSAzLjQ0MDA5OSwwIDUuMjM3NDU0LC0xLjM1Mjg0OCAxLjgxNjY4MSwtMS4zNzIxNzQgMS44MTY2ODEsLTMuOTgxMjM4IDAsLTIuMDg3MjUxIC0xLjEwMTYwNSwtMy4yMDgxODIgLTEuMDgyMjc4LC0xLjEyMDkzMSAtNC41OTk2ODIsLTIuMTgzODgyIGwgLTMuODA3MywtMS4xNDAyNTggcSAtNC4xMzU4NDksLTEuMjU2MjE1IC01LjgzNjU3MiwtMy4xMzA4NzYgLTEuNjgxMzk2LC0xLjg3NDY2IC0xLjY4MTM5NiwtNS4xNDA4MjEgMCwtMy42NzIwMTYgMi42MDkwNjMsLTUuNzAxMjg3IDIuNjA5MDY0LC0yLjAyOTI3MiA3LjMyNDcwNCwtMi4wMjkyNzIgMi4wMDk5NDYsMCA0LjQwNjQxOSwwLjQ0NDUwNyAyLjM5NjQ3MywwLjQyNTE4MSA1LjEwMjE2OCwxLjI1NjIxNiB2IDYuMTQ1Nzk0IGggLTIuMTgzODgyIHEgLTAuMzI4NTQ5LC0zLjA1MzU3MSAtMi4wNDg1OTgsLTQuNDA2NDE4IC0xLjcwMDcyMywtMS4zNzIxNzQgLTUuMTk4ODAxLC0xLjM3MjE3NCAtMy4wNTM1NzEsMCAtNC42NTc2NjIsMS4yNTYyMTUgLTEuNTg0NzY0LDEuMjM2ODkgLTEuNTg0NzY0LDMuNjE0MDM2IDAsMi4wNjc5MjUgMS4xOTgyMzcsMy4yNDY4MzUgMS4xOTgyMzYsMS4xNzg5MSA1LjA4Mjg0MiwyLjMzODQ5NCBsIDMuNTc1MzgzLDEuMDYyOTUyIHEgMy45MjMyNTgsMS4xNzg5MSA1LjU4NTMyOSwzLjAxNDkxOCAxLjY4MTM5NiwxLjgxNjY4MSAxLjY4MTM5Niw0Ljg4OTU3OCAwLDQuMTkzODI4IC0yLjY4NjM2OSw2LjMxOTczMSAtMi42ODYzNjksMi4xMjU5MDQgLTguMDAxMTI4LDIuMTI1OTA0IC0yLjM3NzE0NywwIC00Ljg1MDkyNiwtMC40ODMxNiAtMi40NTQ0NTIsLTAuNDgzMTYgLTUuMDA1NTM2LC0xLjQ2ODgwNiB6Ii8+CiAgICAgICAgICAgIDxwYXRoIGlkPSJwYXRoMTQ0NiIgc3R5bGU9ImZpbGw6I0MyMjAzRjtzdHJva2Utd2lkdGg6MC41NDk3Mjg2MyIgZD0ibSAzOS43MTQ2MDIsNDYuMjk4NTMgcSAwLC0xLjA4MjI3OCAwLjczNDQwMywtMS44MzYwMDcgMC43NTM3MywtMC43NTM3MyAxLjgzNjAwOCwtMC43NTM3MyAxLjA4MjI3OCwwIDEuODE2NjgxLDAuNzUzNzMgMC43NTM3MywwLjc1MzcyOSAwLjc1MzczLDEuODM2MDA3IDAsMS4wODIyNzggLTAuNzM0NDA0LDEuODM2MDA4IC0wLjczNDQwMywwLjczNDQwMyAtMS44MzYwMDcsMC43MzQ0MDMgLTEuMTAxNjA1LDAgLTEuODM2MDA4LC0wLjczNDQwMyAtMC43MzQ0MDMsLTAuNzUzNzMgLTAuNzM0NDAzLC0xLjgzNjAwOCB6IG0gMCwtMTIuNjAwODEgcSAwLC0xLjA4MjI3OCAwLjczNDQwMywtMS44MTY2ODEgMC43NTM3MywtMC43NTM3MyAxLjgzNjAwOCwtMC43NTM3MyAxLjEwMTYwNCwwIDEuODM2MDA3LDAuNzM0NDAzIDAuNzM0NDA0LDAuNzM0NDAzIDAuNzM0NDA0LDEuODM2MDA4IDAsMS4xMDE2MDQgLTAuNzM0NDA0LDEuODM2MDA4IC0wLjczNDQwMywwLjczNDQwMyAtMS44MzYwMDcsMC43MzQ0MDMgLTEuMDgyMjc4LDAgLTEuODM2MDA4LC0wLjczNDQwMyAtMC43MzQ0MDMsLTAuNzUzNzMgLTAuNzM0NDAzLC0xLjgzNjAwOCB6Ii8+CiAgICAgICAgICAgIDxwYXRoIGlkPSJwYXRoMTQ0OCIgc3R5bGU9ImZpbGw6IzIyMjIyMjtzdHJva2Utd2lkdGg6MC41NDk3Mjg2MyIgZD0ibSA2NS45OTg1LDIzLjA4NzUyOCBoIC0xLjg3NDY2MSBxIC0wLjAxOTMzLC0xLjQ0OTQ3OSAtMC44MzEwMzUsLTIuMjAzMjA5IC0wLjc5MjM4MiwtMC43NTM3MjkgLTIuMzE5MTY3LC0wLjc1MzcyOSAtMS45OTA2MTksMCAtMi44MDIzMjgsMS4xMDE2MDQgLTAuODExNzA4LDEuMDgyMjc4IC0wLjgxMTcwOCwzLjg4NDYwNiB2IDIuNjQ3NzE2IGggNS43Mzk5MzkgdiAyLjA2NzkyNSBoIC01LjczOTkzOSB2IDE2LjQyNzQzNiBoIDQuNTYxMDI5IHYgMi4wNDg1OTggSCA1MC40MDIwOTggdiAtMi4wNDg1OTggaCAzLjQwMTQ0NiBWIDI5LjgzMjQ0MSBoIC0zLjQwMTQ0NiB2IC0yLjA2NzkyNSBoIDMuNDAxNDQ2IHYgLTIuNTcwNDEgcSAwLC0zLjQ0MDA5OSAxLjc3ODAyOCwtNS4xOTg4MDEgMS43OTczNTUsLTEuNzU4NzAyIDUuMjU2NzgsLTEuNzU4NzAyIDEuMjk0ODY5LDAgMi41ODk3MzcsMC4yMzE5MTcgMS4yOTQ4NjksMC4yMzE5MTYgMi41NzA0MTEsMC43MTUwNzYgeiIvPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9nPgo8L3N2Zz4=" alt="App.Logo" title="App.Logo">
+		<label id="alt-logo" for="drop-20" class="toggle">&#9776; &nbsp; Menu</label>
+		<input type="checkbox" id="drop-20">
+		<ul class="menu">
+			<li><a href="#">Home</a></li>
+			<li>
+				<!-- First Tier Drop Down -->
+				<label for="drop-21" class="toggle">Service</label>
+				<a href="#">Service</a>
+				<input type="checkbox" id="drop-21">
+				<ul>
+					<li><a href="#">Service 1</a></li>
+					<li><a href="#">Service 2</a></li>
+					<li><a href="#">Service 3</a></li>
+				</ul>
+			</li>
+			<li>
+				<!-- First Tier Drop Down -->
+				<label for="drop-22" class="toggle">Portfolio</label>
+				<a href="#">Portfolio</a>
+				<input type="checkbox" id="drop-22">
+				<ul>
+					<li><a href="#">Portfolio 1</a></li>
+					<li>
+						<!-- Second Tier Drop Down -->
+						<label for="drop-23" class="toggle">Works</label>
+						<a href="#">Works</a>
+						<input type="checkbox" id="drop-23">
+						<ul>
+							<li><a href="#">HTML/CSS</a></li>
+							<li><a href="#">Javascript</a></li>
+							<li><a href="#">PHP Scripting Language</a></li>
+						</ul>
+					</li>
+					<li><a href="#">Portfolio 2</a></li>
+				</ul>
+			</li>
+			<li><a href="#">Blog</a></li>
+			<li><a href="#">Submit</a></li>
+			<li><a href="#">Contact</a></li>
+			<li><a href="#">About</a></li>
+			<li><label class="notoggle">&nbsp;</label></li>
+		</ul>
+	</nav>
+
+	<br>
+	<br>
+
+	<div class="ux-menubar-bar ux-menubar-color-navyblue">
+		<span class="ux-menubar-bar-item ux-menubar-bar-ctrl"></span>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button"><b>MenuBar Entry One</b></a>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Two</a>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropDown</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Three</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Four</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Five</a>
+			</div>
+		</div>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropOther</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Six</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Seven</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Eight</a>
+			</div>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="ux-menubar-bar ux-menubar-color-blue">
+		<span class="ux-menubar-bar-item ux-menubar-bar-ctrl"></span>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button"><b>MenuBar Entry One</b></a>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Two</a>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropDown</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Three</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Four</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Five</a>
+			</div>
+		</div>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropOther</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Six</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Seven</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Eight</a>
+			</div>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="ux-menubar-bar ux-menubar-color-darkblue">
+		<span class="ux-menubar-bar-item ux-menubar-bar-ctrl"></span>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button"><b>MenuBar Entry One</b></a>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Two</a>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropDown</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Three</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Four</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Five</a>
+			</div>
+		</div>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropOther</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Six</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Seven</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Eight</a>
+			</div>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="ux-menubar-bar ux-menubar-color-lightblue">
+		<span class="ux-menubar-bar-item ux-menubar-bar-ctrl"></span>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button"><b>MenuBar Entry One</b></a>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Two</a>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropDown</button>
+			<div class="ux-menubar-dropdown-content" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Three</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Four</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Five</a>
+			</div>
+		</div>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropOther</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Six</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Seven</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Eight</a>
+			</div>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="ux-menubar-bar ux-menubar-color-red">
+		<span class="ux-menubar-bar-item ux-menubar-bar-ctrl"></span>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button"><b>MenuBar Entry One</b></a>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Two</a>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropDown</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Three</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Four</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Five</a>
+			</div>
+		</div>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropOther</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Six</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Seven</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Eight</a>
+			</div>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="ux-menubar-bar ux-menubar-color-lightgreen">
+		<span class="ux-menubar-bar-item ux-menubar-bar-ctrl"></span>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button"><b>MenuBar Entry One</b></a>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Two</a>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropDown</button>
+			<div class="ux-menubar-dropdown-content" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Three</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Four</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Five</a>
+			</div>
+		</div>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropOther</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Six</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Seven</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Eight</a>
+			</div>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="ux-menubar-bar ux-menubar-color-orange">
+		<span class="ux-menubar-bar-item ux-menubar-bar-ctrl"></span>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button"><b>MenuBar Entry One</b></a>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Two</a>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropDown</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Three</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Four</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Five</a>
+			</div>
+		</div>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropOther</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Six</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Seven</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Eight</a>
+			</div>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="ux-menubar-bar ux-menubar-color-grey">
+		<span class="ux-menubar-bar-item ux-menubar-bar-ctrl"></span>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button"><b>MenuBar Entry One</b></a>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Two</a>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropDown</button>
+			<div class="ux-menubar-dropdown-content" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Three</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Four</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Five</a>
+			</div>
+		</div>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropOther</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Six</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Seven</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Eight</a>
+			</div>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="ux-menubar-bar ux-menubar-color-black">
+		<span class="ux-menubar-bar-item ux-menubar-bar-ctrl"></span>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button"><b>MenuBar Entry One</b></a>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Two</a>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropDown</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Three</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Four</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Five</a>
+			</div>
+		</div>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropOther</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Six</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Seven</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Eight</a>
+			</div>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="ux-menubar-bar ux-menubar-color-bluegrey">
+		<span class="ux-menubar-bar-item ux-menubar-bar-ctrl"></span>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button"><b>MenuBar Entry One</b></a>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Two</a>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropDown</button>
+			<div class="ux-menubar-dropdown-content" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Three</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Four</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Five</a>
+			</div>
+		</div>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropOther</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Six</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Seven</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Eight</a>
+			</div>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="ux-menubar-bar ux-menubar-color-purplegrey">
+		<span class="ux-menubar-bar-item ux-menubar-bar-ctrl"></span>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button"><b>MenuBar Entry One</b></a>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Two</a>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropDown</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Three</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Four</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Five</a>
+			</div>
+		</div>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropOther</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Six</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Seven</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Eight</a>
+			</div>
+		</div>
+	</div>
+
+	<br>
+	<br>
+	<br>
+
+<!-- Menus -->
+
+	<div class="ux-subsection"><h2>Menus</h2></div>
+
+	<br>
+	<h3>Horizontal Flat Menu</h3>
+	<div class="ux-menu ux-menu-horizontal ux-menubar-color-blue">
+		<a href="javascript:void(0)" class="ux-menu-heading">Title</a>
+		<ul class="ux-menu-list">
+			<li class="ux-menu-item"><a href="#" class="ux-menu-link">Home</a></li>
+			<li class="ux-menu-item"><a href="#" class="ux-menu-link">About</a></li>
+			<li class="ux-menu-item"><a href="#" class="ux-menu-link">Blog</a></li>
+			<li class="ux-menu-item"><a href="#" class="ux-menu-link">Contact</a></li>
+			<li class="ux-menu-item"><a href="#" class="ux-menu-link">GitHub</a></li>
+			<li class="ux-menu-item"><a href="#" class="ux-menu-link">Twitter</a></li>
+		</ul>
+	</div>
+
+	<br>
+	<h3>Vertical Menu, with nested children</h3>
+	<div class="ux-menu ux-menubar-color-lightgrey" style="width:275px;">
+		<a href="javascript:void(0)" class="ux-menu-heading">Title</a>
+		<ul class="ux-menu-list">
+			<li class="ux-menu-item"><a href="#" class="ux-menu-link">Home</a></li>
+			<li class="ux-menu-item"><a href="#" class="ux-menu-link">About</a></li>
+			<li class="ux-menu-item ux-menu-has-children">
+				<a href="#" class="ux-menu-link">Blog</a>
+				<ul class="ux-menu-children">
+					<li class="ux-menu-item"><a class="ux-menu-link" href="#handlebars">Handlebars Helpers</a></li>
+					<li class="ux-menu-item"><a class="ux-menu-link" href="#liquid">Liquid Helpers</a></li>
+					<li class="ux-menu-item"><a class="ux-menu-link" href="#react">React Mixins</a></li>
+					<li class="ux-menu-item ux-menu-has-children">
+						<a href="#" class="ux-menu-link">More Stuff</a>
+						<ul class="ux-menu-children">
+							<li class="ux-menu-item"><a class="ux-menu-link" href="#foo">Foo</a></li>
+							<li class="ux-menu-item"><a class="ux-menu-link" href="#bar">Bar</a></li>
+							<li class="ux-menu-item"><a class="ux-menu-link" href="#baz">Baz</a></li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li class="ux-menu-item"><a href="#" class="ux-menu-link">Contact</a></li>
+			<li class="ux-menu-item"><a href="#" class="ux-menu-link">GitHub</a></li>
+			<li class="ux-menu-item"><a href="#" class="ux-menu-link">Twitter</a></li>
+		</ul>
+	</div>
+
+	<br>
+	<div class="ux-dropdown">
+		<span class="ux-dropbutton">DropDown Button</span>
+		<ul>
+			<li>Area 1</li>
+			<li>
+				<a href="#">Link 1.1</a>
+				<a href="#">Link 1.2</a>
+			</li>
+			<li>Area 2</li>
+			<li><a href="#">Link 2.1</a></li>
+			<li><a href="#">Link 2.2</a></li>
+			<li>Area 3</li>
+			<li>
+				<a href="#">Link 3.1</a>
+				<a href="#">Link 3.2</a>
+			</li>
+			<li>Area 4</li>
+			<li><a href="#">Link 4.1</a></li>
+			<li><a href="#">Link 4.2</a></li>
+			<li>Area 5</li>
+			<li>
+				<button class="ux-button ux-button-small">Link 5.1</button>
+				<a class="ux-button ux-button-primary ux-button-small" href="#">Link 5.2</a>
+				<a class="ux-button ux-button-secondary ux-button-small" href="#">Link 5.3</a>
+			</li>
+		</ul>
+	</div>
+	<div class="ux-dropdown">
+		<span class="ux-droparea">DropDown Area</span>
+		<ul>
+			<li>Area 6</li>
+			<li><a href="#">Link 6.1</a></li>
+			<li><a href="#">Link 6.2</a></li>
+			<li>Area 7</li>
+			<li>
+				<button class="ux-button ux-button-small">Link 7.1</button>
+				<a class="ux-button ux-button-primary ux-button-small" href="#">Link 7.2</a>
+				<a class="ux-button ux-button-secondary ux-button-small" href="#">Link 7.3</a>
+			</li>
+			<li>Area 8</li>
+			<li>
+				<a href="#">Link 8.1</a>
+				<a href="#">Link 8.2</a>
+			</li>
+			<li>Area 9</li>
+			<li><a href="#">Link 9.1</a></li>
+			<li><a href="#">Link 9.2</a></li>
+		</ul>
+	</div>
+
+	<br>
+	<br>
+	<br>
+
+<!-- Breadcrumbs -->
+
+	<div class="ux-subsection"><h2 id="steps">Breadcrumbs</h2></div>
+
+	<br>
+	<nav aria-label="breadcrumb">
+		<ul class="ux-breadcrumb">
+			<li>Home</li>
+		</ul>
+	</nav>
+
+	<br>
+	<nav aria-label="breadcrumb">
+		<ul class="ux-breadcrumb">
+			<li><a href="#breadcrumb-home">Home</a></li>
+			<li>Current Page</li>
+		</ul>
+	</nav>
+
+	<br>
+	<nav aria-label="breadcrumb">
+		<ul class="ux-breadcrumb">
+			<li><a href="#breadcrumb-home">Home</a></li>
+			<li><a href="#breadcrumb-other">Some Other Page</a></li>
+			<li>Current Page</li>
+		</ul>
+	</nav>
+
+	<br>
+	<br>
+
+<!-- Tabs -->
+
+	<div class="ux-subsection"><h2 id="steps">Tabs</h2></div>
+
+	<div class="ux-tab-area">
+		<input type="radio" id="tab1" name="css-tabs" checked>
+		<input type="radio" id="tab2" name="css-tabs">
+		<input type="radio" id="tab3" name="css-tabs">
+		<ul class="ux-tabs">
+			<li class="ux-tab"><label for="tab1">Tab One</label></li>
+			<li class="ux-tab"><label for="tab2">Tab Two</label></li>
+			<li class="ux-tab"><label for="tab3">Tab Three</label></li>
+		</ul>
+		<div class="ux-tab-content">
+			<h4>Tab One (Light)</h4>
+			<p>Tab #1. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+		</div>
+		<div class="ux-tab-content">
+			<h4>Tab Two (Light)</h4>
+			<p>Tab #2. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+		</div>
+		<div class="ux-tab-content">
+			<h4>Tab Three (Light)</h4>
+			<p>Tab #3. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+		</div>
+	</div>
+
+	<div class="ux-tab-area dark">
+		<input type="radio" id="tab1d" name="css-tabsd">
+		<input type="radio" id="tab2d" name="css-tabsd">
+		<input type="radio" id="tab3d" name="css-tabsd" checked>
+		<ul class="ux-tabs dark">
+			<li class="ux-tab dark"><label for="tab1d">Dark Tab One</label></li>
+			<li class="ux-tab dark"><label for="tab2d">Dark Tab Two</label></li>
+			<li class="ux-tab dark"><label for="tab3d">Dark Tab Three</label></li>
+		</ul>
+		<div class="ux-tab-content dark">
+			<h4>Tab One (Dark)</h4>
+			<p>Tab #1. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+		</div>
+		<div class="ux-tab-content dark">
+			<h4>Tab Two (Dark)</h4>
+			<p>Tab #2. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+		</div>
+		<div class="ux-tab-content dark">
+			<h4>Tab Three (Dark)</h4>
+			<p>Tab #3. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+		</div>
+	</div>
+
+	<br>
+
+<!-- Collapsibles -->
+
+	<div class="ux-subsection"><h2 id="steps">Collapsibles</h2></div>
+
+	<br>
+	<div class="ux-collapse">
+		<p>Open <strong>multiple</strong> (with Light Theme)</p>
+		<div class="tab">
+			<input id="tab-one" type="checkbox" name="tabs" checked>
+			<label for="tab-one">Label One</label>
+			<div class="tab-content">
+				<p>Area #1. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+			</div>
+		</div>
+		<div class="tab">
+			<input id="tab-two" type="checkbox" name="tabs">
+			<label for="tab-two">Label Two</label>
+			<div class="tab-content">
+				<p>Area #2. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+			</div>
+		</div>
+		<div class="tab">
+			<input id="tab-three" type="checkbox" name="tabs">
+			<label for="tab-three">Label Three</label>
+			<div class="tab-content">
+				<p>Area #3. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+			</div>
+		</div>
+	</div>
+
+	<br>
+	<div class="ux-collapse dark">
+		<p>Open <strong>single</strong> (with Dark Theme)</p>
+		<div class="tab">
+			<input id="tab-four" type="radio" name="tabs2" checked>
+			<label for="tab-four">Label One</label>
+			<div class="tab-content">
+				<p>Area #1. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+			</div>
+		</div>
+		<div class="tab">
+			<input id="tab-five" type="radio" name="tabs2">
+			<label for="tab-five">Label Two</label>
+			<div class="tab-content">
+				<p>Area #2. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+			</div>
+		</div>
+		<div class="tab">
+			<input id="tab-six" type="radio" name="tabs2">
+			<label for="tab-six">Label Three</label>
+			<div class="tab-content">
+				<p>Area #3. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+			</div>
+		</div>
+	</div>
+
+	<br>
+	<br>
+
+<!-- Step Bars -->
+
+	<div class="ux-subsection"><h2>Step Bars</h2></div>
+
+	<br>
+	<div align="left">
+		<!-- a simple div with some links -->
+		<div class="ux-stepsbar">
+			<a href="#steps" class="active">Browse</a>
+			<a href="#steps">Compare</a>
+			<a href="#steps">Order Confirmation</a>
+			<a href="#steps">Checkout</a>
+		</div>
+		<br>
+		<br>
+		<!-- another version - flat style with animated hover effect -->
+		<div class="ux-stepsbar ux-stepsbar-light">
+			<a href="#steps">Browse</a>
+			<a href="#steps" class="active">Compare</a>
+			<a href="#steps">Order Confirmation</a>
+			<a href="#steps">Checkout</a>
+		</div>
+	</div>
+
+	<br>
+	<br>
+
+<!-- END -->
+
+	<br>
+	<div class="ux-section">
+		<h1># END</h1>
+	</div>
+
+	<br>
+	<br>
+
+</div>
+
+</body>
+</html>

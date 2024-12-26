@@ -1,0 +1,60 @@
+<script>{
+		"title":
+			"jQuery.globalEval()",
+		"excerpt":
+			"Execute some JavaScript code globally.",
+		"termSlugs": {
+			"category": [
+				"utilities","version/1.0.4"
+			]
+		}
+	}</script><article id="jQuery-globalEval1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.globalEval( code )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Anything">Anything</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Execute some JavaScript code globally.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0.4/">1.0.4</a></span><a id="jQuery-globalEval-code" href="#jQuery-globalEval-code"><span class="icon-link"></span>jQuery.globalEval( code )</a>
+</h4>
+<ul><li>
+<div><strong>code</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>The JavaScript code to execute.</div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>This method behaves differently from using a normal JavaScript <code>eval()</code> in that it&apos;s executed within the global context (which is important for loading external scripts dynamically).</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Execute a script in the global context.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">()</span> {</span></code></div></div><div class="container"><div class="line"><code>  jQuery.globalEval( <span class="string">&quot;var newVar = true;&quot;</span> )</code></div></div><div class="container"><div class="line"><code>}</code></div></div><div class="container"><div class="line"><code>test();</code></div></div><div class="container"><div class="line"><code><span class="comment">// newVar === true</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

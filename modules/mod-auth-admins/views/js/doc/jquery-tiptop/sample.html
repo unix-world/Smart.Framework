@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="icon" href="data:,">
+	<title>jQuery TipTop (ToolTip)</title>
+	<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<link rel="stylesheet" href="../../jquery.tiptop.css" type="text/css">
+	<script src="../../jquery.tiptop.js"></script>
+</head>
+<body>
+<h1>Roll over the mouse over the below link</h1>
+<div class="test" style="width:100%; background:#EEEEEE;" data-tiptop-title="This is the tooltip content">
+	<a href="#alink" class="help">A Link</a>
+</div>
+<script>
+$(function() {
+
+	$('.test').tipTop();
+
+});
+</script>
+</body>
+</html>

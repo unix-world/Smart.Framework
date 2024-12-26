@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>jQuery Event Drag</title>
+	<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script src="../../jquery.event.drag.js"></script>
+</head>
+<body>
+<div class="target" style="width:200px; height:100px; background:#778899; color:#FFFFFF; text-align:center; padding:10px; cursor: move; cursor: grab;">
+<b>Drag me</b>
+<br>
+<br>
+<span class="info"></span>
+</div>
+<script>
+$(function() {
+
+	var diffX = 0;
+
+	$('.target').bind("dragstart", function(e,d) {
+		var $wnd = $(this).parent().parent();
+		$wnd.css({'opacity':0.1});
+		ofs = $wnd.offset();
+		diffX = e.pageX - parseInt(ofs.left);
+		if(diffX <= 0) {
+			diffX = 0;
+		} else if(diffX > parseInt($(window).width()) / 2) {
+			diffX = 0;
+		}
+	}).bind("drag", function(e,d) {
+		if(e && e.pageX && e.pageY) {
+			$(this).parent().parent().offset({
+				top: e.pageY,
+				left: e.pageX - diffX
+			});
+		}
+	}).bind("dragend", function(e,d) {
+		var $wnd = $(this).parent().parent();
+		$('.info').text('X=' + e.pageX + ' ; Y=' + e.pageY);
+		diffX = 0;
+		ofs = $wnd.offset();
+		$(this).parent().parent().css({'opacity':1});
+	});
+
+});
+</script>
+</body>
+</html>

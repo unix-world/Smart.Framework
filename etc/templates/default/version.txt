@@ -1,0 +1,14 @@
+
+# Smart.Framework: Template: Default r.20221007 #
+
+// r.8.7 / smart.framework.v.8.7
+
+###
+
+DO NOT DELETE OR MODIFY THIS TEMPLATE.
+ANYTIME YOU UPGRADE THE FRAMEWORK OR IT'S MODULES YOU SHOULD UPGRADE THIS TEMPLATE TOO.
+Some Modules in Smart.Framework / Smart.Framework.Modules requires this.
+If you create a new website or webapp you should create a new template from the scratch, with other name than default,
+and update it into config-index.php / config-admin.php such as (example: create a new folder `my-new-template` with a template file `template-abc.htm`):
+$configs['app']['index-template-path'] = 'my-new-template';		// default template folder from etc/templates/
+$configs['app']['index-template-file'] = 'template-abc.htm';	// default template file

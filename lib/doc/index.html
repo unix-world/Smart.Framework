@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="package @Core class \Smart class \SmartCache class \SmartEnvironment class \SmartUnicode package @Core:Authentication class \SmartAuth package">
+<meta name="keywords" content="package, core, class, smart, smartcache, smartenvironment, smartunicode, core authentication, smartauth, core crypto, smartciphercrypto, smarthashcrypto, core extra, smartparser, smartvalidator, core filesystem, smartfilesysutils, core network, smarthttpclient, smarthttputils, core templatingengine, smartmarkerstemplating, application, smartappadmincontroller, smartappindexcontroller, smartappinfo, smartapptaskcontroller, smartcsrf, smartframeworkregistry, smartframeworksecurity, application caching, smartpersistentcache, application filesystem, smartfilesystem, smartgetfilesystem, application plugins captcha, smartcaptcha, application plugins database dba, smartdbadb, smartdbautildb, application plugins database sqlite, smartsqlitedb, application plugins mailer, smartmailermimeparser, smartmailerutils, application plugins network http, smartrobot, application plugins session, smartsession, application plugins viewcomponents, smartviewhtmlhelpers, application translations, smarttexttranslations, smarttexttranslator, application utils, smartutils, application viewcomponents, smartcomponents, plugins barcodes, smartqr2dbarcode, plugins convertersandparsers, smarthtmlparser, smartmarkdowntohtml, smartpunycode, smartxmlcomposer, smartxmlparser, smartyamlconverter, plugins database mongodb, smartmongodb, plugins database mysql, smartmysqlidb, smartmysqliextdb, plugins database postgresql, smartpgsqldb, smartpgsqlextdb, plugins database redis, smartredisdb, plugins exportandimport, smartspreadsheetexport, smartspreadsheetimport, plugins image, smartdetectimages, smartimagegdprocess, plugins mailer, smartmailerimap4client, smartmailermimedecode, smartmailerpop3client, smartmailersend, smartmailersmtpclient, development application, smartabstractappcontroller, smartabstractcustomsession, smartabstractpersistentcache, interface, smartinterfaceadaptertexttranslations, development captcha, smartasciicaptcha">
+<meta name="summary" content="Smart.Framework : PHP Documentation">
+<link rel="icon" href="data:,">
+<title>PHP Documentation</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+		float: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3c4663;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework : PHP Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+	
+</nav>
+<!-- skip logo -->
+<!-- packages r.20220331 -->
+<!-- Styles -->
+<!-- styles r.20220906 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located,
+.doc-version {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-frozen,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	top: 75px;
+	right: 175px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #3C4663;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Packages -->
+<br>
+<div class="doc-container" id="Package--Core-">
+	<h1><span class="doc-package"><i>package</i></span> @Core</h1>
+	<ul>
+	<li title="Package: @Core" id="Ref--classSmarthtml-"><a href="class@Smart.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\Smart</b></span></h5></a></li>
+	<li title="Package: @Core" id="Ref--classSmartCachehtml-"><a href="class@SmartCache.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartCache</b></span></h5></a></li>
+	<li title="Package: @Core" id="Ref--classSmartEnvironmenthtml-"><a href="class@SmartEnvironment.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartEnvironment</b></span></h5></a></li>
+	<li title="Package: @Core" id="Ref--classSmartUnicodehtml-"><a href="class@SmartUnicode.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartUnicode</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--CoreAuthentication-">
+	<h1><span class="doc-package"><i>package</i></span> @Core:Authentication</h1>
+	<ul>
+	<li title="Package: @Core:Authentication" id="Ref--classSmartAuthhtml-"><a href="class@SmartAuth.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartAuth</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--CoreCrypto-">
+	<h1><span class="doc-package"><i>package</i></span> @Core:Crypto</h1>
+	<ul>
+	<li title="Package: @Core:Crypto" id="Ref--classSmartCipherCryptohtml-"><a href="class@SmartCipherCrypto.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartCipherCrypto</b></span></h5></a></li>
+	<li title="Package: @Core:Crypto" id="Ref--classSmartHashCryptohtml-"><a href="class@SmartHashCrypto.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartHashCrypto</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--CoreExtra-">
+	<h1><span class="doc-package"><i>package</i></span> @Core:Extra</h1>
+	<ul>
+	<li title="Package: @Core:Extra" id="Ref--classSmartParserhtml-"><a href="class@SmartParser.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartParser</b></span></h5></a></li>
+	<li title="Package: @Core:Extra" id="Ref--classSmartValidatorhtml-"><a href="class@SmartValidator.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartValidator</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--CoreFileSystem-">
+	<h1><span class="doc-package"><i>package</i></span> @Core:FileSystem</h1>
+	<ul>
+	<li title="Package: @Core:FileSystem" id="Ref--classSmartFileSysUtilshtml-"><a href="class@SmartFileSysUtils.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartFileSysUtils</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--CoreNetwork-">
+	<h1><span class="doc-package"><i>package</i></span> @Core:Network</h1>
+	<ul>
+	<li title="Package: @Core:Network" id="Ref--classSmartHttpClienthtml-"><a href="class@SmartHttpClient.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartHttpClient</b></span></h5></a></li>
+	<li title="Package: @Core:Network" id="Ref--classSmartHttpUtilshtml-"><a href="class@SmartHttpUtils.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartHttpUtils</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--CoreTemplatingEngine-">
+	<h1><span class="doc-package"><i>package</i></span> @Core:TemplatingEngine</h1>
+	<ul>
+	<li title="Package: @Core:TemplatingEngine" id="Ref--classSmartMarkersTemplatinghtml-"><a href="class@SmartMarkersTemplating.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartMarkersTemplating</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--Application-">
+	<h1><span class="doc-package"><i>package</i></span> Application</h1>
+	<ul>
+	<li title="Package: Application" id="Ref--classSmartAppAdminControllerhtml-"><a href="class@SmartAppAdminController.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartAppAdminController</b></span></h5></a></li>
+	<li title="Package: Application" id="Ref--classSmartAppIndexControllerhtml-"><a href="class@SmartAppIndexController.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartAppIndexController</b></span></h5></a></li>
+	<li title="Package: Application" id="Ref--classSmartAppInfohtml-"><a href="class@SmartAppInfo.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartAppInfo</b></span></h5></a></li>
+	<li title="Package: Application" id="Ref--classSmartAppTaskControllerhtml-"><a href="class@SmartAppTaskController.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartAppTaskController</b></span></h5></a></li>
+	<li title="Package: Application" id="Ref--classSmartCsrfhtml-"><a href="class@SmartCsrf.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartCsrf</b></span></h5></a></li>
+	<li title="Package: Application" id="Ref--classSmartFrameworkRegistryhtml-"><a href="class@SmartFrameworkRegistry.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartFrameworkRegistry</b></span></h5></a></li>
+	<li title="Package: Application" id="Ref--classSmartFrameworkSecurityhtml-"><a href="class@SmartFrameworkSecurity.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartFrameworkSecurity</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--ApplicationCaching-">
+	<h1><span class="doc-package"><i>package</i></span> Application:Caching</h1>
+	<ul>
+	<li title="Package: Application:Caching" id="Ref--classSmartPersistentCachehtml-"><a href="class@SmartPersistentCache.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartPersistentCache</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--ApplicationFileSystem-">
+	<h1><span class="doc-package"><i>package</i></span> Application:FileSystem</h1>
+	<ul>
+	<li title="Package: Application:FileSystem" id="Ref--classSmartFileSystemhtml-"><a href="class@SmartFileSystem.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartFileSystem</b></span></h5></a></li>
+	<li title="Package: Application:FileSystem" id="Ref--classSmartGetFileSystemhtml-"><a href="class@SmartGetFileSystem.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartGetFileSystem</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--ApplicationPluginsCaptcha-">
+	<h1><span class="doc-package"><i>package</i></span> Application:Plugins:Captcha</h1>
+	<ul>
+	<li title="Package: Application:Plugins:Captcha" id="Ref--classSmartCaptchahtml-"><a href="class@SmartCaptcha.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartCaptcha</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--ApplicationPluginsDatabaseDba-">
+	<h1><span class="doc-package"><i>package</i></span> Application:Plugins:Database:Dba</h1>
+	<ul>
+	<li title="Package: Application:Plugins:Database:Dba" id="Ref--classSmartDbaDbhtml-"><a href="class@SmartDbaDb.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartDbaDb</b></span></h5></a></li>
+	<li title="Package: Application:Plugins:Database:Dba" id="Ref--classSmartDbaUtilDbhtml-"><a href="class@SmartDbaUtilDb.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartDbaUtilDb</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--ApplicationPluginsDatabaseSQLite-">
+	<h1><span class="doc-package"><i>package</i></span> Application:Plugins:Database:SQLite</h1>
+	<ul>
+	<li title="Package: Application:Plugins:Database:SQLite" id="Ref--classSmartSQliteDbhtml-"><a href="class@SmartSQliteDb.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartSQliteDb</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--ApplicationPluginsMailer-">
+	<h1><span class="doc-package"><i>package</i></span> Application:Plugins:Mailer</h1>
+	<ul>
+	<li title="Package: Application:Plugins:Mailer" id="Ref--classSmartMailerMimeParserhtml-"><a href="class@SmartMailerMimeParser.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartMailerMimeParser</b></span></h5></a></li>
+	<li title="Package: Application:Plugins:Mailer" id="Ref--classSmartMailerUtilshtml-"><a href="class@SmartMailerUtils.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartMailerUtils</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--ApplicationPluginsNetworkHTTP-">
+	<h1><span class="doc-package"><i>package</i></span> Application:Plugins:Network:HTTP</h1>
+	<ul>
+	<li title="Package: Application:Plugins:Network:HTTP" id="Ref--classSmartRobothtml-"><a href="class@SmartRobot.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartRobot</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--ApplicationPluginsSession-">
+	<h1><span class="doc-package"><i>package</i></span> Application:Plugins:Session</h1>
+	<ul>
+	<li title="Package: Application:Plugins:Session" id="Ref--classSmartSessionhtml-"><a href="class@SmartSession.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartSession</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--ApplicationPluginsViewComponents-">
+	<h1><span class="doc-package"><i>package</i></span> Application:Plugins:ViewComponents</h1>
+	<ul>
+	<li title="Package: Application:Plugins:ViewComponents" id="Ref--classSmartViewHtmlHelpershtml-"><a href="class@SmartViewHtmlHelpers.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartViewHtmlHelpers</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--ApplicationTranslations-">
+	<h1><span class="doc-package"><i>package</i></span> Application:Translations</h1>
+	<ul>
+	<li title="Package: Application:Translations" id="Ref--classSmartTextTranslationshtml-"><a href="class@SmartTextTranslations.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartTextTranslations</b></span></h5></a></li>
+	<li title="Package: Application:Translations" id="Ref--classSmartTextTranslatorhtml-"><a href="class@SmartTextTranslator.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartTextTranslator</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--ApplicationUtils-">
+	<h1><span class="doc-package"><i>package</i></span> Application:Utils</h1>
+	<ul>
+	<li title="Package: Application:Utils" id="Ref--classSmartUtilshtml-"><a href="class@SmartUtils.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartUtils</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--ApplicationViewComponents-">
+	<h1><span class="doc-package"><i>package</i></span> Application:ViewComponents</h1>
+	<ul>
+	<li title="Package: Application:ViewComponents" id="Ref--classSmartComponentshtml-"><a href="class@SmartComponents.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartComponents</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--PluginsBarcodes-">
+	<h1><span class="doc-package"><i>package</i></span> Plugins:Barcodes</h1>
+	<ul>
+	<li title="Package: Plugins:Barcodes" id="Ref--classSmartQR2DBarcodehtml-"><a href="class@SmartQR2DBarcode.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartQR2DBarcode</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--PluginsConvertersAndParsers-">
+	<h1><span class="doc-package"><i>package</i></span> Plugins:ConvertersAndParsers</h1>
+	<ul>
+	<li title="Package: Plugins:ConvertersAndParsers" id="Ref--classSmartHtmlParserhtml-"><a href="class@SmartHtmlParser.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartHtmlParser</b></span></h5></a></li>
+	<li title="Package: Plugins:ConvertersAndParsers" id="Ref--classSmartMarkdownToHTMLhtml-"><a href="class@SmartMarkdownToHTML.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartMarkdownToHTML</b></span></h5></a></li>
+	<li title="Package: Plugins:ConvertersAndParsers" id="Ref--classSmartPunycodehtml-"><a href="class@SmartPunycode.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartPunycode</b></span></h5></a></li>
+	<li title="Package: Plugins:ConvertersAndParsers" id="Ref--classSmartXmlComposerhtml-"><a href="class@SmartXmlComposer.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartXmlComposer</b></span></h5></a></li>
+	<li title="Package: Plugins:ConvertersAndParsers" id="Ref--classSmartXmlParserhtml-"><a href="class@SmartXmlParser.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartXmlParser</b></span></h5></a></li>
+	<li title="Package: Plugins:ConvertersAndParsers" id="Ref--classSmartYamlConverterhtml-"><a href="class@SmartYamlConverter.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartYamlConverter</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--PluginsDatabaseMongoDB-">
+	<h1><span class="doc-package"><i>package</i></span> Plugins:Database:MongoDB</h1>
+	<ul>
+	<li title="Package: Plugins:Database:MongoDB" id="Ref--classSmartMongoDbhtml-"><a href="class@SmartMongoDb.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartMongoDb</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--PluginsDatabaseMySQL-">
+	<h1><span class="doc-package"><i>package</i></span> Plugins:Database:MySQL</h1>
+	<ul>
+	<li title="Package: Plugins:Database:MySQL" id="Ref--classSmartMysqliDbhtml-"><a href="class@SmartMysqliDb.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartMysqliDb</b></span></h5></a></li>
+	<li title="Package: Plugins:Database:MySQL" id="Ref--classSmartMysqliExtDbhtml-"><a href="class@SmartMysqliExtDb.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartMysqliExtDb</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--PluginsDatabasePostgreSQL-">
+	<h1><span class="doc-package"><i>package</i></span> Plugins:Database:PostgreSQL</h1>
+	<ul>
+	<li title="Package: Plugins:Database:PostgreSQL" id="Ref--classSmartPgsqlDbhtml-"><a href="class@SmartPgsqlDb.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartPgsqlDb</b></span></h5></a></li>
+	<li title="Package: Plugins:Database:PostgreSQL" id="Ref--classSmartPgsqlExtDbhtml-"><a href="class@SmartPgsqlExtDb.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartPgsqlExtDb</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--PluginsDatabaseRedis-">
+	<h1><span class="doc-package"><i>package</i></span> Plugins:Database:Redis</h1>
+	<ul>
+	<li title="Package: Plugins:Database:Redis" id="Ref--classSmartRedisDbhtml-"><a href="class@SmartRedisDb.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartRedisDb</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--PluginsExportAndImport-">
+	<h1><span class="doc-package"><i>package</i></span> Plugins:ExportAndImport</h1>
+	<ul>
+	<li title="Package: Plugins:ExportAndImport" id="Ref--classSmartSpreadSheetExporthtml-"><a href="class@SmartSpreadSheetExport.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartSpreadSheetExport</b></span></h5></a></li>
+	<li title="Package: Plugins:ExportAndImport" id="Ref--classSmartSpreadSheetImporthtml-"><a href="class@SmartSpreadSheetImport.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartSpreadSheetImport</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--PluginsImage-">
+	<h1><span class="doc-package"><i>package</i></span> Plugins:Image</h1>
+	<ul>
+	<li title="Package: Plugins:Image" id="Ref--classSmartDetectImageshtml-"><a href="class@SmartDetectImages.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartDetectImages</b></span></h5></a></li>
+	<li title="Package: Plugins:Image" id="Ref--classSmartImageGdProcesshtml-"><a href="class@SmartImageGdProcess.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartImageGdProcess</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--PluginsMailer-">
+	<h1><span class="doc-package"><i>package</i></span> Plugins:Mailer</h1>
+	<ul>
+	<li title="Package: Plugins:Mailer" id="Ref--classSmartMailerImap4Clienthtml-"><a href="class@SmartMailerImap4Client.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartMailerImap4Client</b></span></h5></a></li>
+	<li title="Package: Plugins:Mailer" id="Ref--classSmartMailerMimeDecodehtml-"><a href="class@SmartMailerMimeDecode.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartMailerMimeDecode</b></span></h5></a></li>
+	<li title="Package: Plugins:Mailer" id="Ref--classSmartMailerPop3Clienthtml-"><a href="class@SmartMailerPop3Client.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartMailerPop3Client</b></span></h5></a></li>
+	<li title="Package: Plugins:Mailer" id="Ref--classSmartMailerSendhtml-"><a href="class@SmartMailerSend.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartMailerSend</b></span></h5></a></li>
+	<li title="Package: Plugins:Mailer" id="Ref--classSmartMailerSmtpClienthtml-"><a href="class@SmartMailerSmtpClient.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartMailerSmtpClient</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--developmentApplication-">
+	<h1><span class="doc-package"><i>package</i></span> development:Application</h1>
+	<ul>
+	<li title="Package: development:Application" id="Ref--classSmartAbstractAppControllerhtml-"><a href="class@SmartAbstractAppController.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartAbstractAppController</b></span></h5></a></li>
+	<li title="Package: development:Application" id="Ref--classSmartAbstractCustomSessionhtml-"><a href="class@SmartAbstractCustomSession.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartAbstractCustomSession</b></span></h5></a></li>
+	<li title="Package: development:Application" id="Ref--classSmartAbstractPersistentCachehtml-"><a href="class@SmartAbstractPersistentCache.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartAbstractPersistentCache</b></span></h5></a></li>
+	<li title="Package: development:Application" id="Ref--interfaceSmartInterfaceAdapterTextTranslationshtml-"><a href="interface@SmartInterfaceAdapterTextTranslations.html"><h5 style="display:inline-block;"><span class="doc-type-interface">interface</span> <span class="doc-name"><b>\SmartInterfaceAdapterTextTranslations</b></span></h5></a></li>
+	
+	</ul>
+</div>
+<br>
+<div class="doc-container" id="Package--developmentCaptcha-">
+	<h1><span class="doc-package"><i>package</i></span> development:Captcha</h1>
+	<ul>
+	<li title="Package: development:Captcha" id="Ref--classSmartAsciiCaptchahtml-"><a href="class@SmartAsciiCaptcha.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartAsciiCaptcha</b></span></h5></a></li>
+	<li title="Package: development:Captcha" id="Ref--classSmartSVGCaptchahtml-"><a href="class@SmartSVGCaptcha.html"><h5 style="display:inline-block;"><span class="doc-type-class">class</span> <span class="doc-name"><b>\SmartSVGCaptcha</b></span></h5></a></li>
+	
+	</ul>
+</div>
+
+<!-- Summary List -->
+<br>
+<!-- summary r.20200121 -->
+<script>
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* PHP Documentation Index *</option>
+		<optgroup label="Packages">
+		<option value="Package--Core-">Package @Core</option>
+			<option value="Ref--classSmarthtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \Smart</option>
+			<option value="Ref--classSmartCachehtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartCache</option>
+			<option value="Ref--classSmartEnvironmenthtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartEnvironment</option>
+			<option value="Ref--classSmartUnicodehtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartUnicode</option>
+			
+		<option value="Package--CoreAuthentication-">Package @Core:Authentication</option>
+			<option value="Ref--classSmartAuthhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartAuth</option>
+			
+		<option value="Package--CoreCrypto-">Package @Core:Crypto</option>
+			<option value="Ref--classSmartCipherCryptohtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartCipherCrypto</option>
+			<option value="Ref--classSmartHashCryptohtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartHashCrypto</option>
+			
+		<option value="Package--CoreExtra-">Package @Core:Extra</option>
+			<option value="Ref--classSmartParserhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartParser</option>
+			<option value="Ref--classSmartValidatorhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartValidator</option>
+			
+		<option value="Package--CoreFileSystem-">Package @Core:FileSystem</option>
+			<option value="Ref--classSmartFileSysUtilshtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartFileSysUtils</option>
+			
+		<option value="Package--CoreNetwork-">Package @Core:Network</option>
+			<option value="Ref--classSmartHttpClienthtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartHttpClient</option>
+			<option value="Ref--classSmartHttpUtilshtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartHttpUtils</option>
+			
+		<option value="Package--CoreTemplatingEngine-">Package @Core:TemplatingEngine</option>
+			<option value="Ref--classSmartMarkersTemplatinghtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartMarkersTemplating</option>
+			
+		<option value="Package--Application-">Package Application</option>
+			<option value="Ref--classSmartAppAdminControllerhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartAppAdminController</option>
+			<option value="Ref--classSmartAppIndexControllerhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartAppIndexController</option>
+			<option value="Ref--classSmartAppInfohtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartAppInfo</option>
+			<option value="Ref--classSmartAppTaskControllerhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartAppTaskController</option>
+			<option value="Ref--classSmartCsrfhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartCsrf</option>
+			<option value="Ref--classSmartFrameworkRegistryhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartFrameworkRegistry</option>
+			<option value="Ref--classSmartFrameworkSecurityhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartFrameworkSecurity</option>
+			
+		<option value="Package--ApplicationCaching-">Package Application:Caching</option>
+			<option value="Ref--classSmartPersistentCachehtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartPersistentCache</option>
+			
+		<option value="Package--ApplicationFileSystem-">Package Application:FileSystem</option>
+			<option value="Ref--classSmartFileSystemhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartFileSystem</option>
+			<option value="Ref--classSmartGetFileSystemhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartGetFileSystem</option>
+			
+		<option value="Package--ApplicationPluginsCaptcha-">Package Application:Plugins:Captcha</option>
+			<option value="Ref--classSmartCaptchahtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartCaptcha</option>
+			
+		<option value="Package--ApplicationPluginsDatabaseDba-">Package Application:Plugins:Database:Dba</option>
+			<option value="Ref--classSmartDbaDbhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartDbaDb</option>
+			<option value="Ref--classSmartDbaUtilDbhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartDbaUtilDb</option>
+			
+		<option value="Package--ApplicationPluginsDatabaseSQLite-">Package Application:Plugins:Database:SQLite</option>
+			<option value="Ref--classSmartSQliteDbhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartSQliteDb</option>
+			
+		<option value="Package--ApplicationPluginsMailer-">Package Application:Plugins:Mailer</option>
+			<option value="Ref--classSmartMailerMimeParserhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartMailerMimeParser</option>
+			<option value="Ref--classSmartMailerUtilshtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartMailerUtils</option>
+			
+		<option value="Package--ApplicationPluginsNetworkHTTP-">Package Application:Plugins:Network:HTTP</option>
+			<option value="Ref--classSmartRobothtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartRobot</option>
+			
+		<option value="Package--ApplicationPluginsSession-">Package Application:Plugins:Session</option>
+			<option value="Ref--classSmartSessionhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartSession</option>
+			
+		<option value="Package--ApplicationPluginsViewComponents-">Package Application:Plugins:ViewComponents</option>
+			<option value="Ref--classSmartViewHtmlHelpershtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartViewHtmlHelpers</option>
+			
+		<option value="Package--ApplicationTranslations-">Package Application:Translations</option>
+			<option value="Ref--classSmartTextTranslationshtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartTextTranslations</option>
+			<option value="Ref--classSmartTextTranslatorhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartTextTranslator</option>
+			
+		<option value="Package--ApplicationUtils-">Package Application:Utils</option>
+			<option value="Ref--classSmartUtilshtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartUtils</option>
+			
+		<option value="Package--ApplicationViewComponents-">Package Application:ViewComponents</option>
+			<option value="Ref--classSmartComponentshtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartComponents</option>
+			
+		<option value="Package--PluginsBarcodes-">Package Plugins:Barcodes</option>
+			<option value="Ref--classSmartQR2DBarcodehtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartQR2DBarcode</option>
+			
+		<option value="Package--PluginsConvertersAndParsers-">Package Plugins:ConvertersAndParsers</option>
+			<option value="Ref--classSmartHtmlParserhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartHtmlParser</option>
+			<option value="Ref--classSmartMarkdownToHTMLhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartMarkdownToHTML</option>
+			<option value="Ref--classSmartPunycodehtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartPunycode</option>
+			<option value="Ref--classSmartXmlComposerhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartXmlComposer</option>
+			<option value="Ref--classSmartXmlParserhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartXmlParser</option>
+			<option value="Ref--classSmartYamlConverterhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartYamlConverter</option>
+			
+		<option value="Package--PluginsDatabaseMongoDB-">Package Plugins:Database:MongoDB</option>
+			<option value="Ref--classSmartMongoDbhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartMongoDb</option>
+			
+		<option value="Package--PluginsDatabaseMySQL-">Package Plugins:Database:MySQL</option>
+			<option value="Ref--classSmartMysqliDbhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartMysqliDb</option>
+			<option value="Ref--classSmartMysqliExtDbhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartMysqliExtDb</option>
+			
+		<option value="Package--PluginsDatabasePostgreSQL-">Package Plugins:Database:PostgreSQL</option>
+			<option value="Ref--classSmartPgsqlDbhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartPgsqlDb</option>
+			<option value="Ref--classSmartPgsqlExtDbhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartPgsqlExtDb</option>
+			
+		<option value="Package--PluginsDatabaseRedis-">Package Plugins:Database:Redis</option>
+			<option value="Ref--classSmartRedisDbhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartRedisDb</option>
+			
+		<option value="Package--PluginsExportAndImport-">Package Plugins:ExportAndImport</option>
+			<option value="Ref--classSmartSpreadSheetExporthtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartSpreadSheetExport</option>
+			<option value="Ref--classSmartSpreadSheetImporthtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartSpreadSheetImport</option>
+			
+		<option value="Package--PluginsImage-">Package Plugins:Image</option>
+			<option value="Ref--classSmartDetectImageshtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartDetectImages</option>
+			<option value="Ref--classSmartImageGdProcesshtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartImageGdProcess</option>
+			
+		<option value="Package--PluginsMailer-">Package Plugins:Mailer</option>
+			<option value="Ref--classSmartMailerImap4Clienthtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartMailerImap4Client</option>
+			<option value="Ref--classSmartMailerMimeDecodehtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartMailerMimeDecode</option>
+			<option value="Ref--classSmartMailerPop3Clienthtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartMailerPop3Client</option>
+			<option value="Ref--classSmartMailerSendhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartMailerSend</option>
+			<option value="Ref--classSmartMailerSmtpClienthtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartMailerSmtpClient</option>
+			
+		<option value="Package--developmentApplication-">Package development:Application</option>
+			<option value="Ref--classSmartAbstractAppControllerhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartAbstractAppController</option>
+			<option value="Ref--classSmartAbstractCustomSessionhtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartAbstractCustomSession</option>
+			<option value="Ref--classSmartAbstractPersistentCachehtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartAbstractPersistentCache</option>
+			<option value="Ref--interfaceSmartInterfaceAdapterTextTranslationshtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;interface \SmartInterfaceAdapterTextTranslations</option>
+			
+		<option value="Package--developmentCaptcha-">Package development:Captcha</option>
+			<option value="Ref--classSmartAsciiCaptchahtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartAsciiCaptcha</option>
+			<option value="Ref--classSmartSVGCaptchahtml-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;class \SmartSVGCaptcha</option>
+			
+		
+		</optgroup>
+	</select>
+</div>
+<!-- summary-selectjs r.20210420 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:46 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div><center>
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
+</center></div>
+</body>
+</html>

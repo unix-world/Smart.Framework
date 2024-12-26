@@ -1,0 +1,67 @@
+<!-- Partial Template: Core.AppPoweredInfo v.20231004 -->
+<style>
+div#Powered-Info img {
+	vertical-align: baseline !important;
+}
+</style>
+<div id="Powered-Info" style="position:relative!important; display:block!important; background:#FFFFFF!important; color:#ECECEC!important; padding-left:5px; max-width:800px!important; border:1px solid #ECECEC; border-radius:3px;">
+	[%%%IF:SHOW-APP:==yes;%%%]
+	<div style="display:block!important; padding:0!important; margin:0!important; width:250px!important; text-align:left!important;">
+		<div style="display:inline-block!important; margin:10px!important; cursor:pointer;">
+			<a href="[###APP-URL|html###]" target="_blank" style="cursor:pointer!important;"><img width="64" height="64" alt="[###APP-NAME|html###]" title="[###APP-NAME|html###]" src="[###APP-LOGO|html###]"></a>
+		</div>
+		<div style="display:inline-block!important; cursor:default; position:absolute!important; top:10px;">
+			<span style="line-height:64px!important; font-size:20px!important; font-weight:normal!important; font-style:italic!important;">app::powered.by</span>
+		</div>
+	</div>
+	[%%%ELSE:SHOW-APP%%%]
+		[%%%IF:SHOW-CLOCK:==yes;%%%]
+		<div style="display:inline-block!important; margin:10px!important; cursor:help;" title="Watch Clock">
+			<style>
+			.Watch-Clock {
+				background: #FFFFFF;
+				opacity: 0.7;
+			}
+			</style>
+			[@@@SUB-TEMPLATE:canvas-clock.inc.htm@@@]
+		</div>
+		[%%%/IF:SHOW-CLOCK%%%]
+	[%%%/IF:SHOW-APP%%%]
+	<div style="display:block!important; padding:0!important; margin:0!important;">
+	[%%%LOOP:ARR-SSIDE%%%]
+		<div style="display:inline-block!important; margin:10px!important; cursor:help;">
+		[%%%IF:ARR-SSIDE.NAME:!=;%%%]
+			[%%%IF:ARR-SSIDE.URL:!=;%%%]<a href="[###ARR-SSIDE.URL|html###]" target="_blank" style="cursor:pointer!important;">[%%%/IF:ARR-SSIDE.URL%%%]<img width="64" height="64" alt="[###ARR-SSIDE.NAME|html###]" title="[###ARR-SSIDE.NAME|html###]" src="[###ARR-SSIDE.LOGO|html###]">[%%%IF:ARR-SSIDE.URL:!=;%%%]</a>[%%%/IF:ARR-SSIDE.URL%%%]
+		[%%%ELSE:ARR-SSIDE.NAME%%%]
+			<div style="width:64px; height:64px; cursor:default!important;"></div>
+		[%%%/IF:ARR-SSIDE.NAME%%%]
+		</div>
+	[%%%/LOOP:ARR-SSIDE%%%]
+	</div>
+	<div style="display:block!important; padding:0!important; margin:0!important;">
+	[%%%LOOP:ARR-CSIDE%%%]
+		<div style="display:inline-block!important; margin:10px!important; cursor:help;">
+		[%%%IF:ARR-CSIDE.NAME:!=;%%%]
+			[%%%IF:ARR-CSIDE.URL:!=;%%%]<a href="[###ARR-CSIDE.URL|html###]" target="_blank" style="cursor:pointer!important;">[%%%/IF:ARR-CSIDE.URL%%%]<img width="64" height="64" alt="[###ARR-CSIDE.NAME|html###]" title="[###ARR-CSIDE.NAME|html###]" src="[###ARR-CSIDE.LOGO|html###]">[%%%IF:ARR-CSIDE.URL:!=;%%%]</a>[%%%/IF:ARR-CSIDE.URL%%%]
+		[%%%ELSE:ARR-CSIDE.NAME%%%]
+			<div style="width:64px; height:64px; cursor:default!important;"></div>
+		[%%%/IF:ARR-CSIDE.NAME%%%]
+		</div>
+	[%%%/LOOP:ARR-CSIDE%%%]
+	[%%%IF:SHOW-APP:==yes;%%%]
+		[%%%IF:SHOW-CLOCK:==yes;%%%]
+		<div style="display:inline-block!important; margin:10px!important; cursor:help;" title="... and many hours of software development = Time ...">
+			<style>
+			.Watch-Clock {
+				background: #FFFFFF;
+				opacity: 0.35;
+			}
+			</style>
+			<script>const watchCanvasScaleFactor = 0.42;</script>
+			<div style="width:64px; height:64px; cursor:default!important;">[@@@SUB-TEMPLATE:canvas-clock.inc.htm@@@]</div>
+		</div>
+		[%%%/IF:SHOW-CLOCK%%%]
+	[%%%/IF:SHOW-APP%%%]
+	</div>
+</div>
+<!-- #END :: Partial Template: Core.AppPoweredInfo -->

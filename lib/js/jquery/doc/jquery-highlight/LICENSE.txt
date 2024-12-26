@@ -1,0 +1,5 @@
+MIT license.
+
+(c) 2007-2014 Johann Burkard, https://johannburkard.de/blog/programming/javascript/highlight-javascript-text-higlighting-jquery-plugin.html
+<http://johannburkard.de>
+<mailto:jb@eaio.com>

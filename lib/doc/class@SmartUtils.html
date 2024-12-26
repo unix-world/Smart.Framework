@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="\SmartUtils final class \ SmartUtils { } :: Class: SmartUtils - provides various utility functions for Smart.Framework Language: PHP Located at:">
+<meta name="keywords" content="smartutils, final, class, provides, various, utility, functions, for, smart framework, language, php, located, at, lib core lib utils php, package, application utils, namespace, name, version, v, depends, classes, smart, smartunicode, smartvalidator, smarthashcrypto, smartauth, smartfilesysutils, smartfilesystem, smartframeworksecurity, smartframeworkregistry, smartparser, optional constants, smart framework security crypto, smart framework cookies default lifetime, smart framework cookies default domain, smart framework cookies default samesite, smart framework srvproxy enabled, smart framework srvproxy client ip, smart framework srvproxy client proxy ip, smart framework srvproxy server proto, smart framework srvproxy server ip, smart framework srvproxy server domain, smart framework srvproxy server port, smart framework allow upload extensions, smart framework deny upload extensions, smart framework ident robots, usage, static, object, class method, this, only, methods, public, function, get app release hash, string, cookies current size used on domain, int, cookie size max, cookie default expire, cookie default domain, cookie default samesite policy, get cookie, cookie name, isset cookie, bool, set cookie, cookie data, expire seconds, cookie path, cookie domain, cookie samesite, cookie secure, false, cookie httponly, unset cookie, url obfs encode, y val, url obfs decode, y enc val, date interval days, y date now, y date past, datetime fixed offset, y timezone offset, ydate, data archive, y str, data unarchive, y enc data, pretty print var, y var, indent, jsstyle, pretty print bytes">
+<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartUtils">
+<link rel="icon" href="data:,">
+<title>PHP Documentation for: \SmartUtils</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+		float: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3c4663;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework : PHP Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+		<ul class="menu">
+		<li><a href="index.html#Package--ApplicationUtils-" title="return to Index">return to Index</a></li>
+	</ul>
+	
+</nav>
+<!-- skip logo -->
+<!-- class r.20220331 -->
+<!-- Styles -->
+<!-- styles r.20220906 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located,
+.doc-version {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-frozen,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	top: 75px;
+	right: 175px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #3C4663;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Headings -->
+<h1 title="PHP class: `\SmartUtils` @ PHP Namespace: `\`" id="Class--Summary-">
+	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\</span><span class="doc-name">SmartUtils</span><br>
+	
+	
+	{
+	
+	}&nbsp;::
+</h1>
+<!-- Description -->
+<div class="doc-comments">Class: SmartUtils - provides various utility functions for Smart.Framework</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/core/lib_utils.php</span></li>
+		<li><span class="doc-package"><b>Package:</b> Application:Utils</span></li>
+		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> SmartUtils</span></li>
+		
+		<li><b>Version:</b> v.20241108</li>
+		<li><b>Depends:</b> classes:  Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry, SmartValidator, SmartParser ; optional-constants: SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS</li>
+		
+		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
+		
+		
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">class Methods</h2>
+</div>
+<!-- methods r.20200121 -->
+<div class="doc-container" id="Method--get_app_release_hash">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_app_release_hash</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--cookies_current_size_used_on_domain">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>cookies_current_size_used_on_domain</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--cookie_size_max">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>cookie_size_max</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--cookie_default_expire">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>cookie_default_expire</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--cookie_default_domain">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>cookie_default_domain</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--cookie_default_samesite_policy">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>cookie_default_samesite_policy</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_cookie">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_cookie</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$cookie_name` Parameter is REQUIRED">$cookie_name</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;?STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--isset_cookie">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isset_cookie</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$cookie_name` Parameter is REQUIRED">$cookie_name</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--set_cookie">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>set_cookie</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$cookie_name` Parameter is REQUIRED">$cookie_name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$cookie_data` Parameter is REQUIRED">$cookie_data</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$expire_seconds` Parameter is OPTIONAL, with the Default Value: 0">$expire_seconds</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_path` Parameter is OPTIONAL, with the Default Value: &quot;/&quot;">$cookie_path</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;/&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_domain` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$cookie_domain</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_samesite` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$cookie_samesite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_secure` Parameter is OPTIONAL, with the Default Value: false">$cookie_secure</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_httponly` Parameter is OPTIONAL, with the Default Value: false">$cookie_httponly</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--unset_cookie">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>unset_cookie</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$cookie_name` Parameter is REQUIRED">$cookie_name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_path` Parameter is OPTIONAL, with the Default Value: &quot;/&quot;">$cookie_path</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;/&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_domain` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$cookie_domain</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_samesite` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$cookie_samesite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_secure` Parameter is OPTIONAL, with the Default Value: false">$cookie_secure</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_httponly` Parameter is OPTIONAL, with the Default Value: false">$cookie_httponly</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--url_obfs_encode">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>url_obfs_encode</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_val` Parameter is REQUIRED">$y_val</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--url_obfs_decode">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>url_obfs_decode</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_enc_val` Parameter is REQUIRED">$y_enc_val</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--date_interval_days">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>date_interval_days</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_date_now` Parameter is REQUIRED">$y_date_now</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_date_past` Parameter is REQUIRED">$y_date_past</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--datetime_fixed_offset">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>datetime_fixed_offset</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_timezone_offset` Parameter is REQUIRED">$y_timezone_offset</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ydate` Parameter is REQUIRED">$ydate</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--data_archive">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>data_archive</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_str` Parameter is REQUIRED">$y_str</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--data_unarchive">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>data_unarchive</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_enc_data` Parameter is REQUIRED">$y_enc_data</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--pretty_print_var">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>pretty_print_var</b></span>&nbsp;(
+		<span class="doc-param-name"><b><span title="`$y_var` Parameter is REQUIRED">$y_var</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$indent` Parameter is OPTIONAL, with the Default Value: 0">$indent</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$jsstyle` Parameter is OPTIONAL, with the Default Value: false">$jsstyle</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--pretty_print_bytes">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>pretty_print_bytes</b></span>&nbsp;(
+		<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_bytes` Parameter is REQUIRED">$y_bytes</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_decimals` Parameter is OPTIONAL, with the Default Value: 1">$y_decimals</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>1</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_separator` Parameter is OPTIONAL, with the Default Value: &quot; &quot;">$y_separator</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot; &quot;</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_base` Parameter is OPTIONAL, with the Default Value: 1000">$y_base</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>1000</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--number_to_roman">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>number_to_roman</b></span>&nbsp;(
+		<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$num` Parameter is REQUIRED">$num</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--roman_to_number">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>roman_to_number</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$roman` Parameter is REQUIRED">$roman</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--extract_title">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>extract_title</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ytxt` Parameter is REQUIRED">$ytxt</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_limit` Parameter is OPTIONAL, with the Default Value: 65">$y_limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>65</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$clear_numbers` Parameter is OPTIONAL, with the Default Value: false">$clear_numbers</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--extract_description">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>extract_description</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ytxt` Parameter is REQUIRED">$ytxt</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_limit` Parameter is OPTIONAL, with the Default Value: 155">$y_limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>155</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$clear_numbers` Parameter is OPTIONAL, with the Default Value: false">$clear_numbers</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--extract_keywords">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>extract_keywords</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ytxt` Parameter is REQUIRED">$ytxt</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_count` Parameter is OPTIONAL, with the Default Value: 97">$y_count</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>97</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$clear_numbers` Parameter is OPTIONAL, with the Default Value: true">$clear_numbers</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--extract_words_from_text_html">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>extract_words_from_text_html</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ytxt` Parameter is REQUIRED">$ytxt</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--cleanup_extra_spaces_from_text">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>cleanup_extra_spaces_from_text</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ytxt` Parameter is REQUIRED">$ytxt</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--cleanup_numbers_from_text">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>cleanup_numbers_from_text</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ytxt` Parameter is REQUIRED">$ytxt</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--read_uploaded_file">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read_uploaded_file</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$var_name` Parameter is REQUIRED">$var_name</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$var_index` Parameter is OPTIONAL, with the Default Value: -1">$var_index</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>-1</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$max_size` Parameter is OPTIONAL, with the Default Value: 0">$max_size</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$allowed_extensions` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$allowed_extensions</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} array [ status =&gt; 'OK' | 'WARN' | 'ERR', 'message' =&gt; '' | 'WARN Message' | 'ERR Message', 'msg-code' =&gt; 0..n, 'filename' =&gt; '' | 'filename.ext', 'filetype' =&gt; '' | 'ext', 'filesize' =&gt; Bytes, 'filecontent' =&gt; '' | 'the Contents of the file ...' ]<br>
+@param: {STRING} $var_name: The HTML Variable Name<br>
+@param: {INTEGER} $var_index: The HTML Variable Index: -1 for single file uploads ; 0..n for multi-file uploads ; DEFAULT is -1<br>
+@param: {INTEGER} $max_size: The max file size in bytes that would be accepted ; set to zero for allow maximum size supported by PHP via INI settings ; DEFAULT is zero<br>
+@param: {STRING} $allowed_extensions: The list of allowed file extensions ; Default is '' ; Example to restrict to several extensions: '&lt;ext1&gt;,&lt;ext2&gt;,...&lt;ext100&gt;,...' ; set to empty string to allow all extenstions supported via Smart.Framework INI: SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS / SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS</div>
+	
+			<div class="doc-method-comments">Reads and return one Uploaded File</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--store_uploaded_file">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>store_uploaded_file</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$dest_dir` Parameter is REQUIRED">$dest_dir</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$var_name` Parameter is REQUIRED">$var_name</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$var_index` Parameter is OPTIONAL, with the Default Value: -1">$var_index</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>-1</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$allow_rewrite` Parameter is OPTIONAL, with the Default Value: true">$allow_rewrite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$max_size` Parameter is OPTIONAL, with the Default Value: 0">$max_size</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$allowed_extensions` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$allowed_extensions</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$new_name` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$new_name</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$enforce_lowercase` Parameter is OPTIONAL, with the Default Value: false">$enforce_lowercase</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;MIXED
+	
+	
+			<div class="doc-method-ret-params">@return: {MIXED} '' (empty string) if all OK ; FALSE (boolean) if upload failed ; otherwise will return a non-empty string with the ERROR / WARNING message if the file was not successfuly stored in the destination directory<br>
+@param: {STRING} $dest_dir: The destination directory ; Example: 'wpub/my-test/'<br>
+@param: {STRING} $var_name: The HTML Variable Name<br>
+@param: {INTEGER} $var_index: The HTML Variable Index: -1 for single file uploads ; 0..n for multi-file uploads<br>
+@param: {BOOLEAN} $allow_rewrite: Allow rewrite if already exists that file in the destination directory ; default is TRUE<br>
+@param: {INTEGER} $max_size: The max file size in bytes that would be accepted ; set to zero for allow maximum size supported by PHP via INI settings<br>
+@param: {STRING} $allowed_extensions: The list of allowed file extensions ; Default is '' ; Example to restrict to several extensions: '&lt;ext1&gt;,&lt;ext2&gt;,...&lt;ext100&gt;,...' ; set to empty string to allow all extenstions supported via Smart.Framework INI: SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS / SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS<br>
+@param: {STRING} $new_name: Use a new file name for the uploaded file instead of the original one ; Set to empty string to preserve the uploaded file name ; DEFAULT is ''<br>
+@param: {BOOLEAN} $enforce_lowercase: Set to TRUE to enforce lowercase file name ; DEFAULT is FALSE</div>
+	
+			<div class="doc-method-comments">Store one Uploaded File to a destination directory</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--client_ident_private_key">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>client_ident_private_key</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--unique_client_private_key">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>unique_client_private_key</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--unique_auth_client_private_key">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>unique_auth_client_private_key</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_selfrobot_useragent_name">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_selfrobot_useragent_name</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_visitor_useragent">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_visitor_useragent</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_visitor_signature">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_visitor_signature</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_visitor_tracking_uid">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_visitor_tracking_uid</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_encoding_charset">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_encoding_charset</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_request_with">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_request_with</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--is_ajax_request">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>is_ajax_request</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_request_method">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_request_method</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_protocol">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_protocol</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_port">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_port</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_ip">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_ip</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_domain_name">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_domain_name</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_basedomain_name">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_basedomain_name</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_subdomain_name">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_subdomain_name</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_request_path">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_request_path</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_request_uri">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_request_uri</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_request_referer">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_request_referer</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_full_script">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_full_script</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_script">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_script</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_queryurl">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_queryurl</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$use_blank_if_empty` Parameter is OPTIONAL, with the Default Value: false">$use_blank_if_empty</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_path">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_path</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_current_url">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_current_url</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$skip_port_if_default` Parameter is OPTIONAL, with the Default Value: true">$skip_port_if_default</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_webserver_version">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_webserver_version</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_os">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_os</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--is_ip_client_trusted">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>is_ip_client_trusted</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if trusted ; FALSE if not</div>
+	
+			<div class="doc-method-comments">Check if the Client real IP is trusted<br>
+If something fails in the detection of the Client real IP address this will return FALSE</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_ip_client">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_ip_client</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} IP Address ; if no address detected will RAISE a FATAL ERROR ...</div>
+	
+			<div class="doc-method-comments">Get the Client real IP ; by default will use $_SERVER['REMOTE_ADDR'] ; but if set in configs can use by example $_SERVER['HTTP_X_FORWARDED_FOR'] or other values (ex: in the case of a reverse proxy)<br>
+This function should be used always across the Smart.Framework to get the client's real IP instead using directly the $_SERVER['REMOTE_ADDR'] as the real client IP may change when using apache/php behind haproxy or varnish and in this case by example the $_SERVER['HTTP_X_FORWARDED_FOR'] may return client's real IP address and the $_SERVER['REMOTE_ADDR'] will be in this case the IP of the proxy ...<br>
+This can be override if proxy mode enabled, by setting SMART_FRAMEWORK_SRVPROXY_CLIENT_IP</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_ip_proxyclient">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_ip_proxyclient</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} IP Address or a space (if no proxy address detected)</div>
+	
+			<div class="doc-method-comments">Get the Client Proxy IP if any such as: HTTP_CLIENT_IP or HTTP_X_FORWARDED_FOR<br>
+This function should be used always across the Smart.Framework to get the client's proxy IP and never must use directly HTTP_CLIENT_IP or HTTP_X_FORWARDED_FOR or other headers directly as they may change when using apache/php behind haproxy or varnish !</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_os_browser_ip">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_os_browser_ip</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_mode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `run_proc_cmd()` -->
+<!-- Skip Internal-Priv Method: `registerInternalCacheToDebugLog()` -->
+
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20200121 -->
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20200121 -->
+<div class="doc-container" id="Constant--GENERIC_VALUE_OS_BROWSER_IP">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>GENERIC_VALUE_OS_BROWSER_IP</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;[?]&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+
+<!-- Sample Code -->
+
+<!-- Summary List -->
+<br>
+<!-- summary r.20210420 -->
+<script>
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* PHP Class \SmartUtils # Documentation Index *</option>
+		<optgroup label="Class \SmartUtils">
+			<option value="Class--Summary-">Class definition</option>
+		</optgroup>
+		<optgroup label="Class Methods">
+			<option value="Methods--Summary-">Methods list</option>
+						<option value="Method--get_app_release_hash"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_app_release_hash()</option>
+			
+			
+						<option value="Method--cookies_current_size_used_on_domain"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;cookies_current_size_used_on_domain()</option>
+			
+			
+						<option value="Method--cookie_size_max"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;cookie_size_max()</option>
+			
+			
+						<option value="Method--cookie_default_expire"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;cookie_default_expire()</option>
+			
+			
+						<option value="Method--cookie_default_domain"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;cookie_default_domain()</option>
+			
+			
+						<option value="Method--cookie_default_samesite_policy"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;cookie_default_samesite_policy()</option>
+			
+			
+						<option value="Method--get_cookie"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_cookie()</option>
+			
+			
+						<option value="Method--isset_cookie"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isset_cookie()</option>
+			
+			
+						<option value="Method--set_cookie"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;set_cookie()</option>
+			
+			
+						<option value="Method--unset_cookie"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;unset_cookie()</option>
+			
+			
+						<option value="Method--url_obfs_encode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;url_obfs_encode()</option>
+			
+			
+						<option value="Method--url_obfs_decode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;url_obfs_decode()</option>
+			
+			
+						<option value="Method--date_interval_days"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;date_interval_days()</option>
+			
+			
+						<option value="Method--datetime_fixed_offset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;datetime_fixed_offset()</option>
+			
+			
+						<option value="Method--data_archive"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;data_archive()</option>
+			
+			
+						<option value="Method--data_unarchive"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;data_unarchive()</option>
+			
+			
+						<option value="Method--pretty_print_var"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;pretty_print_var()</option>
+			
+			
+						<option value="Method--pretty_print_bytes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;pretty_print_bytes()</option>
+			
+			
+						<option value="Method--number_to_roman"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;number_to_roman()</option>
+			
+			
+						<option value="Method--roman_to_number"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;roman_to_number()</option>
+			
+			
+						<option value="Method--extract_title"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;extract_title()</option>
+			
+			
+						<option value="Method--extract_description"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;extract_description()</option>
+			
+			
+						<option value="Method--extract_keywords"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;extract_keywords()</option>
+			
+			
+						<option value="Method--extract_words_from_text_html"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;extract_words_from_text_html()</option>
+			
+			
+						<option value="Method--cleanup_extra_spaces_from_text"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;cleanup_extra_spaces_from_text()</option>
+			
+			
+						<option value="Method--cleanup_numbers_from_text"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;cleanup_numbers_from_text()</option>
+			
+			
+						<option value="Method--read_uploaded_file"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read_uploaded_file()</option>
+			
+			
+						<option value="Method--store_uploaded_file"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;store_uploaded_file()</option>
+			
+			
+						<option value="Method--client_ident_private_key"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;client_ident_private_key()</option>
+			
+			
+						<option value="Method--unique_client_private_key"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;unique_client_private_key()</option>
+			
+			
+						<option value="Method--unique_auth_client_private_key"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;unique_auth_client_private_key()</option>
+			
+			
+						<option value="Method--get_selfrobot_useragent_name"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_selfrobot_useragent_name()</option>
+			
+			
+						<option value="Method--get_visitor_useragent"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_visitor_useragent()</option>
+			
+			
+						<option value="Method--get_visitor_signature"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_visitor_signature()</option>
+			
+			
+						<option value="Method--get_visitor_tracking_uid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_visitor_tracking_uid()</option>
+			
+			
+						<option value="Method--get_encoding_charset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_encoding_charset()</option>
+			
+			
+						<option value="Method--get_server_current_request_with"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_request_with()</option>
+			
+			
+						<option value="Method--is_ajax_request"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;is_ajax_request()</option>
+			
+			
+						<option value="Method--get_server_current_request_method"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_request_method()</option>
+			
+			
+						<option value="Method--get_server_current_protocol"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_protocol()</option>
+			
+			
+						<option value="Method--get_server_current_port"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_port()</option>
+			
+			
+						<option value="Method--get_server_current_ip"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_ip()</option>
+			
+			
+						<option value="Method--get_server_current_domain_name"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_domain_name()</option>
+			
+			
+						<option value="Method--get_server_current_basedomain_name"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_basedomain_name()</option>
+			
+			
+						<option value="Method--get_server_current_subdomain_name"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_subdomain_name()</option>
+			
+			
+						<option value="Method--get_server_current_request_path"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_request_path()</option>
+			
+			
+						<option value="Method--get_server_current_request_uri"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_request_uri()</option>
+			
+			
+						<option value="Method--get_server_current_request_referer"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_request_referer()</option>
+			
+			
+						<option value="Method--get_server_current_full_script"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_full_script()</option>
+			
+			
+						<option value="Method--get_server_current_script"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_script()</option>
+			
+			
+						<option value="Method--get_server_current_queryurl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_queryurl()</option>
+			
+			
+						<option value="Method--get_server_current_path"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_path()</option>
+			
+			
+						<option value="Method--get_server_current_url"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_current_url()</option>
+			
+			
+						<option value="Method--get_webserver_version"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_webserver_version()</option>
+			
+			
+						<option value="Method--get_server_os"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_os()</option>
+			
+			
+						<option value="Method--is_ip_client_trusted"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;is_ip_client_trusted()</option>
+			
+			
+						<option value="Method--get_ip_client"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_ip_client()</option>
+			
+			
+						<option value="Method--get_ip_proxyclient"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_ip_proxyclient()</option>
+			
+			
+						<option value="Method--get_os_browser_ip"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_os_browser_ip()</option>
+			
+			
+			
+			
+			
+			
+			
+		</optgroup>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+						<option value="Constant--GENERIC_VALUE_OS_BROWSER_IP">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;GENERIC_VALUE_OS_BROWSER_IP</option>
+			
+			
+		</optgroup>
+		
+	</select>
+</div>
+<!-- summary-selectjs r.20210420 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div><center>
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
+</center></div>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=0">
+	<meta charset="utf-8">
+	<title>Monthly - A jQuery Calendar Plugin</title>
+	<link rel="icon" href="data:,">
+	<!-- Demo CSS (don't use) -->
+	<style type="text/css">
+		body, html {
+			padding:0px;
+			margin:20px;
+			background: #778899;
+			color:#fff;
+			line-height: 1.4em;
+			font-family: "Trebuchet MS", Helvetica, sans-serif;
+		}
+		body {
+			padding:10px 0px;
+		}
+		h1 {
+			font-family: sans-serif;
+			font-size: 48px;
+			text-shadow: 0 0px 30px rgba(0, 0, 0, 0.2);
+		}
+		h2 {
+			font-family: sans-serif;
+			font-size:30px;
+			text-shadow: 0 0px 20px rgba(0, 0, 0, 0.3);
+			color:#fff;
+		}
+		input[type="text"] {
+			padding: 15px;
+			border-radius: 2px;
+			font-size: 16px;
+			outline: none;
+			border: 2px solid rgba(255, 255, 255, 0.5);
+			background: rgba(63, 78, 100, 0.27);
+			color: #fff;
+			width: 250px;
+			box-sizing: border-box;
+			font-family: "Trebuchet MS", Helvetica, sans-serif;
+		}
+		input[type="text"]:hover {
+			border: 2px solid rgba(255, 255, 255, 0.7);
+		}
+		input[type="text"]:focus {
+			border: 2px solid rgba(255, 255, 255, 1);
+			background:#eee;
+			color:#222;
+		}
+
+		.monthly {
+			box-shadow: 0 13px 40px rgba(0, 0, 0, 0.5);
+			font-size: 0.8em;
+		}
+		.button {
+			display: inline-block;
+			padding: 15px 25px;
+			margin: 25px 0 75px 0;
+			border-radius: 3px;
+			color: #fff;
+			background: #000;
+			letter-spacing: .4em;
+			text-decoration: none;
+			font-size: 13px;
+		}
+		.button:hover {
+			background: #3b587a;
+		}
+		.desc {
+			max-width: 250px;
+			text-align: left;
+			font-size:14px;
+			padding-top:30px;
+			line-height: 1.4em;
+		}
+		.resize {
+			background: #222;
+			display: inline-block;
+			padding: 6px 15px;
+			border-radius: 22px;
+			font-size: 13px;
+		}
+		.txtDark span {
+			color: #000000 !important;
+		}
+
+		@media (max-height: 700px) {
+			.sticky {
+				position: relative;
+			}
+		}
+		@media (max-width: 600px) {
+			.resize {
+				display: none;
+			}
+		}
+	</style>
+
+	<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+
+	<link rel="stylesheet" href="../monthly.css">
+	<script type="text/javascript" src="../monthly.js"></script>
+
+</head>
+<body>
+<div class="page">
+		<div style="width:40vw; display:inline-block; margin-right:20px;">
+			<h2>Events Calendar as Date Picker</h2>
+			<input type="text" id="mytarget" value="Select Date" autocomplete="off">
+			<div class="monthly" id="mycalendar2"></div>
+		</div>
+		<div style="width:40vw; display:inline-block; text-align:right;">
+			<h2>Events Calendar (Default)</h2>
+			<div class="monthly" id="mycalendar"></div>
+		</div>
+		<br>
+<!--	<a href="https://github.com/kthornbloom/Monthly" class="button">DOWNLOAD / DOCS</a> -->
+		<br>
+</div>
+<script type="text/javascript">
+jQuery(function() {
+
+		// main calendar
+		jQuery('#mycalendar').monthly({
+			mode: 'event',
+			jsonUrl: 'events.json',
+			dataType: 'json'
+		//	events: { 'monthly': [] } // this can be used as alternate to jsonUrl (same structure as events.json)
+		//	dataType: 'xml',
+		//	xmlUrl: 'events.xml'
+		});
+
+		// mini calendar, picker
+		jQuery('#mycalendar2').monthly({
+			mode: 'picker',
+			target: '#mytarget',
+			setWidth: '250px',
+			startHidden: true,
+			showTrigger: '#mytarget',
+			stylePast: true,
+			disablePast: true,
+		//	useIsoDateFormat: false
+		});
+
+	// just test to see if ajax is working, as this example needs to run on URL not file protocol
+	switch(window.location.protocol) {
+		case 'http:':
+		case 'https:':
+			// running on a server, should be good.
+			break;
+		case 'file:':
+		default:
+			alert('Just a heads-up, events will not work when run locally.');
+	}
+
+});
+</script>
+</body>
+</html>

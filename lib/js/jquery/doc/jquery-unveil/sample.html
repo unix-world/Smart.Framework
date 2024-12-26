@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>jQuery Unveil</title>
+	<script src="../../jquery.js"></script>
+	<script src="../../jquery.unveil.js"></script>
+</head>
+<body>
+<h1>A very lightweight plugin to lazy load images (scroll down, there are 3 images that will load only when they hit the visible area in the browser)</h1>
+<div class="test">
+	<picture title="Browser will choose if can display WEBP or JPG">
+		<source class="unveil" srcset="" data-src="https://www.gstatic.com/webp/gallery/4.sm.webp" type="image/webp">
+		<img class="unveil" src="" data-src="https://www.gstatic.com/webp/gallery/4.sm.jpg" alt="Gallery image 3">
+	</picture>
+	<div style="height:1024px;"></div>
+	<img class="unveil" src="" data-src="https://www.gstatic.com/webp/gallery/2.sm.jpg" alt="Gallery image 1">
+	<div style="height:1024px;"></div>
+	<iframe class="unveil" src="" data-src="https://www.gstatic.com/webp/gallery/1.sm.jpg" width="320" height="240"></iframe>
+</div>
+<script>
+$(function() {
+	$('.unveil').unveil(); // work with img.src, picture.source.srcset, iframe.src
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!-- v.20231027 -->
+[@@@SUB-TEMPLATE:acc-styles-form.mtpl.inc.htm@@@]
+<script>
+const handleFormDelAcc = () => {
+	const accId = '[###ID|js###]';
+	smartJ$Browser.ConfirmDialog(
+		'<h5>Are you sure, <span style="color:#FF3300;">DELETE</span> this account ?</h5><h6 style="color:#778899;"><i>Account&nbsp;ID</i>: `<span style="color:#FF5500;">' + smartJ$Utils.escape_html(accId) + '</span>`</h6><br><h5>Please confirm !<br><i>This operation cannot be undone ...</i></h5>',
+		() => {
+			smartJ$Browser.SubmitFormByAjax('delete_confirm_form', '[###ACTIONS-URL|js|html###]delete-confirm-acc', 'yes');
+		},
+		'Permanent DELETE selected Account',
+		null,
+		null,
+		'alertable'
+	);
+};
+</script>
+<center><div><table><tr><td>
+	<form id="delete_confirm_form" name="delete_confirm_form" class="ux-form ux-form-aligned" onSubmit="return false;">
+		<legend><h1>Delete Account</h1></legend><br>
+		<div class="operation_notice" style="display:inline-block; max-width:600px!important;">Important:<div>Deleted accounts cannot be recovered after permanent deletion.<br><br>Instead of account permanent deletion a better option is to set that account as INACTIVE for a while.<br><br>To PERMANENT DELETE the selected account click the bellow button and:<br>* select [OK] to permanent delete it<br><i>or</i><br>* select [Cancel] if you do not intend so.</div></div>
+		<br><br>
+		<div class="ux-control-group">
+			<label><i class="sfi sfi-user"></i>&nbsp;UserName&nbsp;/&nbsp;ID</label>
+			<input type="hidden" name="frm[id]" value="[###ID|html###]">
+			<h6 id="user-id" style="display:inline;">[###ID|html###]</h6>
+		</div>
+		<div class="ux-controls">
+			<button type="button" class="ux-button ux-button-spacing" onClick="self.location = '[###ACTIONS-URL|js|html###]edit-form&id=[###ID|js|html###]&viewonly=yes'; return false;"> Cancel &nbsp; <i style="color:#555555;" class="sfi sfi-spinner11"></i></button>
+			<button type="button" class="ux-button ux-button-special ux-button-spacing" onClick="handleFormDelAcc(); return false;"> Permanent DELETE selected Account &nbsp; <i class="sfi sfi-bin"></i></button>
+		</div>
+	</form>
+</td></tr></table></div></center>

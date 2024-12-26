@@ -1,0 +1,58 @@
+
+/**
+ * jQuery Smart MotionCAPTCHA r.20231117
+ * (c) 2019-2023 unix-world.org
+ *
+ * Based on v0.2 proof of concept of https://github.com/josscrowcroft/MotionCAPTCHA
+ * (c) 2011 Joss Crowcroft
+ */
+
+/* The canvas: */
+.mc-canvas {
+	width: 215px;  /* For best results, set width to between 210px and 240px */
+	height: 155px; /* For best results, set height to between 140px and 170px */
+	background: #FFFFFF -9999px -9999px no-repeat;
+	background-image: url('jquery.motionCaptcha.svg') !important; /* url('data:image/svg+xml,') */
+	border: 1px dotted #CCCCCC;
+	cursor: crosshair;
+}
+
+/* The shapes: */
+.mc-canvas.triangle     { background-position:   0px   10px } /* 0 */
+.mc-canvas.x            { background-position:-195px   10px } /* 1 */
+.mc-canvas.rectangle    { background-position:-390px   10px } /* 2 */
+.mc-canvas.circle       { background-position:-585px   10px } /* 3 */
+.mc-canvas.check        { background-position:   0px -140px } /* 4 */
+.mc-canvas.caret        { background-position:-195px -140px } /* 5 */
+.mc-canvas.zigzag       { background-position:-390px -140px } /* 6 */
+.mc-canvas.arrow        { background-position:-585px -140px } /* 7 */
+.mc-canvas.leftbracket  { background-position:  10px -290px } /* 8 */
+.mc-canvas.rightbracket { background-position:-195px -290px } /* 9 */
+.mc-canvas.v            { background-position:-390px -290px } /* 10 */
+.mc-canvas.delete       { background-position:-580px -290px } /* 11 */
+.mc-canvas.leftbrace    { background-position:  10px -435px } /* 12 */
+.mc-canvas.rightbrace   { background-position:-195px -435px } /* 13 */
+.mc-canvas.star         { background-position:-390px -435px } /* 14 */
+.mc-canvas.loop         { background-position:-580px -435px } /* 15 */
+
+/* Disable mouse-selection on the page (only while user is actively drawing on the canvas): */
+.mc-noselect {
+	-webkit-user-select: none,
+	   -moz-user-select: none,
+	        user-select: none
+}
+
+.mc-invalid {
+	border: 1px dashed rgba(239, 71, 86, 0.5); /* #EF4756 */
+	cursor: default !important;
+}
+.mc-novalid {
+	border: 1px dotted rgba(239, 71, 86, 0.5); /* #EF4756 */
+	cursor: default !important;
+}
+.mc-valid {
+	border: 1px dotted rgba(77, 88, 99, 0.5); /* #98C726 */
+	cursor: default !important;
+}
+
+/* END */

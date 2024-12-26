@@ -1,0 +1,2012 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="smartJ$Utils static class smartJ$Utils { } . CLASS :: Smart CoreUtils (ES6, Strict Mode) The class provides the core methods for JavaScript API of">
+<meta name="keywords" content="smartj utils, static, class, smart, coreutils, es6, strict, mode, the, provides, core, methods, for, javascript, api, of, smart framework, language, located, at, lib js framework smart framework pak js, core utils js, package, sf javascript core, name, frozen, yes, version, usage, smartj utils method, public, evaljsfxcode, string, fxcontext, js code, jscode, boolean, alerterr, return, true, if, successful, false, otherwise, param, fx, context, where, is, executed, used, just, logging, fails, to, know, which, js, callable, method, or, plain, code, optional, default, set, eval, will, display, an, alert, message, evaluate, mixed, in, a, evalute, and, execute, within, try catch, log, errors, console, so, it, can, isfinitenumber, number, num, finite, nan, be, tested, check, valid, must">
+<meta name="summary" content="Smart.Framework : Javascript Documentation: smartJ$Utils">
+<link rel="icon" href="data:,">
+<title>JS Documentation for: smartJ$Utils</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+		float: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3c4663;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework : Javascript Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+		<ul class="menu">
+		<li><a href="index.html#Package--SfJavascriptCore-" title="return to Index">return to Index</a></li>
+	</ul>
+	
+</nav>
+<!-- skip logo -->
+<!-- class r.20220331 -->
+<!-- Styles -->
+<!-- styles r.20220906 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located,
+.doc-version {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-frozen,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	top: 75px;
+	right: 175px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #3C4663;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Headings -->
+<h1 title="PHP class: `smartJ$Utils` @ JavaScript" id="Class--Summary-">
+	<span class="doc-modifiers">static</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-name">smartJ$Utils</span><br>
+	{
+	}&nbsp;.
+</h1>
+<!-- Description -->
+<div class="doc-comments">CLASS :: Smart CoreUtils (ES6, Strict Mode)<br>
+The class provides the core methods for JavaScript API of Smart.Framework</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> Javascript<span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/js/framework/smart-framework.pak.js; core_utils.js</span></li>
+		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Core</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> smartJ$Utils</span></li>
+		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20240122</span></li>
+		<li><b>Usage:</b> smartJ$Utils.method();</li>
+		
+		
+		
+		
+		
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">class Methods</h2>
+</div>
+<!-- methods r.20210414 -->
+<div class="doc-container" id="Method--evalJsFxCode">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>evalJsFxCode</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`fxContext` Parameter">fxContext</span></b></span>, 
+	<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`jsCode` Parameter">jsCode</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`alertErr` Parameter">alertErr</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} TRUE if successful, FALSE otherwise<br>
+	
+	
+	
+	@param: {String} fxContext The Fx context where is executed, used just for logging if fails to know which context is<br>
+	@param: {JS-Code} jsCode Js callable method or Js plain code<br>
+	@param: {Boolean} alertErr *Optional* Default is FALSE ; If set to TRUE if eval fails will display an alert message<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Evaluate Mixed Js Code in a context<br>
+Will evalute and execute mixed Js Code (Js callable method or Js plain code) within a try/catch context<br>
+If fails, will log errors to the console and optional if set so it can display an alert message</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--isFiniteNumber">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>isFiniteNumber</b></span>&nbsp;=&nbsp;(
+	<i>{Number}</i>&nbsp;<span class="doc-param-name"><b><span title="`num` Parameter">num</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} TRUE is number is Finite and !NaN ; FALSE otherwise<br>
+	
+	
+	
+	@param: {Number} num The number to be tested<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Check if a number is valid: must be Number, Finite and !NaN</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringPureVal">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringPureVal</b></span>&nbsp;=&nbsp;(
+	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`input` Parameter">input</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`trim` Parameter">trim</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The value converted to string, using rules from above<br>
+	
+	
+	
+	@param: {Mixed} input The input<br>
+	@param: {Boolean} trim If TRUE will trim the output result<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Return a string pure value from an input of any kind<br>
+RULES:<br>
+- Undefined, Null or False will be casted to empty string as ''<br>
+- True will be casted to '1' as in PHP not to 'true' as in Javascript<br>
+- Object or Function will be casted to empty string for safety, as ''<br>
+- Numerioc values will be casted to string as they are</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringTrim">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringTrim</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The trimmed string<br>
+	
+	
+	
+	@param: {String} str The string to be trimmed<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Trim a string for whitespaces (at begining and/or end) ; whitespaces: space \ n \ r \ t)</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringLeftTrim">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringLeftTrim</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The trimmed string (left only)<br>
+	
+	
+	
+	@param: {String} str The string to be trimmed on Left<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Left Trim a string for whitespaces (at begining and/or end) ; whitespaces: space \ n \ r \ t)</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringRightTrim">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringRightTrim</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The trimmed string (right only)<br>
+	
+	
+	
+	@param: {String} str The string to be trimmed on Right<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Right Trim a string for whitespaces (at begining and/or end) ; whitespaces: space \ n \ r \ t)</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringUcFirst">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringUcFirst</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: The implementation is compatible with PHP unicode mb_convert_case/MB_CASE_UPPER on the first letter<br>
+	
+	
+			@return: {String} The processed string<br>
+	
+	
+	
+	@param: {String} str The string to be processed<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Make uppercase the first character of a string</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringUcWords">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringUcWords</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: The implementation is compatible with PHP unicode mb_convert_case/MB_CASE_TITLE<br>
+	
+	
+			@return: {String} The processed string<br>
+	
+	
+	
+	@param: {String} str The string to be processed<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Make uppercase the first character of each word in a string while making lowercase the others</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringReplaceAll">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringReplaceAll</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`token` Parameter">token</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`newToken` Parameter">newToken</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The processed string<br>
+	
+	
+	
+	@param: {String} token The string part to be replaced<br>
+	@param: {String} newToken The string part replacement<br>
+	@param: {String} str The string where to do the replacements<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Replace all occurences in a string - Case Sensitive</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringIReplaceAll">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stringIReplaceAll</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`token` Parameter">token</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`newToken` Parameter">newToken</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The processed string<br>
+	
+	
+	
+	@param: {String} token The string part to be replaced<br>
+	@param: {String} newToken The string part replacement<br>
+	@param: {String} str The string where to do the replacements<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Replace all occurences in a string - Case Insensitive</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringRegexMatchAll">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stringRegexMatchAll</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{Regex}</i>&nbsp;<span class="doc-param-name"><b><span title="`regexp` Parameter">regexp</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
+	<div class="doc-method-ret-params">
+			@hint: It is compatible just with the PHP preg_match_all()<br>
+	
+	
+			@return: {Array} The array with matches<br>
+	
+	
+	
+	@param: {String} str The string to be searched<br>
+	@param: {Regex} regexp A valid regular expression<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Regex Match All occurences.</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringContains">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringContains</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`pos` Parameter">pos</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} TRUE if the str contains search begining from the pos<br>
+	
+	
+	
+	@param: {String} str The string to search in (haystack)<br>
+	@param: {String} search The string to search for in haystack (needle)<br>
+	@param: {Integer} pos *Optional* ; Default is zero ; The position to start (0 ... n)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Find if a string contains another sub-string, case sensitive</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringIContains">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringIContains</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`pos` Parameter">pos</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} TRUE if the str contains search begining from the pos<br>
+	
+	
+	
+	@param: {String} str The string to search in (haystack)<br>
+	@param: {String} search The string to search for in haystack (needle)<br>
+	@param: {Integer} pos *Optional* ; Default is zero ; The position to start (0 ... n)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Find if a string contains another sub-string, case insensitive</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringStartsWith">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringStartsWith</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} TRUE if the str starts with the search<br>
+	
+	
+	
+	@param: {String} str The string to search in (haystack)<br>
+	@param: {String} search The string to search for in haystack (needle)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Find if a string starts with another sub-string, case sensitive</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringIStartsWith">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringIStartsWith</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} TRUE if the str starts with the search<br>
+	
+	
+	
+	@param: {String} str The string to search in (haystack)<br>
+	@param: {String} search The string to search for in haystack (needle)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Find if a string starts with another sub-string, case insensitive</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringEndsWith">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringEndsWith</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} TRUE if the str ends with the search<br>
+	
+	
+	
+	@param: {String} str The string to search in (haystack)<br>
+	@param: {String} search The string to search for in haystack (needle)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Find if a string ends with another sub-string, case sensitive</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringIEndsWith">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringIEndsWith</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} TRUE if the str ends with the search<br>
+	
+	
+	
+	@param: {String} str The string to search in (haystack)<br>
+	@param: {String} search The string to search for in haystack (needle)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Find if a string ends with another sub-string, case insensitive</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--preg_quote">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>preg_quote</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: It is compatible with PHP preg_quote() method.<br>
+	
+	
+			@return: {String} The processed string<br>
+	
+	
+	
+	@param: {String} str The string to be processed<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Quote regular expression characters in a string.</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringSplitbyEqual">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringSplitbyEqual</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Array} The array with string parts splitted<br>
+	
+	
+	
+	@param: {String} str The string to be splitted by = (equal)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Split string by equal (=) with trimming prefix/suffix</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringSplitbyColon">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringSplitbyColon</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Array} The array with string parts splitted<br>
+	
+	
+	
+	@param: {String} str The string to be splitted by : (colon)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Split string by colon (:) with trimming prefix/suffix</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringSplitbySemicolon">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringSplitbySemicolon</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Array} The array with string parts splitted<br>
+	
+	
+	
+	@param: {String} str The string to be splitted by ; (semicolon)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Split string by semicolon (;) with trimming prefix/suffix</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringSplitbyComma">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringSplitbyComma</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Array} The array with string parts splitted<br>
+	
+	
+	
+	@param: {String} str The string to be splitted by , (comma)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Split string by comma (,) with trimming prefix/suffix</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--arrayGetFirst">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>arrayGetFirst</b></span>&nbsp;=&nbsp;(
+	<i>{Array}</i>&nbsp;<span class="doc-param-name"><b><span title="`arr` Parameter">arr</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Mixed}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Mixed} The first element from the array<br>
+	
+	
+	
+	@param: {Array} arr The array to be used<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Get the first element from an Array</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--arrayGetLast">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>arrayGetLast</b></span>&nbsp;=&nbsp;(
+	<i>{Array}</i>&nbsp;<span class="doc-param-name"><b><span title="`arr` Parameter">arr</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Mixed}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Mixed} The last element from the array<br>
+	
+	
+	
+	@param: {Array} arr The array to be used<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Get the last element from an Array</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--format_number_float">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>format_number_float</b></span>&nbsp;=&nbsp;(
+	<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`num` Parameter">num</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`allow_negatives` Parameter">allow_negatives</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Float}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Float} A float number<br>
+	
+	
+	
+	@param: {Numeric} num A numeric value<br>
+	@param: {Boolean} allow_negatives *Optional* ; default is TRUE ; If set to FALSE will disallow negative values and if negative value detected will reset it to zero<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Format a number as FLOAT</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--format_number_int">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>format_number_int</b></span>&nbsp;=&nbsp;(
+	<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`num` Parameter">num</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`allow_negatives` Parameter">allow_negatives</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Integer} An integer number<br>
+	
+	
+	
+	@param: {Numeric} num A numeric value<br>
+	@param: {Boolean} allow_negatives If TRUE will allow negative values else will return just positive (unsigned) values<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Format a number as INTEGER</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--format_number_dec">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>format_number_dec</b></span>&nbsp;=&nbsp;(
+	<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`num` Parameter">num</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`decimals` Parameter">decimals</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`allow_negatives` Parameter">allow_negatives</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`discard_trailing_zeroes` Parameter">discard_trailing_zeroes</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`decimals_separator` Parameter">decimals_separator</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} A decimal number as string to keep the fixed decimals as specified<br>
+	
+	
+	
+	@param: {Numeric} num A numeric value as Number or String ; decimal separator is `.` (dot)<br>
+	@param: {Integer} decimals *Optional* Default is 2 ; The number of decimal to use (between 1 and 13)<br>
+	@param: {Boolean} allow_negatives *Optional* Default is TRUE ; If FALSE will disallow negative (will return just positive / unsigned values)<br>
+	@param: {Boolean} discard_trailing_zeroes *Optional* Default is FALSE ; If set to TRUE will discard trailing zeroes<br>
+	@param: {Boolean} decimals_separator *Optional* Default is FALSE ; If set to TRUE will add thousands separator `,` (comma)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Format a number as DECIMAL</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--randNum">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>randNum</b></span>&nbsp;=&nbsp;(
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`min` Parameter">min</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`max` Parameter">max</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Integer} The random value<br>
+	
+	
+	
+	@param: {Integer} min The min value<br>
+	@param: {Integer} max The max value<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Get a Random (Integer) Number between Min and Max</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stripslashes">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stripslashes</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: It is compatible with PHP stripslashes() method.<br>
+	
+	
+			@return: {String} The processed string<br>
+	
+	
+	
+	@param: {String} str The string to be processed<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Un-quotes a quoted string.<br>
+It will remove double / quoted slashes.</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--addcslashes">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>addcslashes</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`charlist` Parameter">charlist</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: It is compatible with PHP addcslashes() method.<br>
+	
+	
+			@return: {String} Returns the escaped string<br>
+	
+	
+	
+	@param: {String} str The string to be escaped<br>
+	@param: {String} charlist A list of characters to be escaped. If charlist contains characters \n, \r etc., they are converted in C-like style, while other non-alphanumeric characters with ASCII codes lower than 32 and higher than 126 converted to octal representation<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Quote string with slashes in a C style.</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--escape_css">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>escape_css</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: It is like the Smart::escape_css() from the PHP Smart.Framework.<br>
+	
+	
+			@return: {String} The safe escaped string to be injected in CSS code<br>
+	
+	
+	
+	@param: {String} str The string to be escaped<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Convert special characters to HTML entities.</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--escape_html">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>escape_html</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: It is like the Smart::escape_html() from the PHP Smart.Framework.<br>
+	
+	
+			@return: {String} The safe escaped string to be injected in HTML code<br>
+	
+	
+	
+	@param: {String} str The string to be escaped<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Convert special characters to HTML entities.<br>
+These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--escape_js">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>escape_js</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: It is like the Smart::escape_js() from the PHP Smart.Framework.<br>
+	
+	
+			@return: {String} The escaped string using the json encode standard to be injected between single quotes '' or double quotes &quot;&quot;<br>
+	
+	
+	
+	@param: {String} str The string to be escaped<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Convert special characters to escaped entities for safe use with Javascript Strings.</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--escape_url">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>escape_url</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: It is like the Smart::escape_url() ; can be used as a shortcut to the encodeURIComponent() to provide a standard into Smart.Framework/JS.<br>
+	
+	
+			@return: {String} The escaped URL variable<br>
+	
+	
+	
+	@param: {String} str The URL variable value to be escaped<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Safe escape URL Variable (using RFC3986 standards to be full Unicode compliant).</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--nl2br">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>nl2br</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: It is compatible with the PHP nl2br() method.<br>
+	
+	
+			@return: {String} The processed string with &lt;br&gt; html tags if new lines were detected<br>
+	
+	
+	
+	@param: {String} str The string to be processed<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Replace new lines \ r \ n ; \ n with the &lt;br&gt; html tag.</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--utf8Enc">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>utf8Enc</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The processed string<br>
+	
+	
+	
+	@param: {String} str The string to be processed<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Encodes an ISO-8859-1 string to UTF-8</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--utf8Dec">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>utf8Dec</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`utftext` Parameter">utftext</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The processed string<br>
+	
+	
+	
+	@param: {String} utftext The string to be processed<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Decodes an UTF-8 string to ISO-8859-1</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--deaccent_str">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>deaccent_str</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`strIn` Parameter">strIn</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: It is like PHP SmartUnicode deaccent str<br>
+	
+	
+			@return: {String} The de-accented string<br>
+	
+	
+	
+	@param: {String} strIn The string to be de-accented<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">De-Accent a latin-based Unicode string<br>
+Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccented versions into ISO-8859-1</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--bin2hex">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>bin2hex</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`isBinary` Parameter">isBinary</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: It is compatible with PHP bin2hex() method.<br>
+	
+	
+			@return: {String} The processed string<br>
+	
+	
+	
+	@param: {String} s The string to be processed<br>
+	@param: {Boolean} isBinary Encoding character set mode ; default is FALSE ; set to TRUE if the string is binary ASCII to avoid normalize as UTF-8 ; for normal, UTF-8 content this must be set to FALSE<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Convert data into hexadecimal representation.</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--hex2bin">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>hex2bin</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`hex` Parameter">hex</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`isBinary` Parameter">isBinary</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: It is compatible with PHP hex2bin() method.<br>
+	
+	
+			@return: {String} The processed string<br>
+	
+	
+	
+	@param: {String} hex The string to be processed<br>
+	@param: {Boolean} isBinary Decoding character set mode ; default is FALSE ; set to TRUE if the string is binary ASCII to avoid normalize as UTF-8 ; for normal, UTF-8 content this must be set to FALSE<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Decodes a hexadecimally encoded string.</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--b64Enc">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>b64Enc</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`isBinary` Parameter">isBinary</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+			@throws: console.error<br>
+	
+			@return: {String} the Base64 encoded string or empty string if errors<br>
+	
+	
+	
+	@param: {String} str The plain string (to be encoded)<br>
+	@param: {Boolean} isBinary Encoding character set mode ; default is FALSE ; set to TRUE if the string is binary ASCII to avoid normalize as UTF-8 ; for normal, UTF-8 content this must be set to FALSE<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Encode a string to Base64, using browser native implementation: btoa()<br>
+Supports also UTF-8</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--b64Dec">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>b64Dec</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`isBinary` Parameter">isBinary</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+			@throws: console.error<br>
+	
+			@return: {String} the plain (B64 decoded) string or empty string if errors<br>
+	
+	
+	
+	@param: {String} str The B64 encoded string<br>
+	@param: {Boolean} isBinary Decoding character set mode ; default is FALSE ; set to TRUE if the string is binary ASCII to avoid normalize as UTF-8 ; for normal, UTF-8 content this must be set to FALSE<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Decode a string from Base64<br>
+Supports also UTF-8</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--uuid">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>uuid</b></span>&nbsp;(
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} A unique UUID, time based, base36 ; Ex: 1A2B3C4D5E<br>
+	
+	
+	
+	
+	
+	</div>
+			<div class="doc-method-comments">Generate a base36 10-chars length UUID</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--textSort">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>textSort</b></span>&nbsp;(
+	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`property` Parameter">property</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`useLocale` Parameter">useLocale</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Method}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Method} The stack sort method<br>
+	
+	
+	
+	@param: {Mixed} property The stack to be sorted<br>
+	@param: {Boolean} useLocale *Optional* default is FALSE ; if TRUE will try sort using locales and if fail will fallback on raw string comparison ; if FALSE will use the default string comparison<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Sort a stack (array / object / property) using String Sort algorithm</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--numericSort">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>numericSort</b></span>&nbsp;=&nbsp;(
+	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`property` Parameter">property</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Method}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Method} The stack sort method<br>
+	
+	
+	
+	@param: {Mixed} property The stack to be sorted<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Sort a stack (array / object / property) using Numeric Sort algorithm</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--url_add_suffix">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>url_add_suffix</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`url` Parameter">url</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`suffix` Parameter">suffix</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The prepared URL in the standard RFC3986 format (all values are escaped using escape_url() to be Unicode full compliant<br>
+	
+	
+	
+	@param: {String} url The base URL to use as prefix like: script.php or script.php?a=b&amp;c=d or empty<br>
+	@param: {String} suffix A RFC3986 URL segment like: a=b or E=%20d (without ? or not starting with &amp; as they will be detected if need append ? or &amp;; variable values must be encoded using escape_url() RFC3986)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Add URL Suffix (to a standard RFC3986 URL) as: script.php?a=b&amp;C=D&amp;e=%20d</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--create_slug">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>create_slug</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`lowercase` Parameter">lowercase</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`maxlen` Parameter">maxlen</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The slug which will contain only: a-z 0-9 _ - (A-Z will be converted to a-z if lowercase is enforced)<br>
+	
+	
+	
+	@param: {String} str The string to be processed<br>
+	@param: {Boolean} lowercase *OPTIONAL* If TRUE will return the slug with enforced lowercase characters ; DEFAULT is FALSE<br>
+	@param: {Integer} maxlen *OPTIONAL* If a positive value greater than zero is supplied here the slug max length will be constrained to the value<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Creates a Slug (URL safe slug) from a string</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--create_htmid">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>create_htmid</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The HTML-ID which will contain only: a-z A-Z 0-9 _ -<br>
+	
+	
+	
+	@param: {String} str The string to be processed<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Creates a compliant HTML-ID (HTML ID used for HTML elements) from a string</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--create_jsvar">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>create_jsvar</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The Js-Var which will contain only: a-z A-Z 0-9 _ $<br>
+	
+	
+	
+	@param: {String} str The string to be processed<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Creates a compliant Js-Var (JavaScript Variable Name) from a string</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--renderMarkersTpl">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>renderMarkersTpl</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`template` Parameter">template</span></b></span>, 
+	<i>{ArrayObj}</i>&nbsp;<span class="doc-param-name"><b><span title="`arrobj` Parameter">arrobj</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`isEncoded` Parameter">isEncoded</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`revertSyntax` Parameter">revertSyntax</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: To be used together with the server-side Marker-TPL templating (ex; PHP), to avoid the server-side markers to be rendered ; ex: `&lbrack;&num;&num;&num;MARKER&num;&num;&num;&rbrack;` will need the template to be escape_url+escape_js ; for this purpose the 3rd param can be set to true: isEncoded = TRUE<br>
+	
+	
+			@return: {String} The processed string<br>
+	
+	
+	
+	@param: {String} template The string template with markers<br>
+	@param: {ArrayObj} arrobj The Object-Array with marker replacements as { 'MAR.KER_1' =&gt; 'Value 1', 'MARKER-2' =&gt; 'Value 2', ... }<br>
+	@param: {Boolean} isEncoded If TRUE will do a decoding over template string (apply if TPL is sent as encoded from server-side or directly in html page)<br>
+	@param: {Boolean} revertSyntax If TRUE will do a revertNosyntaxContentMarkersTpl() over template string (apply if TPLs is sent with syntax escaped)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Render Simple Marker-TPL Template + Comments + Specials (only markers replacements with escaping or processing syntax and support for comments and special replacements: SPACE, TAB, R, N ; no support for IF / LOOP / INCLUDE syntax since the js regex is too simplistic and it can be implemented using real js code)<br>
+It is compatible just with the REPLACE MARKERS of Smart.Framework PHP server-side Marker-TPL Templating for substitutions on client-side, except the extended syntax as IF/LOOP/INCLUDE.</div>
+	
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> <span class="hljs-comment">// sample client side MarkersTPL rendering</span>
+ <span class="hljs-comment">// HINTS on using |js escaping:</span>
+ <span class="hljs-comment">// - never use a marker inside javascript backticks (`) ; ex: don't do this: const test = `&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;`; // it will raise js code compile errors if a string contains a backtick (`) ... this is because the backticks are not escaped by json escaping ...</span>
+ <span class="hljs-comment">// - when using TPL markers inside javascript single quotes (') or double quotes (&quot;) just use the escaping: |js ; ex: const test = '&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;'; const test2 = &quot;&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;&quot;;</span>
+ <span class="hljs-comment">// - if the context of javascript is using escaped single quotes ('\'\'') or escaped double quotes (&quot;\&quot;\&quot;&quot;), if possible use (&quot;''&quot;) or ('&quot;&quot;') as (&quot;'&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;'&quot;) or ('&quot;&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;&quot;') is OK ; but ('\'&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;\'') or (&quot;\&quot;&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;\&quot;&quot;) IS NOT OK because the js code will compile but when the js will evaluate the context will raise an error as the strings will terminate premature if they contain a single or double quote ; also using backticks like (`'&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;'`) or (`&quot;&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;&quot;`) is wrong, it is explained above ...</span>
+ <span class="hljs-comment">// - if the javascript context is using escaped single quotes, have to use: ('\'&lbrack;&num;&num;&num;TEST|js|js&num;&num;&num;&rbrack;\''), which is OK</span>
+ <span class="hljs-comment">// - if the javascript context is using escaped double quotes, have to use: (&quot;\&quot;&lbrack;&num;&num;&num;TEST|js|js&num;&num;&num;&rbrack;&quot;') + &quot;\&quot;&quot;), which is OK</span>
+ <span class="hljs-comment">// see below a real life situation when have to use this:</span>
+ <span class="hljs-keyword">const</span> question = <span class="hljs-string">'&lbrack;&num;&num;&num;QUESTION|js&num;&num;&num;&rbrack;'</span>; <span class="hljs-comment">// OK</span>
+ <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Question:'</span>, question);
+ <span class="hljs-keyword">const</span> tpl = <span class="hljs-string">'&lt;div onclick=&quot;let Question=\'&lbrack;&num;&num;&num;QUESTION|js|js&num;&num;&num;&rbrack;\'; alert(Question);&quot;&gt;&lbrack;&num;&num;&num;TITLE|html|js&num;&num;&num;&rbrack;&lt;/div&gt;'</span>; <span class="hljs-comment">// the TPL ; OK because is using double |js escaping with single quotes escaping to avoid js errors when js is evaluating the string ...</span>
+ <span class="hljs-keyword">const</span> tpl2 = <span class="hljs-string">'&lt;div onclick=&quot;alert(question);&quot;&gt;&lbrack;&num;&num;&num;TITLE|html|js&num;&num;&num;&rbrack;&lt;/div&gt;'</span>; <span class="hljs-comment">// alternate TPL ; OK, will use the global variable / constant question so making like this avoid adding escaped single or double quotes</span>
+ <span class="hljs-comment">// it is a common situation when building html syntax with javascript to have combined single quotes (javascript) with double quotes (html), so adding in a html attribute another javascript have no other solution than using again single quotes but escaped like \' and if a marker is placed, must add like: let html = '&lt;button onClick=&quot;let test = \'&lbrack;&num;&num;&num;TEST|js|js&num;&num;&num;&rbrack;\';&quot;&gt;Test&lt;/button&gt;'; // notice the double escaping</span>
+ <span class="hljs-keyword">let</span> html = smartJ$Utils.renderMarkersTpl( <span class="hljs-comment">// render TPL</span>
+ 		tpl,
+ 		{
+ 			<span class="hljs-string">'TITLE'</span>: <span class="hljs-string">'A Title'</span>,
+ 			<span class="hljs-string">'QUESTION'</span>: <span class="hljs-string">'A Question'</span>
+ 		}
+ jQuery(<span class="hljs-string">'body'</span>).append(html); <span class="hljs-comment">// display TPL</span></code></pre>
+	
+</div>
+
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20210417 -->
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20210417 -->
+
+<!-- Sample Code -->
+
+<!-- Summary List -->
+<br>
+<!-- summary r.20210414 -->
+<script>
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* Javascript Class smartJ$Utils # Documentation Index *</option>
+		<optgroup label="Class smartJ$Utils">
+			<option value="Class--Summary-">Class definition</option>
+		</optgroup>
+		<optgroup label="Class Methods">
+			<option value="Methods--Summary-">Methods list</option>
+						<option value="Method--evalJsFxCode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;evalJsFxCode()</option>
+			
+						<option value="Method--isFiniteNumber"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;isFiniteNumber()</option>
+			
+						<option value="Method--stringPureVal"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringPureVal()</option>
+			
+						<option value="Method--stringTrim"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringTrim()</option>
+			
+						<option value="Method--stringLeftTrim"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringLeftTrim()</option>
+			
+						<option value="Method--stringRightTrim"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringRightTrim()</option>
+			
+						<option value="Method--stringUcFirst"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringUcFirst()</option>
+			
+						<option value="Method--stringUcWords"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringUcWords()</option>
+			
+						<option value="Method--stringReplaceAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringReplaceAll()</option>
+			
+						<option value="Method--stringIReplaceAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringIReplaceAll()</option>
+			
+						<option value="Method--stringRegexMatchAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringRegexMatchAll()</option>
+			
+						<option value="Method--stringContains"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringContains()</option>
+			
+						<option value="Method--stringIContains"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringIContains()</option>
+			
+						<option value="Method--stringStartsWith"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringStartsWith()</option>
+			
+						<option value="Method--stringIStartsWith"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringIStartsWith()</option>
+			
+						<option value="Method--stringEndsWith"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringEndsWith()</option>
+			
+						<option value="Method--stringIEndsWith"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringIEndsWith()</option>
+			
+						<option value="Method--preg_quote"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;preg_quote()</option>
+			
+						<option value="Method--stringSplitbyEqual"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbyEqual()</option>
+			
+						<option value="Method--stringSplitbyColon"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbyColon()</option>
+			
+						<option value="Method--stringSplitbySemicolon"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbySemicolon()</option>
+			
+						<option value="Method--stringSplitbyComma"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbyComma()</option>
+			
+						<option value="Method--arrayGetFirst"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;arrayGetFirst()</option>
+			
+						<option value="Method--arrayGetLast"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;arrayGetLast()</option>
+			
+						<option value="Method--format_number_float"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;format_number_float()</option>
+			
+						<option value="Method--format_number_int"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;format_number_int()</option>
+			
+						<option value="Method--format_number_dec"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;format_number_dec()</option>
+			
+						<option value="Method--randNum"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;randNum()</option>
+			
+						<option value="Method--stripslashes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stripslashes()</option>
+			
+						<option value="Method--addcslashes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addcslashes()</option>
+			
+						<option value="Method--escape_css"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;escape_css()</option>
+			
+						<option value="Method--escape_html"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;escape_html()</option>
+			
+						<option value="Method--escape_js"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_js()</option>
+			
+						<option value="Method--escape_url"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;escape_url()</option>
+			
+						<option value="Method--nl2br"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;nl2br()</option>
+			
+						<option value="Method--utf8Enc"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;utf8Enc()</option>
+			
+						<option value="Method--utf8Dec"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;utf8Dec()</option>
+			
+						<option value="Method--deaccent_str"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;deaccent_str()</option>
+			
+						<option value="Method--bin2hex"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;bin2hex()</option>
+			
+						<option value="Method--hex2bin"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;hex2bin()</option>
+			
+						<option value="Method--b64Enc"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;b64Enc()</option>
+			
+						<option value="Method--b64Dec"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;b64Dec()</option>
+			
+						<option value="Method--uuid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;uuid()</option>
+			
+						<option value="Method--textSort"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;textSort()</option>
+			
+						<option value="Method--numericSort"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;numericSort()</option>
+			
+						<option value="Method--url_add_suffix"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;url_add_suffix()</option>
+			
+						<option value="Method--create_slug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;create_slug()</option>
+			
+						<option value="Method--create_htmid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;create_htmid()</option>
+			
+						<option value="Method--create_jsvar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;create_jsvar()</option>
+			
+						<option value="Method--renderMarkersTpl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;renderMarkersTpl()</option>
+			
+			
+		</optgroup>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+			
+		</optgroup>
+		
+	</select>
+</div>
+<!-- summary-selectjs r.20210420 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 17:00:46 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div><center>
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
+</center></div>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+	<link rel="icon" href="data:,">
+	<title>DataTables example - Basic initialisation</title>
+	<!-- dependencies -->
+	<link rel="stylesheet" type="text/css" href="../../../../../../lib/core/plugins/fonts/typo/sans/ibm-plex-sans.css">
+	<style type="text/css">
+	* {
+		font-family: 'IBM Plex Sans',arial,sans-serif;
+	}
+	</style>
+	<link rel="stylesheet" type="text/css" href="../../../../../../lib/css/toolkit/ux-toolkit.css">
+	<link rel="stylesheet" type="text/css" href="../../../../../../lib/css/toolkit/ux-toolkit-responsive.css">
+	<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../../../../../../lib/js/framework/smart-framework.pak.js"></script>
+	<!-- responsive -->
+	<link rel="stylesheet" type="text/css" href="../datatables-responsive.css">
+	<script type="text/javascript" src="../datatables-responsive.js"></script>
+	<!-- optional plugins -->
+	<link rel="stylesheet" type="text/css" href="../plugins/key-table/keyTable.dataTables.css">
+	<script type="text/javascript" src="../plugins/key-table/dataTables.keyTable.js"></script>
+	<link rel="stylesheet" type="text/css" href="../plugins/select/select.dataTables.css">
+	<script type="text/javascript" src="../plugins/select/dataTables.select.js"></script>
+</head>
+<body>
+<div align="center">
+	<select onChange="if(this.value) { self.location = this.value; }">
+		<option value="">--- Select a demo from below ---</option>
+		<option value="sample.html" selected>Default, Responsive</option>
+		<option value="sample-json.html">JSON Data</option>
+		<option value="sample-fixed-columns.html">Fixed Columns</option>
+		<option value="sample-fixed-header.html">Fixed Header</option>
+		<option value="sample-column-reorder.html">Column Reorder</option>
+		<option value="sample-row-reorder.html">Row Reorder</option>
+		<option value="sample-row-group.html">Row Group</option>
+		<option value="sample-virtual-scroller.html">Virtual Scroll</option>
+	</select>
+</div>
+<h1>DataTables example - Basic initialisation (with optional plugins: keys and select)</h1>
+<table id="data-tbl1" class="display ux-reflow-table" style="width:100%">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Position</th>
+			<th>Office</th>
+			<th>Age</th>
+			<th>Salary</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Jena Gaines</td>
+			<td>Office Manager</td>
+			<td>London</td>
+			<td>30</td>
+			<td>$90,560</td>
+		</tr>
+		<tr>
+			<td>Haley Kennedy</td>
+			<td>Senior Marketing Designer</td>
+			<td>London</td>
+			<td>43</td>
+			<td>$313,500</td>
+		</tr>
+		<tr>
+			<td>Tatyana Fitzpatrick</td>
+			<td>Regional Director</td>
+			<td>London</td>
+			<td>19</td>
+			<td>$385,750</td>
+		</tr>
+		<tr>
+			<td>Michael Silva</td>
+			<td>Marketing Designer</td>
+			<td>London</td>
+			<td>66</td>
+			<td>$198,500</td>
+		</tr>
+		<tr>
+			<td>Bradley Greer</td>
+			<td>Software Engineer</td>
+			<td>London</td>
+			<td>41</td>
+			<td>$132,000</td>
+		</tr>
+		<tr>
+			<td>Angelica Ramos</td>
+			<td>Chief Executive Officer (CEO)</td>
+			<td>London</td>
+			<td>47</td>
+			<td>$1,200,000</td>
+		</tr>
+		<tr>
+			<td>Suki Burks</td>
+			<td>Developer</td>
+			<td>London</td>
+			<td>53</td>
+			<td>$114,500</td>
+		</tr>
+		<tr>
+			<td>Prescott Bartlett</td>
+			<td>Technical Author</td>
+			<td>London</td>
+			<td>27</td>
+			<td>$145,000</td>
+		</tr>
+		<tr>
+			<td>Timothy Mooney</td>
+			<td>Office Manager</td>
+			<td>London</td>
+			<td>37</td>
+			<td>$136,200</td>
+		</tr>
+		<tr>
+			<td>Bruno Nash</td>
+			<td>Software Engineer</td>
+			<td>London</td>
+			<td>38</td>
+			<td>$163,500</td>
+		</tr>
+		<tr>
+			<td>Hermione Butler</td>
+			<td>Regional Director</td>
+			<td>London</td>
+			<td>47</td>
+			<td>$356,250</td>
+		</tr>
+		<tr>
+			<td>Lael Greer</td>
+			<td>Systems Administrator</td>
+			<td>London</td>
+			<td>21</td>
+			<td>$103,500</td>
+		</tr>
+	</tbody>
+	<!--
+	<tfoot>
+		<tr>
+			<th>Name</th>
+			<th>Position</th>
+			<th>Office</th>
+			<th>Age</th>
+			<th>Salary</th>
+		</tr>
+	</tfoot>
+	-->
+</table>
+<script>
+jQuery(document).ready(function() {
+	jQuery('table.display').DataTable({
+	//	responsive: true,
+		bSort: true,
+		bFilter: true,
+		bSortMulti: true,
+		order: [
+			[ 0, 'asc' ],
+			[ 1, 'desc' ]
+		],
+		bPaginate: true,
+		iDisplayLength: 5,
+		aLengthMenu: [ 5, 10, 25, 50, 100 ],
+		uxmHidePagingIfNoMultiPages: true,
+		uxmCssClassLengthField: 'ux-field',
+		uxmCssClassFilterField: 'ux-field',
+		classes: {
+			sPageButton: 'ux-button ux-button-small',
+			sPageButtonActive: 'ux-button-primary'
+		},
+		columnDefs: [
+			{
+				targets: 0,
+				width: '200px',
+				render: function(data, type, row) {
+					if(type === 'type' || type === 'sort' || type === 'filter') {
+						return data;
+					} else {
+						return '<b>' + smartJ$Utils.escape_html(data) + '</b>';
+					}
+				}
+			},
+			{
+				targets: 1,
+				width: '250px',
+				render: function(data, type, row) {
+					if(type === 'type' || type === 'sort' || type === 'filter') {
+						return data;
+					} else {
+						return '<b><i>' + smartJ$Utils.escape_html(data) + '</i></b>';
+					}
+				}
+			}
+		],
+		//-- plugin options
+		keys: true,
+		select: true
+	});
+});
+</script>
+</body>
+</html>

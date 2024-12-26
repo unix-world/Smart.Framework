@@ -1,0 +1,116 @@
+
+/* -- CSS Start :: Smart.Framework / Components / Notifications :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* Notifications Icons r.20231020 */
+/* Keep as separate file from notifications.css because the notifications base styles are used as inline in some places and have no access to this relative paths */
+
+div#operation_display,   div.operation_display,
+div#operation_result,    div.operation_result,
+div#operation_info,      div.operation_info,
+div#operation_notice,    div.operation_notice,
+div#operation_important, div.operation_important,
+div#operation_hint,      div.operation_hint,
+div#operation_question,  div.operation_question,
+div#operation_success,   div.operation_success,
+div#operation_warn,      div.operation_warn,
+div#operation_error,     div.operation_error {
+	max-width: calc(100% - 52px) !important; /* must adjust and substract the padding: -52px */
+	padding-left: 52px !important;
+}
+
+/* -- */
+
+/* this have no icon by default, will show icon only with additional class */
+div#operation_display.icon,
+div.operation_display.icon {
+	background-image: url(../../framework/img/sign-done.svg);
+	background-repeat: no-repeat;
+	background-position: 10px 14px;
+}
+
+/* -- */
+
+div#operation_result:not(.no-icon),
+div.operation_result:not(.no-icon) {
+	background-image: url(../../framework/img/sign-important.svg);
+	background-repeat: no-repeat;
+	background-position: 10px 14px;
+}
+
+/* -- */
+
+div#operation_info:not(.no-icon),
+div.operation_info:not(.no-icon) {
+	background-image: url(../../framework/img/sign-info.svg);
+	background-repeat: no-repeat;
+	background-position: 10px 14px;
+}
+
+/* -- */
+
+div#operation_notice:not(.no-icon),
+div.operation_notice:not(.no-icon) {
+	background-image: url(../../framework/img/sign-notice.svg);
+	background-repeat: no-repeat;
+	background-position: 10px 14px;
+}
+
+/* -- */
+
+div#operation_important:not(.no-icon),
+div.operation_important:not(.no-icon) {
+	background-image: url(../../framework/img/sign-important.svg);
+	background-repeat: no-repeat;
+	background-position: 10px 14px;
+}
+
+/* -- */
+
+div#operation_hint:not(.no-icon),
+div.operation_hint:not(.no-icon) {
+	background-image: url(../../framework/img/sign-important.svg);
+	background-repeat: no-repeat;
+	background-position: 10px 14px;
+}
+
+/* -- */
+
+div#operation_question:not(.no-icon),
+div.operation_question:not(.no-icon) {
+	background-image: url(../../framework/img/sign-question.svg);
+	background-repeat: no-repeat;
+	background-position: 10px 14px;
+}
+
+/* -- */
+
+div#operation_success:not(.no-icon),
+div.operation_success:not(.no-icon) {
+	background-image: url(../../framework/img/sign-ok.svg);
+	background-repeat: no-repeat;
+	background-position: 10px 14px;
+}
+
+/* -- */
+
+div#operation_warn:not(.no-icon),
+div.operation_warn:not(.no-icon) {
+	background-image: url(../../framework/img/sign-warn.svg);
+	background-repeat: no-repeat;
+	background-position: 10px 14px;
+}
+
+/* -- */
+
+div#operation_error:not(.no-icon),
+div.operation_error:not(.no-icon) {
+	background-image: url(../../framework/img/sign-error.svg);
+	background-repeat: no-repeat;
+	background-position: 10px 14px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */

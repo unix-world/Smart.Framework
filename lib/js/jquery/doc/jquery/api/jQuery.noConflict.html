@@ -1,0 +1,340 @@
+<script>{
+		"title":
+			"jQuery.noConflict()",
+		"excerpt":
+			"Relinquish jQuery's control of the $ variable.",
+		"termSlugs": {
+			"category": [
+				"core","miscellaneous/setup-methods","version/1.0"
+			]
+		}
+	}</script><article id="jQuery-noConflict1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.noConflict(  [removeAll ] )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Object">Object</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Relinquish jQuery&apos;s control of the <code>$</code> variable.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0/">1.0</a></span><a id="jQuery-noConflict-removeAll" href="#jQuery-noConflict-removeAll"><span class="icon-link"></span>jQuery.noConflict(  [removeAll ] )</a>
+</h4>
+<ul><li>
+<div><strong>removeAll</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Boolean">Boolean</a>
+</div>
+<div>A Boolean indicating whether to remove all jQuery variables from the global scope (including jQuery itself).</div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>Many JavaScript libraries use <code>$</code> as a function or variable name, just as jQuery does. In jQuery&apos;s case, <code>$</code> is just an alias for <code>jQuery</code>, so all functionality is available without using <code>$</code>. If you need to use another JavaScript library alongside jQuery, return control of <code>$</code> back to the other library with a call to <code>$.noConflict()</code>. Old references of <code>$</code> are saved during jQuery initialization; <code>noConflict()</code> simply restores them.</p>
+    <p>If for some reason two versions of jQuery are loaded (which is not recommended), calling <code>$.noConflict( true )</code> from the second version will return the globally scoped jQuery variables to those of the first version.</p>
+    <div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;other_lib.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;jquery.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code>$.noConflict();</code></div></div><div class="container"><div class="line"><code><span class="comment">// Code that uses other library&apos;s $ can follow here.</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>This technique is especially effective in conjunction with the <code>.ready()</code> method&apos;s ability to alias the jQuery object, as within callback passed to <code>.ready()</code> you can use <code>$</code> if you wish without fear of conflicts later:</p>
+    <div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;other_lib.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;jquery.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code>$.noConflict();</code></div></div><div class="container"><div class="line"><code>jQuery( document ).ready(<span class="keyword">function</span>( $ ) {</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Code that uses jQuery&apos;s $ can follow here.</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code><span class="comment">// Code that uses other library&apos;s $ can follow here.</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>If necessary, you can free up the <code>jQuery</code> name as well by passing <code>true</code> as an argument to the method. This is rarely necessary, and if you must do this (for example, if you need to use multiple versions of the jQuery library on the same page), you need to consider that most plug-ins rely on the presence of the <code>jQuery</code> variable and may not operate correctly in this situation.</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Examples:</h2></header><div class="entry-example" id="example-0">
+<p>Map the original object that was referenced by $ back to $.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>jQuery.noConflict();</code></div></div><div class="container"><div class="line"><code><span class="comment">// Do something with jQuery</span></code></div></div><div class="container"><div class="line"><code>jQuery( <span class="string">&quot;div p&quot;</span> ).hide();</code></div></div><div class="container"><div class="line"><code><span class="comment">// Do something with another library&apos;s $()</span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;content&quot;</span> ).style.display = <span class="string">&quot;none&quot;</span>;</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-1">
+<p>Revert the $ alias and then create and execute a function to provide the $ as a jQuery alias inside the function&apos;s scope. Inside the function the original $ object is not available. This works well for most plugins that don&apos;t rely on any other library.
+  </p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>jQuery.noConflict();</code></div></div><div class="container"><div class="line"><code>(<span class="keyword">function</span>( $ ) {</code></div></div><div class="container"><div class="line"><code>  $(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    <span class="comment">// More code using $ as alias to jQuery</span></code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code>})(jQuery);</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Other code using $ as an alias to the other library</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-2">
+<p>Create a different alias instead of jQuery to use in the rest of the script.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> j = jQuery.noConflict();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Do something with jQuery</span></code></div></div><div class="container"><div class="line"><code>j( <span class="string">&quot;div p&quot;</span> ).hide();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Do something with another library&apos;s $()</span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;content&quot;</span> ).style.display = <span class="string">&quot;none&quot;</span>;</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-3">
+<p>Completely move jQuery to a new namespace in another object.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> dom = {};</code></div></div><div class="container"><div class="line"><code>dom.query = jQuery.noConflict( <span class="literal">true</span> );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Result:</h4>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="comment">// Do something with the new jQuery</span></code></div></div><div class="container"><div class="line"><code>dom.query( <span class="string">&quot;div p&quot;</span> ).hide();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Do something with another library&apos;s $()</span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;content&quot;</span> ).style.display = <span class="string">&quot;none&quot;</span>;</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Do something with another version of jQuery</span></code></div></div><div class="container"><div class="line"><code>jQuery( <span class="string">&quot;div &gt; p&quot;</span> ).hide();</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-4">
+<p>Load two versions of jQuery (not recommended). Then, restore jQuery&apos;s globally scoped variables to the first loaded jQuery.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>jQuery.noConflict demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">&quot;log&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">h3</span>&gt;</span>Before $.noConflict(true)<span class="tag">&lt;/<span class="title">h3</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.6.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> $log = $( <span class="string">&quot;#log&quot;</span> );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$log.append( <span class="string">&quot;2nd loaded jQuery version ($): &quot;</span> + $.fn.jquery + <span class="string">&quot;&lt;br&gt;&quot;</span> );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Restore globally scoped jQuery variables to the first version loaded</span></code></div></div><div class="container"><div class="line"><code><span class="comment">// (the newer version)</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>jq162 = jQuery.noConflict( <span class="literal">true</span> );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$log.append( <span class="string">&quot;&lt;h3&gt;After $.noConflict(true)&lt;/h3&gt;&quot;</span> );</code></div></div><div class="container"><div class="line"><code>$log.append( <span class="string">&quot;1st loaded jQuery version ($): &quot;</span> + $.fn.jquery + <span class="string">&quot;&lt;br&gt;&quot;</span> );</code></div></div><div class="container"><div class="line"><code>$log.append( <span class="string">&quot;2nd loaded jQuery version (jq162): &quot;</span> + jq162.fn.jquery + <span class="string">&quot;&lt;br&gt;&quot;</span> );</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div></section>
+</div></article>

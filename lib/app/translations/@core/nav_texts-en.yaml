@@ -1,0 +1,18 @@
+# Language File: EN / CORE / NavTexts :: r.8.7 / smart.framework.v.8.7
+TRANSLATIONS:
+  @language: EN
+  @area: core
+  @version: 2021-05-26
+  nav_texts:
+    asort: 'Sort Ascending [^]'
+    dsort: 'Sort Descending [v]'
+    xsort: 'Clear Sorting [*]'
+    listed: 'Page'
+    res: 'Results'
+    empty: 'No results'
+    of: 'of'
+    start: '« Start'
+    prev: '‹ Previous Page'
+    next: 'Next Page ›'
+    end: 'End »'
+#END

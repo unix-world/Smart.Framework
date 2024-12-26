@@ -1,0 +1,42 @@
+<script>{
+		"title":
+			"deferred.progress()",
+		"excerpt":
+			" Add handlers to be called when the Deferred object generates progress notifications.",
+		"termSlugs": {
+			"category": [
+				"deferred-object","version/1.7"
+			]
+		}
+	}</script><article id="deferred-progress1" class="entry method"><h2 class="section-title">
+<span class="name">deferred.progress( progressCallbacks [, progressCallbacks ] )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Deferred">Deferred</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong> Add handlers to be called when the Deferred object generates progress notifications.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.7/">1.7</a></span><a id="deferred-progress-progressCallbacks-progressCallbacks" href="#deferred-progress-progressCallbacks-progressCallbacks"><span class="icon-link"></span>deferred.progress( progressCallbacks [, progressCallbacks ] )</a>
+</h4>
+<ul>
+<li>
+<div><strong>progressCallbacks</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>() or <a href="http://api.jquery.com/Types/#Array">Array</a>
+</div>
+<div>
+        A function, or array of functions, to be called when the Deferred generates progress notifications.
+      </div>
+</li>
+<li>
+<div><strong>progressCallbacks</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>() or <a href="http://api.jquery.com/Types/#Array">Array</a>
+</div>
+<div>
+        Optional additional functions, or arrays of functions, to be called when the Deferred generates progress notifications.
+      </div>
+</li>
+</ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>The <code>deferred.progress()</code> method accepts one or more arguments, all of which can be either a single function or an array of functions. When the Deferred generates progress notifications by calling <code>notify</code> or <code>notifyWith</code>, the <code>progressCallbacks</code> are called. Since <code>deferred.progress()</code> returns the Deferred object, other methods of the Deferred object can be chained to this one. When the Deferred is resolved or rejected, progress callbacks will no longer be called, with the exception that any <code>progressCallbacks</code> added after the Deferred enters the resolved or rejected state are executed immediately when they are added, using the arguments that were passed to the <code>.notify()</code> or <code>notifyWith()</code> call. For more information, see the documentation for <a href="/jQuery.Deferred/">jQuery.Deferred()</a>.</p>
+  </div>
+</div></article>

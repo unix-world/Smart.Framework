@@ -1,0 +1,180 @@
+<!-- Pagebuilder / Manage @ View Record / Media :: v.20231028 -->
+<script>
+var pageBuilderMediaImgDataURL = '';
+var pageBuilderMediaType = '';
+var pageBuilderMediaName = '';
+function pageBuilder_MediaUploadHandle(imgDataURL, imgType, imgName) {
+	var imgExt = String(String(imgName).split('.').pop() || '');
+	var as = jQuery('#convert-as').val();
+	if(imgExt.toLowerCase() == 'webp') { // fix back: {{{SYNC-JS-CANVAS-CANNOT-HANDLE-WEBP}}}
+		imgType = 'image/webp';
+		imgDataURL = imgDataURL.replace('data:image/jpeg;', 'data:image/webp;');
+	} //end if
+	if(imgDataURL) {
+		var theOriginalImgName = '';
+		if(imgName) {
+			if(jQuery('#original-img-name').is(':checked')){
+				theOriginalImgName = String(imgName || '');
+			}
+		}
+		jQuery('#img_uploader_btn').prop('disabled', true);
+		smartJ$Browser.OverlayShow();
+		var saveURL = 'admin.php?page=page-builder.manage&op=record-upload-media&id=[###RECORD-ID|url|js###]';
+		var errFx = function(title, message) {
+			smartJ$Browser.GrowlNotificationAdd(title, smartJ$Utils.escape_html(message), null, smartJ$Browser.param_NotificationTimeERR, false, 'red');
+			setTimeout(function(){ smartJ$Browser.OverlayHide(); }, smartJ$Browser.param_NotificationTimeERR); // jQuery('#img_uploader_btn').prop('disabled', false);
+		}
+		var okFx = function(title, message) {
+			smartJ$Browser.GrowlNotificationAdd(title, smartJ$Utils.escape_html(message), null, smartJ$Browser.param_NotificationTimeOK, false, 'green');
+			setTimeout(function(){ self.location = 'admin.php?page=page-builder.manage&op=record-view&id=[###RECORD-ID|url|js###]&sop=media'; }, smartJ$Browser.param_NotificationTimeOK);
+		}
+		var ajax = smartJ$Browser.AjaxRequestFromURL(saveURL, 'POST', 'json', '&type=' + smartJ$Utils.escape_url(imgType) + '&name=' + smartJ$Utils.escape_url(theOriginalImgName) + '&content=' + smartJ$Utils.escape_url(imgDataURL) + '&cksum=' + smartJ$Utils.escape_url(smartJ$CryptoHash.sha1(imgDataURL)) + '&as=' + smartJ$Utils.escape_url(as));
+		ajax.done(function(data, textStatus, jqXHR){
+			var isOK = -1;
+			if(data) {
+				if(data.status) {
+					if(data.title) {
+						if(data.message) {
+							isOK = 0;
+							if(data.status === 'OK') {
+								isOK = 1;
+							} //end if
+						} //end if
+					} //end if
+				} //end if
+			} //end if
+			if(isOK === 1) {
+				okFx(String(data.status) + ': ' + String(data.title), String(data.message));
+			} else if(isOK === 0) {
+				errFx('Uploading Media FAILED: ' + String(data.title), String(data.message));
+			} else {
+				errFx('FAILED to Upload Media', 'Invalid Answer Format');
+			} //end if else
+		}).fail(function(jqXHR, textStatus, errorThrown){
+			errFx('ERROR Uploading Media', textStatus + '\n' + errorThrown);
+		});
+	} //end if
+}
+function pageBuilder_MediaDeleteHandle(imgFile) {
+	smartJ$Browser.OverlayShow();
+	var deleteURL = 'admin.php?page=page-builder.manage&op=record-delete-media&id=[###RECORD-ID|url|js###]';
+	var errFx = function(title, message) {
+		smartJ$Browser.GrowlNotificationAdd(title, smartJ$Utils.escape_html(message), null, smartJ$Browser.param_NotificationTimeERR, false, 'red');
+		setTimeout(function(){ smartJ$Browser.OverlayHide(); }, smartJ$Browser.param_NotificationTimeERR);
+	}
+	var okFx = function(title, message) {
+		smartJ$Browser.GrowlNotificationAdd(title, smartJ$Utils.escape_html(message), null, smartJ$Browser.param_NotificationTimeOK, false, 'green');
+		setTimeout(function(){ self.location = 'admin.php?page=page-builder.manage&op=record-view&id=[###RECORD-ID|url|js###]&sop=media'; }, smartJ$Browser.param_NotificationTimeOK);
+	}
+	var ajax = smartJ$Browser.AjaxRequestFromURL(deleteURL, 'POST', 'json', '&fname=' + smartJ$Utils.escape_url(imgFile));
+	ajax.done(function(data, textStatus, jqXHR){
+		var isOK = -1;
+		if(data) {
+			if(data.status) {
+				if(data.title) {
+					if(data.message) {
+						isOK = 0;
+						if(data.status === 'OK') {
+							isOK = 1;
+						} //end if
+					} //end if
+				} //end if
+			} //end if
+		} //end if
+		if(isOK === 1) {
+			okFx(String(data.status) + ': ' + String(data.title), String(data.message));
+		} else if(isOK === 0) {
+			errFx('Deleting Media FAILED: ' + String(data.title), String(data.message));
+		} else {
+			errFx('FAILED to Delete Media', 'Invalid Answer Format');
+		} //end if else
+	}).fail(function(jqXHR, textStatus, errorThrown){
+		errFx('ERROR Deleting Media', textStatus + '\n' + errorThrown);
+	});
+}
+function pageBuilder_MediaDeleteDialog(imgFile, imgPath, imgType, imgSize, isUsed) {
+	if(!isUsed) {
+		smartJ$Browser.ConfirmDialog('<i class="sfi sfi-bin2" style="color:#FF5500!important;"></i> &nbsp; <b>Delete this Image ?</b> &nbsp;<i>' + smartJ$Utils.escape_html(' @ ' + imgType + ' # ' + imgSize) + '</i><br><span style="color:#FF5500; font-size:0.9em;">' + smartJ$Utils.escape_html(imgFile) + '</span><br><br><center><div><img src="' + smartJ$Utils.escape_html(imgPath) + '" style="max-width:400px; max-height:200px; width:auto !important; height:auto !important; border:1px solid #ECECEC !important;"></div></center>', function(){ pageBuilder_MediaDeleteHandle(imgFile); }, 'Delete Media Image Confirmation', 720, 400);
+	} else {
+		smartJ$Browser.AlertDialog('<i class="sfi sfi-bin2" style="color:#003366!important;"></i> &nbsp; <b>Cannot Delete used Image !</b> &nbsp;<i>' + smartJ$Utils.escape_html(' @ ' + imgType + ' # ' + imgSize) + '</i><br><span style="color:#003399; font-size:0.9em;">' + smartJ$Utils.escape_html(imgFile) + '</span><br><br><center><div><img src="' + smartJ$Utils.escape_html(imgPath) + '" style="max-width:400px; max-height:200px; width:auto !important; height:auto !important; border:1px solid #ECECEC !important;"></div></center>', null, 'Delete Media Image: Used in [#' + isUsed + '] Object(s)', 720, 400);
+	} //end if else
+}
+function pageBuilder_MediaInfoAlert(imgFile, imgPath, imgType, imgSize, isUsed) {
+	smartJ$Browser.AlertDialog('<i class="sfi sfi-info"></i> &nbsp; <b>Image</b> &nbsp;<i>' + smartJ$Utils.escape_html(' @ ' + imgType + ' # ' + imgSize) + '</i><br><span style="color:#444444; font-size:0.9em;"><b><i>' + smartJ$Utils.escape_html(imgFile) + '</i></b></span><br><input type="text" class="ux-input" value="' + smartJ$Utils.escape_html(imgPath) + '" style="width:670px;" onclick="jQuery(this).select();" readonly><br><br><center><div><img src="' + smartJ$Utils.escape_html(imgPath) + '" style="max-width:400px; max-height:200px; width:auto !important; height:auto !important; border:1px solid #ECECEC !important;"></div></center>', null, 'Media Image Info: Used in [#' + isUsed + '] Object(s)', 720, 425);
+}
+</script>
+<table width="100%" border="0">
+	[%%%IF:IS-PREVIEW:==yes;%%%]
+	<tr valign="top">
+		<td colspan="3"><h3>Media Preview: [###RECORD-NAME###] :: [###RECORD-ID###]</h3></td>
+	</tr>
+	[%%%/IF:IS-PREVIEW%%%]
+	<tr valign="top">
+		<td width="1%">
+			[%%%IF:PRIV-EDIT:==yes;%%%]
+			<img src="[###MODULE-PATH|html###]libs/views/manager/img/op-add.svg" style="cursor:pointer;" title="Preload Image: SVG / PNG / GIF / JPG / WEBP" alt="Preload Image: SVG / PNG / GIF / JPG / WEBP" onClick="jQuery('#img_uploader_id').trigger('click'); return false;">
+			[%%%ELSE:PRIV-EDIT%%%]
+			&nbsp;
+			[%%%/IF:PRIV-EDIT%%%]
+		</td>
+		<td align="center" width="85%">
+			[%%%IF:PRIV-EDIT:==yes;%%%]
+			<span style="color:#778899; font-size:0.75rem">All Uploaded Media Images (except SVG and PNG / GIF if preserved) will be re-optimized to max: [###MAX-WIDTH-MEDIA|int###]x[###MAX-HEIGHT-MEDIA|int###] pixels.</span>
+			[%%%ELSE:PRIV-EDIT%%%]
+			&nbsp;
+			[%%%/IF:PRIV-EDIT%%%]
+		</td>
+		<td align="right">
+			<small><b>Media&nbsp;Files:&nbsp;#[###CNT-MEDIA-FILES|int###]</b></small>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3">
+			<input id="img_uploader_id" name="img_attach" type="file" size="1" style="width: 5px !important; height: 5px !important; opacity: 0 !important;">
+			<div id="img_uploader_preview" style="max-width:900px; max-height:900px; overflow:auto;"></div>
+			<hr>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3">
+			[%%%LOOP:ARR-MEDIA-IMGS%%%]
+				<div style="padding:0; float:left; width:120px; height:132px; margin-right:20px; margin-bottom:30px;" title="[###ARR-MEDIA-IMGS.IMG|html###] @ [###ARR-MEDIA-IMGS.USED|int###]">
+					<div style="padding:0; width:120px; height:12px; border:0;">
+						<span style="font-weight:bold; font-size:10px !important; line-height:1 !important; color:#555555; vertical-align:top;">
+							[%%%IF:PRIV-DELETE:==yes;%%%]<i class="sfi sfi-bin2" style="font-size:9px !important; vertical-align:top; cursor:pointer;" title="Delete" onclick="pageBuilder_MediaDeleteDialog('[###ARR-MEDIA-IMGS.FILE|js###]', '[###ARR-MEDIA-IMGS.IMG|js###]', '[###ARR-MEDIA-IMGS.TYPE|upper|js###]', '[###ARR-MEDIA-IMGS.SIZE|js###]', [###ARR-MEDIA-IMGS.USED|int###]); return false;"></i>&nbsp;&nbsp;[%%%/IF:PRIV-DELETE%%%]<i class="sfi sfi-info" style="font-size:9px !important; vertical-align:top; cursor:pointer; color:[%%%IF:ARR-MEDIA-IMGS.USED:>0;%%%]#CCCCCC[%%%ELSE:ARR-MEDIA-IMGS.USED%%%]#FF3300[%%%/IF:ARR-MEDIA-IMGS.USED%%%];" title="Info" onclick="pageBuilder_MediaInfoAlert('[###ARR-MEDIA-IMGS.FILE|js###]', '[###ARR-MEDIA-IMGS.IMG|js###]', '[###ARR-MEDIA-IMGS.TYPE|upper|js###]', '[###ARR-MEDIA-IMGS.SIZE|js###]', [###ARR-MEDIA-IMGS.USED|int###]); return false;"></i>
+							&nbsp; [###ARR-MEDIA-IMGS.TYPE|upper|html###] / [###ARR-MEDIA-IMGS.SIZE|html###]
+						</span>
+					</div>
+					<div style="padding:0; width:120px; height:120px; border:1px solid #ECECEC; position:relative;">
+						<a data-slimbox="slimbox" href="[###ARR-MEDIA-IMGS.IMG|html###]" title="[###ARR-MEDIA-IMGS.-_INDEX_-|html###]. [###ARR-MEDIA-IMGS.FILE|html###]">
+							<img src="[###ARR-MEDIA-IMGS.IMG|html###]" style="max-width:120px; max-height:120px; width:auto !important; height:auto !important; position:absolute; left:0; right:0; top:0; bottom:0; margin:auto;">
+						</a>
+					</div>
+					<div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:99%; font-size:0.625rem; font-weight: bold; color:#AAAAAA;" title="[###ARR-MEDIA-IMGS.FILE|html###]">[###ARR-MEDIA-IMGS.FILE|html###]</div>
+				</div>
+			[%%%/LOOP:ARR-MEDIA-IMGS%%%]
+		</td>
+	</tr>
+</table>
+<script>
+smartJ$Browser.VirtualImageUploadHandler('img_uploader_id', 'img_uploader_preview', [###JPEG-QUALITY|dec2###], [###MAX-SIZE-B64-MEDIA|num###], [###MAX-WIDTH-MEDIA|int###], [###MAX-HEIGHT-MEDIA|int###], function(imgDataURL, w, h, isSVG, imgType, imgSize, imgName){
+	if(imgDataURL) {
+		pageBuilderMediaImgDataURL = String(imgDataURL);
+		pageBuilderMediaType = String(imgType);
+		pageBuilderMediaName = String(imgName);
+		var tpl = smartJ$Utils.renderMarkersTpl(
+			'[@@@SUB-TEMPLATE:partials/view-record-media-uploader.mtpl.inc.htm|js-tpl-encode@@@]',
+			{
+				'IMG-TYPE': 		String(imgType),
+				'IMG-NAME': 		String(imgName),
+				'HTML-DROPDOWN': 	String((imgType === 'image/svg+xml') ? '' : '[@@@SUB-TEMPLATE:partials/view-record-media-dropdown.mtpl.inc.htm|js@@@]'),
+			},
+			true
+		);
+		setTimeout(function(){
+			jQuery('#img_uploader_preview').append(tpl);
+		}, 500);
+	} //end if
+}, false, 160, 160, true);
+</script>
+<!-- #END -->

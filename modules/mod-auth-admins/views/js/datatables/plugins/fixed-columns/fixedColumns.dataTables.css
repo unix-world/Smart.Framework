@@ -1,0 +1,25 @@
+/* FixedColumns 3.2.6 (modified by unixman)
+ * (c) 2010-2018 SpryMedia Ltd - MIT License # https://github.com/DataTables
+ * (c) 2018-2019 unix-world.org
+ */
+
+table.DTFC_Cloned thead,
+table.DTFC_Cloned tfoot {
+	background-color: #FFFFFF;
+}
+
+div.DTFC_Blocker {
+	background-color: #FFFFFF;
+}
+
+div.DTFC_LeftWrapper table.dataTable,
+div.DTFC_RightWrapper table.dataTable {
+	margin-bottom: 0;
+	z-index: 2;
+}
+div.DTFC_LeftWrapper table.dataTable.no-footer,
+div.DTFC_RightWrapper table.dataTable.no-footer {
+	border-bottom: none;
+}
+
+/* END */

@@ -1,0 +1,108 @@
+<script>{
+		"title":
+			".unload()",
+		"excerpt":
+			"Bind an event handler to the \"unload\" JavaScript event.",
+		"termSlugs": {
+			"category": [
+				"events/document-loading","version/1.0","version/1.4.3","deprecated/deprecated-1.8","removed"
+			]
+		}
+	}</script><article id="unload1" class="entry method"><h2 class="section-title">
+<span class="name">.unload( handler )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#jQuery">jQuery</a></span><span class="version-details">version deprecated: <a href="/category/version/1.8/">1.8</a>, removed: <a href="/category/version/3.0/">3.0</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Bind an event handler to the &quot;unload&quot; JavaScript event.</p>
+<ul class="signatures">
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0/">1.0</a></span><a id="unload-handler" href="#unload-handler"><span class="icon-link"></span>.unload( handler )</a>
+</h4>
+<ul><li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Event">Event</a> eventObject )</div>
+<div>A function to execute when the event is triggered.</div>
+</li></ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.4.3/">1.4.3</a></span><a id="unload-eventData-handler" href="#unload-eventData-handler"><span class="icon-link"></span>.unload(  [eventData ], handler )</a>
+</h4>
+<ul>
+<li>
+<div><strong>eventData</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Anything">Anything</a>
+</div>
+<div>A plain object of data that will be passed to the event handler.</div>
+</li>
+<li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Event">Event</a> eventObject )</div>
+<div>A function to execute each time the event is triggered.</div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>This method is a shortcut for <code>.on( &quot;unload&quot;, handler )</code>.</p>
+    <p>The <code>unload</code> event is sent to the <code>window</code> element when the user navigates away from the page. This could mean one of many things. The user could have clicked on a link to leave the page, or typed in a new URL in the address bar. The forward and back buttons will trigger the event. Closing the browser window will cause the event to be triggered. Even a page reload will first create an <code>unload</code> event.</p>
+    <div class="warning">
+      <p>The exact handling of the <code>unload</code> event has varied from version to version of browsers. For example, some versions of Firefox trigger the event when a link is followed, but not when the window is closed. In practical usage, behavior should be tested on all supported browsers and contrasted with the similar <code>beforeunload</code> event.</p>
+    </div>
+    <p>Any <code>unload</code> event handler should be bound to the <code>window</code> object:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( window ).unload(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> <span class="string">&quot;Handler for .unload() called.&quot;</span>;</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>This event is available so that scripts can perform cleanup when the user leaves the page. Most browsers will ignore calls to <code>alert()</code>, <code>confirm()</code> and <code>prompt()</code> inside the event handler. The string you return may be used in a confirmation dialog, but not all browsers support this. It is not possible to cancel the <code>unload</code> event with <code>.preventDefault()</code>.</p>
+  </div>
+<h3>Additional Notes:</h3>
+<div class="longdesc"><ul><li>
+			As the <code>.unload()</code> method is just a shorthand for <code>.on( &quot;unload&quot;, handler )</code>, detaching is possible using <code>.off( &quot;unload&quot; )</code>.
+		</li></ul></div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>To display an alert when a page is unloaded:</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( window ).unload(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> <span class="string">&quot;Bye now!&quot;</span>;</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

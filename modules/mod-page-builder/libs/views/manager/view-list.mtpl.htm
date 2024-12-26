@@ -1,0 +1,319 @@
+<!-- Pagebuilder / Manage @ List / Records :: v.20230123 -->
+<style>
+.smartGrid_AlignCenter {
+	text-align: center;
+}
+.smartGrid_AlignRight {
+	text-align: right;
+}
+.smartGrid_Important {
+	font-weight: bold;
+}
+.smartGrid_ColId {
+	display: inline-block;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 0px;
+	text-align: left;
+}
+.smartGrid_ColName {
+	color: #333333;
+}
+.smartGrid_ColTags span {
+	color: #E4862A;
+	font-size: 0.6875rem !important;
+}
+.smartGrid_DivNum {
+	padding: 0;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+.smartGrid_DivSpArea {
+	color: #5E6885;
+}
+.smartGrid_Ctrl {
+	color: #778888;
+	font-size: 0.75rem !important;
+}
+.smartGrid_HitsArea {
+	color: #777777;
+	font-size: 0.6875rem !important;
+}
+.smartGrid_DivWithImg {
+	text-align: center !important;
+}
+</style>
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-uix.inc.htm!@@@]
+<script>
+const IdOfGrid = 'PageBuilderSlickGrid';
+const TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', '[###LIST-JSON-URL|js###]', 'PageBuilder_Smart_Slickgrid_List', 'name', 'ASC', '', 'filtering');
+</script>
+<script>
+const pageBuilderFormBtnFilter = () => {
+	TheGrid.loadGridData(0);
+};
+const pageBuilderFormBtnResetFilter = () => {
+	TheGrid.resetGrid();
+	TheGrid.loadGridData(0);
+};
+</script>
+[@@@SUB-TEMPLATE:view-list-filter-form.mtpl.inc.htm@@@]
+<div style="padding-left:5px;">
+	<div id="PageBuilderNavPager"></div>
+</div>
+<form class="ux-form"><div id="PageBuilderSlickGrid" class="slickgrid-table" style="font-size:10px;width:100%;height:10px;"></div></form>
+<script>
+const lstRecUrl = '[###LIST-RECORD-URL|js###]';
+const lstDelUrl = '[###LIST-DELETE-URL|js###]';
+</script>
+<script>
+jQuery(() => {
+
+	const displayDel = (row, cell, value, columnDef, dataContext) => {
+		let html = '';
+		html += '<div class="smartGrid_DivWithImg">';
+		if(!!lstDelUrl) {
+			html += '<a href="' + smartJ$Utils.escape_html(lstDelUrl) + smartJ$Utils.escape_url(value) + '" data-smart="open.modal">';
+			html += '<img src="[###PATH-MODULE|html|js###]libs/views/manager/img/op-delete.svg" alt="Delete" title="Delete">';
+			html += '</a>';
+		} else {
+			html += '&nbsp;';
+		}
+		html += '</div>';
+		return html;
+	};
+
+	const displayOps = (row, cell, value, columnDef, dataContext) => {
+		value = String(value);
+		let txt = 'Page Object';
+		let img = 'type-page.svg';
+		if(value.substr(0, 1) == '#') {
+			txt = 'Segment Object';
+			img = 'type-segment.svg';
+		}
+		let html = '';
+		html += '<div class="smartGrid_DivWithImg">';
+		if(!!lstRecUrl) {
+			html += '<a href="' + smartJ$Utils.escape_html(lstRecUrl) + smartJ$Utils.escape_url(value) + '" data-smart="open.modal" title="Display">';
+		}
+		html += '<img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + smartJ$Utils.escape_html(img) + '" alt="' + smartJ$Utils.escape_html(txt) + '" title="' + smartJ$Utils.escape_html(txt) + '">';
+		if(!!lstRecUrl) {
+			html += '</a>';
+		}
+		html += '</div>';
+		return html;
+	};
+
+	const displayLayout = (row, cell, value, columnDef, dataContext) => {
+		value = String(value);
+		let theTitle = 'Template (Page)';
+		let theColor = '#888888';
+		let theAlign = 'right';
+		let theStyle = 'italic';
+		if(String(dataContext.id).substr(0, 1) == '#') {
+			theTitle = 'Area (Segment)';
+			theColor = '#333333';
+			theAlign = 'left';
+			theStyle = 'normal';
+		}
+		return '<div style="font-size:0.75rem; font-style:' + smartJ$Utils.escape_html(theStyle) + '; padding-left:5px; padding-right:5px; text-align:' + smartJ$Utils.escape_html(theAlign) + '; color:' + smartJ$Utils.escape_html(theColor) + ';" title="' + smartJ$Utils.escape_html(theTitle) + '">' + smartJ$Utils.escape_html(value) + '</div>';
+	};
+
+	const displayTags = (row, cell, value, columnDef, dataContext) => {
+		value = String(value);
+		let arr;
+		try {
+			arr = JSON.parse(value);
+		} catch(err){}
+		if(!Array.isArray(arr)) {
+			arr = [];
+		}
+		return '<span title="' + smartJ$Utils.escape_html(value) + '">&nbsp;' + smartJ$Utils.escape_html(arr.join(' ; ')) + '</span>';
+	};
+
+	const displayID = (row, cell, value, columnDef, dataContext) => {
+		value = String(value);
+		let style = '';
+		if(value.substr(0, 1) == '#') {
+			style = 'font-style:italic; color:#7777AA;';
+		} else {
+			style = 'font-style:italic; color:#555588;';
+		}
+		return '<div style="' + style + '" title="' + smartJ$Utils.escape_html(dataContext['ref']) + '">' + smartJ$Utils.escape_html(value) + '</div>';
+	};
+
+	const displayCodeType = (row, cell, value, columnDef, dataContext) => {
+		let img = 'syntax-unknown.svg';
+		let txt = 'unknown';
+		switch(String(value)) {
+			case 'html':
+				img = 'syntax-html.svg';
+				txt = 'HTML';
+				break;
+			case 'text':
+				img = 'syntax-text.svg';
+				txt = 'TEXT';
+				break;
+			case 'markdown':
+				img = 'syntax-markdown.svg';
+				txt = 'MARKDOWN';
+				break;
+			case 'raw':
+				img = 'syntax-raw.svg';
+				txt = 'RAW';
+				break;
+			case 'settings':
+				txt = 'SETTINGS';
+				img = 'syntax-settings.svg';
+				break;
+			default:
+				txt = 'unknown: `' + value + '`';
+		}
+		const fmtVal = txt + ' / ' + dataContext['total_size'] + ' bytes';
+		return '<div class="smartGrid_DivWithImg"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(fmtVal) + '" title="' + smartJ$Utils.escape_html(fmtVal) + '"></div>';
+	};
+
+	const displayActive = (row, cell, value, columnDef, dataContext) => {
+		let img = 'status-inactive.svg';
+		let txt = 'Inactive Page';
+		if(value == 1) {
+			img = 'status-active.svg';
+			txt = 'Active Page';
+		}
+		if(String(dataContext.id).substr(0, 1) == '#') {
+			img = 'status-linked.svg';
+			txt = 'All Segments are Active if used Programatically';
+		}
+		return '<div class="smartGrid_DivWithImg"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(txt) + '" title="' + smartJ$Utils.escape_html(txt) + '"></div>';
+	};
+
+	const displayAuth = (row, cell, value, columnDef, dataContext) => {
+		let img = 'restr-public.svg';
+		let txt = 'Public Access';
+		if(value == 1) {
+			img = 'restr-private.svg';
+			txt = 'Restricted Access (Login Required)';
+		}
+		if(String(dataContext.id).substr(0, 1) == '#') {
+			img = 'restr-unknown.svg';
+			txt = 'N/A: Segments may be used only in Page or External contexts, the Auth is enforced by the calling context ...';
+		}
+		return '<div class="smartGrid_DivWithImg"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(txt) + '" title="' + smartJ$Utils.escape_html(txt) + '"></div>';
+	};
+
+	const displayTransl = (row, cell, value, columnDef, dataContext) => {
+		let img = 'translatable-non.svg';
+		let txt = 'Non-Translatable';
+		if(value == 1) {
+			img = 'translatable.svg';
+			txt = 'Translatable';
+		}
+		return '<div class="smartGrid_DivWithImg"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(txt) + '" title="' + smartJ$Utils.escape_html(txt) + '"></div>';
+	};
+
+	const displayName = (row, cell, value, columnDef, dataContext) => {
+		value = String(value);
+		return '<span>&nbsp;' + smartJ$Utils.escape_html(value) + '</span>';
+	};
+
+	const diffColSize = (colName) => {
+		let szDiff;
+		if(!!lstDelUrl) {
+			szDiff = 50;
+		} else {
+			szDiff = 0;
+		}
+		let size = parseInt(jQuery(window).width() - szDiff - 50 - 75 - 75 - 75 - 75 - 75 - 75) - 100;
+		switch(String(colName)) {
+			case 'tags':
+				size = size * 0.2;
+				break;
+			case 'layout':
+				size = size * 0.15;
+				break;
+			case 'ctrl':
+				size = size * 0.15;
+				break;
+			case 'id':
+				size = size * 0.2;
+				break;
+			case 'name':
+				size = size * 0.3;
+				break;
+			default:
+				size = size * 0;
+		}
+		size = Math.floor(size);
+		if(size < 10) {
+			size = 10;
+		}
+		return size;
+	};
+
+	// Grid Data Defs: defaultSortDir:1
+	let columns = [
+		{id:'x-del', 		field:'id', 			name:'#', 								sortable:false, 					width:50, 						formatter:displayDel},
+		{id:'x-ops', 		field:'id', 			name:'@', 								sortable:false, 					width:50, 						formatter:displayOps},
+		{id:'name', 		field:'name', 			name:'[###TXT-COL-NAME|js###]', 		sortable:true, 						width:diffColSize('name'), 		formatter:displayName,     editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColName'},
+		{id:'mode', 		field:'mode', 			name:'[###TXT-COL-SYNTAX|js###]', 		sortable:true, 						width:75, 						formatter:displayCodeType, editor:TextCellSelector},
+		{id:'id', 			field:'id', 			name:'[###TXT-COL-ID|js###]', 			sortable:true, 						width:diffColSize('id'), 		formatter:displayID,       editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColId'},
+		{id:'active', 		field:'active', 		name:'[###TXT-COL-ACTIVE|js###]', 		sortable:true, sortNumeric:true,	width:75, 						formatter:displayActive,   editor:TextCellSelector},
+		{id:'ctrl', 		field:'ctrl', 			name:'[###TXT-COL-CTRL|js###]', 		sortable:true, 						width:diffColSize('ctrl'), 								   editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_Ctrl'},
+		{id:'special', 		field:'special',		name:'[###TXT-COL-SPECIAL|js###]', 		sortable:true, sortNumeric:true, 	width:75, 												   editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_AlignRight smartGrid_DivSpArea smartGrid_DivNum'},
+		{id:'layout', 		field:'layout', 		name:'[###TXT-COL-LAYOUT|js###]', 		sortable:true, 						width:diffColSize('layout'),	formatter:displayLayout,   editor:TextCellSelector, cssClass:'smartGrid_Important'},
+		{id:'tags', 		field:'tags', 			name:'[###TXT-COL-TAGS|js###]', 		sortable:true, 						width:diffColSize('tags'),		formatter:displayTags,     editor:TextCellSelector, cssClass:'smartGrid_ColTags'},
+		{id:'auth', 		field:'auth', 			name:'[###TXT-COL-AUTH|js###]', 		sortable:true, 						width:75, 						formatter:displayAuth,     editor:TextCellSelector},
+		{id:'translations', field:'translations', 	name:'[###TXT-COL-TRANSL|js###]', 		sortable:true, 						width:75, 						formatter:displayTransl,   editor:TextCellSelector},
+		{id:'counter', 		field:'counter', 		name:'[###TXT-COL-COUNTER|js###]', 		sortable:true, sortNumeric:true,	width:75, 						                           editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_AlignRight smartGrid_DivNum smartGrid_HitsArea'},
+	];
+	if(!lstDelUrl) {
+		columns.shift(0); // remove 1st column
+	}
+
+	// Grid Options
+	const options = {
+		enableAddRow: false,
+		enableCellNavigation: true,
+		enableColumnReorder: false,
+		enableAsyncPostRender: true,
+		forceFitColumns: false,
+		asyncPostRenderDelay: 15,
+		rowHeight: 26,
+		editable: true,
+		autoEdit: false,
+	//	enableTextSelectionOnCells: false,
+		asyncEditorLoading: false,
+	};
+
+	// Grid sizing
+	const diffW = 15;
+	const diffH = 200;
+	let winW = jQuery(window).width();
+	let winH = jQuery(window).height();
+	jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - diffW), 'height': parseInt(winH - diffH) });
+	jQuery(window).resize(() => {
+		winW = jQuery(window).width();
+		winH = jQuery(window).height();
+		jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - diffW), 'height': parseInt(winH - diffH) });
+		TheGrid.grid.resizeCanvas();
+		let idxColIndex = 5;
+		let idxColName = 7;
+		if(!lstDelUrl) {
+			idxColIndex -= 1;
+			idxColName -= 1;
+		} //end if else
+		columns[idxColIndex].width = diffColSize('id'); // id column
+		columns[idxColName].width = diffColSize('name'); // name column
+		TheGrid.grid.autosizeColumns();
+	});
+
+	// Runtime
+	TheGrid.initNavPager('PageBuilderNavPager', 3);
+	TheGrid.initGrid(columns, options);
+	TheGrid.grid.resizeCanvas();
+	TheGrid.grid.autosizeColumns();
+	TheGrid.loadGridData(0);
+
+});
+</script>
+<!-- #END -->

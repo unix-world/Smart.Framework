@@ -1,0 +1,71 @@
+
+/* -- CSS Start :: Smart.Framework / eMail (Messages) :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* v.20210526 */
+
+/* ----------------------------- */
+
+/* MIME Message */
+#mime_msg_box {
+	padding:10px;
+	background-color: #FFFFFF;
+	border:1px solid #CCCCCC;
+	font-size: 13px;
+	line-height:16px;
+	color: #444444;
+	margin-top: 5px;
+	margin-bottom: 20px;
+}
+#mime_msg_box h1 {
+	font-size: 17px;
+	color: #666699;
+	font-weight: bold;
+	padding: 0px;
+	margin: 0px;
+	padding-bottom:0px;
+}
+#mime_msg_box h2 {
+	font-size: 15px;
+	color: #778899;
+	font-weight: bold;
+	padding: 0px;
+	margin: 0px;
+	padding-bottom:0px;
+}
+#mime_msg_box h3 {
+	font-size: 14px;
+	color: #778899;
+	font-weight: bold;
+	font-style: italic;
+	padding: 0px;
+	margin: 0px;
+	padding-bottom:0px;
+}
+#mime_msg_box p table tr th td div {
+	font-size: 13px;
+	line-height:16px;
+	color: #444444;
+	margin-top:5px;
+}
+#mime_msg_box li {
+	font-size: 13px;
+	color: #000000;
+	font-weight: normal;
+}
+#mime_msg_box hr {
+	border: none 0;
+	border-top: 1px solid #ECECEC;
+	height: 1px;
+}
+#mime_msg_box a {
+	font-size: 13px;
+	line-height:18px;
+	color: #FF6600;
+	font-weight: normal;
+	margin-top:5px;
+}
+/* -- */
+
+/* ----------------------------- */
+
+/* -- CSS End -- */

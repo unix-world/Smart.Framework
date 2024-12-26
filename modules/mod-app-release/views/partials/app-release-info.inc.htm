@@ -1,0 +1,26 @@
+<!-- v.20220928 -->
+<div class="boxTable blueTable">
+	<table width="width:100%;">
+		[%%%IF:MODAL:==yes;%%%]
+		<tr valign="top">
+			<td>Managed AppID: [###APP-ID|html###]</td>
+		</tr>
+		[%%%ELSE:MODAL%%%]
+		<tr valign="top">
+			<td style="width:275px;">Managed AppID: </td>
+			<td style="width:25px;">&nbsp;</td>
+			<td>[###APP-ID|html###]</td>
+		</tr>
+		<tr valign="top">
+			<td>Release AppID Hash: </td>
+			<td>&nbsp;</td>
+			<td>[###APP-DEPLOY-HASH|html###]</td>
+		</tr>
+		<tr valign="top">
+			<td>Release Server Deploy URL(s): </td>
+			<td>&nbsp;</td>
+			<td><p class="displayURLs">[[###APP-DEPLOY-USER|html###]:*****] @ [###APP_DEPLOY_URLS|html###]</p></td>
+		</tr>
+		[%%%/IF:MODAL%%%]
+	</table>
+</div>

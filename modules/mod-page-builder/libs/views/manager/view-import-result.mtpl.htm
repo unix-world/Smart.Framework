@@ -1,0 +1,97 @@
+<!-- Pagebuilder / Manage @ Import.Result / Records :: v.20220915 -->
+<h1><i>[###APP-NAME|html###]</i> Translations Import Result: <span style="color:#[%%%IF:TOTAL-IMPORTED:!=###TOTAL-RECORDS###;%%%]778899;[%%%ELSE:TOTAL-IMPORTED%%%]33CC33[%%%/IF:TOTAL-IMPORTED%%%]!important;">[###TOTAL-IMPORTED|int###]&nbsp;of&nbsp;[###TOTAL-RECORDS|int###]&nbsp;records&nbsp;IMPORTED</span>[%%%IF:TOTAL-IMPORTED:!=###TOTAL-RECORDS###;%%%] / <span style="color:#FF5500!important;">ERRORS:&nbsp;[###TOTAL-ERRORS|int###]</span>[%%%/IF:TOTAL-IMPORTED%%%]. Displaying: <select id="show-chk-rows" class="ux-field"><option value="all">All ([###TOTAL-RECORDS|int###] records)</option><option value="ok">Only Imported ([###TOTAL-IMPORTED|int###] records)</option><option value="errors">Only Errors ([###TOTAL-ERRORS|int###] records)</option></select></h1>
+<div style="width:98vw; border:1px solid #CCCCCC; padding:10px;">
+<table id="import-results" class="display" style="width:99%;">
+<thead><tr>
+	<th width="10%" title="Import Status">Status</th>
+	<th width="20%" title="Import Differences">Diffs</th>
+[%%%LOOP:HEAD-ARR%%%]
+	<th width="35%">Language: [###HEAD-ARR._-VAL-_|upper|html###]</th>
+[%%%/LOOP:HEAD-ARR%%%]
+</tr></thead>
+<tbody>
+[%%%LOOP:DATA-ARR%%%]
+<tr valign="top">
+	<td title="[###DATA-ARR.-_INDEX_-|int###] # Import-Status: [###DATA-ARR.STATUS|upper|html###] ; Imported: [###DATA-ARR.IS_IMPORTED|upper|html###] ; Have-Diffs: [###DATA-ARR.IS_BASE_DIFF_TRANSL|upper|html###]" style="cursor:help;">[%%%IF:DATA-ARR.STATUS:!?ok|warn|warn-crit;%%%]err:[%%%/IF:DATA-ARR.STATUS%%%][###DATA-ARR.STATUS|html###]</td>
+	<td title="[%%%IF:DATA-ARR.IS_BASE_DIFF_TRANSL:==yes;%%%]Placeholder or Marker Differences: [###DATA-ARR.DIFFS|html###][%%%ELSE:DATA-ARR.IS_BASE_DIFF_TRANSL%%%]NO Placeholder or Marker Differences[%%%/IF:DATA-ARR.IS_BASE_DIFF_TRANSL%%%]" style="cursor:help;">[###DATA-ARR.DIFFS|html###]</td>
+	<td>[###DATA-ARR.DEFAULT|html|nl2br###]</td>
+	<td>[###DATA-ARR.TRANSLATE|html|nl2br###]</td>
+</tr>
+[%%%/LOOP:DATA-ARR%%%]
+</tbody>
+<tfoot><tr>
+	<th title="Import Status">Status</th>
+	<th title="Import Differences">Diffs</th>
+[%%%LOOP:HEAD-ARR%%%]
+	<th>Language: [###HEAD-ARR._-VAL-_|upper|html###]</th>
+[%%%/LOOP:HEAD-ARR%%%]
+</tr></tfoot>
+</table></div>
+<script>
+jQuery(() => {
+
+	const id = 'import-results';
+
+	const tbl = smartJ$UI.DataTableInit(id, {
+		pagesize: 5,
+		pagesizes: [ 5, 10, 25, 50, 100 ],
+		colorder: [
+			[ 0, 'desc' ],
+			[ 1, 'desc' ]
+		],
+		coldefs: [
+			{
+				targets: 0,
+				width: '32px',
+				render: (data, type, row) => {
+					if(type === 'type' || type === 'sort' || type === 'filter') {
+						return data;
+					} else {
+						if(data === 'ok' || data === 'warn' || data === 'warn-crit') {
+							let img = data;
+							if(data === 'warn-crit') {
+								img = 'crit-warn';
+							}
+							return '<img width="32" height="32" src="lib/framework/img/sign-' + smartJ$Utils.escape_html(img) + '.svg" alt="' + smartJ$Utils.escape_html(data) + '" title="' + smartJ$Utils.escape_html(data) + '">';
+						} else {
+							return '<img width="32" height="32" src="lib/framework/img/sign-crit-error.svg" alt="' + smartJ$Utils.escape_html(data) + '" title="' + smartJ$Utils.escape_html(data) + '">';
+						}
+					}
+				}
+			},
+			{
+				targets: 1,
+				width: '32px',
+				render: (data, type, row) => {
+					if(type === 'type' || type === 'sort' || type === 'filter') {
+						return data;
+					} else {
+						let img = '';
+						if(data) {
+							img = '<img width="32" height="32" src="lib/framework/img/sign-error.svg" alt="' + smartJ$Utils.escape_html(data) + '" title="' + smartJ$Utils.escape_html(data) + '">'
+						}
+						return img;
+					}
+				}
+			}
+		]
+	});
+
+	if(tbl.data('smart-js-elem-type') === 'DataTable') {
+		jQuery('#show-chk-rows').on('change', (evt) => {
+			const val = jQuery(evt.currentTarget).val();
+			if(val === 'ok') {
+				smartJ$UI.DataTableColumnsFilter(id, 0, '^(ok)$');
+			} else if(val === 'errors') {
+				smartJ$UI.DataTableColumnsFilter(id, 0, '^(warn|warn\-crit|err\:)$');
+			} else {
+				smartJ$UI.DataTableColumnsFilter(id, 0, '');
+			}
+		}).val('errors').change();
+	} else {
+		jQuery('#show-chk-rows').val('all').change().prop('disabled', 'disabled');
+	}
+
+});
+</script>
+<!-- #END -->

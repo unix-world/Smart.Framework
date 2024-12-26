@@ -1,0 +1,2265 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="\SmartModExtLib\PageBuilder\AbstractFrontendPlugin abstract class \SmartModExtLib\PageBuilder\ AbstractFrontendPlugin extends">
+<meta name="keywords" content="smartmodextlib pagebuilder, bstractfrontendplugin, abstract, class, abstractfrontendplugin, extends, bstractfrontendpagebuilder, frontend, plugin, provides, the, definitions, to, create, pagebuilder, plugins, language, php, located, at, modules mod page builder libs abstractfrontendplugin php, package, development modules pagebuilder, namespace, name, version, v, hints, needs, be, extended, as, uniqueclasspluginname, usage, dynamic, object, new, class   - method, this, only, methods, inheritance, chart, →, ↳, smartabstractappcontroller, final, public, function, setpluginexportvars, array, vars, set, export, getpluginname, get, getpluginconfig, default keys, config, getplugincallermodulepath, caller, module, path, for, level, zero, getplugincallerdata, data, getplugindata, current, checkifpageorsegmentexist, string, y id, y ctrl, null, bool, inherited, from, checkifpageexist, checkifsegmentexist, getpagebyid, getsegmentbyid, getlistofpagesbyctrl, y orderby, id, y orderdir, asc, int, y limit, y ofs, countlistofpagesbyctrl, getlistofsegmentsbyctrl, countlistofsegmentsbyctrl, getlistofpagesbytag, y tag, countlistofpagesbytag, getlistofsegmentsbytag">
+<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
+<link rel="icon" href="data:,">
+<title>PHP Documentation for: \SmartModExtLib\PageBuilder\AbstractFrontendPlugin</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+		float: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3c4663;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework.Modules : PHP Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+	
+</nav>
+<!-- skip logo -->
+<!-- class r.20220331 -->
+<!-- Styles -->
+<!-- styles r.20220906 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located,
+.doc-version {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-frozen,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	top: 75px;
+	right: 175px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #3C4663;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Headings -->
+<h1 title="PHP class: `\SmartModExtLib\PageBuilder\AbstractFrontendPlugin` @ PHP Namespace: `\SmartModExtLib\PageBuilder\`" id="Class--Summary-">
+	<span class="doc-modifiers">abstract</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\SmartModExtLib\PageBuilder\</span><span class="doc-name">AbstractFrontendPlugin</span><br>
+	<span title="extends (abstract) Class" class="doc-extends"><i>extends</i> \SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</span><br>
+	
+	{
+	
+	}&nbsp;@-&gt;
+</h1>
+<!-- Description -->
+<div class="doc-comments">Class: AbstractFrontendPlugin - Abstract Frontend Plugin, provides the Abstract Definitions to create PageBuilder (Frontend) Plugins.</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
+		<li><span class="doc-located"><b>Located at:</b> modules/mod-page-builder/libs/AbstractFrontendPlugin.php</span></li>
+		<li><span class="doc-package"><b>Package:</b> development:modules:PageBuilder</span></li>
+		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\PageBuilder\</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> AbstractFrontendPlugin</span></li>
+		
+		<li><b>Version:</b> v.20221219</li>
+		
+		<li><b>Hints:</b> needs  to be extended as: UniqueClassPluginName</li>
+		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
+		
+				<li><b>Inheritance Chart:</b>
+			<ul>
+				<span class="doc-name"><i>class</i>&nbsp;\SmartModExtLib\PageBuilder\AbstractFrontendPlugin</span>&nbsp;&rarr;
+				<li>&nbsp;&#8627;&nbsp;<span class="doc-type-class"><i>class</i>&nbsp;\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</span>&nbsp;&rarr;</li>
+				<li>&nbsp;&#8627;&nbsp;<span class="doc-type-class"><i>class</i>&nbsp;\SmartAbstractAppController</span></li>
+				
+			</ul>
+		</li>
+		
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">class Methods</h2>
+</div>
+<!-- methods r.20200121 -->
+<!-- Skip Internal-Priv Method: `initPlugin()` -->
+<!-- Skip Internal-Priv Method: `getPluginExportVars()` -->
+<div class="doc-container" id="Method--setPluginExportVars">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setPluginExportVars</b></span>&nbsp;(
+		<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$vars` Parameter is REQUIRED">$vars</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+			<div class="doc-method-comments">Set Plugin Export Vars</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getPluginName">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getPluginName</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+			<div class="doc-method-comments">Get Plugin Name</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getPluginConfig">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getPluginConfig</b></span>&nbsp;(
+		<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$default_keys` Parameter is OPTIONAL, with the Default Value: []">$default_keys</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+			<div class="doc-method-comments">Get Plugin Config as Array</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getPluginCallerModulePath">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getPluginCallerModulePath</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+			<div class="doc-method-comments">Get Plugin Caller Module Path, for Level Zero Object</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getPluginCallerData">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getPluginCallerData</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+			<div class="doc-method-comments">Get Plugin Caller Data as Array, for Level Zero Object</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getPluginData">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getPluginData</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+			<div class="doc-method-comments">Get Plugin Data as Array, for the current Object Level</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--checkIfPageOrSegmentExist">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>checkIfPageOrSegmentExist</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_id` Parameter is REQUIRED">$y_id</span></b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_ctrl` Parameter is OPTIONAL, with the Default Value: null">$y_ctrl</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--checkIfPageExist">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>checkIfPageExist</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_id` Parameter is REQUIRED">$y_id</span></b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_ctrl` Parameter is OPTIONAL, with the Default Value: null">$y_ctrl</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--checkIfSegmentExist">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>checkIfSegmentExist</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_id` Parameter is REQUIRED">$y_id</span></b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_ctrl` Parameter is OPTIONAL, with the Default Value: null">$y_ctrl</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getPageById">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getPageById</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_id` Parameter is REQUIRED">$y_id</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getSegmentById">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSegmentById</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_id` Parameter is REQUIRED">$y_id</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getListOfPagesByCtrl">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getListOfPagesByCtrl</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderby` Parameter is OPTIONAL, with the Default Value: &quot;id&quot;">$y_orderby</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;id&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderdir` Parameter is OPTIONAL, with the Default Value: &quot;ASC&quot;">$y_orderdir</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;ASC&quot;</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_limit` Parameter is OPTIONAL, with the Default Value: 0">$y_limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_ofs` Parameter is OPTIONAL, with the Default Value: 0">$y_ofs</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--countListOfPagesByCtrl">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countListOfPagesByCtrl</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getListOfSegmentsByCtrl">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getListOfSegmentsByCtrl</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderby` Parameter is OPTIONAL, with the Default Value: &quot;id&quot;">$y_orderby</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;id&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderdir` Parameter is OPTIONAL, with the Default Value: &quot;ASC&quot;">$y_orderdir</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;ASC&quot;</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_limit` Parameter is OPTIONAL, with the Default Value: 0">$y_limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_ofs` Parameter is OPTIONAL, with the Default Value: 0">$y_ofs</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--countListOfSegmentsByCtrl">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countListOfSegmentsByCtrl</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getListOfPagesByTag">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getListOfPagesByTag</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_tag` Parameter is REQUIRED">$y_tag</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderby` Parameter is OPTIONAL, with the Default Value: &quot;id&quot;">$y_orderby</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;id&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderdir` Parameter is OPTIONAL, with the Default Value: &quot;ASC&quot;">$y_orderdir</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;ASC&quot;</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_limit` Parameter is OPTIONAL, with the Default Value: 0">$y_limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_ofs` Parameter is OPTIONAL, with the Default Value: 0">$y_ofs</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--countListOfPagesByTag">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countListOfPagesByTag</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_tag` Parameter is REQUIRED">$y_tag</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getListOfSegmentsByTag">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getListOfSegmentsByTag</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_tag` Parameter is REQUIRED">$y_tag</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderby` Parameter is OPTIONAL, with the Default Value: &quot;id&quot;">$y_orderby</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;id&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderdir` Parameter is OPTIONAL, with the Default Value: &quot;ASC&quot;">$y_orderdir</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;ASC&quot;</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_limit` Parameter is OPTIONAL, with the Default Value: 0">$y_limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_ofs` Parameter is OPTIONAL, with the Default Value: 0">$y_ofs</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--countListOfSegmentsByTag">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countListOfSegmentsByTag</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_tag` Parameter is REQUIRED">$y_tag</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getListOfSegmentsByArea">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getListOfSegmentsByArea</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_area` Parameter is REQUIRED">$y_area</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderby` Parameter is OPTIONAL, with the Default Value: &quot;id&quot;">$y_orderby</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;id&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderdir` Parameter is OPTIONAL, with the Default Value: &quot;ASC&quot;">$y_orderdir</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;ASC&quot;</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_limit` Parameter is OPTIONAL, with the Default Value: 0">$y_limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_ofs` Parameter is OPTIONAL, with the Default Value: 0">$y_ofs</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--countListOfSegmentsByArea">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countListOfSegmentsByArea</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_area` Parameter is REQUIRED">$y_area</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getListOfSegmentsByAreaTag">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getListOfSegmentsByAreaTag</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr_area_tags` Parameter is REQUIRED">$y_arr_area_tags</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderby` Parameter is OPTIONAL, with the Default Value: &quot;id&quot;">$y_orderby</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;id&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderdir` Parameter is OPTIONAL, with the Default Value: &quot;ASC&quot;">$y_orderdir</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;ASC&quot;</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_limit` Parameter is OPTIONAL, with the Default Value: 0">$y_limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_ofs` Parameter is OPTIONAL, with the Default Value: 0">$y_ofs</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--countListOfSegmentsByAreaTag">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countListOfSegmentsByAreaTag</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr_area_tags` Parameter is REQUIRED">$y_arr_area_tags</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getObjectArrExtraData">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getObjectArrExtraData</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$b64_data` Parameter is REQUIRED">$b64_data</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--__construct">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_module_path` Parameter is REQUIRED">$y_module_path</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_controller` Parameter is REQUIRED">$y_controller</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_url_page` Parameter is REQUIRED">$y_url_page</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_hardcoded_area` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_hardcoded_area</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@param: {STRING} $y_module_path: The Relative Path (followed by a trailing slash) to the current module containing the current Controller to be served by the Middleware Service ; Ex: 'modules/mod-mytest/'<br>
+@param: {STRING} $y_controller: The Controller to serve the action for the Middleware Service ; Ex: 'mytest.some-controller', referring the file 'modules/mod-mytest/some-controller.php' as the real controller to be served<br>
+@param: {STRING} $y_url_page: The URL Parameter 'page' as it comes from URL ; Ex: 'mytest.some-controller' | 'some-controller' (if 'mytest' is set as default module) | 'mytest.some-controller.html' or anything that can refere by URL to the current controller when using Apache Rewrite<br>
+@param: {STRING} $y_hardcoded_area: *OPTIONAL* If this is provided will supply a hard-coded Area for the Middleware Service, otherwise is detected from current script.php</div>
+	
+			<div class="doc-method-comments">Class constructor.<br>
+This is used to construct a middleware controller service</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--__destruct">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__destruct</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+	
+			<div class="doc-method-comments">Class Destructor.<br>
+This is used to destruct a middleware controller service<br>
+NOTICE: Use the ShutDown() function as custom destructor, it will be called after Run() safely prior to destruct this class.<br>
+The class destructors are not safe in controller instances.<br>
+See the comments from ShutDown() function in this class !</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--IsRawPage">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>IsRawPage</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if 'rawpage' is 'yes' or true ; FALSE otherwise</div>
+	
+			<div class="doc-method-comments">Test if Raw Page in ON</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--IfDevMode">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>IfDevMode</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if 'dev' environment is ON, FALSE if not (FALSE if 'prod')</div>
+	
+			<div class="doc-method-comments">Test if Development Environment is On</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--IfDebug">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>IfDebug</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if DEBUG is ON, FALSE if not</div>
+	
+			<div class="doc-method-comments">Test if Debug is On</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--forceRawDebug">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>forceRawDebug</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$show_output` Parameter is OPTIONAL, with the Default Value: false">$show_output</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if Debug is ON, FALSE if not<br>
+@param: {BOOLEAN} $show_output: *Optional* ; Default is FALSE ; If set to TRUE will try to output the contents as HTML ; BEWARE, if the content is binary it should not ...</div>
+	
+			<div class="doc-method-comments">Force Debug View Over Raw Output or DownloadPacket Output Pages<br>
+The output of this pages is not displayed by default in the Debug Profiler because is not a common HTML Page<br>
+To debug this type of pages this function should be called (ONLY IN DEBUG MODE) at the end (or before return) of the controller Run() method<br>
+This is not available for direct Direct Output pages (which can be integrated in Debug Profiler only if called as sub-request in an Ajax call from any HTML page)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--SetDebugData">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>SetDebugData</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$title` Parameter is REQUIRED">$title</span></b></span>, 
+	<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$debug_msg` Parameter is REQUIRED">$debug_msg</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if successful, FALSE if not<br>
+@param: {STRING} $title: A title for the debug message.<br>
+@param: {MIXED} $debug_msg: The data for the debug message. Ex: STRING / ARRAY</div>
+	
+			<div class="doc-method-comments">Set Custom Debug Data<br>
+If Debug is turned on, this area of Debug messages will be displayed in Modules section</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--ControllerGetParam">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ControllerGetParam</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {STRING} The value for the selected parameter<br>
+@param: {ENUM} $param: The selected parameter</div>
+	
+			<div class="doc-method-comments">Get the value for a Controller parameter<br>
+The valid param values are:<br>
+app-env 					:: 		ex: dev | prod ; based on: SmartEnvironment::ifDevMode()<br>
+app-namespace 				:: 		ex: smartframework.default (the app namespace as defined in etc/init.php)<br>
+app-domain 					:: 		ex: 127.0.0.1|localhost|sdom.dom.ext|dom.ext (the domain set in configs, that may differ by area: $configs['app']['index-domain'] | $configs['app']['admin-domain'])<br>
+release-hash 				:: 		ex: 29bp3w (the release hash based on app framework version, framework release and modules version)<br>
+module-area 				:: 		ex: index / admin<br>
+module-name 				:: 		ex: mod-samples<br>
+module-path 				:: 		ex: modules/mod-samples/<br>
+module-view-path 			:: 		ex: modules/mod-samples/views/<br>
+module-model-path 			:: 		ex: modules/mod-samples/models/<br>
+module-lib-path 			:: 		ex: modules/mod-samples/libs/<br>
+module-tpl-path 			:: 		ex: modules/mod-samples/templates/<br>
+module-plugins-path 		:: 		ex: modules/mod-samples/plugins/<br>
+module-translations-path 	:: 		ex: modules/mod-samples/translations/<br>
+module 						:: 		ex: samples (1st part from controller, before .)<br>
+action 						:: 		ex: test (2nd part from controller, after .)<br>
+controller 					:: 		ex: samples.test<br>
+url-proto 					:: 		ex: http | https (the current server protocol)<br>
+url-proto-addr 				:: 		ex: http:// | https:// (the current server protocol address)<br>
+url-basedomain 				:: 		ex: 127.0.0.1|localhost|dom.ext (the curent server base domain, or IP)<br>
+url-domain 					:: 		ex: 127.0.0.1|localhost|sdom.dom.ext (the curent server domain, or IP)<br>
+url-port 					:: 		ex: 80 | 443 | 8080 ... (the current server port)<br>
+url-port-addr 				:: 		ex: '' | ''  | ':8080' ... (the current server port address ; empty for port 80 and 443 ; for the rest of ports will be :portnumber)<br>
+url-script 					:: 		ex: index.php | admin.php | task.php<br>
+url-path 					:: 		ex: /sites/smart-framework/<br>
+url-addr 					:: 		ex: http(s)://127.0.0.1|localhost/sites/smart-framework/<br>
+url-page 					:: 		ex: samples.test | test  (if samples is the default module) ; this is returning the URL page variable as is in the URL (it can be the same as 'controller' or if rewrite is used inside framework can vary<br>
+url-query 					:: 		ex: ?page=test&amp;ofs=10<br>
+url-uri 					:: 		ex: /sites/smart-framework/index|admin.php{/some/path/}?page=test&amp;ofs=10<br>
+uri-path 					:: 		ex: {/some/path/}<br>
+lang 						:: 		ex: en<br>
+charset 					:: 		ex: UTF-8<br>
+timezone 					:: 		ex: UTC</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--ConfigParamGet">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ConfigParamGet</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$type` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$type</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {MIXED} The value for the selected parameter. If the Config parameter does not exists, will return an empty string<br>
+@param: {ENUM} $param: The selected configuration parameter ; Examples: 'app.info-url' will get value from $configs['app']['info-url'] ; 'regional.decimal-separator' will get the value (string) from $configs['regional']['decimal-separator'] ; 'regional' will get the value (array) from $configs['regional']<br>
+@param: {ENUM} $type: The type to pre-format the value: 'array', 'string', 'boolean', 'integer', 'numeric' OR '' to leave the value as is (raw)</div>
+	
+			<div class="doc-method-comments">Get the value for a Config parameter from the app $configs array</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--RequestMethodGet">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>RequestMethodGet</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {STRING} The value of the REQUEST_METHOD HTTP Variable (from server-side)</div>
+	
+			<div class="doc-method-comments">Get the HTTP Request Method (REQUEST_METHOD) in a controller</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--RequestPathGet">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>RequestPathGet</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {STRING} The value of the PATH_INFO Request if Set or Empty String</div>
+	
+			<div class="doc-method-comments">Get the Path Request Variable (PATH_INFO) in a controller</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--RequestVarsGet">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>RequestVarsGet</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} Associative Array of Request Variables</div>
+	
+			<div class="doc-method-comments">Get all the Request Variables from (GET/POST) in a controller</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--RequestVarGet">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>RequestVarGet</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
+	<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$defval` Parameter is OPTIONAL, with the Default Value: null">$defval</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$type` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$type</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {MIXED} The value of the choosen Request (GET/POST) variable<br>
+@param: {STRING} $key: The name (key) of the GET or POST variable (if the variable is set in both GET and POST, the GPC as set in PHP.INI sequence will overwrite the GET with POST, thus the POST value will be get).<br>
+@param: {MIXED} $defval: The default value (if a type is set must be the same type) of that variable in the case was not set in the Request (GET/POST). By default it is set to null.<br>
+@param: {ENUM} $type: The type of the variable ; Default is '' (no enforcing). This can be used to enforce a type for the variable as: ['enum', 'list', 'of', 'allowed', 'values'], 'array', 'string', 'boolean', 'integer', 'integer+', 'integer-', 'decimal1', 'decimal2', 'decimal3', 'decimal4', 'numeric'.</div>
+	
+			<div class="doc-method-comments">Get a Request Variable (GET/POST) in a controller</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--IsAjaxRequest">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>IsAjaxRequest</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if HTTP_X_REQUESTED_WITH is xmlhttprequest, FALSE otherwise</div>
+	
+			<div class="doc-method-comments">Return TRUE if the Request was made via AJAX</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--CookieVarGet">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>CookieVarGet</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$name` Parameter is REQUIRED">$name</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {MIXED} The value of the choosen Cookie variable or null if not set<br>
+@param: {STRING} $name: The cookie name from COOKIES variable.</div>
+	
+			<div class="doc-method-comments">Get a Cookie Variable (COOKIES) in a controller</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--CookieVarSet">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>CookieVarSet</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$name` Parameter is REQUIRED">$name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$expire` Parameter is OPTIONAL, with the Default Value: 0">$expire</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$path` Parameter is OPTIONAL, with the Default Value: &quot;/&quot;">$path</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;/&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$domain` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$domain</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$samesite` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$samesite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$secure` Parameter is OPTIONAL, with the Default Value: false">$secure</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$httponly` Parameter is OPTIONAL, with the Default Value: false">$httponly</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if Set, FALSE if Not<br>
+@param: {STRING} $name: The cookie name<br>
+@param: {STRING} $data: The cookie data<br>
+@param: {STRING} $expire: The cookie expire time in seconds since now (zero for session cookies) ; default is zero to set as session cookie (expires with browser session, will be unset after browser is closed)<br>
+@param: {STRING} $path: The cookie path ; default is /<br>
+@param: {STRING} $domain: The cookie domain ; default is @ (will get as it is set in SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN if defined or '') ; can be explicit set<br>
+@param: {ENUM} $samesite: The cookie SameSite policy ; default is @ (will get as it is set in SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE if defined or '') ; valid values: '', 'Lax', 'Strict', 'None' ; if '' will use the old behaviour ; if 'None' will enforce $secure=true as the new browsers are requiring and will work only over https secure connections<br>
+@param: {BOOL} $secure: The cookie secure policy ; if set to TRUE will send cookies only via https secure connections ; default is FALSE ; if the SameSite is set to 'None' this parameter is enforced to be TRUE<br>
+@param: {BOOL} $httponly: The cookie httponly policy ; if set to TRUE this cookies will not be available to Javascript (or any other client-side access) but only to server-side scripts</div>
+	
+			<div class="doc-method-comments">Set a Cookie Variable (COOKIES) in a controller</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--CookieVarUnset">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>CookieVarUnset</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$name` Parameter is REQUIRED">$name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$path` Parameter is OPTIONAL, with the Default Value: &quot;/&quot;">$path</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;/&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$domain` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$domain</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$samesite` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$samesite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$secure` Parameter is OPTIONAL, with the Default Value: false">$secure</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$httponly` Parameter is OPTIONAL, with the Default Value: false">$httponly</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if Set, FALSE if Not<br>
+@param: {STRING} $name: The cookie name<br>
+@param: {STRING} $path: The cookie path ; default is /<br>
+@param: {STRING} $domain: The cookie domain ; default is @ (will get as it is set in SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN if defined or '') ; can be explicit set<br>
+@param: {ENUM} $samesite: The cookie SameSite policy ; default is @ (will get as it is set in SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE if defined or '') ; valid values: '', 'Lax', 'Strict', 'None' ; if '' will use the old behaviour ; if 'None' will enforce $secure=true as the new browsers are requiring and will work only over https secure connections<br>
+@param: {BOOL} $secure: The cookie secure policy ; if set to TRUE will send cookies only via https secure connections ; default is FALSE ; if the SameSite is set to 'None' this parameter is enforced to be TRUE<br>
+@param: {BOOL} $httponly: The cookie httponly policy ; if set to TRUE this cookies will not be available to Javascript (or any other client-side access) but only to server-side scripts</div>
+	
+			<div class="doc-method-comments">Unset a Cookie Variable (COOKIES) in a controller</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewGetData">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetData</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} an associative array as: [ heads =&gt; PageViewGetRawHeaders() ; cfgs =&gt; PageViewGetCfgs() ; vars =&gt; PageViewGetVars() ]</div>
+	
+			<div class="doc-method-comments">Get all the current controller PageView Data: (Raw) Headers, Cfgs and Vars<br>
+The general purpose of this function is to get all Page Data at once to export into persistent cache.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewSetData">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetData</b></span>&nbsp;(
+		<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not<br>
+@param: {ARRAY} $data: an associative array as: [ heads =&gt; PageViewGetRawHeaders() ; cfgs =&gt; PageViewGetCfgs() ; vars =&gt; PageViewGetVars() ]</div>
+	
+			<div class="doc-method-comments">Set all the current controller PageView Data: (Raw) Headers, Cfgs and Vars<br>
+The general purpose of this function is to set all Page Data at once when imported from persistent cache.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewGetRawHeaders">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetRawHeaders</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} an associative array with all controller Page View (Raw) Headers currently set</div>
+	
+			<div class="doc-method-comments">Get all the current controller PageView Headers (Raw) that will be mapped to Raw HTTP Header(s)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewSetRawHeaders">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetRawHeaders</b></span>&nbsp;(
+		<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$entries` Parameter is REQUIRED">$entries</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not<br>
+@param: {ARRAY} $entries: an associative array to be set with elements for each raw header entry [ 'Header Key 1' =&gt; 'Header Entry One', 'Header Key 2' =&gt; 'Header Entry Two', ..., 'Header Key n' =&gt; 'Header Entry N' ]</div>
+	
+			<div class="doc-method-comments">Set a list with multiple values for RawHeaders into the current controller as PageView Headers (Raw) that will be mapped to Raw HTTP Header(s)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewSetRawHeader">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetRawHeader</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not<br>
+@param: {STRING} $param: the header key 		(Ex: 'X-XSS-Protection')<br>
+@param: {STRING} $value: the header value 	(Ex: '1; mode=block')</div>
+	
+			<div class="doc-method-comments">Set a single value for settings into the current controller as PageView Headers (Raw) that will be mapped to Raw HTTP Header(s)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewResetRawHeaders">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewResetRawHeaders</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not</div>
+	
+			<div class="doc-method-comments">Reset all variables for the current controller into PageView Headers (Raw) that will be mapped to Raw HTTP Header(s)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewGetCfg">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetCfg</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {STRING} The value currently set in CFGs if any or an empty string<br>
+@param: {STRING} $param: the parameter to be get</div>
+	
+			<div class="doc-method-comments">Get a specific value of the current controller from PageView Settings (Cfgs)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewGetCfgs">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetCfgs</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} an associative array with all controller Page View Cfgs. (Settings) currently set</div>
+	
+			<div class="doc-method-comments">Get all the current controller PageView Settings (Cfgs)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewSetCfgs">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetCfgs</b></span>&nbsp;(
+		<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$params` Parameter is REQUIRED">$params</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not<br>
+@param: {ARRAY} $params: an associative array to be set as [ 'param1' =&gt; 'value1', ..., 'param-n' =&gt; 'val-n' ]</div>
+	
+			<div class="doc-method-comments">Set a list with multiple values for settings into the current controller as PageView Settings (Cfgs)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewSetCfg">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetCfg</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not<br>
+@param: {STRING} $param: the parameter to be set<br>
+@param: {STRING} $value: the value</div>
+	
+			<div class="doc-method-comments">Set a single value for settings into the current controller as PageView Settings (Cfgs)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewResetCfgs">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewResetCfgs</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not</div>
+	
+			<div class="doc-method-comments">Reset all variables for the current controller into PageView Settings (Cfgs)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewGetErrorMessage">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetErrorMessage</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$errhtml` Parameter is OPTIONAL, with the Default Value: false">$errhtml</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {STRING} the ERROR Message if Any<br>
+@param: {BOOL} $errhtml: *Optional* ; Default is FALSE ; If TRUE will return the HTML Error Message instead of default plain HTML Message</div>
+	
+			<div class="doc-method-comments">Get ERROR Message for a controller page</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewGetStatusCode">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetStatusCode</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {ENUM} the HTTP Status Code: 2xx, 3xx, 4xx, 5xx, ... (consult middleware documentation to see what is supported) ; if an invalid error status code is used then 200 will be used instead</div>
+	
+			<div class="doc-method-comments">Get STATUS Code for a controller page</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewSetOkStatus">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetOkStatus</b></span>&nbsp;(
+		<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$code` Parameter is REQUIRED">$code</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not<br>
+@param: {ENUM} $code: the HTTP OK Status Code: 200, 202, 203, 208, ... (consult middleware documentation to see what is supported) ; if an invalid error status code is used then 200 will be used instead</div>
+	
+			<div class="doc-method-comments">Set OK (2xx) STATUS Code for a controller page</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewSetErrorStatus">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetErrorStatus</b></span>&nbsp;(
+		<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$code` Parameter is REQUIRED">$code</span></b></span>, 
+	<i>STRING/ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$msg` Parameter is OPTIONAL, with the Default Value: null">$msg</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$logtype` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$logtype</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not<br>
+@param: {ENUM} $code: the HTTP Error Status Code: 400, 403, 404, 500, 503, ... (consult middleware documentation to see what is supported) ; if an invalid error status code is used then 500 will be used instead<br>
+@param: {STRING/ARRAY} $msg: The detailed message that will be displayed public near the status code ; can be string or array [ 0 =&gt; message ; 1 =&gt; htmlmessage ]<br>
+@param: {ENUM} $logtype: *Optional* ; Default is '' ; available values: '' | 'WARN' | 'NOTICE'</div>
+	
+			<div class="doc-method-comments">Set Error Status and Optional Message for a controller page<br>
+The Controller should stop the execution after calling this function using 'return;' or ending the 'Run()' main function</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewSetRedirectUrl">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetRedirectUrl</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$url` Parameter is REQUIRED">$url</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$code` Parameter is REQUIRED">$code</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not<br>
+@param: {STRING} $url: The absolute URL to redirect the page to (Ex: http://some-domain.ext/some-page.html)<br>
+@param: {ENUM} $code: the HTTP Error Status Code: 301, 302, ... (consult middleware documentation to see what is supported) ; if an invalid error status code is used then 302 will be used instead</div>
+	
+			<div class="doc-method-comments">Set Redirect URL for a controller page<br>
+The Controller should stop the execution after calling this function using 'return;' or ending the 'Run()' main function</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewCreateSemaphores">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewCreateSemaphores</b></span>&nbsp;(
+		<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$semaphores` Parameter is REQUIRED">$semaphores</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {STRING} The list of Semaphores: ex: '&lt;semaphore1&gt;,&lt;semaphore2&gt;'<br>
+@param: {ARRAY} $semaphores: Ex: [ 'semaphore1', 'semaphore2' ]</div>
+	
+			<div class="doc-method-comments">Create a Page View Semaphores List from an Array<br>
+This creates a semaphores list for templating, that can be used with a special variable 'semaphore' to signal templates different semaphore conditions (ex: if a semaphore contains a certain &lt;value&gt; load or not a portion of tpl code)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewGetVar">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetVar</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {MIXED} the content of the specific PageView variable currently set<br>
+@param: {STRING} $param: the variable to be get</div>
+	
+			<div class="doc-method-comments">Get the current controller PageView specific Var</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewGetVars">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetVars</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} an associative array with all the controller Page View variables currently set</div>
+	
+			<div class="doc-method-comments">Get all the current controller PageView Vars</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewSetVars">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetVars</b></span>&nbsp;(
+		<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$params` Parameter is REQUIRED">$params</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not<br>
+@param: {ARRAY} $params: an associative array to be set as [ 'variable1' =&gt; 'value1', ..., 'variable-n' =&gt; 'val-n' ]</div>
+	
+			<div class="doc-method-comments">Set a list with multiple values for variables into the current controller into PageView Vars</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewSetVar">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetVar</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$overwrite` Parameter is OPTIONAL, with the Default Value: true">$overwrite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not<br>
+@param: {STRING} $param: the variable to be set<br>
+@param: {STRING} $value: the value<br>
+@param: {BOOL} $overwrite: overwrite (default is TRUE) ; set to FALSE to set only if value is empty</div>
+	
+			<div class="doc-method-comments">Set a single value for the current controller into PageView Vars, with Optional OverWrite (if not empty) parameter</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewPrependVar">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewPrependVar</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not<br>
+@param: {STRING} $param: the variable to prepend value to<br>
+@param: {STRING} $value: the value</div>
+	
+			<div class="doc-method-comments">Prepend a single value to a variable for the current controller into PageView Vars</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewAppendVar">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewAppendVar</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not<br>
+@param: {STRING} $param: the variable to append value to<br>
+@param: {STRING} $value: the value</div>
+	
+			<div class="doc-method-comments">Append a single value to a variable for the current controller into PageView Vars</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewResetVars">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewResetVars</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not</div>
+	
+			<div class="doc-method-comments">Reset all variables for the current controller into PageView Vars and unset all keys</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewResetVar">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewResetVar</b></span>&nbsp;(
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not<br>
+@param: {STRING} $param: the variable to be reset (unset)</div>
+	
+			<div class="doc-method-comments">Reset a single variable value for the current controller into PageView Vars and unset the key</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageCacheisActive">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageCacheisActive</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if Active, FALSE if not</div>
+	
+			<div class="doc-method-comments">Test if the Page Cache (system) is active or not<br>
+This is based on PersistentCache</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageCacheSafeKey">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageCacheSafeKey</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key_or_realm` Parameter is REQUIRED">$y_key_or_realm</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {STRING} The safe prepared Key or Realm</div>
+	
+			<div class="doc-method-comments">Prepare a Page Cache SAFE Key or Realm<br>
+This is based on PersistentCache</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageGetFromCache">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageGetFromCache</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$storage_namespace` Parameter is REQUIRED">$storage_namespace</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$unique_key` Parameter is REQUIRED">$unique_key</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {MIXED} If the PersistentCache is active and value was set will return a single (STRING) or multiple (ARRAY) Page Settings / Page Values ; otherwise will return a NULL value.<br>
+@param: {STRING} $storage_namespace: the cache storage namespace, used to group keys<br>
+@param: {STRING} $unique_key: the unique cache key</div>
+	
+			<div class="doc-method-comments">Get a Page from the (Persistent) Cache</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageSetInCache">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageSetInCache</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$storage_namespace` Parameter is REQUIRED">$storage_namespace</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$unique_key` Parameter is REQUIRED">$unique_key</span></b></span>, 
+	<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$content` Parameter is REQUIRED">$content</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$expiration` Parameter is REQUIRED">$expiration</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if the PersistentCache is active and value was set ; FALSE in the rest of the cases<br>
+@param: {STRING} $storage_namespace: the cache storage namespace, used to group keys<br>
+@param: {STRING} $unique_key: the unique cache key<br>
+@param: {MIXED} $content: the cache content as a STRING or an ARRAY with Page Value(s) / Page Setting(s)<br>
+@param: {INTEGER} $expiration: The page cache expiration in seconds ; 0 will not expire</div>
+	
+			<div class="doc-method-comments">Set a Page into the (Persistent) Cache</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageUnsetFromCache">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageUnsetFromCache</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$storage_namespace` Parameter is REQUIRED">$storage_namespace</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$unique_key` Parameter is REQUIRED">$unique_key</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if the PersistentCache is active and value was unset ; FALSE in the rest of the cases<br>
+@param: {STRING} $storage_namespace: the cache storage namespace, used to group keys<br>
+@param: {STRING} $unique_key: the unique cache key</div>
+	
+			<div class="doc-method-comments">Unset a Page from the (Persistent) Cache</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `InstantFlush()` -->
+<div class="doc-container" id="Method--Initialize">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>Initialize</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {MIXED} *OPTIONAL* If an ERROR occurs during initialize it can return FALSE or any valid and supported HTTP ERR Status Codes as 4xx / 5xx to avoid continue and dissalow calling the Run() method ; otherwise it can return TRUE or VOID ; or it can return any SUCCESS or REDIRECT HTTP Status Codes 2xx / 3xx and this will also prevent executing Run() method (but in this situation an output, at least 'main' or 'redirect-url' must be set)</div>
+	
+			<div class="doc-method-comments">This is a pre Run() function<br>
+This function will be called before Run()</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--ShutDown">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ShutDown</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;VOID
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+	
+			<div class="doc-method-comments">This is the post Initialize() / post Run() function<br>
+This function will be called after Initialize() and Run() wether or not Run() is executed (Initialize() may prevent Run() to be executed but in any case Shutdown() will be executed ...)<br>
+This function is the (real) Controller Destructor - This function is optional and can be re-defined in controllers where a destructor is required.<br>
+It will replace the class destructor __destruct() which is NOT SAFE in all cases (see php bug #31570).<br>
+NOTICE:<br>
+Sometimes __destruct() for classes is not 100% safe ; example: the PHP Bug #31570 (not fixed since a very long time).<br>
+Instead of __destruct() use ShutDown() method for controllers in framework modules (which is always executed after Run() and is 100% safe).<br>
+WARNING:<br>
+Modifications for Page Settings or Page Variables are not allowed in this function, after Run() has been completed !<br>
+If controller variables are modified after Run() has completed it can produce unexpected results ...<br>
+EXAMPLE / SCENARIO:<br>
+This function (by replacing __destruct()) can be used if you have to cleanup a temporary folder (tmp/) after Run().<br>
+Because of the PHP Bug #31570, the __destruct() can't operate on relative paths and will produce wrong and unexpected results !!!</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--Run">
+	<span class="doc-modifiers">abstract public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-abstract-name"><b>Run</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {MIXED} *OPTIONAL* The HTTP Status Code: by default it does not return or it must returns 200 which is optional ; other supported HTTP Status Codes are: 202/203/204/208 (OK with notice/warning/error messages - used only for REST/APIs), 301 (Permanent Redirect), 302 (Temporary Redirect), 400 (Bad Request), 401 (Authentication Required), 403 (Forbidden), 404 (Not Found), 405 (Method Not Allowed), 410 (Gone), 422 (Unprocessable Content) / (Unprocessable Entity), 429 (Too many Requests), 500 (Internal Error), 501 (Not Implemented), 502 (Bad Gateway), 503 (Service Unavailable), 504 (Gateway Timeout) ; 204 (No Content) and 304 (Not Modified) are reserved ; if the HTTP status code is in the range of 4xx - 5xx, an extra notification message can be set as: ##EXAMPLE: $this-&gt;PageViewSetCfg('error', 'Access to this page is restricted'); return 403; ## - to have also a detailed error message to be shown near the HTTP status code) ; It also can return VOID or TRUE as HTTP Status 200 or return FALSE as HTTP Status 500</div>
+	
+			<div class="doc-method-comments">The Controller Runtime - This function is required to be re-defined in all controllers</div>
+	
+	
+	
+</div>
+
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20200121 -->
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20200121 -->
+
+<!-- Sample Code -->
+
+<!-- Summary List -->
+<br>
+<!-- summary r.20210420 -->
+<script>
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* PHP Class \SmartModExtLib\PageBuilder\AbstractFrontendPlugin # Documentation Index *</option>
+		<optgroup label="Class \SmartModExtLib\PageBuilder\AbstractFrontendPlugin">
+			<option value="Class--Summary-">Class definition</option>
+		</optgroup>
+		<optgroup label="Class Methods">
+			<option value="Methods--Summary-">Methods list</option>
+			
+			
+			
+			
+						<option value="Method--setPluginExportVars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setPluginExportVars()</option>
+			
+			
+						<option value="Method--getPluginName"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getPluginName()</option>
+			
+			
+						<option value="Method--getPluginConfig"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getPluginConfig()</option>
+			
+			
+						<option value="Method--getPluginCallerModulePath"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getPluginCallerModulePath()</option>
+			
+			
+						<option value="Method--getPluginCallerData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getPluginCallerData()</option>
+			
+			
+						<option value="Method--getPluginData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getPluginData()</option>
+			
+			
+						<option value="Method--checkIfPageOrSegmentExist"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;checkIfPageOrSegmentExist()</option>
+			
+			
+						<option value="Method--checkIfPageExist"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;checkIfPageExist()</option>
+			
+			
+						<option value="Method--checkIfSegmentExist"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;checkIfSegmentExist()</option>
+			
+			
+						<option value="Method--getPageById"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getPageById()</option>
+			
+			
+						<option value="Method--getSegmentById"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSegmentById()</option>
+			
+			
+						<option value="Method--getListOfPagesByCtrl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getListOfPagesByCtrl()</option>
+			
+			
+						<option value="Method--countListOfPagesByCtrl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;countListOfPagesByCtrl()</option>
+			
+			
+						<option value="Method--getListOfSegmentsByCtrl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getListOfSegmentsByCtrl()</option>
+			
+			
+						<option value="Method--countListOfSegmentsByCtrl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;countListOfSegmentsByCtrl()</option>
+			
+			
+						<option value="Method--getListOfPagesByTag"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getListOfPagesByTag()</option>
+			
+			
+						<option value="Method--countListOfPagesByTag"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;countListOfPagesByTag()</option>
+			
+			
+						<option value="Method--getListOfSegmentsByTag"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getListOfSegmentsByTag()</option>
+			
+			
+						<option value="Method--countListOfSegmentsByTag"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;countListOfSegmentsByTag()</option>
+			
+			
+						<option value="Method--getListOfSegmentsByArea"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getListOfSegmentsByArea()</option>
+			
+			
+						<option value="Method--countListOfSegmentsByArea"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;countListOfSegmentsByArea()</option>
+			
+			
+						<option value="Method--getListOfSegmentsByAreaTag"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getListOfSegmentsByAreaTag()</option>
+			
+			
+						<option value="Method--countListOfSegmentsByAreaTag"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;countListOfSegmentsByAreaTag()</option>
+			
+			
+						<option value="Method--getObjectArrExtraData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getObjectArrExtraData()</option>
+			
+			
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+			
+			
+						<option value="Method--__destruct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__destruct()</option>
+			
+			
+						<option value="Method--IsRawPage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;IsRawPage()</option>
+			
+			
+						<option value="Method--IfDevMode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;IfDevMode()</option>
+			
+			
+						<option value="Method--IfDebug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;IfDebug()</option>
+			
+			
+						<option value="Method--forceRawDebug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;forceRawDebug()</option>
+			
+			
+						<option value="Method--SetDebugData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;SetDebugData()</option>
+			
+			
+						<option value="Method--ControllerGetParam"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ControllerGetParam()</option>
+			
+			
+						<option value="Method--ConfigParamGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ConfigParamGet()</option>
+			
+			
+						<option value="Method--RequestMethodGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RequestMethodGet()</option>
+			
+			
+						<option value="Method--RequestPathGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RequestPathGet()</option>
+			
+			
+						<option value="Method--RequestVarsGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RequestVarsGet()</option>
+			
+			
+						<option value="Method--RequestVarGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RequestVarGet()</option>
+			
+			
+						<option value="Method--IsAjaxRequest"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;IsAjaxRequest()</option>
+			
+			
+						<option value="Method--CookieVarGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CookieVarGet()</option>
+			
+			
+						<option value="Method--CookieVarSet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CookieVarSet()</option>
+			
+			
+						<option value="Method--CookieVarUnset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CookieVarUnset()</option>
+			
+			
+						<option value="Method--PageViewGetData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetData()</option>
+			
+			
+						<option value="Method--PageViewSetData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetData()</option>
+			
+			
+						<option value="Method--PageViewGetRawHeaders"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetRawHeaders()</option>
+			
+			
+						<option value="Method--PageViewSetRawHeaders"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetRawHeaders()</option>
+			
+			
+						<option value="Method--PageViewSetRawHeader"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetRawHeader()</option>
+			
+			
+						<option value="Method--PageViewResetRawHeaders"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewResetRawHeaders()</option>
+			
+			
+						<option value="Method--PageViewGetCfg"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetCfg()</option>
+			
+			
+						<option value="Method--PageViewGetCfgs"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetCfgs()</option>
+			
+			
+						<option value="Method--PageViewSetCfgs"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetCfgs()</option>
+			
+			
+						<option value="Method--PageViewSetCfg"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetCfg()</option>
+			
+			
+						<option value="Method--PageViewResetCfgs"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewResetCfgs()</option>
+			
+			
+						<option value="Method--PageViewGetErrorMessage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetErrorMessage()</option>
+			
+			
+						<option value="Method--PageViewGetStatusCode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetStatusCode()</option>
+			
+			
+						<option value="Method--PageViewSetOkStatus"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetOkStatus()</option>
+			
+			
+						<option value="Method--PageViewSetErrorStatus"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetErrorStatus()</option>
+			
+			
+						<option value="Method--PageViewSetRedirectUrl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetRedirectUrl()</option>
+			
+			
+						<option value="Method--PageViewCreateSemaphores"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewCreateSemaphores()</option>
+			
+			
+						<option value="Method--PageViewGetVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetVar()</option>
+			
+			
+						<option value="Method--PageViewGetVars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetVars()</option>
+			
+			
+						<option value="Method--PageViewSetVars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetVars()</option>
+			
+			
+						<option value="Method--PageViewSetVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetVar()</option>
+			
+			
+						<option value="Method--PageViewPrependVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewPrependVar()</option>
+			
+			
+						<option value="Method--PageViewAppendVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewAppendVar()</option>
+			
+			
+						<option value="Method--PageViewResetVars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewResetVars()</option>
+			
+			
+						<option value="Method--PageViewResetVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewResetVar()</option>
+			
+			
+						<option value="Method--PageCacheisActive"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageCacheisActive()</option>
+			
+			
+						<option value="Method--PageCacheSafeKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageCacheSafeKey()</option>
+			
+			
+						<option value="Method--PageGetFromCache"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageGetFromCache()</option>
+			
+			
+						<option value="Method--PageSetInCache"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageSetInCache()</option>
+			
+			
+						<option value="Method--PageUnsetFromCache"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageUnsetFromCache()</option>
+			
+			
+			
+			
+						<option value="Method--Initialize"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;Initialize()</option>
+			
+			
+						<option value="Method--ShutDown"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ShutDown()</option>
+			
+			
+						<option value="Method--Run"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;Run()</option>
+			
+			
+			
+		</optgroup>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+			
+		</optgroup>
+		
+	</select>
+</div>
+<!-- summary-selectjs r.20210420 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 17:02:30 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div><center>
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
+</center></div>
+</body>
+</html>

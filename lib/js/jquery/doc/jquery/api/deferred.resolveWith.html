@@ -1,0 +1,43 @@
+<script>{
+		"title":
+			"deferred.resolveWith()",
+		"excerpt":
+			" Resolve a Deferred object and call any doneCallbacks with the given context and args. ",
+		"termSlugs": {
+			"category": [
+				"deferred-object","version/1.5"
+			]
+		}
+	}</script><article id="deferred-resolveWith1" class="entry method"><h2 class="section-title">
+<span class="name">deferred.resolveWith( context [, args ] )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Deferred">Deferred</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong> Resolve a Deferred object and call any doneCallbacks with the given <code>context</code> and <code>args</code>. </p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.5/">1.5</a></span><a id="deferred-resolveWith-context-args" href="#deferred-resolveWith-context-args"><span class="icon-link"></span>deferred.resolveWith( context [, args ] )</a>
+</h4>
+<ul>
+<li>
+<div><strong>context</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Object">Object</a>
+</div>
+<div>
+        Context passed to the doneCallbacks as the <code>this</code> object.
+      </div>
+</li>
+<li>
+<div><strong>args</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Array">Array</a>
+</div>
+<div>
+        An optional array of arguments that are passed to the doneCallbacks.
+      </div>
+</li>
+</ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>Normally, only the creator of a Deferred should call this method; you can prevent other code from changing the Deferred&apos;s state by returning a restricted Promise object through <a href="/deferred.promise/"><code>deferred.promise()</code></a>.</p>
+    <p>When the Deferred is resolved, any doneCallbacks added by <a href="/deferred.then/"><code>deferred.then</code></a> or <a href="/deferred.done/"><code>deferred.done</code></a> are called. Callbacks are executed in the order they were added. Each callback is passed the <code>args</code> from the <code>.resolve()</code>. Any doneCallbacks added after the Deferred enters the resolved state are executed immediately when they are added, using the arguments that were passed to the <code>.resolve()</code> call. For more information, see the documentation for <a href="/category/deferred-object/">Deferred object</a>.</p>
+  </div>
+</div></article>

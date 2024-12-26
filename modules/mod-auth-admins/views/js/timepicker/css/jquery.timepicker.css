@@ -1,0 +1,180 @@
+/*
+ * jQuery Timepicker 0.3.3.smart.1
+ * r.20191129
+ */
+
+/* Fixes for non-jQueryUI version */
+.ui-timepicker-widget {
+	font-size: 0.875rem;
+	background: #fff;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ui-timepicker-clearfix:before,
+.ui-timepicker-clearfix:after {
+	content: "";
+	display: table;
+	border-collapse: collapse;
+}
+.ui-timepicker-clearfix:after {
+	clear: both;
+}
+
+.ui-timepicker-corner-all {
+	border-radius: 3px;
+}
+
+.ui-timepicker-header {
+	border: 1px solid #F2F2F2;
+	background: #FFFFFF;
+	color: #EE8908;
+	border-radius: 3px !important;
+}
+
+.ui-timepicker-content {
+	border: 1px solid #F2F2F2;
+	background: #FFFFFF;
+	color: #555555;
+	border-radius: 3px !important;
+}
+
+.ui-timepicker-state-default {
+}
+
+.ui-timepicker-state-active {
+	border: 0 !important;
+	background: #555555 !important;
+	color: #ffffff !important;
+	border-radius: 3px !important;
+}
+
+.ui-timepicker-state-disabled {
+	opacity: .35;
+}
+
+.ui-timepicker-state-hover {
+}
+
+/* #end fixes */
+
+.ui-timepicker-inline {
+	display: inline;
+}
+
+/* Fix by Unixman */
+#ui-timepicker-div * {
+	-moz-box-sizing: content-box !important;
+	-webkit-box-sizing: content-box !important;
+	box-sizing: content-box !important;
+}
+
+#ui-timepicker-div {
+	padding: 0.2rem;
+}
+
+.ui-timepicker-table {
+	display: inline-table;
+	width: 0;
+	border: 0;
+}
+
+.ui-timepicker-table table {
+	margin: 0.15rem 0 0 0;
+	border-collapse: separate;
+}
+
+.ui-timepicker-hours, .ui-timepicker-minutes {
+	padding: 0.2rem;
+}
+
+.ui-timepicker-table .ui-timepicker-title {
+	line-height: 1.8rem;
+	text-align: center;
+}
+
+.ui-timepicker-table th, .ui-timepicker-table th.periods, .ui-timepicker-table td {
+	font-size: 0.875rem;
+	padding: 0;
+	width: 2.2rem;
+}
+
+/* span for disabled cells */
+.ui-timepicker-table td span {
+	display: block;
+	padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+	width: 15px;
+	text-align: center;
+	text-decoration: none;
+}
+
+.ui-timepicker-table td .ui-timepicker-hour-cell a {
+	color: #333333;
+}
+
+.ui-timepicker-table td .ui-timepicker-minute-cell a {
+	color: #777777;
+}
+
+/* anchors for clickable cells */
+.ui-timepicker-table td a {
+	display: block;
+	padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+	width: 15px;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	border: 1px solid #F2F2F2;
+	border-radius: 3px;
+}
+.ui-timepicker-table td a:hover {
+	border: 1px solid #888888;
+}
+
+/* buttons and button pane styling */
+.ui-timepicker .ui-timepicker-buttonpane {
+	background-image: none;
+	margin: 0;
+	padding: 0;
+	border-left: 0;
+	border-right: 0;
+	border-bottom: 0;
+}
+
+.ui-timepicker .ui-timepicker-buttonpane button {
+	cursor: pointer;
+	width: auto;
+	overflow: visible;
+	color: #555555;
+	text-align: center;
+	background: #FFFFFF;
+	border: 1px solid #DDDDDD;
+	margin-top: 3px;
+	padding-left: 10px !important;
+	padding-right: 10px !important;
+	padding-top: 1px !important;
+	padding-bottom: 1px !important;
+	height: 22px !important;
+	line-height: 22px !important;
+	font-size: 0.875rem !important;
+}
+
+.ui-timepicker .ui-timepicker-buttonpane button:hover {
+	border: 1px solid #888888;
+}
+
+/* The close button */
+.ui-timepicker .ui-timepicker-close {
+	float: left;
+}
+
+/* the now button */
+.ui-timepicker .ui-timepicker-now {
+	float: left;
+}
+
+/* the deselect button */
+.ui-timepicker .ui-timepicker-deselect {
+	float: right;
+}
+
+/* END */

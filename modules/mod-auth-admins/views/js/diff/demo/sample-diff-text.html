@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Text Diff Sample</title>
+	<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../../../../../../lib/js/framework/smart-framework.pak.js"></script>
+	<link href="../str-diff.css" rel="stylesheet" type="text/css">
+	<script src="../str-diff.js"></script>
+	<script>
+	function RunDiff() {
+		// calculate the diff
+		var oldString = document.getElementById('old').value;
+		var newString = document.getElementById('new').value;
+		var strDiff = Smart_StrDiff.Compare(oldString, newString);
+		document.getElementById('strdiff').innerHTML = strDiff;
+		return false;
+	} //END FUNCTION
+	</script>
+	<style>
+		* {
+			font-family: tahoma,arial,sans-serif;
+		}
+		h1, h2, h3, h4, h5 {
+			display: inline;
+		}
+	</style>
+</head>
+<body>
+<div align="center">
+	<table width="780" border="0">
+		<tr>
+			<td colspan="2" align="center">
+				<h1>Text Diff Sample</h1>
+				<br>
+				<br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<h3>Old (Text) version</h3>
+				<br>
+<textarea class="contentItemText version" id="old" placeholder="Old Text" spellcheck="false" style="font-size:14px; width:340px; height:100px; background:#F7F7F7; border: 1px solid #FF6600; padding:3px;">
+block:	moved,
+string: old șȘ țȚ ăĂ îÎ âÂ,
+test: one,
+changed: true,
+deleted: yes
+&lt;a href=&quot;#&quot;&gt;Link&lt;/a&gt;
+</textarea>
+			</td>
+			<td>
+				<h3>New (Text) version</h3>
+				<br>
+<textarea class="contentItemText version" id="new" placeholder="New Text" spellcheck="false" style="font-size:14px; width:340px; height:100px; border: 1px solid #003399; padding:3px;">
+string: new Șș țȚ Ăă îÎ Ââ,
+block: moved,
+test: two,
+extra: line
+&lt;a href=&quot;#&quot;&gt;Link 2&lt;/a&gt;
+</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<button class="button" onclick="RunDiff();">Re-COMPARE OLD Text WITH NEW Text</button>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<br>
+				<div style="border: 1px solid #DDEEFF; padding-top: 10px;">
+					<h2>Text Comparison (Diff)</h2>
+					<pre id="strdiff" class="str-diff"></pre>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+<br>
+<script type="text/javascript">
+	RunDiff();
+</script>
+</body>
+</html>

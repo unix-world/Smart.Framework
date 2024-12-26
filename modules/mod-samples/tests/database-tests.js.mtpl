@@ -1,0 +1,209 @@
+[%%%COMMENT%%%]
+// IMPORTANT: use only JavaScript code here, no HTML !
+[%%%/COMMENT%%%]
+//===== QUnit Tests.DataBase: START :: r.20241216
+
+(() => {
+
+	const theTimeOutAjax = 250;
+
+	let localTests = {};
+
+	localTests.SQLite 		= [###TEST-DB-SQLITE|bool###];
+	localTests.Dba 			= '[###TEST-DB-DBA|js###]';
+	localTests.PCache 		= [###TEST-DB-PCACHE|bool###];
+	localTests.MongoDB 		= [###TEST-DB-MONGO|bool###];
+	localTests.PostgreSQL 	= [###TEST-DB-PGSQL|bool###];
+	localTests.MySQL 		= [###TEST-DB-MYSQL|bool###];
+
+	let testsDisabled = 0;
+	for(let val in localTests) {
+		if(localTests[val] !== true) {
+			testsDisabled++;
+		} //end if
+	} //end for
+	smartQUnitDisabledTests += testsDisabled;
+
+	localTests.module = false;
+	for(let val in localTests) {
+		if(localTests[val] === true) {
+			localTests.module = true;
+			break;
+		} //end if
+	} //end for
+
+	if(localTests.module) {
+
+		QUnit.module('DataBase', () => {
+
+			if(localTests.SQLite) {
+				QUnit.test('SQLite Test: PHP :: ajax', (assert) => {
+					SmartQUnit.runAjaxTest(
+						String(baseScript) + '?page=testunit&op=testunit.json-sqlite3-smartgrid',
+						'GET',
+						'json', // data type
+						assert,
+						'Test OK: PHP SQLite.',
+						(QAsyncTestDone, testOK, msg) => {
+							let value;
+							if((typeof msg == 'object') && (msg.status) && (typeof msg.status == 'string') && (msg.status = 'OK') && (msg.itemsPerPage) && (msg.itemsPerPage === 25) && (msg.totalRows) && (msg.totalRows >= 25) && (msg.rowsList) && (typeof msg.rowsList == 'object') && (msg.rowsList.length = 25)) {
+								value = 'Test OK: PHP SQLite.';
+							} else {
+								value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
+							} //end if else
+							assert.equal(
+								value, testOK,
+								testOK
+							);
+							QAsyncTestDone();
+						} //end
+					);
+				});
+			} else {
+				// skip SQLite Test
+			} //end if else
+
+			if(localTests.Dba) {
+				QUnit.test('Dba [' + localTests.Dba + '] Test: PHP :: ajax', (assert) => {
+					SmartQUnit.runAjaxTest(
+						String(baseScript) + '?page=samples.testunit&op=testunit.dbadb-test',
+						'GET',
+						'html', // data type
+						assert,
+						'Test OK: PHP Dba DB [' + localTests.Dba + '].',
+						(QAsyncTestDone, testOK, msg, testHtmlDiv) => {
+							const value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
+							if(typeof msg == 'string') {
+								testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, theTimeOutAjax);
+							} else {
+								assert.equal(
+									value, testOK,
+									testOK
+								);
+								QAsyncTestDone();
+							} //end if else
+						} //end
+					);
+				});
+			} else {
+				// skip Dba Test
+			} //end if else
+
+			if(localTests.PCache) {
+				QUnit.test('Persistent Cache ([###NAME-DB-PCACHE|js###]) Test: PHP :: ajax', (assert) => {
+					SmartQUnit.runAjaxTest(
+						String(baseScript) + '?page=samples.testunit&op=testunit.pcache-test',
+						'GET',
+						'html', // data type
+						assert,
+						'Test OK: PHP PersistentCache.',
+						(QAsyncTestDone, testOK, msg, testHtmlDiv) => {
+							const value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
+							if(typeof msg == 'string') {
+								testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, theTimeOutAjax);
+							} else {
+								assert.equal(
+									value, testOK,
+									testOK
+								);
+								QAsyncTestDone();
+							} //end if else
+						} //end
+					);
+				});
+			} else {
+				// skip PersistentCache Test
+			} //end if else
+
+			if(localTests.MongoDB) {
+				QUnit.test('MongoDB Test: PHP :: ajax', (assert) => {
+					SmartQUnit.runAjaxTest(
+						String(baseScript) + '?page=samples.testunit&op=testunit.mongodb-server-test',
+						'GET',
+						'html', // data type
+						assert,
+						'Test OK: PHP MongoDB.',
+						(QAsyncTestDone, testOK, msg, testHtmlDiv) => {
+							const value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
+							if(typeof msg == 'string') {
+								testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, theTimeOutAjax);
+							} else {
+								assert.equal(
+									value, testOK,
+									testOK
+								);
+								QAsyncTestDone();
+							} //end if else
+						} //end
+					);
+				});
+			} else {
+				// skip MongoDB Test
+			} //end if else
+
+			if(localTests.PostgreSQL) {
+				QUnit.test('PostgreSQL Test: PHP :: ajax', (assert) => {
+					SmartQUnit.runAjaxTest(
+						String(baseScript) + '?page=samples.testunit&op=testunit.pgsql-server-test',
+						'GET',
+						'html', // data type
+						assert,
+						'Test OK: PHP PostgreSQL.',
+						(QAsyncTestDone, testOK, msg, testHtmlDiv) => {
+							const value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
+							if(typeof msg == 'string') {
+								testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, theTimeOutAjax);
+							} else {
+								assert.equal(
+									value, testOK,
+									testOK
+								);
+								QAsyncTestDone();
+							} //end if else
+						} //end
+					);
+				});
+			} else {
+				// skip PostgreSQL Test
+			} //end if else
+
+			if(localTests.MySQL) {
+				QUnit.test('MySQLi Test: PHP :: ajax', (assert) => {
+					SmartQUnit.runAjaxTest(
+						String(baseScript) + '?page=samples.testunit&op=testunit.mysql-server-test',
+						'GET',
+						'html', // data type
+						assert,
+						'Test OK: PHP MySQLi.',
+						(QAsyncTestDone, testOK, msg, testHtmlDiv) => {
+							const value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
+							if(typeof msg == 'string') {
+								testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, theTimeOutAjax);
+							} else {
+								assert.equal(
+									value, testOK,
+									testOK
+								);
+								QAsyncTestDone();
+							} //end if else
+						} //end
+					);
+				});
+			} else {
+				// skip MySQLi Test
+			} //end if else
+
+		});
+
+	} //end if
+
+})();
+
+//===== QUnit Tests.DataBase: #END
+
+
+// Smart.Framework.Modules Tests (optional)
+[@@@SUB-TEMPLATE:?!modules/mod-dbal-pdo-medoo/tests/module-test.js.mtpl!@@@]
+[@@@SUB-TEMPLATE:?!modules/mod-db-orm-redbean/tests/module-test.js.mtpl!@@@]
+
+// #END

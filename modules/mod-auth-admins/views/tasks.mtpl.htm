@@ -1,0 +1,19 @@
+<style>
+a#nolink {
+	cursor: pointer !important;
+	text-decoration: none !important;
+	border-bottom: none !important;
+}
+</style>
+<center>
+<h1><a id="nolink" href="task.php"><i class="sfi sfi-2x sfi-cogs" style="color:#777788;"></i></a> &nbsp; Task NameSpaces</h1>
+<h4>[###DATE-TIME|html###]</h4>
+<hr>
+<select title="Available Task NameSpaces" id="tasks-list" size="1" class="ux-field ux-field-xl" style="min-width:300px !important; max-width:70vw;">
+[%%%LOOP:TASKS%%%]<option value="[###TASKS._-VAL-_|html###]">[###TASKS._-KEY-_|html###]</option>[%%%|N%%%][%%%/LOOP:TASKS%%%]
+</select>
+<button class="ux-button ux-button-super ux-button-secondary" onClick="(() => { const url = $('#tasks-list').val(); if(url != undefined) { self.location = String(url); } })();"> <span style="color:#ED2839!important; padding:2px; padding-left:4px; padding-right:4px; border-radius:3px;"><i class="sfi sfi-xl sfi-cogs"></i></span> &nbsp; Select a Task NameSpace </button>
+<hr>
+<br>
+[###HTML-POWERED-INFO###]
+</center>

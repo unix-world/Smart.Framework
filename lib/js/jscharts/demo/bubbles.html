@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Bubbles Chart</title>
+		<script src="../src/Chart.Core.js"></script>
+		<script src="../src/Chart.Line.js"></script>
+	</head>
+	<body>
+		<div style="width:50%">
+			<div>
+				<canvas id="canvas" height="450" width="600"></canvas>
+			</div>
+		</div>
+
+	<script>
+		var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+		var lineChartData = {
+			labels : ["January","February","March","April","May","June","July"],
+			datasets : [
+				{
+					label: "Regression",
+					fillColor : "rgba(0,0,0,0.5)",
+					strokeColor : "rgba(0,0,0,0.8)",
+					pointColor : "rgba(0,0,0,1)",
+					pointStrokeColor : "#000",
+					pointHighlightFill : "#000",
+					pointHighlightStroke : "rgba(70,70,70,1)",
+					data : [randomScalingFactor(),null,null,randomScalingFactor(),null,null,randomScalingFactor()],
+					havestroke: true
+				},
+				{
+					label: "My First dataset",
+					fillColor : "rgba(240,73,73,0.5)",
+					strokeColor : "rgba(240,73,73,0.8)",
+					pointColor : "rgba(240,73,73,0.75)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "rgba(240,73,73,0.8)",
+					pointHighlightStroke : "rgba(240,73,73,0.8)",
+					data : [randomScalingFactor(),randomScalingFactor(),null,randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()],
+					bubbles : [2,8,16,42,30,11,27]
+				},
+				{
+					label: "My Second dataset",
+					fillColor : "rgba(220,220,220,0.2)",
+					strokeColor : "rgba(220,220,220,1)",
+					pointColor : "rgba(220,220,220,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "rgba(220,220,220,0.8)",
+					pointHighlightStroke : "rgba(220,220,220,0.8)",
+					data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()],
+					bubbles : [14,13,22,33,44,23,57]
+				},
+				{
+					label: "My Third dataset",
+					fillColor : "rgba(151,187,205,0.2)",
+					strokeColor : "rgba(151,187,205,1)",
+					pointColor : "rgba(151,187,205,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "rgba(151,187,205,0.8)",
+					pointHighlightStroke : "rgba(151,187,205,0.8)",
+					data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()],
+					bubbles : [randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10]
+				}
+			]
+		};
+
+	window.onload = function(){
+		var ctx = document.getElementById("canvas").getContext("2d");
+		window.myLine = new Chart(ctx).Line(lineChartData, {
+		responsive: true,
+		animationSteps: 20,
+		multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>, <%= radius %>",
+		datasetFill: false,
+		pointDotRadius: 1,
+		datasetStrokeWidth: 0,
+		bezierCurve: true,
+		datasetStroke: false
+		});
+	}
+
+
+	</script>
+	</body>
+</html>

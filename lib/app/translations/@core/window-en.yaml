@@ -1,0 +1,14 @@
+# Language File: EN / CORE / Window :: r.8.7 / smart.framework.v.8.7
+TRANSLATIONS:
+  @language: EN
+  @area: core
+  @version: 2021-05-26
+  window:
+    action_back: 'Return Back (to previous page)'
+    button_back: '[ Return Back ]'
+    button_close: '[ Close ]'
+    button_modal_close: '[ Return to Main Window ]'
+    button_print: '[ Print ]'
+    confirm_action: 'Press [OK] to CONFIRM this Action. Cannot be Undone.'
+    form_submit_wait: '... sending data, please wait'
+#END

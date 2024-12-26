@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="32" height="32" viewBox="0 0 16 16" id="sign-crit-warn">
+ <defs id="defs8" />
+ <g id="g7777" style="fill:none;stroke:none">
+  <g id="alert" style="fill:#ff370f;fill-opacity:0.94117647">
+   <g id="g2989">
+    <rect width="3.0508475" height="7.9322033" x="6.5084743" y="5.5593219" id="rect2987" style="fill:#ffffff;fill-opacity:0.94117647" />
+    <path d="m 8.865,1.52 c -0.18,-0.31 -0.51,-0.5 -0.87,-0.5 -0.36,0 -0.69,0.19 -0.87,0.5 L 0.275,13.5 c -0.18,0.31 -0.18,0.69 0,1 0.19,0.31 0.52,0.5 0.87,0.5 l 13.7,0 c 0.36,0 0.69,-0.19 0.86,-0.5 0.17,-0.31 0.18,-0.69 0.01,-1 L 8.865,1.52 z m 0.13,11.48 -2,0 0,-2 2,0 0,2 0,0 z m 0,-3 -2,0 0,-4 2,0 0,4 0,0 z" id="Shape" style="fill:#ff1100;fill-opacity:0.94117647" />
+   </g>
+  </g>
+ </g>
+</svg>

@@ -1,0 +1,111 @@
+<script>{
+		"title":
+			".resize()",
+		"excerpt":
+			"Bind an event handler to the \"resize\" JavaScript event, or trigger that event on an element.",
+		"termSlugs": {
+			"category": [
+				"events/browser-events","version/1.0","version/1.4.3"
+			]
+		}
+	}</script><article id="resize1" class="entry method"><h2 class="section-title">
+<span class="name">.resize( handler )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#jQuery">jQuery</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Bind an event handler to the &quot;resize&quot; JavaScript event, or trigger that event on an element.</p>
+<ul class="signatures">
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0/">1.0</a></span><a id="resize-handler" href="#resize-handler"><span class="icon-link"></span>.resize( handler )</a>
+</h4>
+<ul><li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Event">Event</a> eventObject )</div>
+<div>A function to execute each time the event is triggered.</div>
+</li></ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.4.3/">1.4.3</a></span><a id="resize-eventData-handler" href="#resize-eventData-handler"><span class="icon-link"></span>.resize(  [eventData ], handler )</a>
+</h4>
+<ul>
+<li>
+<div><strong>eventData</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Anything">Anything</a>
+</div>
+<div>An object containing data that will be passed to the event handler.</div>
+</li>
+<li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Event">Event</a> eventObject )</div>
+<div>A function to execute each time the event is triggered.</div>
+</li>
+</ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0/">1.0</a></span><a id="resize" href="#resize"><span class="icon-link"></span>.resize()</a>
+</h4>
+<ul><li><div class="null-signature">This signature does not accept any arguments.</div></li></ul>
+</li>
+</ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>This method is a shortcut for <code>.on(&apos;resize&apos;, handler)</code> in the first and second variations, and <code>.trigger( &quot;resize&quot; )</code> in the third.</p>
+    <p>The <code>resize</code> event is sent to the <code>window</code> element when the size of the browser window changes:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( window ).resize(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;#log&quot;</span> ).append( <span class="string">&quot;&lt;div&gt;Handler for .resize() called.&lt;/div&gt;&quot;</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>Now whenever the browser window&apos;s size is changed, the message is appended to &lt;div id=&quot;log&quot;&gt; one or more times, depending on the browser.</p>
+    <p>Code in a <code>resize</code> handler should never rely on the number of times the handler is called. Depending on implementation, <code>resize</code> events can be sent continuously as the resizing is in progress (the typical behavior in Internet Explorer and WebKit-based browsers such as Safari and Chrome), or only once at the end of the resize operation (the typical behavior in some other browsers such as Opera).</p>
+  </div>
+<h3>Additional Notes:</h3>
+<div class="longdesc"><ul><li>
+			As the <code>.resize()</code> method is just a shorthand for <code>.on( &quot;resize&quot;, handler )</code>, detaching is possible using <code>.off( &quot;resize&quot; )</code>.
+		</li></ul></div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>To see the window width while (or after) it is resized, try:</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( window ).resize(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;body&quot;</span> ).prepend( <span class="string">&quot;&lt;div&gt;&quot;</span> + $( window ).width() + <span class="string">&quot;&lt;/div&gt;&quot;</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

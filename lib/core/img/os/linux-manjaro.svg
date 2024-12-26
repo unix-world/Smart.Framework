@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="128" height="128" viewBox="0 0 128 128" id="linux-manjaro">
+	<g id="g1">
+		<g id="g2" transform="matrix(3.1747378,0,0,3.1747378,-63.069199,-108.20283)">
+			<path id="p1" d="m 47.0482,71.173 h 9.912 V 37.3063 h -9.912 z" fill="#35bf5c"/>
+			<path id="p2" d="m 35.0707,71.173 h 9.912 V 49.2835 h -9.912 z" fill="#35bf5c"/>
+			<path id="p3" d="m 0,0 v -96 h 28.002 v 67.903 H 62.048 V 0 Z" fill="#35bf5c" transform="matrix(0.35278,0,0,-0.35278,23.09,37.31)"/>
+		</g>
+	</g>
+</svg>

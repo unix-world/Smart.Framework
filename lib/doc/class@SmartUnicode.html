@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="\SmartUnicode final class \ SmartUnicode { } :: Class: SmartUnicode - provides the string util functions to work safe with Unicode (Multibyte) Strings /">
+<meta name="keywords" content="smartunicode, final, class, provides, the, string, util, functions, to, work, safe, with, unicode, multibyte, strings, characters, compatbile, utf, iso, latin, base, extended, greek, cyrillic, japanese, take, a, look, at, replacement, table, below, language, php, located, lib framework lib unicode php, package, core, namespace, name, version, v, depends, extensions, mbstring, xml, constants, smart framework charset, smart framework security filter input, hints, you, must, make, always, difference, for, what, are, goint, do, if, need, bytes, length, then, use, strlen, all, includding, instead, number, of, in, smartunicode str len, variables, know, or, just, suppose, that, usage, static, object, class method, this, only, methods, public, function, str len, ytext, int, return, integer, param, get, as">
+<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartUnicode">
+<link rel="icon" href="data:,">
+<title>PHP Documentation for: \SmartUnicode</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+		float: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3c4663;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework : PHP Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+		<ul class="menu">
+		<li><a href="index.html#Package--Core-" title="return to Index">return to Index</a></li>
+	</ul>
+	
+</nav>
+<!-- skip logo -->
+<!-- class r.20220331 -->
+<!-- Styles -->
+<!-- styles r.20220906 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located,
+.doc-version {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-frozen,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	top: 75px;
+	right: 175px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #3C4663;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Headings -->
+<h1 title="PHP class: `\SmartUnicode` @ PHP Namespace: `\`" id="Class--Summary-">
+	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\</span><span class="doc-name">SmartUnicode</span><br>
+	
+	
+	{
+	
+	}&nbsp;::
+</h1>
+<!-- Description -->
+<div class="doc-comments">Class: SmartUnicode - provides the string util functions to work safe with Unicode (Multibyte) Strings / Characters.<br>
+Compatbile with: UTF-8 (Unicode), ISO-8859-1 (latin base), ISO-8859-* (latin extended, greek, cyrillic, ...), Japanese, ...<br>
+Take a look at the replacement table below.</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/lib_unicode.php</span></li>
+		<li><span class="doc-package"><b>Package:</b> @Core</span></li>
+		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> SmartUnicode</span></li>
+		
+		<li><b>Version:</b> v.20230101</li>
+		<li><b>Depends:</b> extensions:  PHP MBString, PHP XML ; constants: SMART_FRAMEWORK_CHARSET, SMART_FRAMEWORK_SECURITY_FILTER_INPUT</li>
+		<li><b>Hints:</b> You  must make always a difference for what you are goint to do with a string. If you need bytes length, then use strlen() with all strings, includding unicode ! If you need instead the number of characters in a string, then use SmartUnicode::str_len() for all variables / strings you know (or you just suppose) that are unicode.</li>
+		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
+		
+		
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">class Methods</h2>
+</div>
+<!-- methods r.20200121 -->
+<div class="doc-container" id="Method--str_len">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>str_len</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ytext` Parameter is REQUIRED">$ytext</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} The number of characters in a string<br>
+@param: {STRING} $ytext: The string</div>
+	
+			<div class="doc-method-comments">Unicode Safe strlen()	:: Get string length as number of characters in the string, which may differ from number of bytes in a string if Unicode (Multibyte) string is used</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--sub_str">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>sub_str</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystr` Parameter is REQUIRED">$ystr</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystart` Parameter is REQUIRED">$ystart</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ylen` Parameter is OPTIONAL, with the Default Value: null">$ylen</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The sub-string<br>
+@param: {STRING} $ystr: The string<br>
+@param: {INTEGER} $ystart: The start offset<br>
+@param: {INTEGER} $ylen: OPTIONAL	:: The number of characters to use, starting from start offset</div>
+	
+			<div class="doc-method-comments">Unicode Safe substr()			:: Get part of string</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--substr_count">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>substr_count</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystr` Parameter is REQUIRED">$ystr</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ysubstr` Parameter is REQUIRED">$ysubstr</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} The number of times the piece sub-string occurs in the string being checked<br>
+@param: {STRING} $ystr: The string being checked<br>
+@param: {STRING} $ysubstr: The string to be found</div>
+	
+			<div class="doc-method-comments">Unicode Safe substr_count()	:: Count the number of substring occurrences</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--str_limit_replace">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>str_limit_replace</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$needle` Parameter is REQUIRED">$needle</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$replace` Parameter is REQUIRED">$replace</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$haystack` Parameter is REQUIRED">$haystack</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$count` Parameter is REQUIRED">$count</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The processed string with replacements if the needle is found<br>
+@param: {STRING} $needle: The sub-string being searched for<br>
+@param: {STRING} $replace: The replacement value that replaces found search values<br>
+@param: {STRING} $haystack: The string on which to make the replacements<br>
+@param: {INTEGER} $count: The number of replacements to operate</div>
+	
+			<div class="doc-method-comments">Unicode Safe str_replace() with Limit 	:: Replace a fixed (by count) number of occurrences of the search string with the replacement string</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--str_pos">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>str_pos</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystr` Parameter is REQUIRED">$ystr</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ysubstr` Parameter is REQUIRED">$ysubstr</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$offset` Parameter is OPTIONAL, with the Default Value: 0">$offset</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INTEGER
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} / FALSE		:: The numeric position of the first occurrence of piece in the string. If not found, it returns FALSE<br>
+@param: {STRING} $ystr: The string to search in<br>
+@param: {STRING} $ysubstr: The sub-string to be found<br>
+@param: {INTEGER} $offset: The search offset. If it is not specified, 0 is used</div>
+	
+			<div class="doc-method-comments">Unicode Safe strpos()		:: Find position of first occurrence of string in a string, Case Sensitive</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--str_ipos">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>str_ipos</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystr` Parameter is REQUIRED">$ystr</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ysubstr` Parameter is REQUIRED">$ysubstr</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$offset` Parameter is OPTIONAL, with the Default Value: 0">$offset</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INTEGER
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} / FALSE		:: The numeric position of the first occurrence of piece in the string. If not found, it returns FALSE<br>
+@param: {STRING} $ystr: The string to search in<br>
+@param: {STRING} $ysubstr: The sub-string to be found<br>
+@param: {INTEGER} $offset: The search offset. If it is not specified, 0 is used</div>
+	
+			<div class="doc-method-comments">Unicode Safe stripos()		:: Find position of first occurrence of string in a string, Case Insensitive</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--str_rpos">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>str_rpos</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystr` Parameter is REQUIRED">$ystr</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ysubstr` Parameter is REQUIRED">$ysubstr</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$offset` Parameter is OPTIONAL, with the Default Value: 0">$offset</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INTEGER
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} / FALSE		:: The numeric position of the last occurrence of piece in the string. If not found, it returns FALSE<br>
+@param: {STRING} $ystr: The string to search in<br>
+@param: {STRING} $ysubstr: The sub-string to be found<br>
+@param: {INTEGER} $offset: The search offset. If it is not specified, 0 is used</div>
+	
+			<div class="doc-method-comments">Unicode Safe strrpos()		:: Find position of last occurrence of string in a string, Case Sensitive</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--str_ripos">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>str_ripos</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystr` Parameter is REQUIRED">$ystr</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ysubstr` Parameter is REQUIRED">$ysubstr</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$offset` Parameter is OPTIONAL, with the Default Value: 0">$offset</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INTEGER
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} / FALSE		:: The numeric position of the last occurrence of piece in the string or FALSE if not found<br>
+@param: {STRING} $ystr: The string to search in<br>
+@param: {STRING} $ysubstr: The sub-string to be found<br>
+@param: {INTEGER} $offset: The search offset. If it is not specified, 0 is used</div>
+	
+			<div class="doc-method-comments">Unicode Safe strripos()		:: Find position of last occurrence of string in a string, Case Insensitive</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--str_str">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>str_str</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystring` Parameter is REQUIRED">$ystring</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ypart` Parameter is REQUIRED">$ypart</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ybefore_needle` Parameter is OPTIONAL, with the Default Value: false">$ybefore_needle</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} / FALSE		:: Returns the portion of string starting with first match or FALSE if not found<br>
+@param: {STRING} $ystring: The string to search in<br>
+@param: {STRING} $ypart: The sub-string to search for in the string</div>
+	
+			<div class="doc-method-comments">Unicode Safe strstr() 		:: Finds first occurrence of a string within another, Case Sensitive</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--stri_str">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stri_str</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystring` Parameter is REQUIRED">$ystring</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ypart` Parameter is REQUIRED">$ypart</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ybefore_needle` Parameter is OPTIONAL, with the Default Value: false">$ybefore_needle</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} / FALSE		:: Returns the portion of string starting with first match or FALSE if not found<br>
+@param: {STRING} $ystring: The string to search in<br>
+@param: {STRING} $ypart: The sub-string to search for in the string</div>
+	
+			<div class="doc-method-comments">Unicode Safe stristr() 		:: Finds first occurrence of a string within another, Case Insensitive</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--str_contains">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>str_contains</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystring` Parameter is REQUIRED">$ystring</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ypart` Parameter is REQUIRED">$ypart</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} Returns TRUE if found or FALSE if not found<br>
+@param: {STRING} $ystring: The string to check<br>
+@param: {STRING} $ypart: The sub-string to search for in the string</div>
+	
+			<div class="doc-method-comments">Unicode Safe 				:: Check if a string contains another, Case Sensitive</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--str_icontains">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>str_icontains</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystring` Parameter is REQUIRED">$ystring</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ypart` Parameter is REQUIRED">$ypart</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} Returns TRUE if found or FALSE if not found<br>
+@param: {STRING} $ystring: The string to check<br>
+@param: {STRING} $ypart: The sub-string to search for in the string</div>
+	
+			<div class="doc-method-comments">Unicode ~ Safe * 			:: Check if a string contains another, Case Insensitive</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--str_wordcount">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>str_wordcount</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$str` Parameter is REQUIRED">$str</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} Returns the number of words found<br>
+@param: {STRING} $str: The string to find words into</div>
+	
+			<div class="doc-method-comments">Unicode ~ Safe * 			:: Find the aproximative number of words in an unicode string</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `detect_encoding()` -->
+<div class="doc-container" id="Method--str_tolower">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>str_tolower</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystr` Parameter is REQUIRED">$ystr</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The processed string as lowercase string<br>
+@param: {STRING} $ystr: The string</div>
+	
+			<div class="doc-method-comments">Unicode Safe strtolower() 	:: Make a Unicode string lowercase</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--str_toupper">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>str_toupper</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystr` Parameter is REQUIRED">$ystr</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The processed string as uppercase string<br>
+@param: {STRING} $ystr: The string</div>
+	
+			<div class="doc-method-comments">Unicode Safe strtoupper() 	:: Make a Unicode string uppercase</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--uc_words">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>uc_words</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystr` Parameter is REQUIRED">$ystr</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The processed string as uppercase on each word<br>
+@param: {STRING} $ystr: The string</div>
+	
+			<div class="doc-method-comments">Unicode Safe ucwords() 		:: Make a Unicode string uppercase on each word<br>
+Notice: this is only partial compatible with PHP ucwords() as it makes first letter of each word Upper while force lowercase on the rest of the word letters as it complies with MB_CASE_TITLE</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--uc_first">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>uc_first</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystr` Parameter is REQUIRED">$ystr</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The processed string as uppercase of first character string<br>
+@param: {STRING} $ystr: The string</div>
+	
+			<div class="doc-method-comments">Unicode Safe ucfirst() 		:: Make a Unicode string uppercase on first character</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--convert_charset">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>convert_charset</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ystr` Parameter is REQUIRED">$ystr</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_charset_from` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_charset_from</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_charset_to` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_charset_to</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$normalize` Parameter is OPTIONAL, with the Default Value: true">$normalize</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The processed string<br>
+@param: {STRING} $ystr: The string<br>
+@param: {ENUM} $ychar_from: Empty to detect / Select one or many from the list of: class::CONVERSION_IMPLICIT_CHARSETS<br>
+@param: {ENUM} $ychar_to: Empty to use the framework internal charset defined in SMART_FRAMEWORK_CHARSET / Select one of the: UTF-8, HTML-ENTITIES or another valid charset<br>
+@param: {BOOLEAN} $normalize: Normalize (Default is TRUE) - will normalize the string into the default framework charset else the string will be incompatible with the current encoding ... ; Using this to false must be use with very much attention !!!</div>
+	
+			<div class="doc-method-comments">Convert the CharSet Encoding of a String<br>
+NOTICE: If the charset to is different than UTF-8 (unicode) if using the string in this framework it must be re-converted<br>
+NOTICE: If used to convert to HTML-ENTITIES charset this function will consume a lot of memory and may run out of memory for large strings &gt; 10% of memory_limit set in init.php</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--fix_charset">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>fix_charset</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$str` Parameter is REQUIRED">$str</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$detect` Parameter is OPTIONAL, with the Default Value: false">$detect</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The fixed string<br>
+@param: {STRING} $str: The string<br>
+@param: {BOOL} $detect: If set to TRUE will force from the same unicode ; Default is FALSE</div>
+	
+			<div class="doc-method-comments">Safe Fix the string to contain only current charset.<br>
+All the unsafe characters will be replaced by: ?<br>
+This is not necessary after SmartUnicode::convert_charset() as it will already fix it</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--utf8_enc">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>utf8_enc</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$str` Parameter is REQUIRED">$str</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The UTF-8 encoded string<br>
+@param: {STRING} $str: An ISO-8859-1 string</div>
+	
+			<div class="doc-method-comments">Converts a string from ISO-8859-1 to UTF-8<br>
+Replacement for utf8_encode() which is deprecated since PHP 8.2</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--utf8_dec">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>utf8_dec</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$str` Parameter is REQUIRED">$str</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The decoded string as ISO-8859-1 having all invalid characters replaced with ?<br>
+@param: {STRING} $str: An UTF-8 string</div>
+	
+			<div class="doc-method-comments">Converts a string from UTF-8 to ISO-8859-1, replacing invalid or unrepresentable characters with ?<br>
+Replacement for utf8_decode() which is deprecated since PHP 8.2</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--iso_to_utf8">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>iso_to_utf8</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$str` Parameter is REQUIRED">$str</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$normalize` Parameter is OPTIONAL, with the Default Value: false">$normalize</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The processed string<br>
+@param: {STRING} $str: The string<br>
+@param: {BOOLEAN} $normalize: Normalize (Default is FALSE) - will normalize the string from the default framework charset else the string will be incompatible with the current encoding ... ; Using this to true must be use with very much attention, depending by context !!!</div>
+	
+			<div class="doc-method-comments">Safe Convert Unicode ISO to UTF-8 that can be also normalized from Unicode.<br>
+It will remove all invalid characters except latin1.<br>
+NOTICE: When $normalize is set to FALSE will do exactly as utf8_enc()<br>
+When $normalize is set to TRUE will assume the string is Unicode ISO and will first decode it</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--utf8_to_iso">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>utf8_to_iso</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$str` Parameter is REQUIRED">$str</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$normalize` Parameter is OPTIONAL, with the Default Value: true">$normalize</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The processed string<br>
+@param: {STRING} $str: The string<br>
+@param: {BOOLEAN} $normalize: Normalize (Default is TRUE) - will normalize the string into the default framework charset else the string will be incompatible with the current encoding ... ; Using this to false must be use with very much attention, depending by context !!!</div>
+	
+			<div class="doc-method-comments">Safe Convert UTF-8 to ISO that can be also normalized to Unicode.<br>
+It will remove all invalid characters except latin1.<br>
+NOTICE: It converts the string back to unicode since all the strings in the framework are unicode (UTF-8) to avoid breaking the regex with \u over those strings !!!<br>
+Never use just single utf8_enc() when the framework is in UTF-8 mode, else the regex \u will fail over those strings ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--deaccent_str">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>deaccent_str</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$str` Parameter is REQUIRED">$str</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$normalize` Parameter is OPTIONAL, with the Default Value: true">$normalize</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The processed string<br>
+@param: {STRING} $str: The string<br>
+@param: {BOOLEAN} $normalize: Normalize (Default is TRUE) - will normalize the string by forcing the ISO-8859-1 character set</div>
+	
+			<div class="doc-method-comments">De-Accent a latin-based Unicode string 	:: will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccented versions into ISO-8859-1</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--html_entities">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>html_entities</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$str` Parameter is REQUIRED">$str</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$encoding` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$encoding</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$normalize` Parameter is OPTIONAL, with the Default Value: false">$normalize</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The processed string<br>
+@param: {STRING} $str: The string<br>
+@param: {ENUM} $encoding: A valid MB Encoding (Ex: UTF-8, ISO-8859-1, ...) or empty string to try detect<br>
+@param: {BOOL} $normalize: Default is FALSE ; if TRUE will normalize the conversion by forcing all ISO-8859-1 (may break some remaining UTF-8 characters)</div>
+	
+			<div class="doc-method-comments">Safe Convert the Unicode Accented Characters to Safe HTML Entities</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--word_wrap">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>word_wrap</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$str` Parameter is REQUIRED">$str</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$width` Parameter is OPTIONAL, with the Default Value: 75">$width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>75</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$break` Parameter is OPTIONAL, with the Default Value: &quot;\n&quot;">$break</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;\n&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cut` Parameter is OPTIONAL, with the Default Value: false">$cut</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$visualbreak` Parameter is OPTIONAL, with the Default Value: &quot;¬&quot;">$visualbreak</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;¬&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The processed string<br>
+@param: {STRING} $str: The string to be wrapped<br>
+@param: {INTEGER+} $width: OPTIONAL	:: The number of characters at which the string will be wrapped ; Min:1 ; Max:2048 ; Default:75<br>
+@param: {STRING} $break: OPTIONAL	:: The line is broken using the optional break parameter ; Default is: \n ; will also add the optional visual break by default '¬'<br>
+@param: {BOOLEAN} $cut: OPTIONAL	:: If the cut is set to TRUE, the string is always wrapped at or before the specified width ; When FALSE the function dose not split the word until the end of the word even if the width is smaller than the word width. Default is FALSE.<br>
+@param: {STRING} $visualbreak: OPTIONAL 	:: Visual Break String Character ; Default is '¬'</div>
+	
+			<div class="doc-method-comments">Unicode Safe wordwrap() 				:: Wraps a string to a given number of characters</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `mailsend()` -->
+<!-- Skip Internal-Priv Method: `filter_unsafe_string()` -->
+
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20200121 -->
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20200121 -->
+<div class="doc-container" id="Constant--ACCENTED_CHARS">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>ACCENTED_CHARS</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>[&quot;á&quot; =&gt; &quot;a&quot;, &quot;â&quot; =&gt; &quot;a&quot;, &quot;ã&quot; =&gt; &quot;a&quot;, &quot;ä&quot; =&gt; &quot;a&quot;, &quot;å&quot; =&gt; &quot;a&quot;, &quot;ā&quot; =&gt; &quot;a&quot;, &quot;ă&quot; =&gt; &quot;a&quot;, &quot;ą&quot; =&gt; &quot;a&quot;, &quot;Á&quot; =&gt; &quot;A&quot;, &quot;Â&quot; =&gt; &quot;A&quot;, &quot;Ã&quot; =&gt; &quot;A&quot;, &quot;Ä&quot; =&gt; &quot;A&quot;, &quot;Å&quot; =&gt; &quot;A&quot;, &quot;Ā&quot; =&gt; &quot;A&quot;, &quot;Ă&quot; =&gt; &quot;A&quot;, &quot;Ą&quot; =&gt; &quot;A&quot;, &quot;ć&quot; =&gt; &quot;c&quot;, &quot;ĉ&quot; =&gt; &quot;c&quot;, &quot;č&quot; =&gt; &quot;c&quot;, &quot;ç&quot; =&gt; &quot;c&quot;, &quot;Ć&quot; =&gt; &quot;C&quot;, &quot;Ĉ&quot; =&gt; &quot;C&quot;, &quot;Č&quot; =&gt; &quot;C&quot;, &quot;Ç&quot; =&gt; &quot;C&quot;, &quot;ď&quot; =&gt; &quot;d&quot;, &quot;Ď&quot; =&gt; &quot;D&quot;, &quot;è&quot; =&gt; &quot;e&quot;, &quot;é&quot; =&gt; &quot;e&quot;, &quot;ê&quot; =&gt; &quot;e&quot;, &quot;ë&quot; =&gt; &quot;e&quot;, &quot;ē&quot; =&gt; &quot;e&quot;, &quot;ĕ&quot; =&gt; &quot;e&quot;, &quot;ė&quot; =&gt; &quot;e&quot;, &quot;ě&quot; =&gt; &quot;e&quot;, &quot;ę&quot; =&gt; &quot;e&quot;, &quot;È&quot; =&gt; &quot;E&quot;, &quot;É&quot; =&gt; &quot;E&quot;, &quot;Ê&quot; =&gt; &quot;E&quot;, &quot;Ë&quot; =&gt; &quot;E&quot;, &quot;Ē&quot; =&gt; &quot;E&quot;, &quot;Ĕ&quot; =&gt; &quot;E&quot;, &quot;Ė&quot; =&gt; &quot;E&quot;, &quot;Ě&quot; =&gt; &quot;E&quot;, &quot;Ę&quot; =&gt; &quot;E&quot;, &quot;ĝ&quot; =&gt; &quot;g&quot;, &quot;ģ&quot; =&gt; &quot;g&quot;, &quot;Ĝ&quot; =&gt; &quot;G&quot;, &quot;Ģ&quot; =&gt; &quot;G&quot;, &quot;ĥ&quot; =&gt; &quot;h&quot;, &quot;ħ&quot; =&gt; &quot;h&quot;, &quot;Ĥ&quot; =&gt; &quot;H&quot;, &quot;Ħ&quot; =&gt; &quot;H&quot;, &quot;ì&quot; =&gt; &quot;i&quot;, &quot;í&quot; =&gt; &quot;i&quot;, &quot;î&quot; =&gt; &quot;i&quot;, &quot;ï&quot; =&gt; &quot;i&quot;, &quot;ĩ&quot; =&gt; &quot;i&quot;, &quot;ī&quot; =&gt; &quot;i&quot;, &quot;ĭ&quot; =&gt; &quot;i&quot;, &quot;ȉ&quot; =&gt; &quot;i&quot;, &quot;ȋ&quot; =&gt; &quot;i&quot;, &quot;į&quot; =&gt; &quot;i&quot;, &quot;Ì&quot; =&gt; &quot;I&quot;, &quot;Í&quot; =&gt; &quot;I&quot;, &quot;Î&quot; =&gt; &quot;I&quot;, &quot;Ï&quot; =&gt; &quot;I&quot;, &quot;Ĩ&quot; =&gt; &quot;I&quot;, &quot;Ī&quot; =&gt; &quot;I&quot;, &quot;Ĭ&quot; =&gt; &quot;I&quot;, &quot;Ȉ&quot; =&gt; &quot;I&quot;, &quot;Ȋ&quot; =&gt; &quot;I&quot;, &quot;Į&quot; =&gt; &quot;I&quot;, &quot;ĳ&quot; =&gt; &quot;j&quot;, &quot;ĵ&quot; =&gt; &quot;j&quot;, &quot;Ĳ&quot; =&gt; &quot;J&quot;, &quot;Ĵ&quot; =&gt; &quot;J&quot;, &quot;ķ&quot; =&gt; &quot;k&quot;, &quot;Ķ&quot; =&gt; &quot;K&quot;, &quot;ĺ&quot; =&gt; &quot;l&quot;, &quot;ļ&quot; =&gt; &quot;l&quot;, &quot;ľ&quot; =&gt; &quot;l&quot;, &quot;ł&quot; =&gt; &quot;l&quot;, &quot;Ĺ&quot; =&gt; &quot;L&quot;, &quot;Ļ&quot; =&gt; &quot;L&quot;, &quot;Ľ&quot; =&gt; &quot;L&quot;, &quot;Ł&quot; =&gt; &quot;L&quot;, &quot;ñ&quot; =&gt; &quot;n&quot;, &quot;ń&quot; =&gt; &quot;n&quot;, &quot;ņ&quot; =&gt; &quot;n&quot;, &quot;ň&quot; =&gt; &quot;n&quot;, &quot;Ñ&quot; =&gt; &quot;N&quot;, &quot;Ń&quot; =&gt; &quot;N&quot;, &quot;Ņ&quot; =&gt; &quot;N&quot;, &quot;Ň&quot; =&gt; &quot;N&quot;, &quot;ò&quot; =&gt; &quot;o&quot;, &quot;ó&quot; =&gt; &quot;o&quot;, &quot;ô&quot; =&gt; &quot;o&quot;, &quot;õ&quot; =&gt; &quot;o&quot;, &quot;ö&quot; =&gt; &quot;o&quot;, &quot;ō&quot; =&gt; &quot;o&quot;, &quot;ŏ&quot; =&gt; &quot;o&quot;, &quot;ő&quot; =&gt; &quot;o&quot;, &quot;ø&quot; =&gt; &quot;o&quot;, &quot;œ&quot; =&gt; &quot;o&quot;, &quot;Ò&quot; =&gt; &quot;O&quot;, &quot;Ó&quot; =&gt; &quot;O&quot;, &quot;Ô&quot; =&gt; &quot;O&quot;, &quot;Õ&quot; =&gt; &quot;O&quot;, &quot;Ö&quot; =&gt; &quot;O&quot;, &quot;Ō&quot; =&gt; &quot;O&quot;, &quot;Ŏ&quot; =&gt; &quot;O&quot;, &quot;Ő&quot; =&gt; &quot;O&quot;, &quot;Ø&quot; =&gt; &quot;O&quot;, &quot;Œ&quot; =&gt; &quot;O&quot;, &quot;ŕ&quot; =&gt; &quot;r&quot;, &quot;ŗ&quot; =&gt; &quot;r&quot;, &quot;ř&quot; =&gt; &quot;r&quot;, &quot;Ŕ&quot; =&gt; &quot;R&quot;, &quot;Ŗ&quot; =&gt; &quot;R&quot;, &quot;Ř&quot; =&gt; &quot;R&quot;, &quot;ș&quot; =&gt; &quot;s&quot;, &quot;ş&quot; =&gt; &quot;s&quot;, &quot;š&quot; =&gt; &quot;s&quot;, &quot;ś&quot; =&gt; &quot;s&quot;, &quot;ŝ&quot; =&gt; &quot;s&quot;, &quot;ß&quot; =&gt; &quot;ss&quot;, &quot;Ș&quot; =&gt; &quot;S&quot;, &quot;Ş&quot; =&gt; &quot;S&quot;, &quot;Š&quot; =&gt; &quot;S&quot;, &quot;Ś&quot; =&gt; &quot;S&quot;, &quot;Ŝ&quot; =&gt; &quot;S&quot;, &quot;ț&quot; =&gt; &quot;t&quot;, &quot;ţ&quot; =&gt; &quot;t&quot;, &quot;ť&quot; =&gt; &quot;t&quot;, &quot;Ț&quot; =&gt; &quot;T&quot;, &quot;Ţ&quot; =&gt; &quot;T&quot;, &quot;Ť&quot; =&gt; &quot;T&quot;, &quot;ù&quot; =&gt; &quot;u&quot;, &quot;ú&quot; =&gt; &quot;u&quot;, &quot;û&quot; =&gt; &quot;u&quot;, &quot;ü&quot; =&gt; &quot;u&quot;, &quot;ũ&quot; =&gt; &quot;u&quot;, &quot;ū&quot; =&gt; &quot;u&quot;, &quot;ŭ&quot; =&gt; &quot;u&quot;, &quot;ů&quot; =&gt; &quot;u&quot;, &quot;ű&quot; =&gt; &quot;u&quot;, &quot;ų&quot; =&gt; &quot;u&quot;, &quot;Ù&quot; =&gt; &quot;U&quot;, &quot;Ú&quot; =&gt; &quot;U&quot;, &quot;Û&quot; =&gt; &quot;U&quot;, &quot;Ü&quot; =&gt; &quot;U&quot;, &quot;Ũ&quot; =&gt; &quot;U&quot;, &quot;Ū&quot; =&gt; &quot;U&quot;, &quot;Ŭ&quot; =&gt; &quot;U&quot;, &quot;Ů&quot; =&gt; &quot;U&quot;, &quot;Ű&quot; =&gt; &quot;U&quot;, &quot;Ų&quot; =&gt; &quot;U&quot;, &quot;ŵ&quot; =&gt; &quot;w&quot;, &quot;Ŵ&quot; =&gt; &quot;W&quot;, &quot;ẏ&quot; =&gt; &quot;y&quot;, &quot;ỳ&quot; =&gt; &quot;y&quot;, &quot;ŷ&quot; =&gt; &quot;y&quot;, &quot;ÿ&quot; =&gt; &quot;y&quot;, &quot;ý&quot; =&gt; &quot;y&quot;, &quot;Ẏ&quot; =&gt; &quot;Y&quot;, &quot;Ỳ&quot; =&gt; &quot;Y&quot;, &quot;Ŷ&quot; =&gt; &quot;Y&quot;, &quot;Ÿ&quot; =&gt; &quot;Y&quot;, &quot;Ý&quot; =&gt; &quot;Y&quot;, &quot;ź&quot; =&gt; &quot;z&quot;, &quot;ż&quot; =&gt; &quot;z&quot;, &quot;ž&quot; =&gt; &quot;z&quot;, &quot;Ź&quot; =&gt; &quot;Z&quot;, &quot;Ż&quot; =&gt; &quot;Z&quot;, &quot;Ž&quot; =&gt; &quot;Z&quot;]</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--ACCENTED_HTML_ENTITIES">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>ACCENTED_HTML_ENTITIES</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>[&quot;á&quot; =&gt; &quot;&amp;#225;&quot;, &quot;â&quot; =&gt; &quot;&amp;#226;&quot;, &quot;ã&quot; =&gt; &quot;&amp;#227;&quot;, &quot;ä&quot; =&gt; &quot;&amp;#228;&quot;, &quot;å&quot; =&gt; &quot;&amp;#229;&quot;, &quot;ā&quot; =&gt; &quot;&amp;#257;&quot;, &quot;ă&quot; =&gt; &quot;&amp;#259;&quot;, &quot;ą&quot; =&gt; &quot;&amp;#261;&quot;, &quot;Á&quot; =&gt; &quot;&amp;#193;&quot;, &quot;Â&quot; =&gt; &quot;&amp;#194;&quot;, &quot;Ã&quot; =&gt; &quot;&amp;#195;&quot;, &quot;Ä&quot; =&gt; &quot;&amp;#196;&quot;, &quot;Å&quot; =&gt; &quot;&amp;#197;&quot;, &quot;Ā&quot; =&gt; &quot;&amp;#256;&quot;, &quot;Ă&quot; =&gt; &quot;&amp;#258;&quot;, &quot;Ą&quot; =&gt; &quot;&amp;#260;&quot;, &quot;ć&quot; =&gt; &quot;&amp;#263;&quot;, &quot;ĉ&quot; =&gt; &quot;&amp;#265;&quot;, &quot;č&quot; =&gt; &quot;&amp;#269;&quot;, &quot;ç&quot; =&gt; &quot;&amp;#231;&quot;, &quot;Ć&quot; =&gt; &quot;&amp;#262;&quot;, &quot;Ĉ&quot; =&gt; &quot;&amp;#264;&quot;, &quot;Č&quot; =&gt; &quot;&amp;#268;&quot;, &quot;Ç&quot; =&gt; &quot;&amp;#199;&quot;, &quot;ď&quot; =&gt; &quot;&amp;#271;&quot;, &quot;Ď&quot; =&gt; &quot;&amp;#270;&quot;, &quot;è&quot; =&gt; &quot;&amp;#232;&quot;, &quot;é&quot; =&gt; &quot;&amp;#233;&quot;, &quot;ê&quot; =&gt; &quot;&amp;#234;&quot;, &quot;ë&quot; =&gt; &quot;&amp;#235;&quot;, &quot;ē&quot; =&gt; &quot;&amp;#275;&quot;, &quot;ĕ&quot; =&gt; &quot;&amp;#277;&quot;, &quot;ė&quot; =&gt; &quot;&amp;#279;&quot;, &quot;ě&quot; =&gt; &quot;&amp;#283;&quot;, &quot;ę&quot; =&gt; &quot;&amp;#281;&quot;, &quot;È&quot; =&gt; &quot;&amp;#200;&quot;, &quot;É&quot; =&gt; &quot;&amp;#201;&quot;, &quot;Ê&quot; =&gt; &quot;&amp;#202;&quot;, &quot;Ë&quot; =&gt; &quot;&amp;#203;&quot;, &quot;Ē&quot; =&gt; &quot;&amp;#274;&quot;, &quot;Ĕ&quot; =&gt; &quot;&amp;#276;&quot;, &quot;Ė&quot; =&gt; &quot;&amp;#278;&quot;, &quot;Ě&quot; =&gt; &quot;&amp;#282;&quot;, &quot;Ę&quot; =&gt; &quot;&amp;#280;&quot;, &quot;ĝ&quot; =&gt; &quot;&amp;#285;&quot;, &quot;ģ&quot; =&gt; &quot;&amp;#291;&quot;, &quot;Ĝ&quot; =&gt; &quot;&amp;#284;&quot;, &quot;Ģ&quot; =&gt; &quot;&amp;#290;&quot;, &quot;ĥ&quot; =&gt; &quot;&amp;#293;&quot;, &quot;ħ&quot; =&gt; &quot;&amp;#295;&quot;, &quot;Ĥ&quot; =&gt; &quot;&amp;#292;&quot;, &quot;Ħ&quot; =&gt; &quot;&amp;#294;&quot;, &quot;ì&quot; =&gt; &quot;&amp;#236;&quot;, &quot;í&quot; =&gt; &quot;&amp;#237;&quot;, &quot;î&quot; =&gt; &quot;&amp;#238;&quot;, &quot;ï&quot; =&gt; &quot;&amp;#239;&quot;, &quot;ĩ&quot; =&gt; &quot;&amp;#297;&quot;, &quot;ī&quot; =&gt; &quot;&amp;#299;&quot;, &quot;ĭ&quot; =&gt; &quot;&amp;#301;&quot;, &quot;ȉ&quot; =&gt; &quot;&amp;#521;&quot;, &quot;ȋ&quot; =&gt; &quot;&amp;#523;&quot;, &quot;į&quot; =&gt; &quot;&amp;#303;&quot;, &quot;Ì&quot; =&gt; &quot;&amp;#204;&quot;, &quot;Í&quot; =&gt; &quot;&amp;#205;&quot;, &quot;Î&quot; =&gt; &quot;&amp;#206;&quot;, &quot;Ï&quot; =&gt; &quot;&amp;#207;&quot;, &quot;Ĩ&quot; =&gt; &quot;&amp;#296;&quot;, &quot;Ī&quot; =&gt; &quot;&amp;#298;&quot;, &quot;Ĭ&quot; =&gt; &quot;&amp;#300;&quot;, &quot;Ȉ&quot; =&gt; &quot;&amp;#520;&quot;, &quot;Ȋ&quot; =&gt; &quot;&amp;#522;&quot;, &quot;Į&quot; =&gt; &quot;&amp;#302;&quot;, &quot;ĳ&quot; =&gt; &quot;&amp;#307;&quot;, &quot;ĵ&quot; =&gt; &quot;&amp;#309;&quot;, &quot;Ĳ&quot; =&gt; &quot;&amp;#306;&quot;, &quot;Ĵ&quot; =&gt; &quot;&amp;#308;&quot;, &quot;ķ&quot; =&gt; &quot;&amp;#311;&quot;, &quot;Ķ&quot; =&gt; &quot;&amp;#310;&quot;, &quot;ĺ&quot; =&gt; &quot;&amp;#314;&quot;, &quot;ļ&quot; =&gt; &quot;&amp;#316;&quot;, &quot;ľ&quot; =&gt; &quot;&amp;#318;&quot;, &quot;ł&quot; =&gt; &quot;&amp;#322;&quot;, &quot;Ĺ&quot; =&gt; &quot;&amp;#313;&quot;, &quot;Ļ&quot; =&gt; &quot;&amp;#315;&quot;, &quot;Ľ&quot; =&gt; &quot;&amp;#317;&quot;, &quot;Ł&quot; =&gt; &quot;&amp;#321;&quot;, &quot;ñ&quot; =&gt; &quot;&amp;#241;&quot;, &quot;ń&quot; =&gt; &quot;&amp;#324;&quot;, &quot;ņ&quot; =&gt; &quot;&amp;#326;&quot;, &quot;ň&quot; =&gt; &quot;&amp;#328;&quot;, &quot;Ñ&quot; =&gt; &quot;&amp;#209;&quot;, &quot;Ń&quot; =&gt; &quot;&amp;#323;&quot;, &quot;Ņ&quot; =&gt; &quot;&amp;#325;&quot;, &quot;Ň&quot; =&gt; &quot;&amp;#327;&quot;, &quot;ò&quot; =&gt; &quot;&amp;#242;&quot;, &quot;ó&quot; =&gt; &quot;&amp;#243;&quot;, &quot;ô&quot; =&gt; &quot;&amp;#244;&quot;, &quot;õ&quot; =&gt; &quot;&amp;#245;&quot;, &quot;ö&quot; =&gt; &quot;&amp;#246;&quot;, &quot;ō&quot; =&gt; &quot;&amp;#333;&quot;, &quot;ŏ&quot; =&gt; &quot;&amp;#335;&quot;, &quot;ő&quot; =&gt; &quot;&amp;#337;&quot;, &quot;ø&quot; =&gt; &quot;&amp;#248;&quot;, &quot;œ&quot; =&gt; &quot;&amp;#339;&quot;, &quot;Ò&quot; =&gt; &quot;&amp;#210;&quot;, &quot;Ó&quot; =&gt; &quot;&amp;#211;&quot;, &quot;Ô&quot; =&gt; &quot;&amp;#212;&quot;, &quot;Õ&quot; =&gt; &quot;&amp;#213;&quot;, &quot;Ö&quot; =&gt; &quot;&amp;#214;&quot;, &quot;Ō&quot; =&gt; &quot;&amp;#332;&quot;, &quot;Ŏ&quot; =&gt; &quot;&amp;#334;&quot;, &quot;Ő&quot; =&gt; &quot;&amp;#336;&quot;, &quot;Ø&quot; =&gt; &quot;&amp;#216;&quot;, &quot;Œ&quot; =&gt; &quot;&amp;#338;&quot;, &quot;ŕ&quot; =&gt; &quot;&amp;#341;&quot;, &quot;ŗ&quot; =&gt; &quot;&amp;#343;&quot;, &quot;ř&quot; =&gt; &quot;&amp;#345;&quot;, &quot;Ŕ&quot; =&gt; &quot;&amp;#340;&quot;, &quot;Ŗ&quot; =&gt; &quot;&amp;#342;&quot;, &quot;Ř&quot; =&gt; &quot;&amp;#344;&quot;, &quot;ș&quot; =&gt; &quot;&amp;#537;&quot;, &quot;ş&quot; =&gt; &quot;&amp;#351;&quot;, &quot;š&quot; =&gt; &quot;&amp;#353;&quot;, &quot;ś&quot; =&gt; &quot;&amp;#347;&quot;, &quot;ŝ&quot; =&gt; &quot;&amp;#349;&quot;, &quot;ß&quot; =&gt; &quot;&amp;#223;&quot;, &quot;Ș&quot; =&gt; &quot;&amp;#536;&quot;, &quot;Ş&quot; =&gt; &quot;&amp;#350;&quot;, &quot;Š&quot; =&gt; &quot;&amp;#352;&quot;, &quot;Ś&quot; =&gt; &quot;&amp;#346;&quot;, &quot;Ŝ&quot; =&gt; &quot;&amp;#348;&quot;, &quot;ț&quot; =&gt; &quot;&amp;#539;&quot;, &quot;ţ&quot; =&gt; &quot;&amp;#355;&quot;, &quot;ť&quot; =&gt; &quot;&amp;#357;&quot;, &quot;Ț&quot; =&gt; &quot;&amp;#538;&quot;, &quot;Ţ&quot; =&gt; &quot;&amp;#354;&quot;, &quot;Ť&quot; =&gt; &quot;&amp;#356;&quot;, &quot;ù&quot; =&gt; &quot;&amp;#249;&quot;, &quot;ú&quot; =&gt; &quot;&amp;#250;&quot;, &quot;û&quot; =&gt; &quot;&amp;#251;&quot;, &quot;ü&quot; =&gt; &quot;&amp;#252;&quot;, &quot;ũ&quot; =&gt; &quot;&amp;#361;&quot;, &quot;ū&quot; =&gt; &quot;&amp;#363;&quot;, &quot;ŭ&quot; =&gt; &quot;&amp;#365;&quot;, &quot;ů&quot; =&gt; &quot;&amp;#367;&quot;, &quot;ű&quot; =&gt; &quot;&amp;#369;&quot;, &quot;ų&quot; =&gt; &quot;&amp;#371;&quot;, &quot;Ù&quot; =&gt; &quot;&amp;#217;&quot;, &quot;Ú&quot; =&gt; &quot;&amp;#218;&quot;, &quot;Û&quot; =&gt; &quot;&amp;#219;&quot;, &quot;Ü&quot; =&gt; &quot;&amp;#220;&quot;, &quot;Ũ&quot; =&gt; &quot;&amp;#360;&quot;, &quot;Ū&quot; =&gt; &quot;&amp;#362;&quot;, &quot;Ŭ&quot; =&gt; &quot;&amp;#364;&quot;, &quot;Ů&quot; =&gt; &quot;&amp;#366;&quot;, &quot;Ű&quot; =&gt; &quot;&amp;#368;&quot;, &quot;Ų&quot; =&gt; &quot;&amp;#370;&quot;, &quot;ŵ&quot; =&gt; &quot;&amp;#373;&quot;, &quot;Ŵ&quot; =&gt; &quot;&amp;#372;&quot;, &quot;ẏ&quot; =&gt; &quot;&amp;#7823;&quot;, &quot;ỳ&quot; =&gt; &quot;&amp;#7923;&quot;, &quot;ŷ&quot; =&gt; &quot;&amp;#375;&quot;, &quot;ÿ&quot; =&gt; &quot;&amp;#255;&quot;, &quot;ý&quot; =&gt; &quot;&amp;#253;&quot;, &quot;Ẏ&quot; =&gt; &quot;&amp;#7822;&quot;, &quot;Ỳ&quot; =&gt; &quot;&amp;#7922;&quot;, &quot;Ŷ&quot; =&gt; &quot;&amp;#374;&quot;, &quot;Ÿ&quot; =&gt; &quot;&amp;#376;&quot;, &quot;Ý&quot; =&gt; &quot;&amp;#221;&quot;, &quot;ź&quot; =&gt; &quot;&amp;#378;&quot;, &quot;ż&quot; =&gt; &quot;&amp;#380;&quot;, &quot;ž&quot; =&gt; &quot;&amp;#382;&quot;, &quot;Ź&quot; =&gt; &quot;&amp;#377;&quot;, &quot;Ż&quot; =&gt; &quot;&amp;#379;&quot;, &quot;Ž&quot; =&gt; &quot;&amp;#381;&quot;]</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+
+<!-- Sample Code -->
+<br>
+<div class="doc-container" id="SAMPLE--Code-">
+	<h2 class="doc-header">Sample code: PHP</h2>
+</div>
+<div class="doc-code">
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+</span><span style="color: #999999">// Usage example:
+ </span><span style="color: #FFFFFF">SmartUnicode</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);
+
+  </span><span style="color: #999999">//-----------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------------
+  // SAFE / MultiByte functions Reference with Replacements (Smart.Framework UTF-8)
+  // MORE INFO AT: http://www.phpwact.org/php/i18n/utf-8
+  //-----------------------------------------------------------------------------------------------------
+  // FUNCTION NAME                BETTER / SAFER REPLACEMENT              STATUS      NOTICE
+  //-----------------------------------------------------------------------------------------------------
+  //--
+  //(int)                         Smart::format_number_int()              [ok]        The replacement function have a second parameter to allow also unsigned integers
+  //number_format()               Smart::format_number_dec()              [ok]        It is easier to use and rely on framework
+  //htmlspecialchars()            Smart::escape_html()                    [ok]        The replacement function will take in count if unicode strings or not are used
+  //--
+  //mail()                        SmartUnicode::mailsend()                [ok]        The PHP mail() is not unicode safe
+  //--
+  //split() / str_split()         explode()                               [ok]        Use the explode() function ; avoid to use split() or str_split() because they are not binary safe an can break unicode strings
+  //join()                        implode()                               [ok]        The join() is deprecated and alias to implode()
+  //substr_replace()              str_replace()                           [ok]        It is not certified to be safe 100% with unicode strings ; try to use the the replacement function
+  //str_ireplace()                * str_ireplace()                        [ok!]       Will fail if try to replace unicode accented characters if case differs (lower vs. upper)
+  //--
+  //substr_count()                SmartUnicode::substr_count()            [ok]        the PHP substr_count() is not unicode safe
+  //strlen()                      SmartUnicode::str_len() / strlen()      [ok!]       the PHP strlen() is not unicode safe ; but for counting bytes in a string use always the strlen() ; for counting characters in a string always use SmartUnicode::str_len() in an unicode environment
+  //substr()                      SmartUnicode::sub_str()                 [ok]        the PHP substr() is not unicode safe
+  //--
+  //strstr()                      SmartUnicode::str_str()                 [ok]        the PHP strstr() is not unicode safe
+  //stristr()                     SmartUnicode::stri_str()                [ok]        the PHP stristr() is not unicode safe
+  //--
+  //strpos()                      SmartUnicode::str_pos()                 [ok]        the PHP strpos() is not unicode safe
+  //stripos()                     SmartUnicode::str_ipos()                [ok]        the PHP stripos() is not unicode safe
+  //strrpos()                     SmartUnicode::str_rpos()                [ok]        the PHP strrpos() is not unicode safe
+  //strripos()                    SmartUnicode::str_ripos()               [ok]        the PHP strripos() is not unicode safe
+  //--
+  //strtolower()                  SmartUnicode::str_tolower()             [ok]        the PHP strtolower() is not unicode safe and will not make lower case the accented characters
+  //strtoupper()                  SmartUnicode::str_toupper()             [ok]        the PHP strtoupper() is not unicode safe and will not make upper case the accented characters
+  //--
+  //utf8_decode()                 SmartUnicode::utf8_to_iso()             [ok]        it may break strings that are used in unicode environments thus the strings need to be re-encoded ; if not re-encoded back to unicode the regex \u will fail in strange modes ...
+  //utf8_encode()                 SmartUnicode::iso_to_utf8()             [!!]        there is a risk to double encode the string and break it if is not ISO ; use just for ISO strings !!
+  //wordwrap()                    SmartUnicode::word_wrap()               [ok]        the PHP wordwrap() is not unicode safe
+  //strip_tags()                  Smart::stripTags()                      [ok+]       the PHP strip_tags() will not replace some extra things like &amp;nbsp; and much other html entities
+  //--
+  //printf()                      * printf()                              [!+]        Will not take care of real multibyte string length and may return unexpected results
+  //sprintf()                     * sprintf()                             [!+]        Will not take care of real multibyte string length and may return unexpected results
+  //vsprintf()                    * vsprintf()                            [!+]        Will not take care of real multibyte string length and may return unexpected results
+  //strcasecmp()                  * strcasecmp()                          [!+]        Will not take care of real multibyte string length and may return unexpected results
+  //strcspn()                     * strcspn()                             [!+]        Will not take care of real multibyte string length and may return unexpected results
+  //strspn()                      * strspn()                              [!+]        Will not take care of real multibyte string length and may return unexpected results
+  //--
+  //strtr()                                                               [!!]        Use only with non-unicode characters, will break the unicode strings if unicode characters are multibyte
+  //strrev()                                                              [!!]        Use only with non-unicode characters, will break the unicode strings if unicode characters are multibyte
+  //--
+  //chunk_split()                 -                                       [!!-]       This really breaks unicode strings ... Use only with non-unicode characters, will break the unicode strings if unicode characters are multibyte
+  //--
+  //-----------------------------------------------------------------------------------------------------
+  //---------------   DEPRECATED Functions, AVOID TO USE THEM ...         ---------------
+  //---------------   They are not binary safe and will be OFF since PHP7 ---------------
+  // Replacement hint: ereg("^(5|6)$", 'some value') [=] preg_match("/^(5|6)$/", 'some value')
+  //-----------------------------------------------------------------------------------------------------
+  //ereg()                        preg_match*()                           [ok]        Will work after regex pattern conversion ; If String is unicode, then using \u regex modifier is required
+  //eregi()                       preg_match*()                           [ok]        Will work after regex pattern conversion ; If String is unicode, then using \u regex modifier is required
+  //ereg_replace()                preg_replace*()                         [ok]        Will work after regex pattern conversion ; If String is unicode, then using \u regex modifier is required
+  //eregi_replace()               preg_replace*()                         [ok]        Will work after regex pattern conversion ; If String is unicode, then using \u regex modifier is required
+  //-----------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------------
+
+// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+</div>
+<!-- Summary List -->
+<br>
+<!-- summary r.20210420 -->
+<script>
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* PHP Class \SmartUnicode # Documentation Index *</option>
+		<optgroup label="Class \SmartUnicode">
+			<option value="Class--Summary-">Class definition</option>
+		</optgroup>
+		<optgroup label="Class Methods">
+			<option value="Methods--Summary-">Methods list</option>
+						<option value="Method--str_len"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;str_len()</option>
+			
+			
+						<option value="Method--sub_str"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;sub_str()</option>
+			
+			
+						<option value="Method--substr_count"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;substr_count()</option>
+			
+			
+						<option value="Method--str_limit_replace"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;str_limit_replace()</option>
+			
+			
+						<option value="Method--str_pos"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;str_pos()</option>
+			
+			
+						<option value="Method--str_ipos"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;str_ipos()</option>
+			
+			
+						<option value="Method--str_rpos"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;str_rpos()</option>
+			
+			
+						<option value="Method--str_ripos"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;str_ripos()</option>
+			
+			
+						<option value="Method--str_str"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;str_str()</option>
+			
+			
+						<option value="Method--stri_str"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stri_str()</option>
+			
+			
+						<option value="Method--str_contains"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;str_contains()</option>
+			
+			
+						<option value="Method--str_icontains"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;str_icontains()</option>
+			
+			
+						<option value="Method--str_wordcount"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;str_wordcount()</option>
+			
+			
+			
+			
+						<option value="Method--str_tolower"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;str_tolower()</option>
+			
+			
+						<option value="Method--str_toupper"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;str_toupper()</option>
+			
+			
+						<option value="Method--uc_words"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;uc_words()</option>
+			
+			
+						<option value="Method--uc_first"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;uc_first()</option>
+			
+			
+						<option value="Method--convert_charset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;convert_charset()</option>
+			
+			
+						<option value="Method--fix_charset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;fix_charset()</option>
+			
+			
+						<option value="Method--utf8_enc"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;utf8_enc()</option>
+			
+			
+						<option value="Method--utf8_dec"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;utf8_dec()</option>
+			
+			
+						<option value="Method--iso_to_utf8"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;iso_to_utf8()</option>
+			
+			
+						<option value="Method--utf8_to_iso"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;utf8_to_iso()</option>
+			
+			
+						<option value="Method--deaccent_str"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;deaccent_str()</option>
+			
+			
+						<option value="Method--html_entities"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;html_entities()</option>
+			
+			
+						<option value="Method--word_wrap"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;word_wrap()</option>
+			
+			
+			
+			
+			
+			
+			
+		</optgroup>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+						<option value="Constant--ACCENTED_CHARS">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;ACCENTED_CHARS</option>
+			
+						<option value="Constant--ACCENTED_HTML_ENTITIES">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;ACCENTED_HTML_ENTITIES</option>
+			
+			
+		</optgroup>
+				<optgroup label="Class Sample usage">
+			<option value="SAMPLE--Code-">Sample code</option>
+		</optgroup>
+		
+	</select>
+</div>
+<!-- summary-selectjs r.20210420 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:44 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div><center>
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
+</center></div>
+</body>
+</html>

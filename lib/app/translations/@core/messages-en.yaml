@@ -1,0 +1,13 @@
+# Language File: EN / CORE / Messages :: r.8.7 / smart.framework.v.8.7
+TRANSLATIONS:
+  @language: EN
+  @area: core
+  @version: 2021-05-26
+  messages:
+    lang: 'Language'
+    yes: 'Yes'
+    no: 'No'
+    ok: 'OK'
+    cancel: 'Cancel'
+    warn_undone: 'WARNING: This Action Cannot Be Undone !'
+#END

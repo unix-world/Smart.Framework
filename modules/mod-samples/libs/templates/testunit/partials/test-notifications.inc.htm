@@ -1,0 +1,66 @@
+<!-- Partial Template: TestUnit.Partials.Notifications -->
+	<style type="text/css">
+	#notifications_FluidTable {
+		width: 100%;
+	}
+	#notifications_FluidTable div.ux-fluid-tbl-cell {
+		padding: 3px;
+		width: 50% !important;
+	}
+	@media all and (max-width:767px) {
+		#notifications_FluidTable {
+			width: 100% !important;
+		}
+		#notifications_FluidTable div.ux-fluid-tbl-row {
+			display: block !important;
+		}
+		#notifications_FluidTable div.ux-fluid-tbl-cell {
+			display: inline-block !important;
+			width: 100% !important;
+		}
+	}
+	</style>
+	<div class="operation_display">This is a display (default, no icon)</div>
+	<div id="notifications_FluidTable" class="ux-fluid-table">
+		<div class="ux-fluid-tbl-row">
+			<div class="ux-fluid-tbl-cell">
+				<div class="operation_result">This is a Result</div>
+			</div>
+			<div class="ux-fluid-tbl-cell">
+				<div id="operation_hint">This is a Hint</div>
+			</div>
+		</div>
+		<div class="ux-fluid-tbl-row">
+			<div class="ux-fluid-tbl-cell">
+				<div id="operation_display" class="icon">This is a display (icon explicit set)</div>
+			</div>
+			<div class="ux-fluid-tbl-cell">
+				<div id="operation_important">This is Important</div>
+			</div>
+		</div>
+		<div class="ux-fluid-tbl-row">
+			<div class="ux-fluid-tbl-cell">
+				<div id="operation_success">This is a Success</div>
+			</div>
+			<div class="ux-fluid-tbl-cell">
+				<div id="operation_info">This is an Info</div>
+			</div>
+		</div>
+		<div class="ux-fluid-tbl-row">
+			<div class="ux-fluid-tbl-cell">
+				<div id="operation_warn">This is a Warning</div>
+			</div>
+			<div class="ux-fluid-tbl-cell">
+				<div id="operation_notice">This is a Notice</div>
+			</div>
+		</div>
+		<div class="ux-fluid-tbl-row">
+			<div class="ux-fluid-tbl-cell">
+				<div id="operation_error">This is an Error</div>
+			</div>
+			<div class="ux-fluid-tbl-cell">
+				<div id="operation_question">This is a Question</div>
+			</div>
+		</div>
+	</div>
+<!-- #END# Partial Template: TestUnit.Partials.Notifications -->

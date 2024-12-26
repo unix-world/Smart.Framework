@@ -1,0 +1,428 @@
+<!-- Partial Template: TestUnit.Partials.CryptoTest r.20231203 -->
+<style>
+div.crypto-test-results {
+	white-space: nowrap !important;
+}
+div.crypto-test-results,
+div.crypto-test-results * {
+	font-size: 0.8125rem !important;
+}
+</style>
+<div id="qunit-test-result"></div>
+<h2>PHP Cryptography Tests [ [###EXE-TIME|html###] ] :</h2>
+<div class="crypto-test-results">
+Unicode@String:&nbsp;<span id="unicode-string" style="color:#FF5500;">[###UNICODE-TEXT|html###]</span><br>
+Escaped@JS:&nbsp;<span id="jsescaped-string" style="color:#778899;">[###JS-ESCAPED|html###]</span><br>
+SHA3-512&nbsp;(hex):&nbsp;<span id="sha3-512-hash-hex" style="color:#888888;">[###HASH-SHA3-512-HEX|html###]</span><br>
+SHA3-512&nbsp;(b64):&nbsp;<span id="sha3-512-hash-b64" style="color:#888888;">[###HASH-SHA3-512-B64|html###]</span><br>
+SHA3-384&nbsp;(hex):&nbsp;<span id="sha3-384-hash-hex" style="color:#888888;">[###HASH-SHA3-384-HEX|html###]</span><br>
+SHA3-384&nbsp;(b64):&nbsp;<span id="sha3-384-hash-b64" style="color:#888888;">[###HASH-SHA3-384-B64|html###]</span><br>
+SHA3-256&nbsp;(hex):&nbsp;<span id="sha3-256-hash-hex" style="color:#888888;">[###HASH-SHA3-256-HEX|html###]</span><br>
+SHA3-256&nbsp;(b64):&nbsp;<span id="sha3-256-hash-b64" style="color:#888888;">[###HASH-SHA3-256-B64|html###]</span><br>
+SHA3-224&nbsp;(hex):&nbsp;<span id="sha3-224-hash-hex" style="color:#888888;">[###HASH-SHA3-224-HEX|html###]</span><br>
+SHA3-224&nbsp;(b64):&nbsp;<span id="sha3-224-hash-b64" style="color:#888888;">[###HASH-SHA3-224-B64|html###]</span><br>
+SHA512&nbsp;(hex):&nbsp;<span id="sha512-hash-hex" style="color:#888888;">[###HASH-SHA512-HEX|html###]</span><br>
+SHA512&nbsp;(b64):&nbsp;<span id="sha512-hash-b64" style="color:#888888;">[###HASH-SHA512-B64|html###]</span><br>
+SHA384&nbsp;(hex):&nbsp;<span id="sha384-hash-hex" style="color:#888888;">[###HASH-SHA384-HEX|html###]</span><br>
+SHA384&nbsp;(b64):&nbsp;<span id="sha384-hash-b64" style="color:#888888;">[###HASH-SHA384-B64|html###]</span><br>
+SHA256&nbsp;(hex):&nbsp;<span id="sha256-hash-hex" style="color:#888888;">[###HASH-SHA256-HEX|html###]</span><br>
+SHA256&nbsp;(b64):&nbsp;<span id="sha256-hash-b64" style="color:#888888;">[###HASH-SHA256-B64|html###]</span><br>
+SHA224&nbsp;(hex):&nbsp;<span id="sha224-hash-hex" style="color:#888888;">[###HASH-SHA224-HEX|html###]</span><br>
+SHA224&nbsp;(b64):&nbsp;<span id="sha224-hash-b64" style="color:#888888;">[###HASH-SHA224-B64|html###]</span><br>
+SHA1&nbsp;(hex):&nbsp;<span id="sha1-hash-hex" style="color:#999999;">[###HASH-SHA1-HEX|html###]</span><br>
+SHA1&nbsp;(b64):&nbsp;<span id="sha1-hash-b64" style="color:#999999;">[###HASH-SHA1-B64|html###]</span><br>
+MD5&nbsp;(hex):&nbsp;<span id="md5-hash-hex" style="color:#AAAAAA;">[###HASH-MD5-HEX|html###]</span><br>
+MD5&nbsp;(b64):&nbsp;<span id="md5-hash-b64" style="color:#AAAAAA;">[###HASH-MD5-B64|html###]</span><br>
+CRC32B&nbsp;(hex):&nbsp;<span id="crc32b-hash-hex" style="color:#AAAAAA;">[###HASH-CRC32B-HEX|html###]</span><br>
+CRC32B&nbsp;(b36):&nbsp;<span id="crc32b-hash-b36" style="color:#AAAAAA;">[###HASH-CRC32B-B36|html###]</span><br>
+[%%%LOOP:BASE-CONV-TESTS%%%]
+Base[###BASE-CONV-TESTS._-KEY-_|int###][%%%IF:BASE-CONV-TESTS._-KEY-_:==64;%%%]s[%%%/IF:BASE-CONV-TESTS._-KEY-_%%%]@Encoded:&nbsp;<span id="baseBase[%%%IF:BASE-CONV-TESTS._-KEY-_:==64;%%%]s[%%%/IF:BASE-CONV-TESTS._-KEY-_%%%][###BASE-CONV-TESTS._-KEY-_|int###]enc-string" style="color:#666699;">[###BASE-CONV-TESTS._-VAL-_|html###]</span><br>
+[%%%/LOOP:BASE-CONV-TESTS%%%]
+[%%%LOOP:BASE-CONV-DEC-TESTS%%%]
+Base[###BASE-CONV-DEC-TESTS._-KEY-_|int###][%%%IF:BASE-CONV-DEC-TESTS._-KEY-_:==64;%%%]s[%%%/IF:BASE-CONV-DEC-TESTS._-KEY-_%%%]@Decoded:&nbsp;<span id="baseBase[%%%IF:BASE-CONV-DEC-TESTS._-KEY-_:==64;%%%]s[%%%/IF:BASE-CONV-DEC-TESTS._-KEY-_%%%][###BASE-CONV-DEC-TESTS._-KEY-_|int###]dec-string" style="color:#FF5500;">[###BASE-CONV-DEC-TESTS._-VAL-_|html###]</span><br>
+[%%%/LOOP:BASE-CONV-DEC-TESTS%%%]
+Base64@Encoded:&nbsp;<span id="base64enc-string" style="color:#666699;">[###BASE64-ENCODED|html###]</span><br>
+Base64@Decoded:&nbsp;<span id="base64dec-string" style="color:#FF5500;">[###BASE64-DECODED|html###]</span><br>
+Bin2Hex@Encoded:&nbsp;<span id="bin2hex-encoded" style="color:#444477;">[###BIN2HEX-ENCODED|html###]</span><br>
+Hex2Bin@Decoded:&nbsp;<span id="hex2bin-decoded" style="color:#FF5500;">[###HEX2BIN-DECODED|html###]</span><br>
+<input type="hidden" id="threefish_tf_bf-key" value="[###THREEFISH_TF_BF-KEY|html###]">
+Threefish+Twofish+Blowfish@Encrypted:&nbsp;<span id="threefish_tf_bf-encrypted" style="color:#66AA00;">[###THREEFISH_TF_BF-ENCRYPTED|html###]</span><br>
+Threefish+Twofish+Blowfish@Decrypted:&nbsp;<span id="threefish_tf_bf-decrypted" style="color:#FF5500;">[###THREEFISH_TF_BF-DECRYPTED|html###]</span><br>
+Threefish+Twofish+Blowfish@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###THREEFISH_TF_BF-ALGO|html###]</span><br>
+<input type="hidden" id="threefish-key" value="[###THREEFISH-KEY|html###]">
+Threefish@Encrypted:&nbsp;<span id="threefish-encrypted" style="color:#66AA00;">[###THREEFISH-ENCRYPTED|html###]</span><br>
+Threefish@Decrypted:&nbsp;<span id="threefish-decrypted" style="color:#FF5500;">[###THREEFISH-DECRYPTED|html###]</span><br>
+Threefish@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###THREEFISH-ALGO|html###]</span><br>
+<input type="hidden" id="twofish_blowfish-key" value="[###TWOFISH_BLOWFISH-KEY|html###]">
+Twofish+Blowfish@Encrypted:&nbsp;<span id="twofish_blowfish-encrypted" style="color:#66AA00;">[###TWOFISH_BLOWFISH-ENCRYPTED|html###]</span><br>
+Twofish+Blowfish@Decrypted:&nbsp;<span id="twofish_blowfish-decrypted" style="color:#FF5500;">[###TWOFISH_BLOWFISH-DECRYPTED|html###]</span><br>
+Twofish+Blowfish@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###TWOFISH_BLOWFISH-ALGO|html###]</span><br>
+<input type="hidden" id="twofish-key" value="[###TWOFISH-KEY|html###]">
+Twofish@Encrypted:&nbsp;<span id="twofish-encrypted" style="color:#66AA00;">[###TWOFISH-ENCRYPTED|html###]</span><br>
+Twofish@Decrypted:&nbsp;<span id="twofish-decrypted" style="color:#FF5500;">[###TWOFISH-DECRYPTED|html###]</span><br>
+Twofish@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###TWOFISH-ALGO|html###]</span><br>
+<input type="hidden" id="blowfish-key" value="[###BLOWFISH-KEY|html###]">
+Blowfish@Encrypted:&nbsp;<span id="blowfish-encrypted" style="color:#66AA00;">[###BLOWFISH-ENCRYPTED|html###]</span><br>
+Blowfish@Decrypted:&nbsp;<span id="blowfish-decrypted" style="color:#FF5500;">[###BLOWFISH-DECRYPTED|html###]</span><br>
+Blowfish@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###BLOWFISH-ALGO|html###]</span><br>
+DynamicCipher@Encrypted:&nbsp;<span id="hash-encrypted" style="color:#626831;">[###CUSTOMCRYPT-ENC|html###]</span><br>
+DynamicCipher@Decrypted:&nbsp;<span id="hash-decrypted" style="color:#FF5500;">[###CUSTOMCRYPT-DEC|html###]</span><br>
+DynamicCipher@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###CUSTOMCRYPT-ALGO|html###]</span><br>
+</div>
+<hr>
+<h2>Javascript Cryptography Tests:</h2>
+<div id="testunit-partial-crypto" class="crypto-test-results"></div>
+<script>
+(() => {
+	//--
+	const msgAlert = (msg, alertStyle) => {
+		alertStyle = smartJ$Utils.stringPureVal(alertStyle, true);
+		let theImg = 'lib/framework/img/sign-warn.svg';
+		switch(alertStyle) {
+			case 'warning':
+				alertStyle = 'warning';
+				theImg = 'lib/framework/img/sign-crit-warn.svg';
+				break;
+			case 'error':
+			default:
+				alertStyle = 'error';
+		} //end switch
+		smartJ$Browser.GrowlNotificationAdd('Test Error', smartJ$Utils.escape_html(msg), theImg, 0, true, alertStyle);
+	};
+	//--
+	const strToBeTrimmed = '\n' + '	 some' + '\n' + ' text	 ' + '\r';
+	const strTrimmed = smartJ$Utils.stringTrim(strToBeTrimmed);
+	const strLTrimmed = smartJ$Utils.stringLeftTrim(strToBeTrimmed);
+	const strRTrimmed = smartJ$Utils.stringRightTrim(strToBeTrimmed);
+	const strCompTrimmed = 'some' + '\n' + ' text';
+	const strCompLTrimmed = 'some' + '\n' + ' text	 ' + '\r';
+	const strCompRTrimmed = '\n' + '	 some' + '\n' + ' text';
+	if(strTrimmed !== strCompTrimmed) {
+		msgAlert('String Trim FAILED. Expected `' + strCompTrimmed + '` but have `' + strTrimmed + '`');
+	} //end if
+	if(strLTrimmed !== strCompLTrimmed) {
+		msgAlert('String Left Trim FAILED. Expected `' + strCompLTrimmed + '` but have `' + strLTrimmed + '`');
+	} //end if
+	if(strRTrimmed !== strCompRTrimmed) {
+		msgAlert('String Right Trim FAILED. Expected `' + strCompRTrimmed + '` but have `' + strRTrimmed + '`');
+	} //end if
+	//--
+	let the_error = 0;
+	//--
+	const miscErrors = [###MISC-ERR|json###];
+	if(Array.isArray(miscErrors)) {
+		if(miscErrors.length > 0) {
+			the_error += miscErrors.length;
+			msgAlert('PHP Misc Tests ERRORS(' + miscErrors.length + '):' + "\n\n" + miscErrors.join('\n\n'));
+		} //end if
+	} else {
+		msgAlert('Test ERROR: Tests misc Errors is not array !');
+	} //end if
+	//--
+	const unicodeText = $('#unicode-string').text();
+	//--
+	const the_hex_sh3a512 = smartJ$CryptoHash.sh3a512(unicodeText);
+	const the_b64_sh3a512 = smartJ$CryptoHash.sh3a512(unicodeText, true);
+	const the_hex_sh3a384 = smartJ$CryptoHash.sh3a384(unicodeText);
+	const the_b64_sh3a384 = smartJ$CryptoHash.sh3a384(unicodeText, true);
+	const the_hex_sh3a256 = smartJ$CryptoHash.sh3a256(unicodeText);
+	const the_b64_sh3a256 = smartJ$CryptoHash.sh3a256(unicodeText, true);
+	const the_hex_sh3a224 = smartJ$CryptoHash.sh3a224(unicodeText);
+	const the_b64_sh3a224 = smartJ$CryptoHash.sh3a224(unicodeText, true);
+	const the_hex_sha512 = smartJ$CryptoHash.sha512(unicodeText);
+	const the_b64_sha512 = smartJ$CryptoHash.sha512(unicodeText, true);
+	const the_hex_sha384 = smartJ$CryptoHash.sha384(unicodeText);
+	const the_b64_sha384 = smartJ$CryptoHash.sha384(unicodeText, true);
+	const the_hex_sha256 = smartJ$CryptoHash.sha256(unicodeText);
+	const the_b64_sha256 = smartJ$CryptoHash.sha256(unicodeText, true);
+	const the_hex_sha224 = smartJ$CryptoHash.sha224(unicodeText);
+	const the_b64_sha224 = smartJ$CryptoHash.sha224(unicodeText, true);
+	const the_hex_sha1 = smartJ$CryptoHash.sha1(unicodeText);
+	const the_b64_sha1 = smartJ$CryptoHash.sha1(unicodeText, true);
+	const the_hex_md5 = smartJ$CryptoHash.md5(unicodeText);
+	const the_b64_md5 = smartJ$CryptoHash.md5(unicodeText, true);
+	const the_hex_crc32b = smartJ$CryptoHash.crc32b(unicodeText);
+	const the_b36_crc32b = smartJ$CryptoHash.crc32b(unicodeText, true);
+	//--
+	const bin2hex = smartJ$Utils.bin2hex(unicodeText);
+	const hex2bin = smartJ$Utils.hex2bin(bin2hex);
+	//--
+	const b64enc = smartJ$Utils.b64Enc(unicodeText);
+	const b64dec = smartJ$Utils.b64Dec(b64enc);
+	//--
+	const bf_key = $('#blowfish-key').val();
+	const bf_enc = smartJ$CipherCrypto.bfEnc(bf_key, unicodeText);
+	const bf_dec = smartJ$CipherCrypto.bfDec(bf_key, bf_enc);
+	//--
+	const tf_key = $('#twofish-key').val();
+	const tf_enc = smartJ$CipherCrypto.tfEnc(tf_key, unicodeText);
+	const tf_dec = smartJ$CipherCrypto.tfDec(tf_key, tf_enc);
+	//--
+	const jsescTxt = smartJ$Utils.escape_js(unicodeText);
+	//--
+	const txtBaseConvTests = '[###BASE-CONV-STR|js###]';
+	const arrBaseConvBack = [];
+	const arrBaseConvTests = [];
+	const errorsBaseConv = [];
+	[%%%LOOP:BASE-CONV-TESTS%%%]
+	arrBaseConvTests[[###BASE-CONV-TESTS._-KEY-_|int###]] = '[###BASE-CONV-TESTS._-VAL-_|js###]';
+	[%%%/LOOP:BASE-CONV-TESTS%%%]
+	//--
+	let htmlcode = 'Unicode@String:&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(unicodeText) + '</span><br>';
+	htmlcode += smartJ$Utils.nl2br('Escaped@JS:&nbsp;<span style="color:#778899;">' + smartJ$Utils.escape_html(jsescTxt) + '</span>' + "\n");
+	//--
+	htmlcode += 'SHA3-512&nbsp;(hex):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_hex_sh3a512) + '</span><br>';
+	htmlcode += 'SHA3-512&nbsp;(b64):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_b64_sh3a512) + '</span><br>';
+	htmlcode += 'SHA3-384&nbsp;(hex):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_hex_sh3a384) + '</span><br>';
+	htmlcode += 'SHA3-384&nbsp;(b64):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_b64_sh3a384) + '</span><br>';
+	htmlcode += 'SHA3-256&nbsp;(hex):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_hex_sh3a256) + '</span><br>';
+	htmlcode += 'SHA3-256&nbsp;(b64):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_b64_sh3a256) + '</span><br>';
+	htmlcode += 'SHA3-224&nbsp;(hex):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_hex_sh3a224) + '</span><br>';
+	htmlcode += 'SHA3-224&nbsp;(b64):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_b64_sh3a224) + '</span><br>';
+	htmlcode += 'SHA512&nbsp;(hex):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_hex_sha512) + '</span><br>';
+	htmlcode += 'SHA512&nbsp;(b64):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_b64_sha512) + '</span><br>';
+	htmlcode += 'SHA384&nbsp;(hex):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_hex_sha384) + '</span><br>';
+	htmlcode += 'SHA384&nbsp;(b64):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_b64_sha384) + '</span><br>';
+	htmlcode += 'SHA256&nbsp;(hex):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_hex_sha256) + '</span><br>';
+	htmlcode += 'SHA256&nbsp;(b64):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_b64_sha256) + '</span><br>';
+	htmlcode += 'SHA224&nbsp;(hex):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_hex_sha224) + '</span><br>';
+	htmlcode += 'SHA224&nbsp;(b64):&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_b64_sha224) + '</span><br>';
+	htmlcode += 'SHA1&nbsp;(hex):&nbsp;<span style="color:#999999;">' + smartJ$Utils.escape_html(the_hex_sha1) + '</span><br>';
+	htmlcode += 'SHA1&nbsp;(b64):&nbsp;<span style="color:#999999;">' + smartJ$Utils.escape_html(the_b64_sha1) + '</span><br>';
+	htmlcode += 'MD5&nbsp;(hex):&nbsp;<span style="color:#AAAAAA;">' + smartJ$Utils.escape_html(the_hex_md5) + '</span><br>';
+	htmlcode += 'MD5&nbsp;(b64):&nbsp;<span style="color:#AAAAAA;">' + smartJ$Utils.escape_html(the_b64_md5) + '</span><br>';
+	htmlcode += 'CRC32B&nbsp;(hex):&nbsp;<span style="color:#AAAAAA;">' + smartJ$Utils.escape_html(the_hex_crc32b) + '</span><br>';
+	htmlcode += 'CRC32B&nbsp;(b36):&nbsp;<span style="color:#AAAAAA;">' + smartJ$Utils.escape_html(the_b36_crc32b) + '</span><br>';
+	//--
+	let arrBaseBackConv = [];
+	arrBaseConvTests.forEach((val, idx) => {
+		let convTmp = '';
+		let convBackTmp = '';
+		let suffx = '';
+		if(idx == 64) {
+			suffx = 's';
+			convTmp = smartJ$BaseConv.b64s_enc(txtBaseConvTests);
+			convBackTmp = smartJ$BaseConv.b64s_dec(convTmp);
+		} else {
+			convTmp = smartJ$BaseConv.base_from_hex_convert(smartJ$Utils.bin2hex(txtBaseConvTests), idx);
+			convBackTmp = smartJ$Utils.hex2bin(smartJ$BaseConv.base_to_hex_convert(convTmp, idx));
+		} //end if else
+		arrBaseBackConv[idx] = convBackTmp;
+		if(String(convTmp) != String(val)) {
+			errorsBaseConv.push('JS Base' + idx + suffx + ' Encode Test Failed:' + '\n' + 'EXPECTED=' + val + '\n' + 'RESULT=' + convTmp);
+		} else if(String(convBackTmp) != String(txtBaseConvTests)) {
+			errorsBaseConv.push('JS Base' + idx + suffx + ' Decode Test Failed:' + '\n' + 'EXPECTED=' + txtBaseConvTests + '\n' + 'RESULT=' + convBackTmp);
+		} //end if
+		htmlcode += 'Base' + smartJ$Utils.escape_html('' + idx + suffx) + '@Encoded:&nbsp;<span style="color:#666699;">' + smartJ$Utils.escape_html(val) + '</span><br>';
+	}); //end foreach
+	arrBaseBackConv.forEach((val, idx) => {
+		let suffx = '';
+		if(idx == 64) {
+			suffx = 's';
+		} //end if
+		htmlcode += 'Base' + smartJ$Utils.escape_html('' + idx + suffx) + '@Decoded:&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(val) + '</span><br>';
+	});
+	if(errorsBaseConv.length > 0) {
+		msgAlert('Javascript Base Conversion Tests ERRORS(' + errorsBaseConv.length + '):' + "\n\n" + errorsBaseConv.join('\n\n'));
+	} //end if
+	htmlcode += 'Base64@Encoded:&nbsp;<span style="color:#666699;">' + smartJ$Utils.escape_html(b64enc) + '</span><br>';
+	htmlcode += 'Base64@Decoded:&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(b64dec) + '</span><br>';
+	htmlcode += 'Bin2Hex@Encoded:&nbsp;<span style="color:#444477;">' + smartJ$Utils.escape_html(bin2hex) + '</span><br>';
+	htmlcode += 'Hex2Bin@Decoded:&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(hex2bin) + '</span><br>';
+	htmlcode += 'Twofish@Encrypted:&nbsp;<span style="color:#66AA00;">' + smartJ$Utils.escape_html(tf_enc) + '</span><br>';
+	htmlcode += 'Twofish@Decrypted:&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(tf_dec) + '</span><br>';
+	htmlcode += 'Twofish@Algo:&nbsp;<span style="color:#CCCCCC;">JS:twofish.cbc</span>' + '<br>';
+	htmlcode += 'Blowfish@Encrypted:&nbsp;<span style="color:#66AA00;">' + smartJ$Utils.escape_html(bf_enc) + '</span><br>';
+	htmlcode += 'Blowfish@Decrypted:&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(bf_dec) + '</span><br>';
+	htmlcode += 'Blowfish@Algo:&nbsp;<span style="color:#CCCCCC;">JS:blowfish.cbc</span>' + '<br>';
+	$('#testunit-partial-crypto').html(htmlcode);
+	//-- JS Tests
+	if(smartJ$BaseConv.b64s_dec(smartJ$BaseConv.b64_to_b64s(smartJ$Utils.b64Enc(unicodeText))) !== unicodeText) {
+		msgAlert('ERROR: Base64 conversion to Base64s Failed ...');
+		the_error++;
+	} //end if
+	if(smartJ$Utils.b64Dec(smartJ$BaseConv.b64s_to_b64(smartJ$BaseConv.b64s_enc(unicodeText))) !== unicodeText) {
+		msgAlert('ERROR: Base64s conversion to Base64 Failed ...');
+		the_error++;
+	} //end if
+	if((b64dec !== unicodeText) || (smartJ$CryptoHash.sha1(b64dec) !== the_hex_sha1)) {
+		msgAlert('ERROR: Base64 Encode/Decode Test Failed:\n' + 'Before: `' + unicodeText + '` / ' + the_hex_sha1 + '\n' + 'After: `' + b64dec + '` / ' + smartJ$CryptoHash.sha1(b64dec));
+		the_error++;
+	} //end if
+	if((hex2bin !== unicodeText) || (smartJ$CryptoHash.sha1(hex2bin) !== the_hex_sha1)) {
+		msgAlert('ERROR: Bin2Hex / Hex2Bin Test Failed:\n' + 'Before: `' + unicodeText + '` / ' + the_hex_sha1 + '\n' + 'After: `' + hex2bin + '` / ' + smartJ$CryptoHash.sha1(hex2bin));
+		the_error++;
+	} //end if
+	if((tf_dec !== unicodeText) || (smartJ$CryptoHash.sha1(tf_dec) !== the_hex_sha1)) {
+		msgAlert('ERROR: TwoFish Test Failed:\n' + 'Before: `' + unicodeText + '` / ' + the_hex_sha1 + '\n' + 'After: `' + tf_dec + '` / ' + smartJ$CryptoHash.sha1(tf_dec));
+		the_error++;
+	} //end if
+	if((bf_dec !== unicodeText) || (smartJ$CryptoHash.sha1(bf_dec) !== the_hex_sha1)) {
+		msgAlert('ERROR: BlowFish Test Failed:\n' + 'Before: `' + unicodeText + '` / ' + the_hex_sha1 + '\n' + 'After: `' + bf_dec + '` / ' + smartJ$CryptoHash.sha1(bf_dec));
+		the_error++;
+	} //end if
+	//-- compare with PHP
+	if($('#unicode-string').text() !== unicodeText) {
+		msgAlert('ERROR: Text comparison with PHP failed ...');
+		the_error++;
+	} //end if
+	if($('#jsescaped-string').text() != jsescTxt) {
+		msgAlert('ERROR: JS-Escaped comparison with PHP failed ...');
+		the_error++;
+	} //end if
+	//--
+	if($('#sha3-512-hash-hex').text() !== the_hex_sh3a512) {
+		msgAlert('ERROR: SHA3-512 (hex) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha3-512-hash-b64').text() !== the_b64_sh3a512) {
+		msgAlert('ERROR: SHA3-512 (b64) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha3-384-hash-hex').text() !== the_hex_sh3a384) {
+		msgAlert('ERROR: SHA3-384 (hex) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha3-384-hash-b64').text() !== the_b64_sh3a384) {
+		msgAlert('ERROR: SHA3-384 (b64) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha3-256-hash-hex').text() !== the_hex_sh3a256) {
+		msgAlert('ERROR: SHA3-256 (hex) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha3-256-hash-b64').text() !== the_b64_sh3a256) {
+		msgAlert('ERROR: SHA3-256 (b64) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha3-224-hash-hex').text() !== the_hex_sh3a224) {
+		msgAlert('ERROR: SHA3-224 (hex) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha3-224-hash-b64').text() !== the_b64_sh3a224) {
+		msgAlert('ERROR: SHA3-224 (b64) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha512-hash-hex').text() !== the_hex_sha512) {
+		msgAlert('ERROR: SHA512 (hex) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha512-hash-b64').text() !== the_b64_sha512) {
+		msgAlert('ERROR: SHA512 (b64) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha384-hash-hex').text() !== the_hex_sha384) {
+		msgAlert('ERROR: SHA384 (hex) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha384-hash-b64').text() !== the_b64_sha384) {
+		msgAlert('ERROR: SHA384 (b64) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha256-hash-hex').text() !== the_hex_sha256) {
+		msgAlert('ERROR: SHA256 (hex) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha256-hash-b64').text() !== the_b64_sha256) {
+		msgAlert('ERROR: SHA256 (b64) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha224-hash-hex').text() !== the_hex_sha224) {
+		msgAlert('ERROR: SHA224 (hex) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha224-hash-b64').text() !== the_b64_sha224) {
+		msgAlert('ERROR: SHA224 (b64) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha1-hash-hex').text() !== the_hex_sha1) {
+		msgAlert('ERROR: SHA1 (hex) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#sha1-hash-b64').text() !== the_b64_sha1) {
+		msgAlert('ERROR: SHA1 (b64) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#md5-hash-hex').text() !== the_hex_md5) {
+		msgAlert('ERROR: MD5 (hex) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#md5-hash-b64').text() !== the_b64_md5) {
+		msgAlert('ERROR: MD5 (b64) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#crc32b-hash-hex').text() !== the_hex_crc32b) {
+		msgAlert('ERROR: CRC32B (hex) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	if($('#crc32b-hash-b36').text() !== the_b36_crc32b) {
+		msgAlert('ERROR: CRC32B (b36) comparison with PHP Failed ...');
+		the_error++;
+	} //end if
+	//--
+	if($('#base64enc-string').text() != b64enc) {
+		msgAlert('ERROR: B64-Encoded comparison with PHP failed ...');
+		the_error++;
+	} //end if
+	if($('#base64dec-string').text() != b64dec) {
+		msgAlert('ERROR: B64-Decoded comparison with PHP failed ...');
+		the_error++;
+	} //end if
+	if($('#bin2hex-encoded').text() != bin2hex) {
+		msgAlert('ERROR: Bin2Hex comparison with PHP failed ...');
+		the_error++;
+	} //end if
+	if($('#hex2bin-decoded').text() != hex2bin) {
+		msgAlert('ERROR: Hex2Bin comparison with PHP failed ...');
+		the_error++;
+	} //end if
+	if((tf_enc != $('#twofish-encrypted').text()) || (smartJ$CryptoHash.sha1(tf_enc) != smartJ$CryptoHash.sha1($('#twofish-encrypted').text()))) {
+		msgAlert('ERROR: PHP Twofish encrypted is different than Javascript one ...');
+		the_error++;
+	} //end if
+	const decode_php_twofish = smartJ$CipherCrypto.tfDec(tf_key, $('#twofish-encrypted').text());
+	if((decode_php_twofish != unicodeText) || (smartJ$CryptoHash.sha1(decode_php_twofish) != smartJ$CryptoHash.sha1(unicodeText))) {
+		msgAlert('ERROR: Javascript decrypted PHP Twofish is different than PHP one ...' + decode_php_twofish);
+		the_error++;
+	} //end if
+	if(tf_dec !== $('#twofish-decrypted').text()) {
+		msgAlert('ERROR: Javascript decrypted Twofish is different than PHP one ...' + decode_php_twofish);
+		the_error++;
+	} //end if
+	if($('#unicode-string').text() !== $('#twofish-decrypted').text()) {
+		msgAlert('ERROR: PHP Twofish decrypted is different than original PHP string ...');
+		the_error++;
+	} //end if
+	if((bf_enc != $('#blowfish-encrypted').text()) || (smartJ$CryptoHash.sha1(bf_enc) != smartJ$CryptoHash.sha1($('#blowfish-encrypted').text()))) {
+		msgAlert('ERROR: PHP Blowfish encrypted is different than Javascript one ...');
+		the_error++;
+	} //end if
+	const decode_php_blowfish = smartJ$CipherCrypto.bfDec(bf_key, $('#blowfish-encrypted').text());
+	if((decode_php_blowfish != unicodeText) || (smartJ$CryptoHash.sha1(decode_php_blowfish) != smartJ$CryptoHash.sha1(unicodeText))) {
+		msgAlert('ERROR: Javascript decrypted PHP Blowfish is different than PHP one ...' + decode_php_blowfish);
+		the_error++;
+	} //end if
+	if(bf_dec !== $('#blowfish-decrypted').text()) {
+		msgAlert('ERROR: Javascript decrypted Blowfish is different than PHP one ...' + decode_php_blowfish);
+		the_error++;
+	} //end if
+	if($('#unicode-string').text() !== $('#blowfish-decrypted').text()) {
+		msgAlert('ERROR: PHP Blowfish decrypted is different than original PHP string ...');
+		the_error++;
+	} //end if
+	//--
+	if(($('#unicode-string').text() != $('#hash-decrypted').text()) || (smartJ$CryptoHash.sha1($('#unicode-string').text()) != smartJ$CryptoHash.sha1($('#hash-decrypted').text()))) {
+		msgAlert('ERROR: PHP Hash Decrypted is different than than original PHP string ...');
+		the_error++;
+	} //end if
+	//--
+	if(the_error === 0) {
+		[@@@SUB-TEMPLATE:test-dialog-js.inc.htm@@@]
+	} else {
+		msgAlert('Test ERROR: PHP / Javascript Cryptograpy Misc Tests Failures: #' + the_error, 'warning');
+		smartJ$Browser.AlertDialog('<h4>PHP / Javascript Cryptograpy Tests FAILURES: #' + smartJ$Utils.escape_html(the_error) + '</h4>', null, 'Test ERRORS', null, null, 'alertable');
+	} //end if
+	//--
+})();
+</script>
+<!-- #END :: Partial Template: TestUnit.Partials.CryptoTest -->

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>jstree basic demos</title>
+	<style>
+	html { margin:0; padding:0; font-size:62.5%; }
+	body { max-width:800px; min-width:300px; margin:0 auto; padding:20px 10px; font-size:14px; font-size:1.4em; }
+	h1 { font-size:1.8em; }
+	.demo { overflow:auto; border:1px solid silver; min-height:100px; }
+	</style>
+	<link rel="stylesheet" href="../../../../../../lib/css/toolkit/sf-icons.css">
+	<link rel="stylesheet" href="../css/style.css">
+	<script>
+	function treeExportData(id) {
+		var ref = $('#' + id).jstree(true);
+		var options = {
+			no_a_attr: true,
+			no_id: true,
+			no_icon: true,
+			no_state: true,
+			no_li_attr: true,
+			no_data: true
+		};
+		var data = ref.get_json('#', options);
+		console.log(JSON.stringify(data,null,2));
+	}
+	function treeNodeCreate(id) {
+		var ref = $('#' + id).jstree(true);
+		var sel = ref.get_selected();
+		if(!sel.length) {
+			return false;
+		}
+		sel = sel[0];
+		sel = ref.create_node(sel, {}); //{'icon':'jstree-file'});
+		if(sel) {
+			ref.edit(sel);
+		}
+	//	sel = ref.set_icon(sel, 'jstree-folder');
+	}
+	function treeNodeRename(id) {
+		var ref = $('#' + id).jstree(true);
+		var sel = ref.get_selected();
+		if(!sel.length) {
+			return false;
+		}
+		sel = sel[0];
+		ref.edit(sel);
+	}
+	function treeNodeDelete(id) {
+		var ref = $('#' + id).jstree(true);
+		var sel = ref.get_selected();
+		if(!sel.length) {
+			return false;
+		}
+		ref.delete_node(sel);
+	}
+	</script>
+</head>
+<body>
+	<h1>Tree Editor demo (Inline)</h1>
+	<button onClick="treeNodeCreate('mytree'); return false">Create Sub-Node</button>
+	<button onClick="treeNodeRename('mytree'); return false">Rename Node</button>
+	<button onClick="treeNodeDelete('mytree'); return false">Delete Node</button>
+	<button onClick="treeExportData('mytree'); return false">Export Data (console)</button>
+	<div id="mytree"></div>
+
+	<br>
+	<br>
+	<br>
+
+	<h1>HTML demo</h1>
+	<div id="html" class="demo">
+		<ul>
+			<li data-jstree='{ "opened" : true }'>Root node
+				<ul>
+					<li data-jstree='{ "selected" : true }'>Child node 1</li>
+					<li>Child node 2</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+
+	<h1>Data format demo</h1>
+	<div id="frmt" class="demo"></div>
+
+	<h1>AJAX demo</h1>
+	<div id="ajax" class="demo"></div>
+
+	<h1>Lazy loading demo</h1>
+	<div id="lazy" class="demo"></div>
+
+	<h1>Callback function data demo with Drag'n'Drop</h1>
+	<div id="clbk" class="demo"></div>
+
+	<h1>Interaction and events demo</h1>
+	<button id="evts_button">select node with id 1</button> <em>either click the button or a node in the tree</em>
+	<div id="evts" class="demo"></div>
+
+	<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script src="../jstree.js"></script>
+
+	<script>
+	// inline data demo, editor
+	$treeview = $('#mytree');
+	$treeview.jstree({
+		'core' : {
+			'check_callback': true,
+			'expand_selected_onload': true,
+			'themes': {
+				'stripes': true,
+			},
+			'data' : [{
+				"text": "Root node",
+				"icon": "sfi sfi-home3 sfi-xl",
+				"state": { "selected" : true }, // EXTRA
+				"children": [
+					{
+						"text": "Child node 1<a>",
+						"icon": "sfi sfi-folder-open sfi-xl",
+						"children": [
+							{
+								"text": "New node 1.1",
+								"icon": "sfi sfi-folder-open sfi-xl",
+								"children": [
+									{
+										"text": "New node 1.2",
+										"icon": "sfi sfi-folder-open sfi-xl",
+										"children": [
+											{
+												"text": "New node",
+												"icon": "sfi sfi-folder-open sfi-xl",
+												"children": [
+													{
+														"text": "New node 1.3",
+														"icon": "sfi sfi-image sfi-xl",
+														"children": [],
+													}
+												]
+											}
+										]
+									}
+								]
+							}
+						]
+					},
+					{
+						"text": "Child node 2",
+						"icon": "sfi sfi-folder sfi-xl",
+						"children": []
+					}
+				]
+			}]
+		}
+	}).on('loaded.jstree', function() {
+		$treeview.jstree('open_all');
+	});
+
+	// html demo
+	$('#html').jstree();
+
+	// data format demo
+	$('#frmt').jstree({
+		'core' : {
+			'data' : [
+				{
+					"text" : "Root node",
+					"state" : { "opened" : true },
+					"children" : [
+						{
+							"text" : "Child node 1",
+							"state" : { "selected" : true },
+							"icon" : "jstree-file"
+						},
+						{ "text" : "Child node 2", "state" : { "disabled" : true } }
+					]
+				}
+			]
+		}
+	});
+
+	// ajax demo
+	$('#ajax').jstree({
+		'core' : {
+			'data' : {
+				"url" : "sample.json",
+				"dataType" : "json" // needed only if you do not supply JSON headers
+			}
+		}
+	});
+
+	// lazy demo
+	$('#lazy').jstree({
+		'core' : {
+			'data' : {
+				"url" : "lazy.json?lazy", // will add the param: &id=2
+				"data" : function (node) {
+					return { "id" : node.id };
+				}
+			}
+		}
+	});
+
+	// data from callback
+	$('#clbk').jstree({
+		'core' : {
+			'data' : function (node, cb) {
+				if(node.id === "#") {
+					cb([{"text" : "Root", "id" : "1", "children" : true}]);
+				}
+				else {
+					cb(["Child", "Child2"]);
+				}
+			},
+			"check_callback" : true, // enable all modifications
+		},
+		"plugins" : ["dnd"]
+	});
+
+	// interaction and events
+	$('#evts_button').on("click", function () {
+		var instance = $('#evts').jstree(true);
+		instance.deselect_all();
+		instance.select_node('1');
+	});
+	$('#evts')
+		.on("changed.jstree", function (e, data) {
+			if(data.selected.length) {
+				alert('The selected node is: ' + data.instance.get_node(data.selected[0]).text);
+			}
+		})
+		.jstree({
+			'core' : {
+				'multiple' : false,
+				'data' : [
+					{ "text" : "Root node", "children" : [
+							{ "text" : "Child node 1", "id" : 1 },
+							{ "text" : "Child node 2" }
+					]}
+				]
+			}
+		});
+	</script>
+</body>
+</html>

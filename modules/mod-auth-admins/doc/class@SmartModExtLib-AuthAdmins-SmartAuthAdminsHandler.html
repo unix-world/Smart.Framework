@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="\SmartModExtLib\AuthAdmins\SmartAuthAdminsHandler final class \SmartModExtLib\AuthAdmins\ SmartAuthAdminsHandler extends">
+<meta name="keywords" content="smartmodextlib, uthadmins smartauthadminshandler, final, class, uthadmins, smartauthadminshandler, extends, bstractauthhandler, implements, uthhandlerinterface, smart unicorn, multi account, auth, admins, handler, this, provide, a, complex, authentication, for, admin, area, admin php task php, using, multi accounts, system, with, sqlite, db, supports, http, basic, bear, swt, optional, built in, token, stk, required, only, init, after, dissalowed, constants, app auth admin init ip address, app auth admin username, app auth admin password, must, be, set, in, config admin php, thereafter, unset, app auth privileges, configuration, configs  app auth    adm namespaces, manager, admin php page auth admins manager stml, language, php, located, at, modules mod auth admins libs smartauthadminshandler php, package, development modules authadmins, namespace, name, version, v, inheritance, chart, →, ↳, interface, methods, public, static, function, authenticate, bool, enforce https, false, void, reimplemented, over, extended, to, handle, an, method, return, on, failed, logins, should">
+<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
+<link rel="icon" href="data:,">
+<title>PHP Documentation for: \SmartModExtLib\AuthAdmins\SmartAuthAdminsHandler</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+		float: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3c4663;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework.Modules : PHP Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+	
+</nav>
+<!-- skip logo -->
+<!-- class r.20220331 -->
+<!-- Styles -->
+<!-- styles r.20220906 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located,
+.doc-version {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-frozen,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	top: 75px;
+	right: 175px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #3C4663;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Headings -->
+<h1 title="PHP class: `\SmartModExtLib\AuthAdmins\SmartAuthAdminsHandler` @ PHP Namespace: `\SmartModExtLib\AuthAdmins\`" id="Class--Summary-">
+	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\SmartModExtLib\AuthAdmins\</span><span class="doc-name">SmartAuthAdminsHandler</span><br>
+	<span title="extends (abstract) Class" class="doc-extends"><i>extends</i> \SmartModExtLib\AuthAdmins\AbstractAuthHandler</span><br>
+	<span title="implements Interface(s)" class="doc-implements"><i>implements</i> \SmartModExtLib\AuthAdmins\AuthHandlerInterface</span><br>
+	{
+	
+	}&nbsp;::
+</h1>
+<!-- Description -->
+<div class="doc-comments">Smart.Unicorn (Multi-Account) Auth Admins Handler<br>
+This class provide a complex authentication for admin area (admin.php|task.php) using multi-accounts system with SQLite DB<br>
+Supports: HTTP Basic Auth ; HTTP Bear Auth (SWT) *optional* ; built-in HTTP Basic Token Auth (STK) *optional*<br>
+Required (only init, after dissalowed) constants: APP_AUTH_ADMIN_INIT_IP_ADDRESS, APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD (must be set in set in config-admin.php only for init, thereafter must be unset)<br>
+Required constants: APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)<br>
+Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' =&gt; 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
+		<li><span class="doc-located"><b>Located at:</b> modules/mod-auth-admins/libs/SmartAuthAdminsHandler.php</span></li>
+		<li><span class="doc-package"><b>Package:</b> development:modules:AuthAdmins</span></li>
+		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\AuthAdmins\</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> SmartAuthAdminsHandler</span></li>
+		
+		<li><b>Version:</b> v.20240119</li>
+		
+		
+		
+		
+				<li><b>Inheritance Chart:</b>
+			<ul>
+				<span class="doc-name"><i>class</i>&nbsp;\SmartModExtLib\AuthAdmins\SmartAuthAdminsHandler</span>&nbsp;&rarr;
+				<li>&nbsp;&#8627;&nbsp;<span class="doc-type-class"><i>class</i>&nbsp;\SmartModExtLib\AuthAdmins\AbstractAuthHandler</span>&nbsp;&rarr;</li>
+				<li>&nbsp;&#8627;&nbsp;<span class="doc-type-interface"><i>interface</i>&nbsp;\SmartModExtLib\AuthAdmins\AuthHandlerInterface</span></li>
+				
+			</ul>
+		</li>
+		
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">class Methods</h2>
+</div>
+<!-- methods r.20200121 -->
+<div class="doc-container" id="Method--Authenticate">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>Authenticate</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$enforce_https` Parameter is OPTIONAL, with the Default Value: false">$enforce_https</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;VOID
+	<br><span class="doc-reimplemented"><i>reimplemented&nbsp;</i>&nbsp;over&nbsp;<b>\SmartModExtLib\AuthAdmins\AuthHandlerInterface</b></span>
+	
+	
+			<div class="doc-method-comments">Auth Handler Authenticate<br>
+THIS MUST BE EXTENDED TO HANDLE AN AUTHENTICATION METHOD<br>
+RETURN: VOID ; On FAILED Logins this method should STOP EXECUTION and provide the proper HTTP Status Message: ex: 401, 403, 429, ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getClassName">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getClassName</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">RETURN: STRING ; The current called class name that has been extended from this one, without namespace prefix</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--preCheckForbiddenConditions">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>preCheckForbiddenConditions</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Auth Pre-Check FORBIDDEN Conditions : Status 403<br>
+This method should not be called more than once !<br>
+IMPORTANT: All messages from this method may be display to public via HTTP Status Pages<br>
+DO NOT INCLUDE SENSITIVE INFORMATION IN THIS MESSAGES !<br>
+RETURN: STRING ; 'ERR-Message' or ''</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--preCheckInternalErrorConditions">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>preCheckInternalErrorConditions</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$disable_tokens` Parameter is OPTIONAL, with the Default Value: false">$disable_tokens</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$disable_2fa` Parameter is OPTIONAL, with the Default Value: false">$disable_2fa</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Auth Pre-Check INTERNAL ERROR Conditions : Status 500<br>
+This method should not be called more than once !<br>
+IMPORTANT: All messages from this method may be display to public via HTTP Status Pages<br>
+DO NOT INCLUDE SENSITIVE INFORMATION IN THIS MESSAGES !<br>
+RETURN: STRING ; 'ERR-Message' or ''</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--preCheckBadGatewayConditions">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>preCheckBadGatewayConditions</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$enforce_https` Parameter is REQUIRED">$enforce_https</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Auth Pre-Check BAD GATEWAY Conditions : Status 502<br>
+This method should not be called more than once !<br>
+IMPORTANT: All messages from this method may be display to public via HTTP Status Pages<br>
+DO NOT INCLUDE SENSITIVE INFORMATION IN THIS MESSAGES !<br>
+RETURN: STRING ; 'ERR-Message' or ''</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--preCheckServiceUnavailableConditions">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>preCheckServiceUnavailableConditions</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Auth Pre-Check SERVICE UNAVAILABLE Conditions : Status 503<br>
+This method should not be called more than once !<br>
+IMPORTANT: All messages from this method may be display to public via HTTP Status Pages<br>
+DO NOT INCLUDE SENSITIVE INFORMATION IN THIS MESSAGES !<br>
+RETURN: STRING ; 'ERR-Message' or ''</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getAuthCredentials">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getAuthCredentials</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$enforce_https` Parameter is REQUIRED">$enforce_https</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$disable_tokens` Parameter is REQUIRED">$disable_tokens</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$disable_2fa` Parameter is REQUIRED">$disable_2fa</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Auth Get Credentials<br>
+It will retry the Auth Credentials from the HTTP Headers (Basic Auth or Bearer Auth)<br>
+This method should not be called more than once !<br>
+RETURN: ARRAY ; see the AUTH_CREDENTIALS array definition in this class ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--tryAuthGuard">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>tryAuthGuard</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Try Authentication Guard<br>
+This will detect the single following situation, that will skip Try Auth (this is the entry page):<br>
+- current script ends in `.php`<br>
+- current REQUEST_METHOD is GET or HEAD<br>
+- there are no input variables from REQUEST_URI, QUERY_STRING, PATH_INFO, REQUEST, GET, POST, FILES<br>
+For all the rest of situations will return TRUE (ask Try Auth)<br>
+There is no need to check for COOKIES, this is an HTTP Auth Handler, not managing Auth by Cookies ...<br>
+REQUEST_URI != SCRIPT_NAME (it means have query variables)<br>
+RETURN: BOOL ; if TRUE, Auth is required, otherwise if FALSE should not</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--isAuthLogout">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isAuthLogout</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Detect Logout Request<br>
+This will detect the single following situation, that will display the Logout page:<br>
+- current script ends in `.php`<br>
+- current REQUEST_METHOD is GET or HEAD<br>
+- the $_REQUEST['logout'] variable is set and not empty<br>
+RETURN: BOOL ; if TRUE, Auth will display the Logout Page</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--renderAuthLogoutPage">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>renderAuthLogoutPage</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Render the Logout Page<br>
+RETURN: STRING ; HTML MAIN TPL</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--renderAuthLoginPage">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>renderAuthLoginPage</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$disable_2fa` Parameter is REQUIRED">$disable_2fa</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$auth_user_name` Parameter is REQUIRED">$auth_user_name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$auth_mode` Parameter is REQUIRED">$auth_mode</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$auth_desc_mode` Parameter is REQUIRED">$auth_desc_mode</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$html_inc_code_poweredby_area` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$html_inc_code_poweredby_area</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Render the Login Page<br>
+RETURN: STRING ; HTML MAIN TPL</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--isAuthLoginValid">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isAuthLoginValid</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$auth_user_name` Parameter is REQUIRED">$auth_user_name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$hash_of_pass` Parameter is REQUIRED">$hash_of_pass</span></b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$account_data` Parameter is REQUIRED">$account_data</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Validate the Account Data against Auth UserName / PassHash ;<br>
+RETURN: BOOL ; if TRUE, the Login is SUCCESS ; Otherwise Login is FAIL</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--isAuth2FAValid">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isAuth2FAValid</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$auth_user_name` Parameter is REQUIRED">$auth_user_name</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$use_2fa` Parameter is REQUIRED">$use_2fa</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$valid_2fa_pin_token` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$valid_2fa_pin_token</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Validate the 2FA login Value from Cookies compared with 2FA Token Pin or Visitor UUID Hash<br>
+IMPORTANT: the value of cookie will be compared with the provided $valid_2fa_pin_token which have to be a valid TOTP Pin Token<br>
+RETURN: BOOL ; if TRUE, the 2FA is VALID ; otherwise is INVALID</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--isAuthIPAddressValid">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isAuthIPAddressValid</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$restricted_ip_list` Parameter is REQUIRED">$restricted_ip_list</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Validate the IP Restrictions login Value using the User IPAddress List Restrictions ; ex: &lt;ip1&gt;,&lt;ip2&gt;,...<br>
+RETURN: BOOL ; if TRUE, the Current Visitor IP is VALID ; otherwise is INVALID</div>
+	
+	
+	
+</div>
+
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20200121 -->
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20200121 -->
+<div class="doc-container" id="Constant--AUTH_2FA_COOKIE_NAME">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>AUTH_2FA_COOKIE_NAME</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;Sf_2FA&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--AUTH_2FA_REGEX_TOKEN">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>AUTH_2FA_REGEX_TOKEN</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;/^[0-9]{8}$/&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TPL_PATH">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TPL_PATH</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;modules/mod-auth-admins/templates/&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TPL_FILE">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TPL_FILE</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;template.htm&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TPL_INC_PATH">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TPL_INC_PATH</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;modules/mod-auth-admins/libs/templates/auth-admins-handler/&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--IMG_LOADER">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>IMG_LOADER</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;lib/framework/img/loading-spokes.svg&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--IMG_UNICORN">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>IMG_UNICORN</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;lib/framework/img/unicorn-auth-logo.svg&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TXT_UNICORN">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TXT_UNICORN</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;Smart.Unicorn Secure Authentication&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TPL_LOGIN">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TPL_LOGIN</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;login.htm&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TXT_LOGIN">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TXT_LOGIN</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;Sign-In Authenticated Area&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TPL_LOGOUT">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TPL_LOGOUT</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;logout.htm&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TXT_LOGOUT">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TXT_LOGOUT</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;Sign-Out Authenticated Area&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--STK_TOKEN_AUTH_USERNAME_SUFFIX">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>STK_TOKEN_AUTH_USERNAME_SUFFIX</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;#token&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;&lt;def-account&gt;,&lt;account&gt;,&lt;token&gt;&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+
+<!-- Sample Code -->
+
+<!-- Summary List -->
+<br>
+<!-- summary r.20210420 -->
+<script>
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* PHP Class \SmartModExtLib\AuthAdmins\SmartAuthAdminsHandler # Documentation Index *</option>
+		<optgroup label="Class \SmartModExtLib\AuthAdmins\SmartAuthAdminsHandler">
+			<option value="Class--Summary-">Class definition</option>
+		</optgroup>
+		<optgroup label="Class Methods">
+			<option value="Methods--Summary-">Methods list</option>
+						<option value="Method--Authenticate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;Authenticate()</option>
+			
+			
+						<option value="Method--getClassName"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getClassName()</option>
+			
+			
+						<option value="Method--preCheckForbiddenConditions"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;preCheckForbiddenConditions()</option>
+			
+			
+						<option value="Method--preCheckInternalErrorConditions"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;preCheckInternalErrorConditions()</option>
+			
+			
+						<option value="Method--preCheckBadGatewayConditions"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;preCheckBadGatewayConditions()</option>
+			
+			
+						<option value="Method--preCheckServiceUnavailableConditions"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;preCheckServiceUnavailableConditions()</option>
+			
+			
+						<option value="Method--getAuthCredentials"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getAuthCredentials()</option>
+			
+			
+						<option value="Method--tryAuthGuard"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tryAuthGuard()</option>
+			
+			
+						<option value="Method--isAuthLogout"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isAuthLogout()</option>
+			
+			
+						<option value="Method--renderAuthLogoutPage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;renderAuthLogoutPage()</option>
+			
+			
+						<option value="Method--renderAuthLoginPage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;renderAuthLoginPage()</option>
+			
+			
+						<option value="Method--isAuthLoginValid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isAuthLoginValid()</option>
+			
+			
+						<option value="Method--isAuth2FAValid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isAuth2FAValid()</option>
+			
+			
+						<option value="Method--isAuthIPAddressValid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isAuthIPAddressValid()</option>
+			
+			
+			
+		</optgroup>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+						<option value="Constant--AUTH_2FA_COOKIE_NAME">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;AUTH_2FA_COOKIE_NAME</option>
+			
+						<option value="Constant--AUTH_2FA_REGEX_TOKEN">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;AUTH_2FA_REGEX_TOKEN</option>
+			
+						<option value="Constant--TPL_PATH">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TPL_PATH</option>
+			
+						<option value="Constant--TPL_FILE">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TPL_FILE</option>
+			
+						<option value="Constant--TPL_INC_PATH">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TPL_INC_PATH</option>
+			
+						<option value="Constant--IMG_LOADER">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;IMG_LOADER</option>
+			
+						<option value="Constant--IMG_UNICORN">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;IMG_UNICORN</option>
+			
+						<option value="Constant--TXT_UNICORN">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TXT_UNICORN</option>
+			
+						<option value="Constant--TPL_LOGIN">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TPL_LOGIN</option>
+			
+						<option value="Constant--TXT_LOGIN">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TXT_LOGIN</option>
+			
+						<option value="Constant--TPL_LOGOUT">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TPL_LOGOUT</option>
+			
+						<option value="Constant--TXT_LOGOUT">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TXT_LOGOUT</option>
+			
+						<option value="Constant--STK_TOKEN_AUTH_USERNAME_SUFFIX">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;STK_TOKEN_AUTH_USERNAME_SUFFIX</option>
+			
+						<option value="Constant--AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST</option>
+			
+			
+		</optgroup>
+		
+	</select>
+</div>
+<!-- summary-selectjs r.20210420 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 17:02:30 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div><center>
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
+</center></div>
+</body>
+</html>

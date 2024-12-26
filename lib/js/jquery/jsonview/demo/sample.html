@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>jQuery JSON Viewer</title>
+<meta charset="UTF-8">
+<script type="text/javascript" src="../../jquery.js"></script>
+<script src="../jquery.json-viewer.js"></script>
+<link href="../jquery.json-viewer.css" type="text/css" rel="stylesheet">
+<style type="text/css">
+body {
+	margin: 0 100px;
+	font-family: sans-serif;
+}
+textarea#json-input {
+	width: 100%;
+	height: 200px;
+}
+.json-render-area {
+	width: 99%;
+	height: 550px;
+}
+</style>
+<script>
+$(function() {
+	$('#btn-json-viewer').click(function() {
+		try {
+			var input = eval('(' + $('#json-input').val() + ')');
+		} catch(err) {
+			return alert("Cannot eval JSON: " + err);
+		}
+		var options = {
+			collapsed: $('#collapsed').is(':checked'),
+			withQuotes: $('#with-quotes').is(':checked')
+		};
+		$('#json-renderer').jsonViewer(input, options);
+	});
+	$('#btn-json-viewer').click(); // Display JSON sample on load
+});
+</script>
+</head>
+<body>
+<h1>jQuery JSON Viewer</h1>
+<textarea id="json-input" autocomplete="off">
+{
+	&quot;id&quot;: 1001,
+	&quot;rating&quot;: false,
+	&quot;extra&quot;: null,
+	&quot;type&quot;: &quot;donut&quot;,
+	&quot;name&quot;: &quot;Cake&quot;,
+	&quot;description&quot;: &quot;http://en.wikipedia.org/wiki/Doughnut&quot;,
+	&quot;price&quot;: 2.55,
+	&quot;available&quot;: {
+		store: 42,
+		warehouse: 600
+	},
+	&quot;topping&quot;: [
+		{ &quot;id&quot;: 5001, &quot;type&quot;: &quot;None&quot; },
+		{ &quot;id&quot;: 5002, &quot;type&quot;: &quot;Glazed&quot; },
+		{ &quot;id&quot;: 5005, &quot;type&quot;: &quot;Sugar&quot; },
+		{ &quot;id&quot;: 5003, &quot;type&quot;: &quot;Chocolate&quot; },
+		{ &quot;id&quot;: 5004, &quot;type&quot;: &quot;Maple&quot; }
+	]
+}
+</textarea>
+<p>
+	Options:
+	<label><input type="checkbox" id="collapsed">Collapse nodes</label>
+	<label><input type="checkbox" id="with-quotes">Keys with quotes</label>
+</p>
+<button id="btn-json-viewer" title="run jsonViewer()">Display PrettyPrint JSON</button>
+<pre id="json-renderer" class="json-render-area"></pre>
+</body>
+</html>

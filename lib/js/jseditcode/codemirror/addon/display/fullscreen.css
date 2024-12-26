@@ -1,0 +1,23 @@
+
+/*
+// codemirror: v.5.61.1
+*/
+
+.CodeMirror-fullscreen {
+/* unixman fix */
+	position: fixed;
+	top: 23px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	z-index: 99998;
+/* Original
+	position: fixed;
+	top: 0; left: 0; right: 0; bottom: 0;
+	height: auto;
+	z-index: 9;
+*/
+}
+
+/* END */

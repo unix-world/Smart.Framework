@@ -1,0 +1,28 @@
+# Language File: RO / CORE / Captcha :: r.8.7 / smart.framework.v.8.7
+TRANSLATIONS:
+  @language: RO
+  @area: core
+  @version: 2021-05-26
+  captcha:
+    error: |
+      Captcha a expirat ... Încercați să re-încărcați pagina.
+      Dacă problema persistă contactați administratorul website-ului !
+    confirm: 'Confirmați că nu sunteți Robot'
+    verify: 'Cod Validare'
+    failed: 'Verificare Captcha nereuşită'
+    image: 'Imagine Captcha'
+    click: 'Click pentru a re-încărca Imaginea'
+    enter: 'Introduceți codul din imagine în câmpul de verificare.'
+    easy: 'Nu sunt robot !'
+    tick: 'Marcați checkbox-ul alăturat după cronometru pentru a confirma că nu sunteți robot.'
+    icons: 'Selectați icon-ul care nu aparține seriei (e diferit de restul icon-urilor) listate în box-ul alăturat.'
+    iconsdone: 'Un icon a fost deja selectat !'
+    motion: 'Desenați fluent peste zona de desen alăturată o formă cât mai asemănătoare cu cea din fundal, începând de la punct. Pentru a schimba forma folosiți dublu click peste zona de desen.'
+    motionerr: 'Desen invalid'
+    motionwarn: 'Desenul nu este asemănător'
+    motiondone: 'Desen complet'
+    helper: 'Accesibilitate: Ca alternativă scanați QR Codul alăturat și aflați codul de verificare pe care trebuie să îl introduceți.'
+    qrcode: 'QR Codul este indisponibil ...'
+    accessibility: 'Accesibilitate: Click pentru a accesa Contextul de Accessibilitate al verificării Captcha'
+    passed: 'Verificare reușită !'
+#END

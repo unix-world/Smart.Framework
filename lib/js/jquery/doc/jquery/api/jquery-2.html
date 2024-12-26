@@ -1,0 +1,83 @@
+<script>{
+		"title":
+			".jquery",
+		"excerpt":
+			"A string containing the jQuery version number.",
+		"termSlugs": {
+			"category": [
+				"internals","properties/jquery-object-instance-properties"
+			]
+		}
+	}</script><article id="jquery1" class="entry property"><h2 class="section-title">
+<span>jquery</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#String">String</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>A string containing the jQuery version number.</p>
+<ul class="signatures"><li class="signature"><h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0/">1.0</a></span>jquery</h4></li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>The <code>.jquery</code> property is assigned to the jQuery prototype, commonly referred to by its alias <code>$.fn</code>. It is a string containing the version number of <code>jQuery</code>, such as &quot;1.5.0&quot; or &quot;1.4.4&quot;.</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Examples:</h2></header><div class="entry-example" id="example-0">
+<p>Determine if an object is a jQuery object</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> a = { what: <span class="string">&quot;A regular JS object&quot;</span> },</code></div></div><div class="container"><div class="line"><code>  b = $( <span class="string">&quot;body&quot;</span> );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="keyword">if</span> ( a.jquery ) { <span class="comment">// Falsy, since it&apos;s undefined</span></code></div></div><div class="container"><div class="line"><code>  alert( <span class="string">&quot;a is a jQuery object!&quot;</span> );</code></div></div><div class="container"><div class="line"><code>}</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="keyword">if</span> ( b.jquery ) { <span class="comment">// Truthy, since it&apos;s a string</span></code></div></div><div class="container"><div class="line"><code>    alert( <span class="string">&quot;b is a jQuery object!&quot;</span> );</code></div></div><div class="container"><div class="line"><code>}</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-1">
+<p>Get the current version of jQuery running on the page</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>alert( <span class="string">&quot;You are running jQuery version: &quot;</span> + $.fn.jquery );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

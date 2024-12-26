@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!-- AppCodeUnpack (err) # v.20231106 -->
+<!-- (c) 2013-2023 unix-world.org - all rights reserved -->
+<html>
+<head>
+<meta charset="[###CHARSET|html###]">
+<meta http-equiv="Content-Type" content="text/html; charset=[###CHARSET|html###]">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="AppCodeUnpack (standalone), Smart.Framework">
+<link rel="icon" href="data:,">
+<title>[###TITLE|html###]</title>
+<!-- Font Styles -->
+<style type="text/css">* { font-family: 'IBM Plex Sans', 'Noto Sans', arial, sans-serif; }</style>
+<!-- Base Styles -->
+[###CSS-BASE-STYLES###]
+<!-- Notif. Styles -->
+[###CSS-NOTIF-STYLES###]
+<style>
+#server-logo {
+	width: 96px;
+	height: 96px;
+	position: absolute;
+	top: 25px;
+	right: 25px;
+}
+#server-signature {
+	color: #333333;
+}
+#title {
+	font-size: 4rem;
+	padding-right: 150px;
+	padding-left: 25px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	margin: 0px;
+	color: #333333;
+}
+</style>
+</head>
+<body>
+<h1 id="title">[###TITLE|html###]</h1>
+<br>
+<hr>
+<div align="left">
+	<table width="98%">
+		<tr>
+			<td>
+				<div class="operation_error">
+					[###MESSAGE-TXT|html###]
+				</div>
+[%%%IF:EXTMSG-TXT:!=;%%%]
+				<div class="operation_notice">
+					[###EXTMSG-TXT|html###]
+				</div>
+[%%%ELSE:EXTMSG-TXT%%%]
+				<!-- no ext msg -->
+[%%%/IF:EXTMSG-TXT%%%]
+[%%%IF:EXT-HTML:!=;%%%]
+				[###EXT-HTML###]
+[%%%ELSE:EXT-HTML%%%]
+				<!-- no ext html -->
+[%%%/IF:EXT-HTML%%%]
+			</td>
+		</tr>
+	</table>
+</div>
+<hr>
+<small id="server-signature">[###SIGNATURE-HTML###]</small>
+<br>
+<br>
+<a href="[###SCRIPT|html###]"><img id="server-logo" width="96" src="data:image/svg+xml,[###APPCODEUNPACK-SVG|url###]"></a>
+</body>
+</html>
+<!-- script: [###SCRIPT|html###] -->

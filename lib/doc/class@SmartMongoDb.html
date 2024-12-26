@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="\SmartMongoDb final class \ SmartMongoDb { } -&gt; Class Smart MongoDB Client (for PHP MongoDB extension v.1.1.0 or later) Tested and Stable on MongoDB">
+<meta name="keywords" content="smartmongodb, final, class, smart, mongodb, client, for, php, extension, v, or, later, tested, and, stable, on, server, versions, language, located, at, lib framework plugins lib db mongodb php, package, plugins database mongodb, namespace, name, throws, exception, depending, how, this, it, is, constructed, may, throw, raise, fatal, error, version, depends, extensions, classes, smartenvironment, smartcomponents, optional, hints, important, database, specifies, that, max, bson, document, size, megabytes, supports, no, more, than, levels, of, nesting, thus, limit, cannot, be, exceeded, from, side, when, creating, new, documents, https:  docs mongodb com manual reference limits, to, store, larger, the, maximum, provides, gridfs, api, usage, dynamic, object, class   - method, only, methods, public, function, construct, array, y configs arr, bool, y fatal err, true">
+<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartMongoDb">
+<link rel="icon" href="data:,">
+<title>PHP Documentation for: \SmartMongoDb</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+		float: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3c4663;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework : PHP Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+		<ul class="menu">
+		<li><a href="index.html#Package--PluginsDatabaseMongoDB-" title="return to Index">return to Index</a></li>
+	</ul>
+	
+</nav>
+<!-- skip logo -->
+<!-- class r.20220331 -->
+<!-- Styles -->
+<!-- styles r.20220906 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located,
+.doc-version {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-frozen,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	top: 75px;
+	right: 175px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #3C4663;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Headings -->
+<h1 title="PHP class: `\SmartMongoDb` @ PHP Namespace: `\`" id="Class--Summary-">
+	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\</span><span class="doc-name">SmartMongoDb</span><br>
+	
+	
+	{
+	
+	}&nbsp;-&gt;
+</h1>
+<!-- Description -->
+<div class="doc-comments">Class Smart MongoDB Client (for PHP MongoDB extension v.1.1.0 or later)<br>
+Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 / 4.3 / 4.4 / 5.0 / 5.1 / 5.2</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/plugins/lib_db_mongodb.php</span></li>
+		<li><span class="doc-package"><b>Package:</b> Plugins:Database:MongoDB</span></li>
+		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> SmartMongoDb</span></li>
+		<li><span class="doc-throws"><b>Throws:</b> Exception  : Depending how this class it is constructed it may throw Exception or Raise Fatal Error</span></li>
+		<li><b>Version:</b> v.20231124</li>
+		<li><b>Depends:</b> extensions:  PHP MongoDB ; classes: Smart, SmartEnvironment, SmartComponents (optional)</li>
+		<li><b>Hints:</b> Important:  MongoDB database specifies that max BSON document size is 16 megabytes and supports no more than 100 levels of nesting, thus this limit cannot be exceeded from PHP side when creating new mongodb documents: https://docs.mongodb.com/manual/reference/limits/ ; To store documents larger than the maximum size, MongoDB provides the GridFS API</li>
+		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
+		
+		
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">class Methods</h2>
+</div>
+<!-- methods r.20200121 -->
+<div class="doc-container" id="Method--__construct">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
+		<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_configs_arr` Parameter is OPTIONAL, with the Default Value: []">$y_configs_arr</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_fatal_err` Parameter is OPTIONAL, with the Default Value: true">$y_fatal_err</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
+	
+	
+			<div class="doc-method-ret-params">@throws: {Exception} Depending how this class it is constructed it may throw Exception or Raise Fatal Error<br>
+@param: {ARRAY} $y_configs_arr: *Optional* ; The Array of Configuration parameters ; Default is Empty Array, case which will get the configuration from config.php ; if custom, the ARRAY STRUCTURE should be identical with the default config.php: $configs['mongodb'].<br>
+@param: {BOOLEAN} $y_fatal_err: *Optional* ; Set if Errors handling mode ; Default is TRUE ; if set to FALSE will throw Exception instead of Raise a Fatal Error</div>
+	
+			<div class="doc-method-comments">Class constructor</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--assign_uuid">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>assign_uuid</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} UUID (base36)</div>
+	
+			<div class="doc-method-comments">A replacement for the default MongoDB object ID, will generate a 32 characters very unique UUID</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_ext_version">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_ext_version</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} MongoDB extension version</div>
+	
+			<div class="doc-method-comments">Get the MongoDB Extension version</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_server_version">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_version</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} MongoDB version</div>
+	
+			<div class="doc-method-comments">Get the MongoDB server version</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--setFatalErrMode">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setFatalErrMode</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$is_fatal` Parameter is REQUIRED">$is_fatal</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;VOID
+	
+	
+			<div class="doc-method-ret-params">@return: {VOID}</div>
+	
+			<div class="doc-method-comments">Set Fatal Error Mode to TRUE/FALSE</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getFatalErrMode">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getFatalErrMode</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {TRUE/FALSE}</div>
+	
+			<div class="doc-method-comments">Laminas/DB: Get Fatal Error TRUE/FALSE</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getObjectId">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getObjectId</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$id` Parameter is REQUIRED">$id</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+	
+	
+			<div class="doc-method-ret-params">@return: {MIXED} return a MongoDB ObjectId as OBJECT or STRING if invalid Id</div>
+	
+			<div class="doc-method-comments">Get the MongoDB ObjectId by Id</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getFtsDictionaryByLang">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getFtsDictionaryByLang</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$lang` Parameter is REQUIRED">$lang</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} dictionary name (ex: 'english' - if available or 'none' - if n/a)</div>
+	
+			<div class="doc-method-comments">Get the MongoDB FTS (Full Text Search) Dictionary by Two Letter language code (ISO 639-1)</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `isFtsSearchPhrase()` -->
+<!-- Skip Internal-Priv Method: `prepareFtsSearchKeywords()` -->
+<div class="doc-container" id="Method--escapeFtsText">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>escapeFtsText</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} FTS escaped</div>
+	
+			<div class="doc-method-comments">Escape FTS text, to be used in a safe mode with mongo Full Text Search</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--escapeRegexText">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>escapeRegexText</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} Regex escaped</div>
+	
+			<div class="doc-method-comments">Escape Regex text, to be used in a safe mode with mongo $regex =&gt; 'text...'</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--is_command_ok">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>is_command_ok</b></span>&nbsp;(
+		<span class="doc-param-name"><b><span title="`$result` Parameter is REQUIRED">$result</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE / FALSE</div>
+	
+			<div class="doc-method-comments">Test if a command output is OK compliant (will check if result[0][ok] == 1)<br>
+Notice: not all MongoDB commands will return this standard answer, but majority</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--__call">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__call</b></span>&nbsp;(
+	
+	)&nbsp;{}&nbsp;<span title="* Special * Magic * Method"><b>@</b></span>&nbsp;
+	
+	
+			<div class="doc-method-ret-params">@throws: {Exception} Depending how this class it is constructed it may throw Exception or Raise Fatal Error</div>
+	
+			<div class="doc-method-comments">This is the Magic Method (Call) that maps the PHP class extra methods to MongoDB methods.<br>
+It have variadic parameters mapped to MongoDB sub-calls.</div>
+	
+			<pre><b>Sample code: PHP</b><br><code class="hljs syntax php"><span class="hljs-meta">&lt;?php</span>
+
+ <span class="hljs-comment">// Sample Count Records</span>
+ $count = $mongo-&gt;count(
+ 		<span class="hljs-string">'myTestCollection'</span>,
+ 		[ <span class="hljs-string">'name'</span> =&gt; [ <span class="hljs-string">'$eq'</span> =&gt; <span class="hljs-string">'Test:!'</span> ] ] <span class="hljs-comment">// filter</span>
+ );
+ var_dump($count);
+
+<span class="hljs-comment">// Sample Find One</span>
+ $find = $mongo-&gt;findone(
+ 		<span class="hljs-string">'myTestCollection'</span>,
+ 		[ <span class="hljs-string">'cost'</span> =&gt; <span class="hljs-number">7</span> ] <span class="hljs-comment">// filter</span>
+ );
+ var_dump($find);
+
+<span class="hljs-comment">// Sample Find Many</span>
+ $mfind = $mongo-&gt;find(
+ 		<span class="hljs-string">'myTestCollection'</span>,
+ 		[ <span class="hljs-string">'name'</span> =&gt; <span class="hljs-string">'John'</span> ], <span class="hljs-comment">// filter</span>
+ 		[ <span class="hljs-comment">// projection</span>
+ 			<span class="hljs-string">'name'</span>,
+ 			<span class="hljs-string">'description'</span>
+ 		],
+ 		[
+ 			<span class="hljs-string">'limit'</span> =&gt; <span class="hljs-number">10</span>, <span class="hljs-comment">// limit</span>
+ 			<span class="hljs-string">'skip'</span> =&gt; <span class="hljs-number">0</span> <span class="hljs-comment">// offset</span>
+ 		]
+ );
+ var_dump($mfind);
+
+<span class="hljs-comment">// Sample Insert</span>
+ $doc = [];
+ $doc[<span class="hljs-string">'id'</span>]  = $mongo-&gt;assign_uuid();
+ $doc[<span class="hljs-string">'name'</span>] = <span class="hljs-string">'My Name'</span>;
+ $doc[<span class="hljs-string">'description'</span>] = <span class="hljs-string">'Some description goes here ...'</span>;
+ $insert = $mongo-&gt;insert(<span class="hljs-string">'myTestCollection'</span>, (<span class="hljs-keyword">array</span>)$doc);
+ $doc = [];
+ var_dump($insert);
+
+<span class="hljs-comment">// Sample Bulk Insert (10 Documents)</span>
+ $docs = <span class="hljs-keyword">array</span>();
+ <span class="hljs-keyword">for</span>($i=<span class="hljs-number">0</span>; $i&lt;<span class="hljs-number">10</span>; $i++) {
+ 	$docs[] = [
+ 		<span class="hljs-string">'id'</span>  =&gt; $mongo-&gt;assign_uuid(),
+ 		<span class="hljs-string">'name'</span> =&gt; <span class="hljs-string">'Document #'</span>.$i,
+ 		<span class="hljs-string">'cost'</span> =&gt; ($i+<span class="hljs-number">1</span>),
+ 		<span class="hljs-string">'data'</span> =&gt; [
+ 			<span class="hljs-string">'description'</span> =&gt; <span class="hljs-string">'This is the document #'</span>.$i,
+ 			<span class="hljs-string">'date_time'</span> =&gt; (string) date(<span class="hljs-string">'Y-m-d H:i:s'</span>),
+ 			<span class="hljs-string">'rating'</span> =&gt; Smart::random_number(<span class="hljs-number">1</span>,<span class="hljs-number">9</span>) / <span class="hljs-number">100</span>
+ 		]
+ 	];
+ } <span class="hljs-comment">//end for</span>
+ $insert = $mongo-&gt;bulkinsert(<span class="hljs-string">'myTestCollection'</span>, (<span class="hljs-keyword">array</span>)$docs);
+ $docs = <span class="hljs-keyword">array</span>();
+ var_dump($insert);
+
+<span class="hljs-comment">// Sample Complete Update (Replace) ; it will completely replace the document with a new one, except the _id UID key, by _id ; works only with one document ; if more documents match the criteria, only the first one will be updated</span>
+ $doc = [];
+ $doc[<span class="hljs-string">'name'</span>] = <span class="hljs-string">'My New Name'</span>;
+ $doc[<span class="hljs-string">'description'</span>] = <span class="hljs-string">'Some description goes here ...'</span>;
+ $update = $mongo-&gt;update(
+ 		<span class="hljs-string">'myTestCollection'</span>,
+ 		[ <span class="hljs-string">'_id'</span> =&gt; <span class="hljs-string">'XXXXXXXXXX-XXXXXXXXXX-XXXXXXXXXX'</span> ], 			<span class="hljs-comment">// filter (update only this)</span>
+ 		[ <span class="hljs-number">0</span> =&gt; (<span class="hljs-keyword">array</span>) $doc ]										<span class="hljs-comment">// replace array</span>
+ 	);
+ $doc = [];
+ var_dump($update);
+
+<span class="hljs-comment">// Sample Partial Update, will update one or many: name and description ; if other keys exist in the stored document they remain unchanged</span>
+ $doc = [];
+ $doc[<span class="hljs-string">'name'</span>] = <span class="hljs-string">'My New Name'</span>;
+ $doc[<span class="hljs-string">'description'</span>] = <span class="hljs-string">'Some description goes here ...'</span>;
+ $update = $mongo-&gt;update(
+ 		<span class="hljs-string">'myTestCollection'</span>,
+ 		[ <span class="hljs-string">'id'</span> =&gt; <span class="hljs-string">'XXXXXXXXXX-XXXXXXXXXX-XXXXXXXXXX'</span> ], 			<span class="hljs-comment">// filter (update only this)</span>
+ 		<span class="hljs-string">'$set'</span>, 													<span class="hljs-comment">// increment operation</span>
+ 		(<span class="hljs-keyword">array</span>) $doc												<span class="hljs-comment">// update array</span>
+ 	);
+ $doc = [];
+ var_dump($update);
+
+<span class="hljs-comment">// Sample Upsert</span>
+ $doc = [];
+ $docID  = <span class="hljs-string">'XXXXXXXXXX-XXXXXXXXXX-XXXXXXXXXX'</span>; <span class="hljs-comment">// comes from $mongo-&gt;assign_uuid();</span>
+ $doc[<span class="hljs-string">'name'</span>] = <span class="hljs-string">'My Newest Name'</span>;
+ $doc[<span class="hljs-string">'description'</span>] = <span class="hljs-string">'Some description goes here ...'</span>;
+ <span class="hljs-keyword">try</span> {
+ 		$upsert = $mongo-&gt;upsert(
+ 			<span class="hljs-string">'myTestCollection'</span>,
+ 			[ <span class="hljs-string">'id'</span> =&gt; $docID ], 								<span class="hljs-comment">// filter (update only this)</span>
+ 			[ <span class="hljs-comment">// also the $mongo-&gt;update() can use this style of associative array</span>
+ 				<span class="hljs-string">'$setOnInsert'</span> 	=&gt; (<span class="hljs-keyword">array</span>) [ <span class="hljs-string">'id'</span> =&gt; $docID ], 						<span class="hljs-comment">// just on insert</span>
+ 				<span class="hljs-string">'$set'</span> 			=&gt; (<span class="hljs-keyword">array</span>) $doc, 									<span class="hljs-comment">// update array</span>
+ 				<span class="hljs-string">'$addToSet'</span> 	=&gt; (<span class="hljs-keyword">array</span>) [ <span class="hljs-string">'updated'</span> =&gt; date(<span class="hljs-string">'Y-m-d H:i:s'</span>) ] 	<span class="hljs-comment">// update array #2 using $addToSet (can be also: $push or $inc, ...)</span>
+ 			]
+ 		);
+ } <span class="hljs-keyword">catch</span>(<span class="hljs-keyword">Exception</span> $err) {
+ 		<span class="hljs-comment">// if upsert goes wrong ...</span>
+ }
+ $doc = [];
+ var_dump($upsert);
+
+<span class="hljs-comment">// Sample Delete</span>
+ $delete = $mongo-&gt;delete(
+ 		<span class="hljs-string">'myTestCollection'</span>,
+ 		[ <span class="hljs-string">'name'</span> =&gt; <span class="hljs-string">'An Item'</span>, <span class="hljs-string">'cost'</span> =&gt; <span class="hljs-number">8</span> ] <span class="hljs-comment">// filter</span>
+ );
+ var_dump($delete);
+
+<span class="hljs-comment">// Search Distinct with Filter</span>
+ $filter = $mongo-&gt;command(
+ 		[
+ 			<span class="hljs-string">'distinct'</span> =&gt; <span class="hljs-string">'myTestCollection'</span>,
+ 			<span class="hljs-string">'key'</span> =&gt; <span class="hljs-string">'cost'</span>,
+ 			<span class="hljs-string">'query'</span> =&gt; [ <span class="hljs-string">'cost'</span> =&gt; [ <span class="hljs-string">'$gte'</span> =&gt; <span class="hljs-number">5</span> ] ] <span class="hljs-comment">// find distinct where cost &gt; 5</span>
+ 		]
+ );
+ <span class="hljs-keyword">if</span>(!$mongo-&gt;is_command_ok($filter) {
+ 		<span class="hljs-comment">// command failed ...</span>
+ }
+ var_dump($filter);
+
+<span class="hljs-comment">// ... see more usage samples: modules/mod-samples/libs/TestUnitMongoDB.php</span>
+
+<span class="hljs-comment">// #end php code</span></code></pre>
+	
+			<br>
+		<div class="doc-container" id="Method-Sub--count">
+			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>count</b></span>&nbsp;(
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrQuery` Parameter is REQUIRED">$arrQuery</span></b></span>
+			
+			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+			<div class="doc-method-ret-params">
+			@magic __call()<br>
+										@return {MIXED}<br>
+			
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrQuery<br>
+			
+			
+			</div>
+							<div class="doc-method-comments">count documents in a collection</div>
+			
+			</div>
+		<div class="doc-container" id="Method-Sub--find">
+			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>find</b></span>&nbsp;(
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrQuery` Parameter is REQUIRED">$arrQuery</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrProjFields` Parameter is REQUIRED">$arrProjFields</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arrOptions` Parameter is OPTIONAL">$arrOptions</span></b></span>
+			
+			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+			<div class="doc-method-ret-params">
+			@magic __call()<br>
+										@return {MIXED}<br>
+			
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrQuery<br>
+			@param {ARRAY} $arrProjFields<br>
+			@param {ARRAY} $arrOptions<br>
+			
+			
+			</div>
+							<div class="doc-method-comments">find single or multiple documents in a collection with optional filter criteria / limit</div>
+			
+			</div>
+		<div class="doc-container" id="Method-Sub--findone">
+			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>findone</b></span>&nbsp;(
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrQuery` Parameter is REQUIRED">$arrQuery</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrProjFields` Parameter is REQUIRED">$arrProjFields</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arrOptions` Parameter is OPTIONAL">$arrOptions</span></b></span>
+			
+			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+			<div class="doc-method-ret-params">
+			@magic __call()<br>
+										@return {MIXED}<br>
+			
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrQuery<br>
+			@param {ARRAY} $arrProjFields<br>
+			@param {ARRAY} $arrOptions<br>
+			
+			
+			</div>
+							<div class="doc-method-comments">find single document in a collection with optional filter criteria / limit</div>
+			
+			</div>
+		<div class="doc-container" id="Method-Sub--bulkinsert">
+			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>bulkinsert</b></span>&nbsp;(
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrMultiDocs` Parameter is REQUIRED">$arrMultiDocs</span></b></span>
+			
+			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+			<div class="doc-method-ret-params">
+			@magic __call()<br>
+										@return {MIXED}<br>
+			
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrMultiDocs<br>
+			
+			
+			</div>
+							<div class="doc-method-comments">add multiple documents to a collection</div>
+			
+			</div>
+		<div class="doc-container" id="Method-Sub--insert">
+			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>insert</b></span>&nbsp;(
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrDoc` Parameter is REQUIRED">$arrDoc</span></b></span>
+			
+			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+			<div class="doc-method-ret-params">
+			@magic __call()<br>
+										@return {MIXED}<br>
+			
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrDoc<br>
+			
+			
+			</div>
+							<div class="doc-method-comments">add single document to a collection</div>
+			
+			</div>
+		<div class="doc-container" id="Method-Sub--upsert">
+			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>upsert</b></span>&nbsp;(
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrFilter` Parameter is REQUIRED">$arrFilter</span></b></span>, 
+			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$strUpdOpOrArrUpd` Parameter is REQUIRED">$strUpdOpOrArrUpd</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arrUpd` Parameter is OPTIONAL">$arrUpd</span></b></span>
+			
+			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+			<div class="doc-method-ret-params">
+			@magic __call()<br>
+										@return {MIXED}<br>
+			
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrFilter<br>
+			@param {MIXED} $strUpdOpOrArrUpd<br>
+			@param {ARRAY} $arrUpd<br>
+			
+			
+			</div>
+							<div class="doc-method-comments">insert single or modify single or multi documents in a collection that are matching the filter criteria</div>
+			
+			</div>
+		<div class="doc-container" id="Method-Sub--update">
+			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>update</b></span>&nbsp;(
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrFilter` Parameter is REQUIRED">$arrFilter</span></b></span>, 
+			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$strUpdOpOrArrUpd` Parameter is REQUIRED">$strUpdOpOrArrUpd</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arrUpd` Parameter is OPTIONAL">$arrUpd</span></b></span>
+			
+			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+			<div class="doc-method-ret-params">
+			@magic __call()<br>
+										@return {MIXED}<br>
+			
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrFilter<br>
+			@param {MIXED} $strUpdOpOrArrUpd<br>
+			@param {ARRAY} $arrUpd<br>
+			
+			
+			</div>
+							<div class="doc-method-comments">modify single or many documents in a collection that are matching the filter criteria</div>
+			
+			</div>
+		<div class="doc-container" id="Method-Sub--delete">
+			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>delete</b></span>&nbsp;(
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrFilter` Parameter is REQUIRED">$arrFilter</span></b></span>
+			
+			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+			<div class="doc-method-ret-params">
+			@magic __call()<br>
+										@return {MIXED}<br>
+			
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrFilter<br>
+			
+			
+			</div>
+							<div class="doc-method-comments">delete single or many documents from a collection that are matching the filter criteria</div>
+			
+			</div>
+		<div class="doc-container" id="Method-Sub--command">
+			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>command</b></span>&nbsp;(
+			<span class="doc-param-name"><b><span title="`$arrCmd` Parameter is REQUIRED">$arrCmd</span></b></span>
+			
+			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+			<div class="doc-method-ret-params">
+			@magic __call()<br>
+										@return {MIXED}<br>
+			
+			@param  $arrCmd<br>
+			
+			
+			</div>
+							<div class="doc-method-comments">run a command over database like: aggregate, distinct, mapReduce, create Collection, drop Collection, ...</div>
+			
+			</div>
+		<div class="doc-container" id="Method-Sub--igcommand">
+			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>igcommand</b></span>&nbsp;(
+			<span class="doc-param-name"><b><span title="`$arrCmd` Parameter is REQUIRED">$arrCmd</span></b></span>
+			
+			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
+			<div class="doc-method-ret-params">
+			@magic __call()<br>
+										@return {MIXED}<br>
+			
+			@param  $arrCmd<br>
+			
+			
+			</div>
+							<div class="doc-method-comments">run a command over database and ignore if error ; in the case of throw error will ignore it and will not stop execution ; will return the errors instead of result like: create Collection which may throw errors if collection already exists, drop Collection, similar if does not exists</div>
+			
+			</div>
+		
+		
+	
+</div>
+<!-- Skip Internal-Priv Method: `disconnect()` -->
+
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20200121 -->
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20200121 -->
+
+<!-- Sample Code -->
+<br>
+<div class="doc-container" id="SAMPLE--Code-">
+	<h2 class="doc-header">Sample code: PHP</h2>
+</div>
+<div class="doc-code">
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+</span><span style="color: #999999">// sample mongo config
+ </span><span style="color: #FFFFFF">$cfg_mongo </span><span style="color: #FFCC00; font-weight: bold">= array();
+ </span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">'type'</span><span style="color: #FFCC00; font-weight: bold">]         = </span><span style="color: #5F9CCE">'mongo-standalone'</span><span style="color: #FFCC00; font-weight: bold">;                 </span><span style="color: #999999">// mongodb server(s) type: 'mongo-standalone' | 'mongo-cluster' (sharding) | 'mongo-replica-set:My-Replica' (replica set)
+ </span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">'server-host'</span><span style="color: #FFCC00; font-weight: bold">]    = </span><span style="color: #5F9CCE">'127.0.0.1'</span><span style="color: #FFCC00; font-weight: bold">;                            </span><span style="color: #999999">// mongodb host or comma separed list of multiple hosts
+ </span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">'server-port'</span><span style="color: #FFCC00; font-weight: bold">]    = </span><span style="color: #5F9CCE">'27017'</span><span style="color: #FFCC00; font-weight: bold">;                                    </span><span style="color: #999999">// mongodb port
+ </span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">'dbname'</span><span style="color: #FFCC00; font-weight: bold">]        = </span><span style="color: #5F9CCE">'smart_framework'</span><span style="color: #FFCC00; font-weight: bold">;            </span><span style="color: #999999">// mongodb database
+ </span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">'username'</span><span style="color: #FFCC00; font-weight: bold">]         = </span><span style="color: #5F9CCE">''</span><span style="color: #FFCC00; font-weight: bold">;                                            </span><span style="color: #999999">// mongodb username
+ </span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">'password'</span><span style="color: #FFCC00; font-weight: bold">]         = </span><span style="color: #5F9CCE">''</span><span style="color: #FFCC00; font-weight: bold">;                                            </span><span style="color: #999999">// mongodb Base64-Encoded password
+ </span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">'timeout'</span><span style="color: #FFCC00; font-weight: bold">]        = </span><span style="color: #FFFFFF">5</span><span style="color: #FFCC00; font-weight: bold">;                                                </span><span style="color: #999999">// mongodb connect timeout in seconds
+ </span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">'slowtime'</span><span style="color: #FFCC00; font-weight: bold">]        = </span><span style="color: #FFFFFF">0.0035</span><span style="color: #FFCC00; font-weight: bold">;                                    </span><span style="color: #999999">// 0.0025 .. 0.0090 slow query time (for debugging)
+
+ // sample mongo connect
+ </span><span style="color: #FFFFFF">$mongo </span><span style="color: #FFCC00; font-weight: bold">= new </span><span style="color: #FFFFFF">SmartMongoDb</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">);
+
+</span><span style="color: #999999">// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+</div>
+<!-- Summary List -->
+<br>
+<!-- summary r.20210420 -->
+<script>
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* PHP Class \SmartMongoDb # Documentation Index *</option>
+		<optgroup label="Class \SmartMongoDb">
+			<option value="Class--Summary-">Class definition</option>
+		</optgroup>
+		<optgroup label="Class Methods">
+			<option value="Methods--Summary-">Methods list</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+			
+			
+						<option value="Method--assign_uuid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;assign_uuid()</option>
+			
+			
+						<option value="Method--get_ext_version"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_ext_version()</option>
+			
+			
+						<option value="Method--get_server_version"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_version()</option>
+			
+			
+						<option value="Method--setFatalErrMode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setFatalErrMode()</option>
+			
+			
+						<option value="Method--getFatalErrMode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getFatalErrMode()</option>
+			
+			
+						<option value="Method--getObjectId"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getObjectId()</option>
+			
+			
+						<option value="Method--getFtsDictionaryByLang"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getFtsDictionaryByLang()</option>
+			
+			
+			
+			
+			
+			
+						<option value="Method--escapeFtsText"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escapeFtsText()</option>
+			
+			
+						<option value="Method--escapeRegexText"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escapeRegexText()</option>
+			
+			
+						<option value="Method--is_command_ok"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;is_command_ok()</option>
+			
+			
+						<option value="Method--__call"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__call()</option>
+			
+						<option value="Method-Sub--count">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;count()</option>
+			<option value="Method-Sub--find">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;find()</option>
+			<option value="Method-Sub--findone">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findone()</option>
+			<option value="Method-Sub--bulkinsert">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;bulkinsert()</option>
+			<option value="Method-Sub--insert">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;insert()</option>
+			<option value="Method-Sub--upsert">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;upsert()</option>
+			<option value="Method-Sub--update">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;update()</option>
+			<option value="Method-Sub--delete">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;delete()</option>
+			<option value="Method-Sub--command">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;command()</option>
+			<option value="Method-Sub--igcommand">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;igcommand()</option>
+			
+			
+			
+			
+			
+		</optgroup>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+			
+		</optgroup>
+				<optgroup label="Class Sample usage">
+			<option value="SAMPLE--Code-">Sample code</option>
+		</optgroup>
+		
+	</select>
+</div>
+<!-- summary-selectjs r.20210420 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div><center>
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
+</center></div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Stacked Bar Chart</title>
+		<script src="../src/Chart.Core.js"></script>
+		<script src="../src/Chart.Line.js"></script>
+		<script src="../src/Chart.StackedArea.js"></script>
+	</head>
+	<body>
+		<div style="width: 50%; float:left">
+			<canvas id="canvas" height="450" width="600"></canvas>
+			<br>
+			<br>
+			<div style="text-align:center">
+				Standard StackedBar
+			</div>
+		</div>
+		<div style="width: 50%; float:left">
+			<canvas id="canvas2" height="450" width="600"></canvas>
+			<br>
+			<br>
+			<div style="text-align:center">
+				Relative StackedBar
+			</div>
+		</div>
+		<script>
+		var randomScalingFactor = function() {
+			return Math.round(Math.random() * 100);
+		};
+
+		var areaChartData = {
+			labels: ["January", "February", "March", "April", "May", "June", "July"],
+			datasets: [{
+				fillColor: "rgba(220,220,220,0.5)",
+				strokeColor: "rgba(220,220,220,0.8)",
+				pointColor: "rgba(220,220,220,0.8)",
+				pointStrokeColor: "rgba(220,220,220,0.8)",
+				pointHighlightFill: "rgba(220,220,220,0.75)",
+				pointHighlightStroke: "rgba(220,220,220,1)",
+				data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+			}, {
+				fillColor: "rgba(151,187,205,0.5)",
+				strokeColor: "rgba(151,187,205,0.8)",
+				pointColor: "rgba(151,187,205,0.8)",
+				pointStrokeColor: "rgba(151,187,205,0.8)",
+				pointHighlightFill: "rgba(151,187,205,0.75)",
+				pointHighlightStroke: "rgba(151,187,205,1)",
+				data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+			}, {
+				fillColor: "rgba(240,73,73,0.5)",
+				strokeColor: "rgba(240,73,73,0.8)",
+				pointColor: "rgba(240,73,73,0.8)",
+				pointStrokeColor: "rgba(240,73,73,0.8)",
+				pointHighlightFill: "rgba(240,73,73,0.75)",
+				pointHighlightStroke: "rgba(240,73,73,1)",
+				data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+			}]
+		};
+		window.onload = function() {
+			var ctx = document.getElementById("canvas").getContext("2d");
+			var ctx2 = document.getElementById("canvas2").getContext("2d");
+			window.myStackedArea = new Chart(ctx).StackedArea(areaChartData, {
+				responsive: true,
+			});
+			window.myStackedArea2 = new Chart(ctx2).StackedArea(areaChartData, {
+				responsive: true,
+				relativePoints: true,
+				bezierCurve: false,
+			});
+		};
+		</script>
+	</body>
+</html>

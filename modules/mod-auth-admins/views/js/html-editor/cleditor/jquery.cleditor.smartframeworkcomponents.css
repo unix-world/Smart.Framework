@@ -1,0 +1,75 @@
+/*
+ [@[#[!NO-STRIP!]#]@]
+ this fails to compile with google closure stylesheets (unrecognized: @-moz ...)
+*/
+/* CLEditor / SmartComponents v.20230123 */
+
+@import url("../../../../../../lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css");
+
+* {
+	font-family: 'IBM Plex Mono',monospace,courier !important;
+	font-size: 14px !important;
+}
+table {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	border: 1px dotted #F0F0F0;
+}
+td {
+	border: 1px dotted #CCCCCC;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #CCCCCC;
+	height: 1px;
+}
+span {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	border: 1px dashed #999999;
+	background-image: url(images/css-span.png);
+	background-repeat: no-repeat;
+	background-position: right top;
+}
+div {
+	padding-right:10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	border: 1px dashed #0077C0;
+	background-image: url(images/css-div.png);
+	background-repeat: no-repeat;
+	background-position: right top;
+	min-height:10px;
+	min-width: 10px;
+}
+p {
+	padding-right:10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	border: 1px dashed #86BD00;
+	background-image: url(images/css-p.png);
+	background-repeat: no-repeat;
+	background-position: right top;
+}
+section {
+	padding-right:10px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	border: 1px dashed #FF5500;
+	min-height: 15px;
+	min-width: 15px;
+	background-image: url(images/css-section.png);
+	background-repeat: no-repeat;
+	background-position: right top;
+}
+
+/* Fix for Firefox Missing Images PlaceHolder */
+@-moz-document url-prefix(http), url-prefix(file) {
+	img:-moz-broken {
+		-moz-force-broken-image-icon:1;
+		width:24px;
+		height:24px;
+	}
+}
+
+/* END */

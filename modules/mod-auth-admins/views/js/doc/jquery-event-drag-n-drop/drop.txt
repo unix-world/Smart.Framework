@@ -1,0 +1,138 @@
+
+jquery.event.drop
+
+A jquery special event plugin that makes the task of adding complex drop interactions, to any element, simple and powerful.
+Overview
+
+The plugin uses the simulated drag special events, to trigger drop events when elements are dragged into others. It simplifies a recurring pattern of event interaction that can be fairly complex to design in a consistent, cross-browser manner. Drop interaction patterns are incredibly diverse, and hopefully this event pattern will simplify everything.
+
+This plugin is focused on correctly simulating the drop events in a very usable way. This plugin does not add classnames, does not alter the position or appearance of any elements, and does not alter the DOM. This plugin only provides the essential callbacks at the correct points in the interaction model to enable developers to have complete control over the interactions that they create. This reduces the file size, eliminates dependencies, and increases performance.
+Events
+
+A basic drop interaction occurs when a user drags (mousedown, mousemove) an element inside another and releases (mouseup) the dragged element. This plugin takes those DOM events (and drag events) and triggers the following events at key points in the interaction. None of these drop events bubble.
+
+    dropinit
+    This event is fired after "draginit" against any element with a "dropinit" event bound. The handler can return false to make a given drop target unavailable for the current dragged element interaction, or can return elements to use as replacement drop targets for the current interaction.
+    dropstart
+    This event is fired after "drag" when a dragged element or proxy moves within the tolerance of an element. The handler can return false to suppress "drop" and "dropend" events from firing for the current element. If multiple elements are being dragged, this event only fires when not active and the first element enters.
+    drop
+    This event is fired when a dragged element is released inside the tolerance of a drop element. The handler can return false, to null out the drop callback property within the "dragend" handlers. If multiple elements are being dragged, this event fires once for each active element.
+    dropend
+    This event is fired after a dragged element leaves the tolerance of a drop element, or after a drop event. If multiple elements are being dragged, this event only fires when active and the last element leaves.
+
+Here is the complete order of events per drag and drop interaction:
+draginit > dropinit > dragstart > drag > dropstart > drop > dropend > dragend
+
+This plugin also supports "live" event delegation... sort of. When a live event gets bound, the plugin automatically adds a "dropinit" event which makes the interaction work correctly. It finds any child elements that match each live selector and attaches the corresponding handlers to them. After the interaction is complete, the handlers get cleaned up. The most important point to take from this is that live "dropinit" events will not work correctly. Also, there is a definite performance hit with many elements and selectors, because unlike live drag, which only checks the event target, this solution searches the DOM tree on each dropinit operation.
+Methods
+
+In the interest of maintaining consistency with the jQuery API, a helper method has been added as shorthand for binding and triggering "drop" event handlers. The previous version of this plugin allowed this method to be overloaded with arguments to additionally bind handlers for "dropstart" and "dropend" in a single call, but this is no longer supported. Instead, an optional "type" argument may be included to bind or trigger the related events (the "drop" prefix is optional).
+
+    .drop()
+    Triggers any bound "drop" event handlers for each element in the jQuery collection.
+    Equivilent to: .trigger("drop").
+    .drop( type )
+    Triggers any bound "droptype" event handlers for each element in the jQuery collection. (Types are: init, start, end)
+    Equivilent to: .trigger("droptype").
+    .drop( handler )
+    Binds a "drop" event handler to each element in the jQuery collection.
+    Equivilent to: .bind("drop", handler )
+    .drop( type, handler )
+    Binds a "droptype" event handler to each element in the jQuery collection. (Types are: init, start, end)
+    Equivilent to: .bind("droptype", handler )
+
+In order to manage the "drop" options easily, a static utility method was added. In the previous version of this plugin, it was called "dropManage" but that has been changed to simply "drop". The management of drop targets is no longer handled by this utility function.
+
+    $.drop( options )
+    Sets global drop options.
+    Previously called: $.dropManage( options )
+
+Options
+
+Unlike the "drag" events, the drop options are global and cannot set using the "bind" or "drop" jQuery methods. Instead, you can use the "$.drop" utility method to configure the drop interactions.
+
+    mode (String) Default: "overlap"
+    A string which matches any one of the configured tolerance modes (fit, intersect, middle, overlap) If a mode is not found, the plugin will use the mouse position as a fallback.
+    tolerance (Function) Default: null
+    An optional function to use instead of a configured tolerance mode. The function has the same signature as any tolerance mode function.
+    delay (Number) Default: 20
+    A number which indicates the frequency to check drop target tolerances during "drag" events. This can be used to tune performance when dealing with many elements.
+    multi (Boolean/Number) Default: 1
+    A value which indicates how many drop targets are allowed to be win per interaction for each dragged element. (true = unlimited, false = none)
+
+The default values are stored as properties of the jQuery.event.special.drop object.
+Properties
+
+The following properties belong to a dragdrop callback object which is passed as the second argument to each event handler, unique to each dragged element, and shared throughout the drag interaction.
+
+    target (Element)
+    The drag element, or the drop element, to which the event handler has been bound. (Always the same as "this" within an event handler)
+    drag (Element)
+    The dragged element for the given interaction to which the drag event has been bound.
+    proxy (Element)
+    The dragged element, or any element returned by the "dragstart" handler. The proxy element is used to determine the drop target tolerance.
+    drop (Array)
+    Contains all of the active drop targets for the current interaction.
+    available (Array)
+    Contains all of the available drop targets for the current interaction.
+    update (Function)
+    A helper function which updates the locations of all of the available drop targets for the current interaction.
+    startX (Number)
+    The horizontal location of the "mousedown" event.
+    startY (Number)
+    The vertical location of the "mousedown" event.
+    deltaX (Number)
+    The horizontal distance moved from "startX".
+    deltaY (Number)
+    The vertical distance moved from "startX".
+    originalX (Number)
+    The starting horizontal position of the drag "target" element.
+    originalY (Number)
+    The starting vertical position of the drag "target" element.
+    offsetX (Number)
+    The the moved horizontal position of the drag "target" element.
+    offsetY (Number)
+    The the moved vertical position of the drag "target" element.
+
+The callback object is extensible. You can add any property within one event handler and it will be available in any other event handlers that follow (per dragged element). Additional properties or methods can be added to jQuery.event.special.drag.callback.prototype and will be available in all event handlers for all elements.
+Demos
+
+    Basic
+    One of the simplest ways to create a drop interaction, with the "drop" method.
+    Active
+    Using the "dropstart" and "dropend" events to toggle an "active" drop state.
+    Available
+    Using the "available" property to activate drop targets during the drag interaction.
+    Dragover
+    Using the "drop" property to detect active targets during the drag interaction.
+    Proxy
+    Using a drag "proxy" element with drop interaction.
+    Live
+    Using "live" event delegation with "drop" events.
+    Overlap
+    Using the "overlap" tolerance mode to select drop targets.
+    Intersect
+    Using the "intersect" tolerance mode to select drop targets.
+    Middle
+    Using the "middle" tolerance mode to select drop targets.
+    Fit
+    Using the "fit" tolerance mode to select drop targets.
+    Mouse
+    Using the fallback "mouse" tolerance mode to select drop targets.
+    Tolerance
+    Using "dropManage" to create a custom circular tolerance mode.
+    Prevent
+    Using the "draginit" event to cancel drop interaction.
+    Multi
+    Using "dropManage" to allow multiple drop targets per drag interaction.
+    Multi2
+    Using multiple drag elements and multiple drop targets, at the same time.
+    Affordance
+    Using the drag element's "drop" option, to create drop target affordance.
+    Selection
+    Using a drag proxy and multi drop to creating a dragged area selection.
+    Reorder
+    Using drag and drop events and a custom tolerance to rearrange items in a list.
+    Moving
+    Using the callback object "update" method to track moving drop targets.
+

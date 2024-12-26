@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>HiliteJs - Web Scripting - Demo</title>
+
+  <link rel="stylesheet" href="../prism/fonts.css">
+  <link rel="stylesheet" href="../prism/prism-dark.css">
+  <script type="text/javascript" src="../prism/prism.js"></script>
+
+  <script type="text/javascript" src="../../jquery/jquery.js"></script>
+  <script>
+  jQuery(document).ready(() => {
+    jQuery('div pre code').each((i, el) => {
+      $(el).parent().addClass('line-numbers');
+      Prism.highlightElement(el);
+    });
+  });
+  </script>
+</head>
+<body>
+
+<h1>HiliteJs Demo: Web Scripting</h1>
+<hr>
+
+<!-- Javascript -->
+
+<div>
+<h2>JavaScript</h2>
+<pre><code class="language-javascript">const myClass = new class {
+	constructor() {
+		const _class = this;
+		const $initHighlight = function(block, cls) {
+		  var myVar = false;
+		  let otherVar = true;
+		  const myObj = null;
+		  try {
+			if (cls.search(/\bno\-highlight\b/) != -1)
+			  return process(block, true, 0x0F) +
+					 ` class=&quot;${cls}&quot;`;
+		  } catch (e) {
+			/* handle exception */
+			return e;
+		  }
+		  for (var i = 0 / 2; i &lt; classes.length; i++) {
+			if (checkCondition(classes[i]) == undefined) {
+			  console.warn(&#39;undefined&#39;);
+			} else {
+				console.log(&quot;OK&quot;);
+			} //end if
+		  } //end for
+		  return null;
+		};
+		_class.$initHighlight = $initHighlight; // export as public
+	}
+};
+export myClass;
+</code></pre>
+</div>
+
+<!-- JSON -->
+
+<div>
+<h2>JSON</h2>
+<pre><code class="language-json">[
+  {
+    &quot;title&quot;: &quot;apples&quot;,
+    &quot;count&quot;: [12000, 20000, "string"],
+    &quot;description&quot;: {&quot;text&quot;: &quot;...&quot;, &quot;sensitive&quot;: false}
+  },
+  {
+    &quot;title&quot;: &quot;oranges&quot;,
+    &quot;count&quot;: [17500, null, "another\" string"],
+    &quot;description&quot;: {&quot;text&quot;: &quot;...&quot;, &quot;sensitive&quot;: true}
+  }
+]
+</code></pre>
+</div>
+
+<!-- YAML -->
+
+<div>
+<h2>YAML</h2>
+<pre><code class="language-yaml">---
+# comment
+string_1: &quot;Bar&quot;
+string_2: &#39;bar&#39;
+string_3: bar
+inline_keys_ignored: sompath/name/file.jpg
+keywords_in_yaml:
+  - true
+  - false
+  - TRUE
+  - FALSE
+  - 21
+  - 21.0
+  - !!str 123
+&quot;quoted_key&quot;: &amp;foobar
+  bar: foo
+  foo:
+  &quot;foo&quot;: bar
+
+reference: *foobar
+
+multiline_1: &quot;
+  Multiline string
+  &quot;
+multiline_2: |
+  Multiline
+  String
+multiline_3: &gt;
+  Multiline
+  String
+
+array_nested:
+- a
+- b: 1
+  c: 2
+- b
+- comment
+</code></pre>
+</div>
+
+<!-- INI -->
+
+<div>
+<h2>INI (settings)</h2>
+<pre><code class="language-toml language-ini">; boilerplate
+[package]
+name = &quot;some_name&quot;
+authors = [&quot;Author&quot;]
+description = &quot;This is a description&quot;
+
+[[lib]]
+name = ${NAME}
+default = True
+auto = no
+counter = 1000
+</code></pre>
+</div>
+
+<!-- PHP -->
+
+<div>
+<h2>PHP</h2>
+<pre><code class="language-php">&lt;&quest;php
+
+require_once &#39;Zend/Uri/Http.php&#39;;
+
+namespace Location\Web;
+
+use \MyNamespace;
+
+final class MyClass {
+
+	public $prop1 = null;
+	protected $prop2 = false;
+	private $prop3 = [];
+
+	public function __construct(?string $what) {
+		$this-&gt;prop1 = (string) $what;
+		$this-&gt;prop2 = (bool) true;
+		$this-&gt;prop3 = [
+			'id' =&gt; (int) 100,
+			'val' =&gt; (float) 3.14,
+			'data' =&gt; (array) $_SERVER,
+		];
+	}
+
+	public function __destruct() {
+		$this-&gt;clearData();
+	}
+
+	public function getProp2() {
+		return (array) $this-&gt;prop2;
+	}
+
+	protected function getProp3() {
+		return (array) $this-&gt;prop3;
+	}
+
+	private function clearData() {
+		$this-&gt;prop1 = null;
+		$this-&gt;prop2 = false;
+		$this-&gt;prop3 = [];
+	}
+
+}
+
+interface Factory {
+    static function _factory();
+}
+
+abstract class URI extends BaseURI implements Factory {
+    abstract function test();
+
+    public static $st1 = 1;
+    const ME = &quot;Yo&quot;;
+    var $list = NULL;
+    private $var;
+
+    /**
+     * Returns a URI
+     *
+     * @return URI
+     */
+    final static public function _factory($stats = array(), $uri = &#39;http&#39;, $arr = []) {
+        static::$st1 = 1;
+
+        echo __METHOD__.' =&gt; '.__CLASS__.'::'.__FUNCTION__.' # '.__DIR__.' '.__FILE__.' # '.__LINE__;
+
+        $uri = explode(&#39;:&#39;, $uri, 0b10);
+        $schemeSpecific = (string) isset($uri[1]) ? $uri[1] : &#39;&#39;;
+
+        $desc = &#39;Multi
+line description&#39;;
+
+$heredoc = <<<'H-SYNTAX'
+This is 'another'
+&quot;syntax&quot; that is supported in PHP for strings ...
+H-SYNTAX;
+
+        // Security check
+        if (!ctype_alnum($scheme)) {
+            throw new Zend_Uri_Exception(&#39;Illegal scheme&#39;);
+        }
+
+        $this-&gt;var = (int) (float) 0 - self::$st;
+        $this-&gt;list = list(Array(&quot;1&quot;=&gt; 2, 2=&gt;self::ME, 3 =&gt; \Location\Web\URI::class));
+
+        $var1 = (bool) true;
+        $var2 = (bool) false;
+        $var3 = (array) [1, 'a', [3]];
+        $var4 = null;
+
+        return array(
+            &#39;uri&#39;   =&gt; $uri,
+            &#39;value&#39; =&gt; null,
+        );
+    }
+}
+
+function myFunction($param1, $param2=[]) {
+
+    // initialize
+    $isTrue = false;
+
+    // create curl resource
+    $ch = curl_init();
+
+    // set url
+    curl_setopt($ch, CURLOPT_URL, &quot;example.com&quot;);
+
+    //return the transfer as a string
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+    // $output contains the output string
+    $output = curl_exec($ch);
+
+    // close curl resource to free up system resources
+    curl_close($ch);
+
+} //end function
+
+echo URI::ME . URI::$st1;
+
+__halt_compiler () ; datahere
+datahere
+datahere */
+datahere
+</code></pre>
+</div>
+
+<!-- MongoDB -->
+
+<div>
+<h2>MongoDB</h2>
+<pre><code class="language-mongodb">{
+	"tag": {
+		"$not": {
+			"$eq": "&lt;positive-integer&gt;"
+		}
+	},
+	"type": "page",
+	"size": {
+		"$gt": 3
+	},
+	"extra": null,
+	"active": true
+}
+</code></pre>
+</div>
+
+<!-- SQL -->
+
+<div>
+<h2>SQL</h2>
+<pre><code class="language-sql">CREATE TABLE &quot;topic&quot; (
+    &quot;id&quot; serial NOT NULL PRIMARY KEY,
+    &quot;forum_id&quot; integer NOT NULL,
+    &quot;subject&quot; varchar(255) NOT NULL
+);
+ALTER TABLE &quot;topic&quot;
+ADD CONSTRAINT forum_id FOREIGN KEY (&quot;forum_id&quot;)
+REFERENCES &quot;forum&quot; (&quot;id&quot;);
+
+-- Initials
+insert into &quot;topic&quot; (&quot;forum_id&quot;, &quot;subject&quot;)
+values (2, &#39;D&#39;&#39;artagnian&#39;);
+</code></pre>
+</div>
+
+<!-- PgSQL -->
+
+<div>
+<h2>PostgreSQL specific SQL with PL/PgSQL</h2>
+<pre><code class="language-sql">-- Sample PostgreSQL Functions
+
+BEGIN;
+SELECT sum(&quot;salary&quot;) OVER w, avg(&quot;salary&quot;) OVER w
+  FROM &quot;empsalary&quot;
+  WINDOW w AS (PARTITION BY &quot;depname&quot; ORDER BY &quot;salary&quot; DESC);
+END;
+
+CREATE FUNCTION days_of_week() RETURNS SETOF text AS $$
+BEGIN
+  FOR i IN 7 .. 13 LOOP
+    RETURN NEXT to_char(to_date(i::text,&#39;J&#39;),&#39;TMDy&#39;);
+  END LOOP;
+END;
+$$ STABLE LANGUAGE plpgsql;
+
+CREATE TABLE test_url (url varchar NOT NULL, url_tsvector tsvector NOT NULL);
+CREATE OR REPLACE FUNCTION generate_url_tsvector(varchar)
+RETURNS tsvector
+LANGUAGE sql
+AS $_$
+  SELECT to_tsvector(regexp_replace($1, '[^\w]+', ' ', 'gi'));
+$_$;
+
+CREATE OR REPLACE FUNCTION before_insert_test_url()
+RETURNS TRIGGER
+LANGUAGE plpgsql AS $_$
+BEGIN
+  NEW.url_tsvector := generate_url_tsvector(NEW.url);
+  RETURN NEW;
+END
+$_$;
+
+-- Sample PostgreSQL statements
+
+SELECT &quot;id&quot;, &quot;data&quot;#&gt;&gt;'{level1,level2,0}' || '.' FROM &quot;public&quot;.&quot;test_table&quot; ORDER BY &quot;data&quot;-&gt;&gt;'id' ASC
+
+insert into &quot;escape_test&quot; (text) values (E'This is the first part \\n And this is the second');
+</code></pre>
+</div>
+
+<!-- Markdown -->
+
+<div>
+<h2>Markdown</h2>
+<pre><code class="language-markdown"># hello world
+
+you can write text [with links](http://example.com) inline or [link references][1].
+
+* one _thing_ has *em*phasis
+* two __things__ are **bold**
+
+[1]: http://example.com
+
+---
+
+hello world
+===========
+
+&lt;this_is inline=&quot;xml&quot;&gt;&lt;/this_is&gt;
+
+&gt; markdown is so cool
+
+    so are code segments
+
+1. one thing (yeah!)
+2. two thing `i can write code`, and `more` wipee!
+
+</code></pre>
+</div>
+
+<!-- HTML / XML -->
+
+<div>
+<h2>HTML</h2>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;title&gt;Title&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      width: 500px;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;img src=&quot;test.png&quot; width=&quot;160&quot; height=&quot;120&quot; &gt;
+  &lt;p checked class=&quot;title&quot; id='title'&gt;Title&lt;/p&gt;
+  &lt;!-- here goes the rest of the page --&gt;
+  &lt;script type=&quot;application/javascript&quot;&gt;
+    function $init(){
+      return true;
+    } //end function
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</div>
+
+<!-- CSS -->
+
+<div>
+<h2>CSS (style sheet)</h2>
+<pre><code class="language-css">@font-face {
+  font-family: Chunkfive; src: url(&#39;Chunkfive.otf&#39;);
+}
+
+body, .usertext {
+  color: #F0F0F0; background: #600;
+  font-family: Chunkfive, sans;
+}
+
+@import url(print.css);
+@media print {
+  a[href^=http]::after {
+    content: attr(href)
+  }
+}
+</code></pre>
+</div>
+
+<!-- Less -->
+
+<div>
+<h2>Less (style sheet)</h2>
+<pre><code class="language-less">@import &quot;fruits&quot;;
+
+@rhythm: 1.5em;
+
+@media screen and (min-resolution: 2dppx) {
+    body {font-size: 125%}
+}
+
+section &gt; .foo + #bar:hover [href*=&quot;less&quot;] {
+    margin:     @rhythm 0 0 @rhythm;
+    padding:    calc(5% + 20px);
+    background: #f00ba7 url(http://placehold.alpha-centauri/42.png) no-repeat;
+    background-image: linear-gradient(-135deg, wheat, fuchsia) !important ;
+    background-blend-mode: multiply;
+}
+
+@font-face {
+    font-family: /* ? */ &#39;Omega&#39;;
+    src: url(&#39;../fonts/omega-webfont.woff?v=2.0.2&#39;);
+}
+
+.icon-baz::before {
+    display:     inline-block;
+    font-family: &quot;Omega&quot;, Alpha, sans-serif;
+    content:     &quot;\f085&quot;;
+    color:       rgba(98, 76 /* or 54 */, 231, .75);
+}
+</code></pre>
+</div>
+
+<!-- Scss -->
+
+<div>
+<h2>SCSS (style sheet)</h2>
+<pre><code class="language-scss">@import &quot;compass/reset&quot;;
+
+// variables
+$colorGreen: #008000;
+$colorGreenDark: darken($colorGreen, 10);
+
+@mixin container {
+    max-width: 980px;
+}
+
+// mixins with parameters
+@mixin button($color:green) {
+    @if ($color == green) {
+        background-color: #008000;
+    }
+    @else if ($color == red) {
+        background-color: #B22222;
+    }
+}
+
+button {
+    @include button(red);
+}
+
+div,
+.navbar,
+#header,
+input[type=&quot;input&quot;] {
+    font-family: &quot;Helvetica Neue&quot;, Arial, sans-serif;
+    width: auto;
+    margin: 0 auto;
+    display: block;
+}
+
+.row-12 &gt; [class*=&quot;spans&quot;] {
+    border-left: 1px solid #B5C583;
+}
+
+// nested definitions
+ul {
+    width: 100%;
+    padding: {
+        left: 5px; right: 5px;
+    }
+  li {
+      float: left; margin-right: 10px;
+      .home {
+          background: url(&#39;http://placehold.it/20&#39;) scroll no-repeat 0 0;
+    }
+  }
+}
+
+.banner {
+    @extend .container;
+}
+
+a {
+  color: $colorGreen;
+  &amp;:hover { color: $colorGreenDark; }
+  &amp;:visited { color: #c458cb; }
+}
+
+@for $i from 1 through 5 {
+    .span#{$i} {
+        width: 20px*$i;
+    }
+}
+
+@mixin mobile {
+  @media screen and (max-width : 600px) {
+    @content;
+  }
+}</code></pre>
+</div>
+
+<!-- DIFF -->
+
+<div>
+<h2>Diff (unified)</h2>
+<pre><code class="language-diff">Index: languages/ini.js
+===================================================================
+--- languages/ini.js    (revision 199)
++++ languages/ini.js    (revision 200)
+@@ -1,8 +1,7 @@
+ hljs.LANGUAGES.ini =
+ {
+   case_insensitive: true,
+-  defaultMode:
+-  {
++  defaultMode: {
+     contains: [&#39;comment&#39;, &#39;title&#39;, &#39;setting&#39;],
+     illegal: &#39;[^\\s]&#39;
+   },
+
+*** /path/to/original timestamp
+--- /path/to/new      timestamp
+***************
+*** 1,3 ****
+--- 1,9 ----
++ This is an important
++ notice! It should
++ therefore be located at
++ the beginning of this
++ document!
+
+! compress the size of the
+! changes.
+
+  It is important to spell
+</code></pre>
+</div>
+
+<!-- #END -->
+<br>
+<hr>
+<br>
+
+</body>
+</html>

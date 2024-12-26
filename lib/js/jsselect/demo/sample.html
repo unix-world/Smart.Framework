@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>SlimSelect Demo</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" type="text/css" href="../slimselect.css" media="all">
+<script src="../slimselect.js"></script>
+</head>
+<body>
+<h1>Slim Select</h1>
+<h2>Single Select</h2>
+<label for="cars">Choose a car:</label>
+<select id="sel-s" name="cars-s">
+	<option value=""></option>
+	<option value="volvo">Volvo</option>
+	<option value="saab">Saab</option>
+	<option value="opel">Opel</option>
+	<option value="audi">Audi</option>
+</select>
+<h2>Multi Select</h2>
+<label for="cars">Choose one or many car(s):</label>
+<select id="sel-m" name="cars-m" multiple>
+	<option value="volvo">Volvo</option>
+	<option value="saab">Saab</option>
+	<option value="opel">Opel</option>
+	<option value="audi">Audi</option>
+</select>
+<script>
+try {
+	new SlimSelect({
+		select: '#sel-s',
+	});
+} catch(err){
+	console.warn('ERR: SlimSelect Single Failed:', err);
+}
+try {
+	new SlimSelect({
+		select: '#sel-m',
+		isMultiple: true,
+	});
+} catch(err){
+	console.warn('ERR: SlimSelect Multi Failed:', err);
+}
+</script>
+</body>
+</html>

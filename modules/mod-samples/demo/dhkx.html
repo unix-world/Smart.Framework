@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="icon" href="data:,">
+<title>DHKX Demo BigInt</title>
+<link rel="stylesheet" type="text/css" href="../../../lib/core/plugins/fonts/typo/sans/ibm-plex-sans.css" media="all">
+<style type="text/css">* { font-family: 'IBM Plex Sans',arial,sans-serif; }</style>
+<link rel="stylesheet" type="text/css" href="../../../lib/css/default.css" media="all">
+<link rel="stylesheet" type="text/css" href="../../../lib/css/app.pak.css" media="all">
+<script src="../../../lib/js/jquery/jquery.js"></script>
+<script src="../../../lib/js/framework/src/core_utils.js"></script>
+<script>
+const smartJ$Options = {
+	DhKx: {
+		UseBigInt: !! smartJ$Utils.randNum(0,1),
+	},
+};
+Object.freeze(smartJ$Options); // sec.
+window.smartJ$Options = smartJ$Options; // g-exp.
+</script>
+<script src="../../../lib/js/framework/src/crypt_utils.js"></script>
+</head>
+<body>
+<div id="result"></div>
+<pre id="jsonData"></pre>
+<pre id="jsonIdzData"></pre>
+<pre id="errMsg" style="color:#FF3300; font-weight:bold;"></pre>
+<script>
+// v.20231117
+let failures = 0;
+const dh = smartJ$CipherCrypto.dhkxEs();
+let eidz = null;
+if(dh.err) {
+	failures++;
+} else {
+	eidz = smartJ$CipherCrypto.dhkxDs(dh.eidz);
+	if(eidz.err != '') {
+		failures++;
+	} else {
+		if(eidz.shad != dh.shad) {
+			failures++;
+		} //end if
+	} //end if else
+} //end if
+$('#result').html('<h1>Failures: #' + smartJ$Utils.escape_html(failures) + '</h1>');
+$('#jsonData').empty().text(JSON.stringify(dh, null, 4));
+$('#jsonIdzData').empty().text(JSON.stringify(eidz, null, 4));
+if(failures > 0) {
+	$('#errMsg').text('Failure(s) #' + failures + ' found ...');
+}
+</script>
+<a class="ux-button" href="dhkx.html">Reload</a>
+</body>
+</html>

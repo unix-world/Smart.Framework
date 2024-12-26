@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<!--
+V-TimeLine r.20221119
+	License: BSD
+	(c) 2015-2022 unix-world.org
+	This software component was inspired from the following opensource projects:
+		(c) 2017 https://github.com/RyanFitzgerald/vertical-timeline
+		(c) 2014 https://github.com/soundarapandian/timeline
+		(c) 2015 https://github.com/CodyHouse/vertical-timeline
+-->
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../../../../../core/plugins/fonts/typo/sans/ibm-plex-sans.css">
+	<link rel="stylesheet" href="../../../../../css/toolkit/sf-icons.css">
+	<link rel="stylesheet" href="../style.css">
+	<link rel="stylesheet" href="../style-responsive.css">
+	<title>Responsive Vertical Timeline</title>
+	<style>
+		* {
+			font-family: 'IBM Plex Sans',arial,sans-serif;
+			font-smooth: always;
+		}
+		body {
+			color: #333333;
+			background-color: #FFFFFF;
+		}
+	</style>
+	<script src="../../../../../js/jquery/jquery.js"></script>
+</head>
+<body>
+	<div align="center">
+		<h1>Responsive Vertical Timeline</h1>
+	</div>
+	<div id="the-timeline-placeholder"></div>
+	<br>
+	<hr class="vtml-hr">
+	<br>
+	<button onclick="self.location='sample-small.html';" style="position:fixed; top:20px; right:20px;">Small Sized TimeLine</button>
+	<script>
+		function renderTimeline(code) {
+			$('#the-timeline-placeholder').html(code);
+		}
+		$.get('timeline.inc.htm', renderTimeline, 'text');
+	</script>
+</body>
+</html>

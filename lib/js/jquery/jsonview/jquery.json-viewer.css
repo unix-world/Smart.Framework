@@ -1,0 +1,80 @@
+/**
+ * jQuery json-viewer @ r.2016.08.22 # https://github.com/abodelot/jquery.json-viewer
+ * @author: Alexandre Bodelot <alexandre.bodelot@gmail.com>
+ * contains fixes by unixman: r.20220920
+ */
+
+/* fix by unixman */
+.json-render-area {
+	border: 1px solid #DDDDDD;
+	padding: 0.5em 1.5em;
+	background: none !important; /* reset, it inherited from code */
+}
+
+.json-render-area li,
+ul.json-dict li,
+ol.json-array li {
+	margin-top: 0 !important;
+	margin-bottom: 0 !important;
+}
+
+/* Syntax highlighting for JSON objects */
+ul.json-dict, ol.json-array {
+	list-style-type: none;
+	margin: 0 0 0 1px;
+	border-left: 1px dotted #DDDDDD;
+	padding-left: 28px;
+	overflow: auto;
+}
+.json-key {
+	color: #444444;
+	font-weight: bold;
+}
+.json-string {
+	color: #5e6885;
+}
+.json-numeric {
+	color: #3367c2;
+	font-weight: bold;
+}
+.json-boolean {
+	color: #2A9DF4;
+	font-weight: bold;
+}
+.json-null {
+	color: #ED2839;
+	font-weight: bold;
+}
+
+/* Toggle button */
+a.json-toggle {
+	position: relative;
+	color: inherit;
+	text-decoration: none;
+}
+a.json-toggle:focus {
+	outline: none;
+}
+a.json-toggle::before {
+	color: #aaa;
+	content: "\25BC"; /* down arrow */
+	position: absolute;
+	display: inline-block;
+	width: 14px;
+	left: -14px;
+}
+a.json-toggle.collapsed::before {
+	content: "\25B6"; /* right arrow */
+}
+
+/* Collapsable placeholder links */
+a.json-placeholder {
+	color: #aaa;
+	padding: 0 14px;
+	text-decoration: none;
+}
+a.json-placeholder:hover {
+	text-decoration: underline;
+}
+
+/* END */

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!-- TPL Task Start (AuthAdmins) v.20231028 -->
+<html>
+<head>
+[@@@SUB-TEMPLATE:tpl-head.inc.htm@@@]
+<style>
+div.task-result {
+	border: 1px solid #ECECEC !important;
+}
+pre.task-result {
+	border: 1px solid #EEEEEE !important;
+	white-space: pre-wrap;
+	overflow: auto;
+}
+div.task-result,
+pre.task-result {
+	background: #FFFFFF !important;
+	color: #222222 !important;
+	padding: 7px !important;
+	border: 1px solid #ECECEC !important;
+	margin-top: 10px !important;
+	margin-bottom: 10px !important;
+}
+div.task-result,
+pre.task-result,
+pre.task-result * {
+	font-size: 0.8125rem !important; /* 13px */
+}
+div.task-highlight,
+pre.task-highlight {
+	background: #778899 !important;
+	color: #FFFFFF !important;
+	font-weight: bold;
+}
+div.task-highlight,
+div.task-highlight *,
+pre.task-highlight,
+pre.task-highlight * {
+	font-size: 0.9375rem !important; /* 15px */
+}
+</style>
+</head>
+<body>
+<div id="app-container"><!-- app container: start# -->
+[@@@SUB-TEMPLATE:%app-tpl%@@@]
+[%%%IF:WORKING:==yes;%%%]
+<script>
+(() => {
+[%%%IF:WORKSTOP:==yes;%%%]
+	[%%%IF:MAIN-URL:!=;%%%]
+	const workstop = '<br><br><button class="ux-button ux-button-small ux-button-secondary" onclick="[%%%IF:MODAL:==yes;%%%]smartJ$Browser.CloseDelayedModalPopUp(100)[%%%ELSE:MODAL%%%]self.location=\'[###MAIN-URL|js|js###]\'[%%%/IF:MODAL%%%]; return false;">Stop</button>'; // use |js|js for double escaping inside escaped quotes
+	[%%%ELSE:MAIN-URL%%%]
+	const workstop = '';
+	[%%%/IF:MAIN-URL%%%]
+[%%%ELSE:WORKSTOP%%%]
+	const workstop = '';
+[%%%/IF:WORKSTOP%%%]
+	smartJ$Browser.GrowlNotificationRemove();
+	smartJ$Browser.GrowlNotificationAdd('Running Task:' + '\n' + '`[###TITLE|js###]`' + '\n\n', 'Status: <b><span style="background:#FFFFDD; color:#333333;">&nbsp;working in progress ...&nbsp;</span></b>' + '<br>' + 'Started: <b>' + smartJ$Utils.escape_html(smartJ$Date.getIsoDate(new Date(), true)) + '</b>' + String(workstop), 'lib/framework/img/loading-cylon.svg', 0, true, 'dark');
+})();
+</script>
+[%%%/IF:WORKING%%%]

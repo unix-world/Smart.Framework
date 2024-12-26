@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!-- r.20231018 -->
+<html>
+<head>
+<!-- Template Path: [###TEMPLATE-PATH|html###] -->
+<!-- Template File: [###TEMPLATE-FILE|html###] -->
+<!-- Timezone:      [###TIMEZONE|html###] -->
+<!-- Language:      [###LANG|html###] -->
+<!-- Realm:         [###APP-REALM|html###] -->
+[%%%IF:APP-REALM:?ADM|TSK;%%%]
+[%%%IF:AUTH-LOGIN-OK:==yes;%%%]
+<!-- Auth-Login-OK:         [###AUTH-LOGIN-OK|html###] -->
+<!-- Auth-Login-ID:         [###AUTH-LOGIN-ID|html###] -->
+<!-- Auth-Login-FullName:   [###AUTH-LOGIN-FULLNAME|html###] -->
+<!-- Auth-Login-Privileges: [###AUTH-LOGIN-PRIVILEGES|smartlist|html###] -->
+[%%%ELSE:AUTH-LOGIN-OK%%%]
+<!-- Auth-Login-OK:         [###AUTH-LOGIN-OK|html###] -->
+[%%%/IF:AUTH-LOGIN-OK%%%]
+[%%%ELSE:APP-REALM%%%]
+<!-- Auth N/A -->
+[%%%/IF:APP-REALM%%%]
+<meta charset="[###CHARSET|html###]">
+<meta http-equiv="Content-Type" content="text/html; charset=[###CHARSET|html###]">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Smart.Framework">
+<link rel="icon" href="data:,">
+<title>[###TITLE|html###]</title>
+<!-- Meta -->
+[%%%IF:HEAD-META:==;%%%]
+<!-- no head meta -->
+[%%%ELSE:HEAD-META%%%]
+[###HEAD-META###]
+[%%%/IF:HEAD-META%%%]
+[%%%IF:SEMAPHORE:&*<load:ui-toolkit>;%%%]
+<!-- Styles -->
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/css-app.inc.htm!@@@]
+[%%%ELSE:SEMAPHORE%%%]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/css-base.inc.htm!@@@]
+<style>
+[@@@SUB-TEMPLATE:!lib/core/css/notifications.css!@@@]
+</style>
+[%%%/IF:SEMAPHORE%%%]
+<!-- Scripts -->
+[%%%IF:SEMAPHORE:&*<load:base-js>;%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-base.inc.htm!@@@][%%%ELSE:SEMAPHORE%%%]<!-- Base JS: skip -->[%%%/IF:SEMAPHORE%%%]
+[%%%IF:SEMAPHORE:&*<load:media-js>;%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-media.inc.htm!@@@][%%%ELSE:SEMAPHORE%%%]<!-- Media: skip -->[%%%/IF:SEMAPHORE%%%]
+[%%%IF:SEMAPHORE:&*<load:utils-js>;%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-utils.inc.htm!@@@][%%%ELSE:SEMAPHORE%%%]<!-- Utils: skip -->[%%%/IF:SEMAPHORE%%%]
+<!-- CSS -->[%%%IF:HEAD-CSS:==;%%%]<!-- no head css -->[%%%ELSE:HEAD-CSS%%%][###HEAD-CSS###][%%%/IF:HEAD-CSS%%%]
+<!-- JS -->[%%%IF:HEAD-JS:==;%%%]<!-- no head js -->[%%%ELSE:HEAD-JS%%%][###HEAD-JS###][%%%/IF:HEAD-JS%%%]
+<!-- #.# -->
+</head>
+<body>
+[###HEADER###]
+<div id="app-container">
+[###MAIN###][###ASIDE###]
+</div>
+[###FOOTER###]
+[@@@SUB-TEMPLATE:tpl-foot.inc.htm@@@]
+</body>
+</html>

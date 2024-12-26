@@ -1,0 +1,36 @@
+Usage
+
+Text Link Ads
+jQuery Easing Plugin (version 1.3)
+
+Default
+
+Choose a default easing method to overwrite the standard 'swing' animation. The easing default is 'easeOutQuad', specify your own using the following:
+jQuery.easing.def = "string";
+
+Where string is one of the equation names. The old swing function is renamed to jswing.
+Custom
+
+There are two ways to specify a custom easing method, the following are functionally identical:
+$(element).slideUp(1000, method, callback});
+$(element).slideUp({
+	duration: 1000,
+	easing: method,
+	complete: callback});
+
+duration: is basically speed, so milliseconds or slow/fast will work here.
+
+easing: takes an ease method see below for options (note to previous users of the plugin this has changed from easeMethod)
+
+callback: takes a pre defined function name or an anonymous function() {} block.
+
+Please note, you can't mix the syntax, use one format or the other, or it won't work properly.
+Bonus feature
+
+jQuery.easing.method() All your scripts can use these equations. Call from some kind of time based loop as follows:
+jQuery.easing.method(
+	null†,
+	current_time,
+	start_value,
+	end_value,
+	total_time)

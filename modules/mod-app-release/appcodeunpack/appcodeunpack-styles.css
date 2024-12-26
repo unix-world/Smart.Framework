@@ -1,0 +1,20 @@
+
+/*
+// AppJs CSS Local Styles
+// (c) 2008-present unix-world.org
+// License: BSD
+// v.20220928
+*/
+
+#gritter-notice-wrapper {
+	min-width: 700px !important;
+	width: 700px !important;
+	max-width: 48vw !important;
+}
+@media all and (max-width:767px) {
+	#gritter-notice-wrapper {
+		width: 88vw !important;
+	}
+}
+
+/* #END */

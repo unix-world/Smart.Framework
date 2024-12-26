@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>HiliteJs - Network Data Protocols - Demo</title>
+
+  <link rel="stylesheet" href="../prism/fonts.css">
+  <link rel="stylesheet" href="../prism/prism-light.css">
+  <script type="text/javascript" src="../prism/prism.js"></script>
+
+  <script type="text/javascript" src="../../jquery/jquery.js"></script>
+  <script>
+  jQuery(document).ready(() => {
+    jQuery('div pre code').each((i, el) => {
+      //$(el).parent().addClass('line-numbers');
+      Prism.highlightElement(el);
+    });
+  });
+  </script>
+</head>
+<body>
+
+<h1>HiliteJs Demo: Network Data Protocols</h1>
+<hr>
+
+<!-- CSP -->
+
+<div>
+<h2>Content Security Policy (CSP)</h2>
+<pre><code class="language-csp">Content-Security-Policy:
+    default-src &#39;self&#39;;
+    style-src &#39;self&#39; css.example.com;
+    img-src *.example.com;
+    script-src &#39;unsafe-eval&#39; &#39;self&#39; js.example.com &#39;nonce-Nc3n83cnSAd3wc3Sasdfn939hc3&#39;
+</code></pre>
+</div>
+
+<!-- HTTP -->
+
+<div>
+<h2>HTTP Header</h2>
+<pre><code class="language-http">POST /task?id=1 HTTP/1.1
+Host: example.org
+Content-Type: application/json; charset=utf-8
+Content-Length: 137
+
+{
+  &quot;status&quot;: &quot;ok&quot;,
+  &quot;extended&quot;: true,
+  &quot;results&quot;: [
+    {&quot;value&quot;: 0, &quot;type&quot;: &quot;int64&quot;},
+    {&quot;value&quot;: 1.0e+3, &quot;type&quot;: &quot;decimal&quot;}
+  ]
+}
+</code></pre>
+</div>
+
+<!-- #END -->
+<br>
+<hr>
+<br>
+
+</body>
+</html>

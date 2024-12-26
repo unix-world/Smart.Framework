@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>Getting Started - CLEditor WYSIWYG HTML Editor</title>
+	<meta name="description" content="CLEditor is an open source jQuery plugin which provides a lightweight, full featured, cross browser, extensible, WYSIWYG HTML editor that can be easily added into any web site.">
+	<meta name="keywords" content="jquery plugin, wysiwyg, html, editor, cross browser, lightweight, open source">
+</head>
+<body>
+
+	<div class="mainPanel">
+
+	  <!--------------->
+	  <!-- TOP PANEL -->
+	  <!-------------->
+
+	  <div class="topPanel">
+		<div>
+		  <h1>CLEditor - WYSIWYG HTML Editor</h1>
+		</div>
+	  </div>
+
+	  <!---------------->
+	  <!-- LEFT PANEL -->
+	  <!---------------->
+
+	  <a name="gettingStarted"></a>
+	  <div class="leftPanel">
+		<h3 class="noTopMargin">Getting Started</h3>
+		<p>
+		  CLEditor is shipped with the following files. It is recommended that
+		  you install these files into a folder called cleditor with a subfolder
+		  called images.
+
+		  </p><ul>
+		  <li><b>jquery.cleditor.js</b> - jQuery Plugin (source)</li>
+		  <li><b>jquery.cleditor.css</b> - Style Sheet</li>
+		  <li><b>images/*.png</b> - Toolbar and Buttons Images</li>
+		  </ul>
+
+		  When installing plugins, this same folder structure should be used. All
+		  javascript and style sheets go in the cleditor folder and all images go
+		  in the cleditor/images folder.
+
+	  </div>
+
+	  <!---------------->
+	  <!-- RIGHT PANEL -->
+	  <!---------------->
+
+	  <div class="rightPanel">
+		<h5>Table of Contents</h5>
+		<ul>
+		  <li><a href="#gettingStarted">Getting Started</a></li>
+		  <li><a href="#usage">Usage</a></li>
+		  <li><a href="#optionalParameters">Optional Parameters</a></li>
+		  <li><a href="#cleditorMethod">.cleditor(options) Method</a></li>
+		  <li><a href="#internalObject">cleditor Object</a></li>
+		  <li><a href="#cleditorObject">$.cleditor Object</a></li>
+		</ul>
+	  </div>
+
+	  <!------------------>
+	  <!-- BOTTOM PANEL -->
+	  <!------------------>
+
+	  <div class="bottomPanel">
+	  </div>
+
+		<!----------->
+		<!-- USAGE -->
+		<!---------->
+
+		<a name="usage"></a>
+		<h3 class="rule">Usage</h3>
+		<p>
+		  CLEditor takes a standard html textarea element and turns it into a full
+		  featured rich text editor. To use CLEditor, just apply the cleditor
+		  method to a standard jQuery object containing the textarea elements
+		  you would like transformed. The textareas will be hidden and rich text
+		  editors will appear in their place.
+
+		  </p><pre style="font-family: consolas;"><span style="color: blue;">&lt;</span><span style="color: maroon;">html</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;<span style="color: blue;">&lt;</span><span style="color: maroon;">head</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue;">&lt;</span><span style="color: maroon;">link</span>&nbsp;<span style="color: red;">rel</span><span style="color: blue;">=</span><span style="color: blue;">"stylesheet"</span>&nbsp;<span style="color: red;">type</span><span style="color: blue;">=</span><span style="color: blue;">"text/css"</span>&nbsp;<span style="color: red;">href</span><span style="color: blue;">=</span><span style="color: blue;">"jquery.cleditor.css"</span>&nbsp;<span style="color: blue;">/&gt;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue;">&lt;</span><span style="color: maroon;">script</span>&nbsp;<span style="color: red;">type</span><span style="color: blue;">=</span><span style="color: blue;">"text/javascript"</span>&nbsp;<span style="color: red;">src</span><span style="color: blue;">=</span><span style="color: blue;">"jquery.min.js"</span><span style="color: blue;">&gt;&lt;/</span><span style="color: maroon;">script</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue;">&lt;</span><span style="color: maroon;">script</span>&nbsp;<span style="color: red;">type</span><span style="color: blue;">=</span><span style="color: blue;">"text/javascript"</span>&nbsp;<span style="color: red;">src</span><span style="color: blue;">=</span><span style="color: blue;">"jquery.cleditor.min.js"</span><span style="color: blue;">&gt;&lt;/</span><span style="color: maroon;">script</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue;">&lt;</span><span style="color: maroon;">script</span>&nbsp;<span style="color: red;">type</span><span style="color: blue;">=</span><span style="color: blue;">"text/javascript"</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$(document).ready(<span style="color: blue;">function</span>()&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$(<span style="color: maroon;">"#input"</span>).cleditor();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});<br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue;">&lt;/</span><span style="color: maroon;">script</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;<span style="color: blue;">&lt;/</span><span style="color: maroon;">head</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;<span style="color: blue;">&lt;</span><span style="color: maroon;">body</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue;">&lt;</span><span style="color: maroon;">textarea</span>&nbsp;<span style="color: red;">id</span><span style="color: blue;">=</span><span style="color: blue;">"input"</span>&nbsp;<span style="color: red;">name</span><span style="color: blue;">=</span><span style="color: blue;">"input"</span><span style="color: blue;">&gt;&lt;/</span><span style="color: maroon;">textarea</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;<span style="color: blue;">&lt;/</span><span style="color: maroon;">body</span><span style="color: blue;">&gt;</span><br><span style="color: blue;">&lt;/</span><span style="color: maroon;">html</span><span style="color: blue;">&gt;</span></pre>
+
+		  Behind the scenes, an iframe is created, placed in design mode and kept
+		  in sync with the textarea. At any time, you can access the HTML content
+		  of the editor using the textarea value. The textarea is also available
+		  server-side for postbacks.
+
+
+		<!------------------------>
+		<!-- OPTIONAL PARAMETERS -->
+		<!------------------------>
+
+		<a name="optionalParameters"></a>
+		<h3 class="rule">Optional Parameters</h3>
+
+		<div style="width: 760px; overflow-x: auto; overflow-y: visible; margin-bottom: 12px;">
+		  For more control, you can supply a number of optional parameters as in
+		  the following example.
+		  <pre style="font-family: consolas;"><span style="color: blue;">&lt;</span><span style="color: maroon;">html</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;<span style="color: blue;">&lt;</span><span style="color: maroon;">head</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue;">&lt;</span><span style="color: maroon;">link</span>&nbsp;<span style="color: red;">rel</span><span style="color: blue;">=</span><span style="color: blue;">"stylesheet"</span>&nbsp;<span style="color: red;">type</span><span style="color: blue;">=</span><span style="color: blue;">"text/css"</span>&nbsp;<span style="color: red;">href</span><span style="color: blue;">=</span><span style="color: blue;">"../jquery.cleditor.css"</span>&nbsp;<span style="color: blue;">/&gt;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue;">&lt;</span><span style="color: maroon;">script</span>&nbsp;<span style="color: red;">type</span><span style="color: blue;">=</span><span style="color: blue;">"text/javascript"</span>&nbsp;<span style="color: red;">src</span><span style="color: blue;">=</span><span style="color: blue;">"jquery.min.js"</span><span style="color: blue;">&gt;&lt;/</span><span style="color: maroon;">script</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue;">&lt;</span><span style="color: maroon;">script</span>&nbsp;<span style="color: red;">type</span><span style="color: blue;">=</span><span style="color: blue;">"text/javascript"</span>&nbsp;<span style="color: red;">src</span><span style="color: blue;">=</span><span style="color: blue;">"jquery.cleditor.min.js"</span><span style="color: blue;">&gt;&lt;/</span><span style="color: maroon;">script</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue;">&lt;</span><span style="color: maroon;">script</span>&nbsp;<span style="color: red;">type</span><span style="color: blue;">=</span><span style="color: blue;">"text/javascript"</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$(document).ready(<span style="color: blue;">function</span>()&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$(<span style="color: maroon;">"#input"</span>).cleditor({<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;width:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;500,&nbsp;<span style="color: darkgreen;">//&nbsp;width&nbsp;not&nbsp;including&nbsp;margins,&nbsp;borders&nbsp;or&nbsp;padding</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;height:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;250,&nbsp;<span style="color: darkgreen;">//&nbsp;height&nbsp;not&nbsp;including&nbsp;margins,&nbsp;borders&nbsp;or&nbsp;padding</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;controls:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: darkgreen;">//&nbsp;controls&nbsp;to&nbsp;add&nbsp;to&nbsp;the&nbsp;toolbar</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">"bold&nbsp;italic&nbsp;underline&nbsp;strikethrough&nbsp;subscript&nbsp;superscript&nbsp;|&nbsp;font&nbsp;size&nbsp;"</span>&nbsp;+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">"style&nbsp;|&nbsp;color&nbsp;highlight&nbsp;removeformat&nbsp;|&nbsp;bullets&nbsp;numbering&nbsp;|&nbsp;outdent&nbsp;"</span>&nbsp;+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">"indent&nbsp;|&nbsp;alignleft&nbsp;center&nbsp;alignright&nbsp;justify&nbsp;|&nbsp;undo&nbsp;redo&nbsp;|&nbsp;"</span>&nbsp;+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">"rule&nbsp;image&nbsp;link&nbsp;unlink&nbsp;|&nbsp;cut&nbsp;copy&nbsp;paste&nbsp;pastetext&nbsp;|&nbsp;print&nbsp;source"</span>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;colors:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: darkgreen;">//&nbsp;colors&nbsp;in&nbsp;the&nbsp;color&nbsp;popup</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">"FFF&nbsp;FCC&nbsp;FC9&nbsp;FF9&nbsp;FFC&nbsp;9F9&nbsp;9FF&nbsp;CFF&nbsp;CCF&nbsp;FCF&nbsp;"</span>&nbsp;+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">"CCC&nbsp;F66&nbsp;F96&nbsp;FF6&nbsp;FF3&nbsp;6F9&nbsp;3FF&nbsp;6FF&nbsp;99F&nbsp;F9F&nbsp;"</span>&nbsp;+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">"BBB&nbsp;F00&nbsp;F90&nbsp;FC6&nbsp;FF0&nbsp;3F3&nbsp;6CC&nbsp;3CF&nbsp;66C&nbsp;C6C&nbsp;"</span>&nbsp;+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">"999&nbsp;C00&nbsp;F60&nbsp;FC3&nbsp;FC0&nbsp;3C0&nbsp;0CC&nbsp;36F&nbsp;63F&nbsp;C3C&nbsp;"</span>&nbsp;+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">"666&nbsp;900&nbsp;C60&nbsp;C93&nbsp;990&nbsp;090&nbsp;399&nbsp;33F&nbsp;60C&nbsp;939&nbsp;"</span>&nbsp;+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">"333&nbsp;600&nbsp;930&nbsp;963&nbsp;660&nbsp;060&nbsp;366&nbsp;009&nbsp;339&nbsp;636&nbsp;"</span>&nbsp;+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">"000&nbsp;300&nbsp;630&nbsp;633&nbsp;330&nbsp;030&nbsp;033&nbsp;006&nbsp;309&nbsp;303"</span>,&nbsp;&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fonts:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: darkgreen;">//&nbsp;font&nbsp;names&nbsp;in&nbsp;the&nbsp;font&nbsp;popup</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">"Arial,Arial&nbsp;Black,Comic&nbsp;Sans&nbsp;MS,Courier&nbsp;New,Narrow,Garamond,"</span>&nbsp;+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">"Georgia,Impact,Sans&nbsp;Serif,Serif,Tahoma,Trebuchet&nbsp;MS,Verdana"</span>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sizes:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: darkgreen;">//&nbsp;sizes&nbsp;in&nbsp;the&nbsp;font&nbsp;size&nbsp;popup</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">"1,2,3,4,5,6,7"</span>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;styles:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: darkgreen;">//&nbsp;styles&nbsp;in&nbsp;the&nbsp;style&nbsp;popup</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[<span style="color: maroon;">"Paragraph"</span>,&nbsp;<span style="color: maroon;">"&lt;p&gt;"</span>],&nbsp;[<span style="color: maroon;">"Header&nbsp;1"</span>,&nbsp;<span style="color: maroon;">"&lt;h1&gt;"</span>],&nbsp;[<span style="color: maroon;">"Header&nbsp;2"</span>,&nbsp;<span style="color: maroon;">"&lt;h2&gt;"</span>],<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color: maroon;">"Header&nbsp;3"</span>,&nbsp;<span style="color: maroon;">"&lt;h3&gt;"</span>],&nbsp;&nbsp;[<span style="color: maroon;">"Header&nbsp;4"</span>,<span style="color: maroon;">"&lt;h4&gt;"</span>],&nbsp;&nbsp;[<span style="color: maroon;">"Header&nbsp;5"</span>,<span style="color: maroon;">"&lt;h5&gt;"</span>],<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color: maroon;">"Header&nbsp;6"</span>,<span style="color: maroon;">"&lt;h6&gt;"</span>]],<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;useCSS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue;">false</span>,&nbsp;<span style="color: darkgreen;">//&nbsp;use&nbsp;CSS&nbsp;to&nbsp;style&nbsp;HTML&nbsp;when&nbsp;possible&nbsp;(not&nbsp;supported&nbsp;in&nbsp;ie)</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;docType:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: darkgreen;">//&nbsp;Document&nbsp;type&nbsp;contained&nbsp;within&nbsp;the&nbsp;editor</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">'&lt;!DOCTYPE&nbsp;HTML&nbsp;PUBLIC&nbsp;"-//W3C//DTD&nbsp;HTML&nbsp;4.01&nbsp;Transitional//EN"&nbsp;"http://www.w3.org/TR/html4/loose.dtd"&gt;'</span>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;docCSSFile:&nbsp;&nbsp;&nbsp;<span style="color: darkgreen;">//&nbsp;CSS&nbsp;file&nbsp;used&nbsp;to&nbsp;style&nbsp;the&nbsp;document&nbsp;contained&nbsp;within&nbsp;the&nbsp;editor</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">""</span>,&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bodyStyle:&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: darkgreen;">//&nbsp;style&nbsp;to&nbsp;assign&nbsp;to&nbsp;document&nbsp;body&nbsp;contained&nbsp;within&nbsp;the&nbsp;editor</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: maroon;">"margin:4px;&nbsp;font:10pt&nbsp;Arial,Verdana;&nbsp;cursor:text"</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});<br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue;">&lt;/</span><span style="color: maroon;">script</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;<span style="color: blue;">&lt;/</span><span style="color: maroon;">head</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;<span style="color: blue;">&lt;</span><span style="color: maroon;">body</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue;">&lt;</span><span style="color: maroon;">textarea</span>&nbsp;<span style="color: red;">id</span><span style="color: blue;">=</span><span style="color: blue;">"input"</span>&nbsp;<span style="color: red;">name</span><span style="color: blue;">=</span><span style="color: blue;">"input"</span><span style="color: blue;">&gt;&lt;/</span><span style="color: maroon;">textarea</span><span style="color: blue;">&gt;</span><br>&nbsp;&nbsp;<span style="color: blue;">&lt;/</span><span style="color: maroon;">body</span><span style="color: blue;">&gt;</span><br><span style="color: blue;">&lt;/</span><span style="color: maroon;">html</span><span style="color: blue;">&gt;</span></pre>
+		</div>
+
+		<p>
+		The above optional parameter object supports the following properties
+		and callbacks:
+		</p>
+
+		<h4>Properties</h4>
+		<p>
+		  </p><ul>
+		  <li><b>width</b> - The editor width not including margins, borders or padding.</li>
+		  <li><b>height</b> - The editor height not including margins, borders or padding.</li>
+		  <li><b>controls</b> - A space seperated list of the controls in the toolbar.</li>
+		  <li><b>colors</b> - A space seperated list of the colors in the color popup.</li>
+		  <li><b>fonts</b> - A comma seperated list of the font names in the font popup.</li>
+		  <li><b>sizes</b> - A comma seperated list of the sizes in the font size popup.</li>
+		  <li><b>styles</b> - An array of styles in the style popup.</li>
+		  <li><b>useCSS</b> - A boolean value used to force CSS styling of HTML elements when possible.</li>
+		  <li><b>docType</b> - The document type to assign to the editor contents.</li>
+		  <li><b>docCSSFile</b> - The CSS file used to style the editor contents.</li>
+		  <li><b>bodyStyle</b> - The style to assign to the body of the editor contents.</li>
+		  </ul>
+
+
+		<h4>Callbacks</h4>
+		<p>
+		  </p><ul>
+		  <li><b>.updateTextArea(html)</b> - This handler is called by the
+		  .updateTextArea() method of the cleditor object to convert HTML into
+		  source code. This handler receives the internal iframe contents as
+		  the html parameter and should return the source code to store in the
+		  textarea.</li>
+		  <li><b>.updateFrame(source)</b> - This handler is called by the
+		  .updateFrame() method of the cleditor object to convert source code
+		  into HTML. This handler receives the textarea  contents as the source
+		  parameter and should return the HTML to store in the internal iframe.</li>
+		  </ul>
+
+
+		<h4>Defaults</h4>
+		<p>
+		  Using the <b>defaultOptions</b> object, you can override any of the
+		  above properties or callbacks as follows:
+		  </p><pre style="font-family: consolas;">$.cleditor.defaultOptions.width = 200;<br>$.cleditor.defaultOptions.height = 100;<br>$(<span style="color: maroon;">"#input"</span>).cleditor();</pre>
+		  Overrides done using the defaultOptions object apply to all new editors.
+
+
+		<!-------------------->
+		<!-- CLEDITOR METHOD -->
+		<!-------------------->
+
+		<a name="cleditorMethod"></a>
+		<h3 class="rule">.cleditor(options) Method</h3>
+		<p>
+		  Returns a jQuery object containing cleditor objects for the set of
+		  matched textarea elements. If the cleditor object does not exist for a
+		  matched textarea element, it will be created using the default options
+		  combined with the supplied options. This is the core method for
+		  creating and selecting <a href="#internalObject">cleditor objects</a>.
+		</p>
+
+		<h4>Examples</h4>
+		<p>
+		  </p><ul>
+		  <li>$("#input").cleditor({width:500, height:250})</li>
+		  <li>$("textarea").cleditor()</li>
+		  <li>var editor = $("#input").cleditor()[0]</li>
+		  <li>var $editors = $("textarea").cleditor()</li>
+		  </ul>
+
+
+		<!-------------------->
+		<!-- CLEDITOR OBJECT -->
+		<!-------------------->
+
+		<a name="internalObject"></a>
+		<h3 class="rule">cleditor Object</h3>
+
+		<p>
+		An editor is composed of a main div element used to hold a toolbar,
+		a text area and an iframe. The toolbar can hold multiple groups
+		which in turn hold multiple buttons.
+		</p>
+
+		<p>
+		The cleditor object is created and exposed using the
+		<a href="#cleditorMethod">.cleditor(options) method</a> described above.
+		It defines a single editor instance and supports the following
+		properties and methods.
+		</p>
+
+		<h4>Properties</h4>
+
+		<p>
+		These properties should be considered readonly.
+		</p>
+
+		<ul>
+		<li><b>.$area</b> - The textarea wrapped in a jQuery object.</li>
+		<li><b>.$frame</b> - The iframe wrapped in a jQuery object.</li>
+		<li><b>.$main</b> - The main div wrapped in a jQuery object - When moving
+		an editor, this is the DOM element to re-parent.</li>
+		<li><b>.$toolbar</b> - The toolbar div wrapped in a jQuery object.</li>
+		<li><b>.disabled</b> - True if the editor is currently disabled; otherwise false.</li>
+		<li><b>.doc</b> - The document object currently being edited in the iframe.</li>
+		<li><b>.options</b> - The options used to create the editor.</li>
+		</ul>
+
+		<h4>Methods</h4>
+
+		<p>
+		  Note: All methods except <b>sourceMode</b>, <b>selectedHTML</b> and <b>selectedText</b>
+		  support chaining by returning the object they were executed on.
+		</p>
+
+		<p>
+		  </p><ul>
+			<li><b>.change(handler)</b> - shortcut method used to bind the change event.</li>
+			<li><b>.clear()</b> - Clears the contents of the internal textarea and iframe.</li>
+			<li><b>.disable(disabled)</b> - Disables or enables the editor.
+			  Pass in true to disable or false to enable.</li>
+			<li><b>.execCommand(command, value, useCSS, button)</b> - Executes a design
+			  mode command using the supplied value. If useCSS is true, CSS will be used to style
+			  the markup when possible. If an error occurs during execution, a popup message will
+			  be displayed under the button or centered under the toolbar if button is omitted.</li>
+			<li><b>.focus()</b> - Sets input focus to the editor.</li>
+			<li><b>.hidePopups()</b> - Hide any popups currently showing in any editor.</li>
+			<li><b>.refresh()</b> - Forces the editor to resize it's toolbar, textarea and iframe.
+			  This method should be called after initializing a hidden editor and making it visible,
+			  or after changing the the width, height or parent of the $main div element.</li>
+			<li><b>.select()</b> - Selects the entire contents of the editor.</li>
+			<li><b>.selectedHTML()</b> - Returns the editor's current selection as an HTML formatted string.</li>
+			<li><b>.selectedText()</b> - Returns the editor's current text selection as a string.</li>
+			<li><b>.showMessage(message, button)</b> - Displays a popup message under the button or centered
+			  under the toolbar if button is omitted.</li>
+			<li><b>.sourceMode()</b> - Returns true if the editor is currently displaying source
+					code or false when rich text is showing.</li>
+			<li><b>.updateFrame()</b> - Updates the editor's internal iframe with its textarea contents.</li>
+			<li><b>.updateTextArea()</b> - Updates the editor's textarea with its internal iframe contents.</li>
+		  </ul>
+
+
+		<h4>Events</h4>
+		<p>
+		  </p><ul>
+		  <li><b>change</b> - This event is triggered whenever the contents of the editor
+			have changed. Since change detection is done using the keyup and mouseup
+			events, this event occurs frequently as the user types.</li>
+		  </ul>
+
+
+		<!----------------------->
+		<!-- $.CLEDITOR OBJECT -->
+		<!---------------------->
+
+		<a name="cleditorObject"></a>
+		<h3 class="rule">$.cleditor Object</h3>
+
+		<p>
+		This object contains global properties and methods used to create custom
+		plugins and override built in functionality.
+		</p>
+
+		<h4>Properties</h4>
+		<p>
+		  </p><ul>
+		  <li><b>.defaultOptions</b> - Contains the default optional parameter
+			values used in the creation of new editors.
+		  </li>
+		  </ul>
+
+		  <blockquote>
+		  See the <a href="#optionalParameters">optional parameters</a> section
+		  above for a description of each property on the
+		  $.cleditor.defaultOptions object.
+		  </blockquote>
+
+		  <ul>
+		  <li><b>.buttons</b> - An array object containing the button definitions
+			used to construct the editor.</li>
+		  </ul>
+
+		  <blockquote>
+			Each button definition contains the following properties. Any optional
+			properties are undefined if not supplied.
+			<ul>
+			<li><b>.name</b> - The internal name of the button.</li>
+			<li><b>.title</b> - The tooltip to display when the user hovers their
+			  mouse over the button.</li>
+			<li><b>.css</b> - A standard jQuery style css map used to define the
+			  button image (optional).</li>
+			<li><b>.image</b> - The name of the image file (in the images folder)
+			  to display for the button (optional).</li>
+			<li><b>.stripIndex</b> - When using an image strip, this property
+			  identifies the zero based index into the strip (optional).</li>
+			<li><b>.command</b> - The design mode command associated with the
+			  button (optional).</li>
+			<li><b>.popupName</b> - The name of the popup to display when the
+			  button is clicked (optional).</li>
+			<li><b>.popupContent</b> - The content of the popup to display when
+			  the button is clicked (optional).</li>
+			</ul>
+
+			Each button definition also supports the following optional callbacks.
+			<ul>
+			<li><b>.getEnabled(data)</b> - This handler is called when the enabled
+			  state of the button is needed and should return false to disable the
+			  button or true to enable it. If no value is returned, the button will
+			  be enabled.</li>
+			<li><b>.getPressed(data)</b> - This handler is called when the pressed
+			  state of the button is needed and should return true to have the button
+			  appear pressed or false to have the button appear normal. If no value
+			  is returned, the button will appear normal.</li>
+			<li><b>.buttonClick(event, data)</b> - This handler is called when the
+			  button is clicked. When the button does not display a popup, this
+			  handler should return false to prevent CLEditor from executing the
+			  command on the data object parameter. By default, CLEditor will
+			  execute the command using the value and useCSS properties found on
+			  the data parameter.</li>
+			<li><b>.popupClick(event, data)</b> - This handler is called when an
+			  element in the popup is clicked and should return false to prevent
+			  CLEditor from executing the command on the data object parameter.
+			  By default, CLEditor will execute the command using the value and
+			  useCSS properties found on the data parameter.</li>
+			</ul>
+
+			The data object passed into the above callback functions contains the
+			following properties.
+			<ul>
+			<li><b>.editor</b> - The cleditor object containing the clicked button.</li>
+			<li><b>.button</b> - The clicked button's div element.</li>
+			<li><b>.buttonName</b> - The name of the clicked button.</li>
+			<li><b>.popup</b> - The popup div element.</li>
+			<li><b>.popupName</b> - The name of the button's popup.</li>
+			<li><b>.command</b> - The design mode command associated with the button.</li>
+			<li><b>.value</b> - The value associated with the design mode command.</li>
+			<li><b>.useCSS</b> - A boolean value that forces the design mode command
+			  to generate CSS markup when possible.</li>
+			</ul>
+		  </blockquote>
+
+
+		<h4>Methods</h4>
+		<p>
+		  </p><ul>
+		  <li><b>.imagesPath()</b> - Returns the path to the images folder including
+			the trailing slash.</li>
+		  </ul>
+
+
+	  </div>
+
+	</div>
+
+   </body></html>

@@ -1,0 +1,12 @@
+
+/* Customizations # Smart.Framework # r.20221111 */
+
+@import url("../../../../lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css");
+
+code[class*="language-"],
+code[class*="language-"] * {
+	font-family: 'IBM Plex Mono', mono;
+	font-smooth: always;
+}
+
+/* END */

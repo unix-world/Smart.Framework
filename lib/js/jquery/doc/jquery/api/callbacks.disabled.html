@@ -1,0 +1,82 @@
+<script>{
+		"title":
+			"callbacks.disabled()",
+		"excerpt":
+			"Determine if the callbacks list has been disabled.",
+		"termSlugs": {
+			"category": [
+				"callbacks-object","version/1.7"
+			]
+		}
+	}</script><article id="callbacks-disabled1" class="entry method"><h2 class="section-title">
+<span class="name">callbacks.disabled()</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Boolean">Boolean</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Determine if the callbacks list has been disabled.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.7/">1.7</a></span><a id="callbacks-disabled" href="#callbacks-disabled"><span class="icon-link"></span>callbacks.disabled()</a>
+</h4>
+<ul><li><div class="null-signature">This method does not accept any arguments.</div></li></ul>
+</li></ul>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Use <code>callbacks.disabled()</code> to determine if the callbacks list has been disabled:</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="comment">// A sample logging function to be added to a callbacks list</span></code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> foo = <span class="keyword">function</span>( value ) {</code></div></div><div class="container"><div class="line"><code>  console.log( <span class="string">&quot;foo:&quot;</span> + value );</code></div></div><div class="container"><div class="line"><code>};</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> callbacks = $.Callbacks();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Add the logging function to the callback list</span></code></div></div><div class="container"><div class="line"><code>callbacks.add( foo );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Fire the items on the list, passing an argument</span></code></div></div><div class="container"><div class="line"><code>callbacks.fire( <span class="string">&quot;hello&quot;</span> );</code></div></div><div class="container"><div class="line"><code><span class="comment">// Outputs &quot;foo: hello&quot;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Disable the callbacks list</span></code></div></div><div class="container"><div class="line"><code>callbacks.disable();</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Test the disabled state of the list</span></code></div></div><div class="container"><div class="line"><code>console.log ( callbacks.disabled() );</code></div></div><div class="container"><div class="line"><code><span class="comment">// Outputs: true</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

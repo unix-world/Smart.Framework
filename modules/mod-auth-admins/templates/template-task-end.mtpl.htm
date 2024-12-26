@@ -1,0 +1,76 @@
+[%%%IF:MODAL:!=yes;%%%]
+<style>
+a.go-back-button,
+a.go-main-button {
+	position: fixed !important;
+	top: 17px !important;
+	left: 50vw !important;
+}
+</style>
+[%%%IF:GO-BACK-URL:!=;%%%]
+<a href="[###GO-BACK-URL|html###]" class="ux-button ux-button-info go-back-button"><i style="color:#444444" class="sfi sfi-spinner11"></i> &nbsp; Go Back</a>
+[%%%ELSE:GO-BACK-URL%%%]
+[%%%IF:MAIN-URL:!=;%%%]
+<a href="[###MAIN-URL|html###]" class="ux-button ux-button-info go-main-button"><i style="color:#444444" class="sfi sfi-spinner11"></i> &nbsp; Return to Main Area</a>
+[%%%/IF:MAIN-URL%%%]
+[%%%/IF:GO-BACK-URL%%%]
+[%%%/IF:MODAL%%%]
+<br>
+<hr>
+<div align="right"><small class="colorCopyright">(c) 2013-[###YEAR|html###] unix-world.org</small></div>
+</div><!-- #end: app container -->
+<style>
+div.scroll-top {
+	position: fixed;
+	right: 25px;
+	bottom: 50px;
+	width: 36px;
+	height: 36px;
+	line-height: 32px;
+	background: #000000;
+	color: #FFFFFF;
+	opacity: 0.25;
+	border-radius: 3px;
+	text-align: center;
+	cursor: pointer;
+}
+div.scroll-top:hover {
+	opacity: 0.55;
+}
+</style>
+<div title="Scroll Top" class="scroll-top" onClick="$('html, body').animate({scrollTop: 0}, 300);"><i class="sfi sfi-arrow-up"></i></div>
+<script>
+$(() => {
+[%%%IF:WORKING:==yes;%%%]
+	smartJ$Browser.GrowlNotificationRemove();
+	const haveErrors = '[###HAVE-ERRORS|js###]';
+	const haveWarns  = '[###HAVE-WARNS|js###]';
+	const haveNotice = '[###HAVE_NOTICE|js###]';
+	if(haveNotice != 'yes') {
+		if(haveErrors === 'yes') {
+			smartJ$Browser.GrowlNotificationAdd('Operation FAILED', 'Task Run Errors !' + '<br><b>[###TITLE|html|js###]</b>', 'lib/framework/img/sign-crit-warn.svg', 0, true, 'pink');
+		} else if(haveWarns === 'yes') {
+			smartJ$Browser.GrowlNotificationAdd('Operation COMPLETED with WARNINGS', 'Task Run encountered some Warnings ...' + '<br><b>[###TITLE|html|js###]</b>', 'lib/framework/img/sign-warn.svg', 0, true, '');
+		} else {
+			smartJ$Browser.GrowlNotificationAdd('Operation COMPLETED', 'Task Run Successful ...' + '<br><b>[###TITLE|html|js###]</b>', 'lib/framework/img/sign-ok.svg', 0, true, 'green');
+		}
+	}
+[%%%/IF:WORKING%%%]
+	//-- flags: endscroll, modal, selfclose
+	[%%%IF:ENDSCROLL:==yes;%%%]
+	setTimeout(() => { smartJ$Browser.windwScrollDown(self, -1); }, 250);
+	[%%%/IF:ENDSCROLL%%%]
+	[%%%IF:MODAL:==yes;%%%]
+	smartJ$Browser.RefreshParent();
+	[%%%IF:SELFCLOSE:>0;%%%]
+	smartJ$Browser.CloseDelayedModalPopUp([###SELFCLOSE|int###]);
+	[%%%/IF:SELFCLOSE%%%]
+	[%%%/IF:MODAL%%%]
+	//-- #flags
+});
+</script>
+</body>
+</html>
+<!-- Template Path: [###TEMPLATE-PATH|html###] -->
+<!-- Template File: [###TEMPLATE-FILE|html###] -->
+<!-- TPL Task End (AuthAdmins) v.20231018 -->

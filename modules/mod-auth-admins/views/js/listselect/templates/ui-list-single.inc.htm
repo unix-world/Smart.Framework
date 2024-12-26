@@ -1,0 +1,13 @@
+<!-- Partial Template: Plugins.UIListSingle r.20220114 -->
+<script>
+jQuery(() => {
+	if(typeof(smartJ$UI) != 'undefined') {
+		try {
+			smartJ$UI.SelectList('[###ID|js###]', [###WIDTH|int###], [###HEIGHT|int###], false, [###HAVE-FILTER|bool###]);
+		} catch(err) {
+			console.warn('UI List Single Select ERR:', err);
+		}
+	}
+});
+</script>
+<!-- #END :: Partial Template: Plugins.UIListSingle -->

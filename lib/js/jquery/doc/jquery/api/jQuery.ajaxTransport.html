@@ -1,0 +1,316 @@
+<script>{
+		"title":
+			"jQuery.ajaxTransport()",
+		"excerpt":
+			"Creates an object that handles the actual transmission of Ajax data.",
+		"termSlugs": {
+			"category": [
+				"ajax/low-level-interface","version/1.5"
+			]
+		}
+	}</script><article id="jQuery-ajaxTransport1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.ajaxTransport( dataType, handler )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#undefined">undefined</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Creates an object that handles the actual transmission of Ajax data.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.5/">1.5</a></span><a id="jQuery-ajaxTransport-dataType-handler" href="#jQuery-ajaxTransport-dataType-handler"><span class="icon-link"></span>jQuery.ajaxTransport( dataType, handler )</a>
+</h4>
+<ul>
+<li>
+<div><strong>dataType</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>A string identifying the data type to use</div>
+</li>
+<li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a> options, <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a> originalOptions, <a href="http://api.jquery.com/Types/#jqXHR">jqXHR</a> jqXHR )</div>
+<div>A handler to return the new transport object to use with the data type provided in the first argument.</div>
+</li>
+</ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>A transport is an object that provides two methods, <code>send</code> and <code>abort</code>, that are used internally by <code>$.ajax()</code> to issue requests. A transport is the most advanced way to enhance <code>$.ajax()</code> and should be used only as a last resort when prefilters and converters are insufficient.</p>
+    <p>Since each request requires its own transport object instance, transports cannot be registered directly. Therefore, you should provide a function that returns a transport instead.</p>
+    <p>Transports factories are registered using <code>$.ajaxTransport()</code>. A typical registration looks like this:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.ajaxTransport( dataType, <span class="keyword">function</span>( options, originalOptions, jqXHR ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">if</span>( <span class="comment">/* transportCanHandleRequest */</span> ) {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">return</span> {</code></div></div><div class="container"><div class="line"><code>      send: <span class="keyword">function</span>( headers, completeCallback ) {</code></div></div><div class="container"><div class="line"><code>        <span class="comment">// Send code</span></code></div></div><div class="container"><div class="line"><code>      },</code></div></div><div class="container"><div class="line"><code>      abort: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>        <span class="comment">// Abort code</span></code></div></div><div class="container"><div class="line"><code>      }</code></div></div><div class="container"><div class="line"><code>    };</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>where:</p>
+    <ul>
+      <li>
+<code>options</code> are the request options</li>
+      <li>
+<code>originalOptions</code> are the options as provided to the <code>$.ajax()</code> method, unmodified and, thus, without defaults from ajaxSettings</li>
+      <li>
+<code>jqXHR</code> is the jqXHR object of the request</li>
+      <li>
+<code>headers</code> is an object of (key-value) request headers that the transport can transmit if it supports it</li>
+      <li>
+<code>completeCallback</code> is the callback used to notify Ajax of the completion of the request</li>
+    </ul>
+    <p><code>completeCallback</code> has the following signature:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">function</span>( status, statusText, responses, headers ) {}</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>where:</p>
+    <ul>
+      <li>
+<code>status</code> is the HTTP status code of the response, like  200 for a typical success, or 404 for when the resource is not found.</li>
+      <li>
+<code>statusText</code> is the statusText of the response.</li>
+      <li>
+<code>responses</code> (Optional) is An object containing dataType/value that contains the response in all the formats the transport could provide (for instance, a native XMLHttpRequest object would set responses to <code>{ xml: XMLData, text: textData }</code> for a response that is an XML document)</li>
+      <li>
+<code>headers</code> (Optional) is a string containing all the response headers if the transport has access to them (akin to what <code>XMLHttpRequest.getAllResponseHeaders()</code> would provide).</li>
+    </ul>
+    <p>Just like prefilters, a transport&apos;s factory function can be attached to a specific dataType:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.ajaxTransport( <span class="string">&quot;script&quot;</span>, <span class="keyword">function</span>( options, originalOptions, jqXHR ) {</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Will only be called for script requests</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>The following example shows how a minimal image transport could be implemented:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.ajaxTransport( <span class="string">&quot;image&quot;</span>, <span class="keyword">function</span>( s ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">if</span> ( s.type === <span class="string">&quot;GET&quot;</span> &amp;&amp; s.async ) {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">var</span> image;</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">return</span> {</code></div></div><div class="container"><div class="line"><code>      send: <span class="keyword">function</span>( _ , callback ) {</code></div></div><div class="container"><div class="line"><code>        image = <span class="keyword">new</span> Image();</code></div></div><div class="container"><div class="line"><code>        <span class="function"><span class="keyword">function</span> <span class="title">done</span><span class="params">( status )</span> {</span></code></div></div><div class="container"><div class="line"><code>          <span class="keyword">if</span> ( image ) {</code></div></div><div class="container"><div class="line"><code>            <span class="keyword">var</span> statusText = ( status === <span class="number">200</span> ) ? <span class="string">&quot;success&quot;</span> : <span class="string">&quot;error&quot;</span>,</code></div></div><div class="container"><div class="line"><code>              tmp = image;</code></div></div><div class="container"><div class="line"><code>            image = image.onreadystatechange = image.onerror = image.onload = <span class="literal">null</span>;</code></div></div><div class="container"><div class="line"><code>            callback( status, statusText, { image: tmp } );</code></div></div><div class="container"><div class="line"><code>          }</code></div></div><div class="container"><div class="line"><code>        }</code></div></div><div class="container"><div class="line"><code>        image.onreadystatechange = image.onload = <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>          done( <span class="number">200</span> );</code></div></div><div class="container"><div class="line"><code>        };</code></div></div><div class="container"><div class="line"><code>        image.onerror = <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>          done( <span class="number">404</span> );</code></div></div><div class="container"><div class="line"><code>        };</code></div></div><div class="container"><div class="line"><code>        image.src = s.url;</code></div></div><div class="container"><div class="line"><code>      },</code></div></div><div class="container"><div class="line"><code>      abort: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>        <span class="keyword">if</span> ( image ) {</code></div></div><div class="container"><div class="line"><code>          image = image.onreadystatechange = image.onerror = image.onload = <span class="literal">null</span>;</code></div></div><div class="container"><div class="line"><code>        }</code></div></div><div class="container"><div class="line"><code>      }</code></div></div><div class="container"><div class="line"><code>    };</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <h4 id="handling-custom-data-types">Handling Custom Data Types</h4>
+    <p>The jQuery Ajax implementation comes with a set of standard dataTypes, such as text, json, xml, and html.</p>
+    <p>Use the <code>converters</code> option in <code><a href="/jQuery.ajaxSetup/">$.ajaxSetup()</a></code> to augment or modify the data type conversion strategies used by <code>$.ajax()</code>.</p>
+    <p> The unminified jQuery source itself includes a list of default converters, which effectively illustrates how they can be used: </p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="comment">// List of data converters</span></code></div></div><div class="container"><div class="line"><code><span class="comment">// 1) Key format is &quot;source_type destination_type&quot;</span></code></div></div><div class="container"><div class="line"><code><span class="comment">//    (a single space in-between)</span></code></div></div><div class="container"><div class="line"><code><span class="comment">// 2) The catchall symbol &quot;*&quot; can be used for source_type</span></code></div></div><div class="container"><div class="line"><code>converters: {</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Convert anything to text</span></code></div></div><div class="container"><div class="line"><code>  <span class="string">&quot;* text&quot;</span>: window.String,</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Text to html (true = no transformation)</span></code></div></div><div class="container"><div class="line"><code>  <span class="string">&quot;text html&quot;</span>: <span class="literal">true</span>,</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Evaluate text as a json expression</span></code></div></div><div class="container"><div class="line"><code>  <span class="string">&quot;text json&quot;</span>: jQuery.parseJSON,</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Parse text as xml</span></code></div></div><div class="container"><div class="line"><code>  <span class="string">&quot;text xml&quot;</span>: jQuery.parseXML</code></div></div><div class="container"><div class="line"><code>}</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>When you specify a <code>converters</code> option globally in <code>$.ajaxSetup()</code> or per call in <code>$.ajax()</code>, the object will map onto the default converters, overwriting those you specify and leaving the others intact.</p>
+    <p>For example, the jQuery source uses <code>$.ajaxSetup()</code> to  add a converter for &quot;text script&quot;:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>jQuery.ajaxSetup({</code></div></div><div class="container"><div class="line"><code>  accepts: {</code></div></div><div class="container"><div class="line"><code>    script: <span class="string">&quot;text/javascript, application/javascript&quot;</span></code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  contents: {</code></div></div><div class="container"><div class="line"><code>    script: <span class="regexp">/javascript/</span></code></div></div><div class="container"><div class="line"><code>  },</code></div></div><div class="container"><div class="line"><code>  converters: {</code></div></div><div class="container"><div class="line"><code>    <span class="string">&quot;text script&quot;</span>: jQuery.globalEval</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+  </div>
+</div></article>

@@ -1,0 +1,170 @@
+
+jquery.event.drag
+
+=== sample
+
+var diffX = 0;
+$('.target').bind("dragstart", function(e,d) {
+	var $wnd = $(this).parent().parent();
+	$wnd.css({'opacity':0.1});
+	ofs = $wnd.offset();
+	diffX = e.pageX - parseInt(ofs.left);
+	if(diffX <= 0) {
+		diffX = 0;
+	} else if(diffX > parseInt($(window).width()) / 2) {
+		diffX = 0;
+	}
+}).bind("drag", function(e,d) {
+	if(e && e.pageX && e.pageY) {
+		$(this).parent().parent().offset({
+			top: e.pageY,
+			left: e.pageX - diffX
+		});
+	}
+}).bind("dragend", function(e,d) {
+	var $wnd = $(this).parent().parent();
+	diffX = 0;
+	ofs = $wnd.offset();
+	$(this).parent().parent().css({'opacity':1});
+});
+
+===
+
+A jquery special event plugin that makes the task of adding complex drag interactions, to any element, simple and powerful.
+Overview
+
+The plugin works by using standard DOM events, and simulating custom events to create a drag interaction. It simplifies a recurring pattern of event interaction that can be fairly complex to design in a consistent, cross-browser manner. The drag interaction, while simple in most basic form, gets quite complex when introduced with issues of distance, handles, text selection, proxy elements, click suppression, and dropping.
+
+This plugin is focused on correctly simulating the drag events in a very usable way. This plugin does not add classnames, does not alter the position or appearance of any elements, and does not alter the DOM. This plugin only provides the essential callbacks at the correct points in the interaction model to enable developers to have complete control over the interactions that they create. This reduces the file size, eliminates dependencies, and increases performance.
+Events
+
+A basic drag interaction starts when a user presses down a mouse button with the cursor inside an element (mousedown), continues while the user moves the mouse (mousemove), and ends when the user releases the mouse button (mouseup). The standard DOM events (mousedown, mousemove, mouseup) loosely translate into the special drag events. This plugin takes these DOM events and triggers the following events at key points in the interaction. None of these drag events bubble.
+
+    draginit
+    This event is fired when a mouse button is pressed (mousedown) within the bound element. The handler can return false to cancel the rest of the drag interaction events, or can return elements to use as the drag targets for the rest of the drag interaction. This event will not fire unless the options "not", "handle", and "which" are all satisfied.
+    dragstart
+    This event fires after "draginit", once the mouse has moved a minimum "distance", which may be specificed in the options. The handler can return false to cancel the rest of the drag interaction events, or can return an element to set as the drag proxy for the rest of the drag interaction. If dragging multiple elements (from "draginit"), this event will fire uniquely on each element.
+    drag
+    This event fires after "draginit" and "dragstart" every time the mouse moves. The handler can return false to stop the drag interaction and go straight to "dragend" and also prevent any "drop" events. If dragging multiple elements (from "draginit"), this event will fire uniquely on each element.
+    dragend
+    This event fires after "draginit" and "dragstart" and "drag" when the mouse button is released, or when a "drag" event is canceled. This event will always fire after any "drop" events. If dragging multiple elements (from "draginit"), this event will fire uniquely on each element.
+
+This plugin also supports "live" event delegation... sort of. When a live event gets bound, the plugin automatically adds a "draginit" event which makes the interaction work correctly. It checks the event target element against any live handlers, any matching ones get attached to the target element. After the interaction is complete, the handlers get cleaned up. The most important point to take from this is that live "draginit" events will not work correctly.
+Methods
+
+In the interest of maintaining consistency with the jQuery API, a helper method has been added as shorthand for binding and triggering "drag" event handlers. The previous version of this plugin allowed this method to be overloaded with arguments to additionally bind handlers for "dragstart" and "dragend" in a single call, but this is no longer supported. Instead, an optional type argument may be included to bind or trigger the related events (the "drag" prefix is optional). Options may also be included as the final argument and are optional.
+
+    .drag()
+    Triggers any bound "drag" event handlers for each element in the jQuery collection.
+    Equivilent to: .trigger("drag").
+    .drag( type )
+    Triggers any bound "dragtype" event handlers for each element in the jQuery collection. (Types are: init, start, end)
+    Equivilent to: .trigger("dragtype").
+    .drag( handler, options )
+    Binds a "drag" event handler to each element in the jQuery collection.
+    Equivilent to: .bind("drag", options, handler )
+    .drag( type, handler, options )
+    Binds a "dragtype" event handler to each element in the jQuery collection. (Types are: init, start, end)
+    Equivilent to: .bind("dragtype", options, handler )
+
+Options
+
+All of these settings are optional, and may be passed in through the "data" argument in the jQuery "bind" method, or the "options" argument in the jQuery "drag" method.
+
+    which (Number) Default: 1
+    A number that matches the "which" event property to indicate the mousebutton that is pressed. (0 = Any Button, 1 = Left Button, 2 = Middle Button, 3 = Right Button)
+    distance (Number) Default: 0
+    A number representing the length of pixels that the mouse must move before the "dragstart" event may fire.
+    not (String) Default: ":input"
+    A jquery selector expression that matches elements where dragging is not allowed to begin.
+    handle (String) Default: NULL
+    A jquery selector expression that matches elements where dragging is allowed to begin.
+    relative (Boolean) Default: FALSE
+    A boolean to indicate whether to use element position relative to the document or the offset parent. This setting affects the values offsetX, offsetY, originalX, and originalY. (FALSE = Position Relative to the Document)
+    click (Boolean) Default: FALSE
+    A boolean to indicate whether or not "click" events are allowed to fire after the "dragend" event. (FALSE = No Click)
+    drop (Boolean|String) Default: TRUE
+    A boolean to indicate whether or not "drag" events are considered in the drag interaction, or a jquery selector expression that should filter and match a subset of the registered drop targets. (FALSE = No Dropping, TRUE = Drop Anywhere, ":expr" = Drop in targets that match this expression)
+
+The default values are stored in the jQuery.event.special.drag.defaults object.
+Properties
+
+The following properties belong to a dragdrop callback object which is passed as the second argument to each event handler, unique to each dragged element, and shared throughout the drag interaction.
+
+    target (Element)
+    The drag element, or the drop element, to which the event handler has been bound. (Always the same as "this" within an event handler)
+    drag (Element)
+    The dragged element for the given interaction to which the drag event has been bound.
+    proxy (Element)
+    The dragged element, or any element returned by the "dragstart" handler. The proxy element is used to determine the drop target tolerance.
+    drop (Array)
+    Contains all of the active drop targets for the current interaction.
+    available (Array)
+    Contains all of the available drop targets for the current interaction.
+    update (Function)
+    A helper function which updates the locations of all of the available drop targets for the current interaction.
+    startX (Number)
+    The horizontal location of the "mousedown" event.
+    startY (Number)
+    The vertical location of the "mousedown" event.
+    deltaX (Number)
+    The horizontal distance moved from "startX".
+    deltaY (Number)
+    The vertical distance moved from "startX".
+    originalX (Number)
+    The starting horizontal position of the drag "target" element.
+    originalY (Number)
+    The starting vertical position of the drag "target" element.
+    offsetX (Number)
+    The the moved horizontal position of the drag "target" element.
+    offsetY (Number)
+    The the moved vertical position of the drag "target" element.
+
+The callback object is extensible. You can add any property within one event handler and it will be available in any other event handlers that follow (per dragged element). Additional properties or methods can be added to jQuery.event.special.drag.callback.prototype and will be available in all event handlers for all elements.
+Demos
+
+The following examples are intended to show how the drag special events can be configured to acheive a wide range of features for any drag interaction. I have simplified each demo as much as possible, to really highlight the core of each feature. If you have any problems, or want to suggest a new feature, or a new demo, please contact me via the ThreeDubMedia Google Group.
+
+    Basic
+    One of the simplest ways to create a drag interaction, with the "drag" method.
+    Relative
+    A simple drag operation using the relative option.
+    Axis
+    A way to restrict movement in one dimension.
+    Grid
+    A technique for restricting movement to a grid.
+    Contain
+    A technique for restricting movement to a container.
+    Circular
+    Using trigonometry to restrict movement to a circular path.
+    Handle
+    Using the "bind" data parameter and the "handle" option.
+    Active
+    Using the "dragstart" and "dragend" events to toggle an "active" drag state.
+    Proxy
+    Using the "dragstart" handler to return a proxy element.
+    Z-index
+    Using the "dragstart" handler to ensure the dragged element is on top.
+    Revert
+    Using the "startX" and "startY" properties to restore starting position.
+    Multi
+    Using the "draginit" handler to return multiple elements.
+    Offset
+    Setting a fixed element offset for dragged elements.
+    Live
+    Using "live" event delegation with "drag" events.
+    Which
+    Using the "which" option to target a specific mouse button.
+    Click
+    Using the "click" option to allow a click to propagate after dragging.
+    Not
+    Using the "not" option to prevent dragging by selector expression.
+    Distance
+    Using the "distance" option to prevent dragging until a pixel threshold has been crossed.
+    Resize
+    Using the "deltaX" and "deltaY" properties to resize an element.
+    Resize2
+    A complex example showing resize in 8 directions with multiple elements.
+    Draw
+    Using the drag events to manipulate a canvas element.
+

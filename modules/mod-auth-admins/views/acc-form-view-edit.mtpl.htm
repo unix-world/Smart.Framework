@@ -1,0 +1,82 @@
+<!-- v.20231119 -->
+[@@@SUB-TEMPLATE:acc-styles-form.mtpl.inc.htm@@@]
+<center><div><table><tr><td>
+	<form id="edit_form" name="edit_form" class="ux-form ux-form-aligned" onSubmit="return false;">
+		<legend><h1>[%%%IF:VIEW-ONLY:==yes;%%%]Display[%%%ELSE:VIEW-ONLY%%%]Edit[%%%/IF:VIEW-ONLY%%%] Account</h1></legend><br>
+		<div class="ux-control-group">
+			<label><i class="sfi sfi-user"></i>&nbsp;UserName&nbsp;/&nbsp;ID</label>
+			<input type="hidden" name="frm[id]" value="[###ID|html###]">
+			<h6 id="user-id" style="display:inline;">[###ID|html###]</h6>
+		</div>
+		<div class="ux-control-group">
+			<label>Email</label>
+			<input name="frm[email]" class="ux-input-1-2" placeholder="Email" type="email" value="[###EMAIL|html###]"[%%%IF:VIEW-ONLY:==yes;%%%] readonly[%%%/IF:VIEW-ONLY%%%]>
+		</div>
+		<div class="ux-control-group" title="Given Name">
+			<label>First Name</label>
+			<input name="frm[name_f]" class="ux-input-1-2" placeholder="Given Name" type="text" value="[###FIRST-NAME|html###]" required[%%%IF:VIEW-ONLY:==yes;%%%] readonly[%%%/IF:VIEW-ONLY%%%]>
+		</div>
+		<div class="ux-control-group" title="Family Name">
+			<label>Last Name</label>
+			<input name="frm[name_l]" class="ux-input-1-2" placeholder="Family Name" type="text" value="[###LAST-NAME|html###]" required[%%%IF:VIEW-ONLY:==yes;%%%] readonly[%%%/IF:VIEW-ONLY%%%]>
+		</div>
+		[%%%IF:VIEW-ONLY:==yes;%%%]
+		<div class="ux-control-group">
+			<label>Password</label>
+			<a href="[###ACTIONS-URL|html###]change-pass-form&id=[###ID|url|html###]" class="ux-button ux-button-dark ux-button-small"><i class="sfi sfi-key"></i> &nbsp; Change Password</a>
+		</div>
+		[%%%IF:ENABLED-2FA:==1;%%%]
+		[%%%IF:SELF-FA2:==yes;%%%]
+		<div class="ux-control-group" style="min-height:152px;">
+			<label>2FA Key[%%%IF:2FA-TEST-TK:!=;%%%]<br><br><span style="cursor:help; color:#DDDDDD;" title="Test Token: [###2FA-TEST-TK|html###] ; Date: [###2FA-TEST-DATE|html###] ; Key: [###2FA-KEY|html###]"><i class="sfi sfi-clock sfi-xl"></i></span>[%%%/IF:2FA-TEST-TK%%%]</label>
+			<div style="display:inline-block; font-size:0.875rem;">[%%%IF:2FA-BARCODE:!=;%%%]<span id="2fa-logo" style="cursor:cell; color:#DDDDDD;" title="Click to reveal the QRCode" onclick="jQuery('#2fa-logo').hide(); jQuery('#2fa-qr').show();"><i class="sfi sfi-qrcode sfi-5x"></i></span><img id="2fa-qr" style="display:none; cursor:cell;" src="data:image/svg+xml,[###2FA-BARCODE|url###]" title="[###2FA-URL|html###]" onclick="jQuery('#2fa-logo').show(); jQuery('#2fa-qr').hide();">[%%%/IF:2FA-BARCODE%%%]</div>
+		</div>
+		[%%%/IF:SELF-FA2%%%]
+		[%%%/IF:ENABLED-2FA%%%]
+		[%%%IF:ENABLED-TOKENS:==1;%%%]
+		<div class="ux-control-group">
+			<label>Tokens</label>
+			[%%%IF:CRR-ID:==###ID###;%%%]<a href="[###ACTIONS-URL|html###]tokens-list&id=[###ID|url|html###]" class="ux-button ux-button-secondary ux-button-small"><i class="sfi sfi-lock"></i> &nbsp; Manage Tokens</a>&nbsp;[%%%/IF:CRR-ID%%%]<span style="color:#CDCDCD;"><b>[[###NUM-TOKENS|int###] of [###MAX-TOKENS|int###]]</b></span>
+		</div>
+		[%%%/IF:ENABLED-TOKENS%%%]
+		[%%%ELSE:VIEW-ONLY%%%]
+		<!-- pass change / 2fa cannot be modified here -->
+		[%%%/IF:VIEW-ONLY%%%]
+		<div class="ux-control-group">
+			<label>Private Key</label>
+			[%%%IF:SELF-KEYS:==yes;%%%]
+			[%%%IF:VIEW-ONLY:!=yes;%%%]<input type="hidden" name="frm[upd-keys]" value="yes">[%%%/IF:VIEW-ONLY%%%]
+			<textarea name="frm[keys]" class="ux-input-1-2" placeholder="Private Key" spellcheck="false" style="height:75px;" maxlength="768" [%%%IF:VIEW-ONLY:!=yes;%%%]minlength="64"[%%%ELSE:VIEW-ONLY%%%]readonly[%%%/IF:VIEW-ONLY%%%]>[###KEYS|html###]</textarea>
+			[%%%IF:VIEW-ONLY:!=yes;%%%][%%%IF:LEN-KEYS:>0;%%%]<br><div class="operation_notice" style="display:inline-block; max-width:600px!important;">Important:<div>If you change your private key you may loose all the current encrypted information. Before changing your current private key make sure you make a backup of it.</div></div>[%%%/IF:LEN-KEYS%%%][%%%/IF:VIEW-ONLY%%%]
+			[%%%ELSE:SELF-KEYS%%%]
+			[%%%IF:LEN-KEYS:>0;%%%]<i title="[###LEN-KEYS|int###]" class="sfi sfi-fa-umbrella" style="color:#778899;"></i>[%%%ELSE:LEN-KEYS%%%]<i title="[###LEN-KEYS|int###]" class="sfi sfi-cancel-circle" style="color:#EEEEEE;"></i>[%%%/IF:LEN-KEYS%%%]
+			[%%%/IF:SELF-KEYS%%%]
+		</div>
+		<div class="ux-control-group">
+			<label>Privileges</label>
+			<div style="display:inline-block; font-size:0.875rem;">[###PRIV-LIST-HTML###]</div>
+		</div>
+		[%%%IF:RESTR-LIST-HTML:!=;%%%]
+		<div class="ux-control-group">
+			<label>Restrictions</label>
+			<div style="display:inline-block; font-size:0.875rem;">[###RESTR-LIST-HTML###]</div>
+		</div>
+		[%%%/IF:RESTR-LIST-HTML%%%]
+		<div class="ux-controls">
+		[%%%IF:VIEW-ONLY:==yes;%%%]
+			<!-- view only buttons -->
+			<button type="button" class="ux-button ux-button-spacing" onClick="smartJ$Browser.CloseDelayedModalPopUp(); return false;"> Go Back &nbsp; <i style="color:#555555;" class="sfi sfi-spinner11"></i></button>
+			<button type="button" class="ux-button ux-button-primary ux-button-spacing" onClick="self.location = '[###ACTIONS-URL|js|html###]edit-form&id=[###ID|js|html###]'; return false;"> Modify &nbsp; <i class="sfi sfi-pencil2"></i></button>
+			[%%%IF:IS-SUPER-ADM:==yes;%%%]
+			<button type="button" class="ux-button ux-button-special ux-button-spacing" onClick="self.location = '[###ACTIONS-URL|js|html###]delete-acc&id=[###ID|js|html###]'; return false;"> Delete &nbsp; <i class="sfi sfi-cross"></i></button>
+			[%%%ELSE:IS-SUPER-ADM%%%]
+			<!-- only super-admins have this priv: delete -->
+			[%%%/IF:IS-SUPER-ADM%%%]
+		[%%%ELSE:VIEW-ONLY%%%]
+			<!-- edit buttons -->
+			<button type="button" class="ux-button ux-button-alt ux-button-spacing" onClick="self.location = '[###ACTIONS-URL|js|html###]edit-form&id=[###ID|js|html###]&viewonly=yes'; return false;"> Cancel &nbsp; <i style="color:#555555;" class="sfi sfi-spinner11"></i></button>
+			<button type="button" class="ux-button ux-button-highlight ux-button-spacing" onClick="smartJ$Browser.SubmitFormByAjax('edit_form', '[###ACTIONS-URL|js|html###]edit-update', 'yes'); return false;"> Update &nbsp; <i class="sfi sfi-checkmark"></i></button>
+		[%%%/IF:VIEW-ONLY%%%]
+		</div>
+	</form>
+</td></tr></table></div></center>

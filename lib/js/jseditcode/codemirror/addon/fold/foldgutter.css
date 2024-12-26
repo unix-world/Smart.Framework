@@ -1,0 +1,37 @@
+
+/*
+// addon/fold/foldgutter.css
+// codemirror: v.5.65.15
+// modified by unixman
+*/
+
+.CodeMirror-foldmarker {
+	/* fix by unixman */
+/*	color: blue;
+	text-shadow: #b9f 1px 1px 2px, #b9f -1px -1px 2px, #b9f 1px -1px 2px, #b9f -1px 1px 2px;
+	font-family: arial; */
+	color: #FF5500;
+	text-shadow: #ECECEC 1px 1px 2px, #ECECEC -1px -1px 2px, #ECECEC 1px -1px 2px, #ECECEC -1px 1px 2px; /* fix by unixman */
+	font-weight: bold;
+	/* #end fix */
+	line-height: 0.3;
+	cursor: pointer;
+}
+.CodeMirror-foldgutter {
+/*	width: 0.7em; */
+	width: 0.8em; /* fix by unixman */s
+}
+.CodeMirror-foldgutter-open,
+.CodeMirror-foldgutter-folded {
+	cursor: pointer;
+}
+.CodeMirror-foldgutter-open:after {
+	content: "\25BE";
+	color: #778899; /* fix by unixman */
+}
+.CodeMirror-foldgutter-folded:after {
+	content: "\25B8";
+	color: #FF5500; /* fix by unixman */
+}
+
+/* END */

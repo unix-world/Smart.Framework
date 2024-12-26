@@ -1,0 +1,52 @@
+<script>{
+		"title":
+			"event.isDefaultPrevented()",
+		"excerpt":
+			"Returns whether event.preventDefault() was ever called on this event object. ",
+		"termSlugs": {
+			"category": [
+				"events/event-object","version/1.3"
+			]
+		}
+	}</script><article id="event-isDefaultPrevented1" class="entry method"><h2 class="section-title">
+<span class="name">event.isDefaultPrevented()</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Boolean">Boolean</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Returns whether <a href="/event.preventDefault/">event.preventDefault()</a> was ever called on this event object. </p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.3/">1.3</a></span><a id="event-isDefaultPrevented" href="#event-isDefaultPrevented"><span class="icon-link"></span>event.isDefaultPrevented()</a>
+</h4>
+<ul><li><div class="null-signature">This method does not accept any arguments.</div></li></ul>
+</li></ul>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Checks whether event.preventDefault() was called.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;a&quot;</span> ).click(<span class="keyword">function</span>( event ) {</code></div></div><div class="container"><div class="line"><code>  alert( event.isDefaultPrevented() ); <span class="comment">// false</span></code></div></div><div class="container"><div class="line"><code>  event.preventDefault();</code></div></div><div class="container"><div class="line"><code>  alert( event.isDefaultPrevented() ); <span class="comment">// true</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

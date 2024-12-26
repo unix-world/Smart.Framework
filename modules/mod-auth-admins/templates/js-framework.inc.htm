@@ -1,0 +1,46 @@
+<!-- Js Framework :: r.20231018 -->
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-check.inc.htm!@@@]
+<script>
+const smartJ$Options = {
+	ModalBox: {
+		CssOverlayOpacity: 0.8,
+	},
+	BrowserUtils: {
+		LanguageId: '[###LANG|js###]',
+		Charset: '[###CHARSET|js###]',
+		CookieLifeTime: [###CLIENT-UID-COOKIE-LIFETIME|int###],
+		CookieDomain: '[###CLIENT-UID-COOKIE-DOMAIN|js###]',
+		CookieSameSitePolicy: '[###CLIENT-UID-COOKIE-SAMESITE|js###]',
+		Notifications: 'growl',
+		NotificationDialogType: [%%%IF:SEMAPHORE:&*<dialog:alertable>;(88)%%%]'alertable'[%%%ELSE:SEMAPHORE(88)%%%]'auto'[%%%/IF:SEMAPHORE(88)%%%],
+		ModalBoxProtected: true,
+		NotifyLoadError: true,
+		CssOverlayOpacity: 0.8,
+	},
+};
+Object.freeze(smartJ$Options); // sec.
+window.smartJ$Options = smartJ$Options; // g-exp.
+</script>
+[%%%IF:SEMAPHORE:&*<load:smart-framework-js-dev-src>;(88)%%%]
+<!-- Framework (dev.src) -->
+<script src="lib/js/framework/src/core_utils.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/framework/src/date_utils.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/framework/src/crypt_utils.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/framework/src/ifmodalbox.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/framework/src/browser_check.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/framework/src/browser_utils.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/framework/src/ifmodalbox_scanner.js?[###RELEASE-HASH|url|html###]"></script>
+[%%%ELSE:SEMAPHORE(88)%%%]
+<script src="lib/js/framework/smart-framework.pak.js?[###RELEASE-HASH|url|html###]"></script>
+[%%%/IF:SEMAPHORE(88)%%%]
+[%%%IF:DEBUG-MODE:==yes;%%%]<script>smartJ$Browser.setFlag('DebugEnabled', true);</script><!-- DEBUG IS ON -->[%%%/IF:DEBUG-MODE%%%]
+<script>
+(() => {
+	if(!smartJ$TestBrowser.checkCookies()) {
+		const errCokkies = 'NOTICE: Your browser does not support Cookies !';
+		console.warn(errCokkies);
+		alert(errCokkies);
+	} //end if
+})();
+</script>
+<!-- # -->

@@ -1,0 +1,1037 @@
+<script>{
+		"title":
+			".animate()",
+		"excerpt":
+			"Perform a custom animation of a set of CSS properties.",
+		"termSlugs": {
+			"category": [
+				"effects/custom-effects","version/1.0"
+			]
+		}
+	}</script><article id="animate1" class="entry method"><h2 class="section-title">
+<span class="name">.animate( properties [, duration ] [, easing ] [, complete ] )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#jQuery">jQuery</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Perform a custom animation of a set of CSS properties.</p>
+<ul class="signatures">
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0/">1.0</a></span><a id="animate-properties-duration-easing-complete" href="#animate-properties-duration-easing-complete"><span class="icon-link"></span>.animate( properties [, duration ] [, easing ] [, complete ] )</a>
+</h4>
+<ul>
+<li>
+<div><strong>properties</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a>
+</div>
+<div>An object of CSS properties and values that the animation will move toward.</div>
+</li>
+<li>
+<div>
+<strong>duration</strong> (default: <code>400</code>)</div>
+<div>Type: <a href="http://api.jquery.com/Types/#Number">Number</a> or <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>A string or number determining how long the animation will run.</div>
+</li>
+<li>
+<div>
+<strong>easing</strong> (default: <code>swing</code>)</div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>A string indicating which easing function to use for the transition.</div>
+</li>
+<li>
+<div><strong>complete</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>A function to call once the animation is complete, called once per matched element.</div>
+</li>
+</ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0/">1.0</a></span><a id="animate-properties-options" href="#animate-properties-options"><span class="icon-link"></span>.animate( properties, options )</a>
+</h4>
+<ul>
+<li>
+<div><strong>properties</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a>
+</div>
+<div>An object of CSS properties and values that the animation will move toward.</div>
+</li>
+<li>
+<div><strong>options</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a>
+</div>
+<div>A map of additional options to pass to the method.</div>
+<ul>
+<li>
+<div>
+<strong>duration</strong> (default: <code>400</code>)</div>
+<div>Type: <a href="http://api.jquery.com/Types/#Number">Number</a> or <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>A string or number determining how long the animation will run.</div>
+</li>
+<li>
+<div>
+<strong>easing</strong> (default: <code>swing</code>)</div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>A string indicating which easing function to use for the transition.</div>
+</li>
+<li>
+<div>
+<strong>queue</strong> (default: <code>true</code>)</div>
+<div>Type: <a href="http://api.jquery.com/Types/#Boolean">Boolean</a> or <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>A Boolean indicating whether to place the animation in the effects queue. If false, the animation will begin immediately. <strong>As of jQuery 1.7</strong>, the queue option can also accept a string, in which case the animation is added to the queue represented by that string. When a custom queue name is used the animation does not automatically start; you must call <code>.dequeue(&quot;queuename&quot;)</code> to start it.</div>
+</li>
+<li>
+<div><strong>specialEasing</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a>
+</div>
+<div>An object containing one or more of the CSS properties defined by the properties argument and their corresponding easing functions.<span class="version-details"> (version added: <a href="/category/version/1.4/">1.4</a>)</span>
+</div>
+</li>
+<li>
+<div><strong>step</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Number">Number</a> now, <a href="http://api.jquery.com/Types/#Tween">Tween</a> tween )</div>
+<div>A function to be called for each animated property of each animated element. This function provides an opportunity to modify the Tween object to change the value of the property before it is set.</div>
+</li>
+<li>
+<div><strong>progress</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Promise">Promise</a> animation, <a href="http://api.jquery.com/Types/#Number">Number</a> progress, <a href="http://api.jquery.com/Types/#Number">Number</a> remainingMs )</div>
+<div>A function to be called after each step of the animation, only once per animated element regardless of the number of animated properties.<span class="version-details"> (version added: <a href="/category/version/1.8/">1.8</a>)</span>
+</div>
+</li>
+<li>
+<div><strong>complete</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>A function that is called once the animation on an element is complete.</div>
+</li>
+<li>
+<div><strong>start</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Promise">Promise</a> animation )</div>
+<div>A function to call when the animation on an element begins.<span class="version-details"> (version added: <a href="/category/version/1.8/">1.8</a>)</span>
+</div>
+</li>
+<li>
+<div><strong>done</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Promise">Promise</a> animation, <a href="http://api.jquery.com/Types/#Boolean">Boolean</a> jumpedToEnd )</div>
+<div>A function to be called when the animation on an element completes (its Promise object is resolved).<span class="version-details"> (version added: <a href="/category/version/1.8/">1.8</a>)</span>
+</div>
+</li>
+<li>
+<div><strong>fail</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Promise">Promise</a> animation, <a href="http://api.jquery.com/Types/#Boolean">Boolean</a> jumpedToEnd )</div>
+<div>A function to be called when the animation on an element fails to complete (its Promise object is rejected).<span class="version-details"> (version added: <a href="/category/version/1.8/">1.8</a>)</span>
+</div>
+</li>
+<li>
+<div><strong>always</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Promise">Promise</a> animation, <a href="http://api.jquery.com/Types/#Boolean">Boolean</a> jumpedToEnd )</div>
+<div>A function to be called when the animation on an element completes or stops without completing (its Promise object is either resolved or rejected).<span class="version-details"> (version added: <a href="/category/version/1.8/">1.8</a>)</span>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>The <code>.animate()</code> method allows us to create animation effects on any numeric CSS property. The only required parameter is a plain object of CSS properties. This object is similar to the one that can be sent to the <code>.css()</code> method, except that the range of properties is more restrictive.</p>
+    <h4 id="animation-properties">Animation Properties and Values</h4>
+    <p>All animated properties should be animated to a <em>single numeric value</em>, except as noted below; most properties that are non-numeric cannot be animated using basic jQuery functionality (For example, <code>width</code>, <code>height</code>, or <code>left</code> can be animated but <code>background-color</code> cannot be, unless the <a href="https://github.com/jquery/jquery-color">jQuery.Color</a> plugin is used). Property values are treated as a number of pixels unless otherwise specified. The units <code>em</code> and <code>%</code> can be specified where applicable.</p>
+    <p>In addition to style properties, some non-style properties such as <code>scrollTop</code> and <code>scrollLeft</code>, as well as custom properties, can be animated.</p>
+    <p>Shorthand CSS properties (e.g. font, background, border) are not fully supported. For example, if you want to animate the rendered border width, at least a border style and border width other than &quot;auto&quot; must be set in advance. Or, if you want to animate font size, you would use <code>fontSize</code> or the CSS equivalent <code>&apos;font-size&apos;</code> rather than simply <code>&apos;font&apos;</code>. </p>
+    <p>In addition to numeric values, each property can take the strings <code>&apos;show&apos;</code>, <code>&apos;hide&apos;</code>, and <code>&apos;toggle&apos;</code>. These shortcuts allow for custom hiding and showing animations that take into account the display type of the element. In order to use jQuery&apos;s built-in toggle state tracking, the <code>&apos;toggle&apos;</code> keyword must be consistently given as the value of the property being animated.</p>
+    <p>Animated properties can also be relative. If a value is supplied with a leading <code>+=</code> or <code>-=</code> sequence of characters, then the target value is computed by adding or subtracting the given number from the current value of the property.</p>
+    <div class="warning">
+      <p><strong>Note:</strong> Unlike shorthand animation methods such as <code>.slideDown()</code> and <code>.fadeIn()</code>, the <code>.animate()</code> method does <em>not</em> make hidden elements visible as part of the effect. For example, given <code>$( &quot;someElement&quot; ).hide().animate({height: &quot;20px&quot;}, 500)</code>, the animation will run, but <em>the element will remain hidden</em>.</p>
+    </div>
+    <h4 id="duration">Duration</h4>
+    <p>Durations are given in milliseconds; higher values indicate slower animations, not faster ones. The default duration is <code>400</code> milliseconds. The strings <code>&apos;fast&apos;</code> and <code>&apos;slow&apos;</code> can be supplied to indicate durations of <code>200</code> and <code>600</code> milliseconds, respectively.</p>
+    <h4 id="callbacks">Callback Functions</h4>
+    <p>If supplied, the <code>start</code>, <code>step</code>, <code>progress</code>, <code>complete</code>, <code>done</code>, <code>fail</code>, and <code>always</code> callbacks are called on a <em>per-element</em> basis; <code>this</code> is set to the DOM element being animated. If no elements are in the set, no callbacks are called. If multiple elements are animated, the callback is executed once per matched element, not once for the animation as a whole. Use the <code>.promise()</code> method to obtain a promise to which you can attach callbacks that fire once for an animated set of any size, including zero elements.</p>
+    <h4 id="basic-usage">Basic Usage</h4>
+    <p>To animate any element, such as a simple image:</p>
+    <div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">&quot;clickme&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  Click here</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">img</span> <span class="attribute">id</span>=<span class="value">&quot;book&quot;</span> <span class="attribute">src</span>=<span class="value">&quot;book.png&quot;</span> <span class="attribute">alt</span>=<span class="value">&quot;&quot;</span> <span class="attribute">width</span>=<span class="value">&quot;100&quot;</span> <span class="attribute">height</span>=<span class="value">&quot;123&quot;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="attribute">style</span>=<span class="value">&quot;position: relative; left: 10px;&quot;</span>&gt;</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>To animate the opacity, left offset, and height of the image simultaneously:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;#clickme&quot;</span> ).click(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;#book&quot;</span> ).animate({</code></div></div><div class="container"><div class="line"><code>    opacity: <span class="number">0.25</span>,</code></div></div><div class="container"><div class="line"><code>    left: <span class="string">&quot;+=50&quot;</span>,</code></div></div><div class="container"><div class="line"><code>    height: <span class="string">&quot;toggle&quot;</span></code></div></div><div class="container"><div class="line"><code>  }, <span class="number">5000</span>, <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    <span class="comment">// Animation complete.</span></code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p class="image">
+      <figure>
+        <img src="/resources/animate-1.jpg" alt="">
+        <figcaption>Figure 1 - Illustration of the specified animation effect</figcaption>
+      </figure>
+    </p>
+    <p>Note that the target value of the <code>height</code> property is <code>&apos;toggle&apos;</code>. Since the image was visible before, the animation shrinks the height to 0 to hide it. A second click then reverses this transition:
+    </p>
+    <p class="image">
+      <figure>
+        <img src="/resources/animate-2.jpg" alt="">
+        <figcaption>Figure 2  - Illustration of the specified animation effect</figcaption>
+      </figure>
+    </p>
+    <p>The <code>opacity</code> of the image is already at its target value, so this property is not animated by the second click. Since the target value for <code>left</code> is a relative value, the image moves even farther to the right during this second animation.</p>
+    <p>Directional properties (<code>top</code>, <code>right</code>, <code>bottom</code>, <code>left</code>) have no discernible effect on elements if their  <code>position</code> style property is <code>static</code>, which it is by default.</p>
+    <div class="warning">
+      <p><strong>Note: </strong>The <a href="https://jqueryui.com/">jQuery UI</a> project extends the <code>.animate()</code> method by allowing some non-numeric styles such as colors to be animated. The project also includes mechanisms for specifying animations through CSS classes rather than individual attributes.</p>
+    </div>
+    <div class="warning">
+      <p><strong>Note:</strong> if attempting to animate an element with a height or width of 0px, where contents of the element are visible due to overflow, jQuery may clip this overflow during animation. By fixing the dimensions of the original element being hidden however, it is possible to ensure that the animation runs smoothly. A <a href="https://www.google.com/search?q=clearfix">clearfix</a> can be used to automatically fix the dimensions of your main element without the need to set this manually.</p>
+    </div>
+    <h4 id="step">Step Function</h4>
+    <p>The second version of <code>.animate()</code> provides a <code>step</code> option &#x2014; a callback function that is fired at each step of the animation. This function is useful for enabling custom animation types or altering the animation as it is occurring. It accepts two arguments (<code>now</code> and <code>fx</code>), and <code>this</code> is set to the DOM element being animated.</p>
+    <ul>
+      <li>
+<code>now</code>: the numeric value of the property being animated at each step</li>
+      <li>
+<code>fx</code>: a reference to the <code>jQuery.fx</code> prototype object, which contains a number of properties such as <code>elem</code> for the animated element, <code>start</code> and <code>end</code> for the first and last value of the animated property, respectively, and <code>prop</code> for the property being animated.</li>
+    </ul>
+    <p>Note that the <code>step</code> function is called for each animated property on each animated element. For example, given two list items, the <code>step</code> function fires four times at each step of the animation:  </p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;li&quot;</span> ).animate({</code></div></div><div class="container"><div class="line"><code>  opacity: <span class="number">.5</span>,</code></div></div><div class="container"><div class="line"><code>  height: <span class="string">&quot;50%&quot;</span></code></div></div><div class="container"><div class="line"><code>}, {</code></div></div><div class="container"><div class="line"><code>  step: <span class="keyword">function</span>( now, fx ) {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">var</span> data = fx.elem.id + <span class="string">&quot; &quot;</span> + fx.prop + <span class="string">&quot;: &quot;</span> + now;</code></div></div><div class="container"><div class="line"><code>    $( <span class="string">&quot;body&quot;</span> ).append( <span class="string">&quot;&lt;div&gt;&quot;</span> + data + <span class="string">&quot;&lt;/div&gt;&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <h4 id="easing">Easing</h4>
+    <p>The remaining parameter of <code>.animate()</code> is a string naming an easing function to use. An easing function specifies the speed at which the animation progresses at different points within the animation. The only easing implementations in the jQuery library are the default, called <code>swing</code>, and one that progresses at a constant pace, called <code>linear</code>. More easing functions are available with the use of plug-ins, most notably the <a href="https://jqueryui.com/">jQuery UI suite</a>.</p>
+    <h4 id="per-property-easing">Per-property Easing</h4>
+    <p>As of jQuery version 1.4, you can set per-property easing functions within a single <code>.animate()</code> call. In the first version of <code>.animate()</code>, each property can take an array as its value: The first member of the array is the CSS property and the second member is an easing function.  If a per-property easing function is not defined for a particular property, it uses the value of the <code>.animate()</code> method&apos;s optional easing argument. If the easing argument is not defined, the default <code>swing</code> function is used.</p>
+    <p>For example, to simultaneously animate the width and height with the <code>swing</code> easing function and the opacity with the <code>linear</code> easing function:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;#clickme&quot;</span> ).click(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;#book&quot;</span> ).animate({</code></div></div><div class="container"><div class="line"><code>    width: [ <span class="string">&quot;toggle&quot;</span>, <span class="string">&quot;swing&quot;</span> ],</code></div></div><div class="container"><div class="line"><code>    height: [ <span class="string">&quot;toggle&quot;</span>, <span class="string">&quot;swing&quot;</span> ],</code></div></div><div class="container"><div class="line"><code>    opacity: <span class="string">&quot;toggle&quot;</span></code></div></div><div class="container"><div class="line"><code>  }, <span class="number">5000</span>, <span class="string">&quot;linear&quot;</span>, <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="keyword">this</span> ).after( <span class="string">&quot;&lt;div&gt;Animation complete.&lt;/div&gt;&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>In the second version of <code>.animate()</code>, the options object can include the <code>specialEasing</code> property, which is itself an object of CSS properties and their corresponding easing functions.  For example, to simultaneously animate the width using the <code>linear</code> easing function and the height using the <code>easeOutBounce</code> easing function:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;#clickme&quot;</span> ).click(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;#book&quot;</span> ).animate({</code></div></div><div class="container"><div class="line"><code>    width: <span class="string">&quot;toggle&quot;</span>,</code></div></div><div class="container"><div class="line"><code>    height: <span class="string">&quot;toggle&quot;</span></code></div></div><div class="container"><div class="line"><code>  }, {</code></div></div><div class="container"><div class="line"><code>    duration: <span class="number">5000</span>,</code></div></div><div class="container"><div class="line"><code>    specialEasing: {</code></div></div><div class="container"><div class="line"><code>      width: <span class="string">&quot;linear&quot;</span>,</code></div></div><div class="container"><div class="line"><code>      height: <span class="string">&quot;easeOutBounce&quot;</span></code></div></div><div class="container"><div class="line"><code>    },</code></div></div><div class="container"><div class="line"><code>    complete: <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>      $( <span class="keyword">this</span> ).after( <span class="string">&quot;&lt;div&gt;Animation complete.&lt;/div&gt;&quot;</span> );</code></div></div><div class="container"><div class="line"><code>    }</code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>As previously noted, a plugin is required for the <code>easeOutBounce</code> function.</p>
+  </div>
+<h3>Additional Notes:</h3>
+<div class="longdesc"><ul><li>
+			All jQuery effects, including <code>.animate()</code>, can be turned off globally by setting <code>jQuery.fx.off = true</code>, which effectively sets the duration to 0. For more information, see <a href="/jquery.fx.off/">jQuery.fx.off</a>.
+		</li></ul></div>
+<section class="entry-examples" id="entry-examples"><header><h2>Examples:</h2></header><div class="entry-example" id="example-0">
+<p>Click the button to animate the div with a number of different properties.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+						<div class="line n32">32</div>
+					
+						<div class="line n33">33</div>
+					
+						<div class="line n34">34</div>
+					
+						<div class="line n35">35</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>animate demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css"></span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">div</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#bca</span>;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">width</span>:<span class="value"> <span class="number">100</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">1</span>px solid green;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">style</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;go&quot;</span>&gt;</span>&amp;raquo; Run<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">&quot;block&quot;</span>&gt;</span>Hello!<span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code><span class="comment">// Using multiple unit types within one animation.</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;#go&quot;</span> ).click(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;#block&quot;</span> ).animate({</code></div></div><div class="container"><div class="line"><code>    width: <span class="string">&quot;70%&quot;</span>,</code></div></div><div class="container"><div class="line"><code>    opacity: <span class="number">0.4</span>,</code></div></div><div class="container"><div class="line"><code>    marginLeft: <span class="string">&quot;0.6in&quot;</span>,</code></div></div><div class="container"><div class="line"><code>    fontSize: <span class="string">&quot;3em&quot;</span>,</code></div></div><div class="container"><div class="line"><code>    borderWidth: <span class="string">&quot;10px&quot;</span></code></div></div><div class="container"><div class="line"><code>  }, <span class="number">1500</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div>
+<div class="entry-example" id="example-1">
+<p>Animates a div&apos;s left property with a relative value. Click several times on the buttons to see the relative animations queued up.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+						<div class="line n32">32</div>
+					
+						<div class="line n33">33</div>
+					
+						<div class="line n34">34</div>
+					
+						<div class="line n35">35</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>animate demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css"></span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">div</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">position</span>:<span class="value"> absolute;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#abc</span>;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">left</span>:<span class="value"> <span class="number">50</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">width</span>:<span class="value"> <span class="number">90</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">height</span>:<span class="value"> <span class="number">90</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">5</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">style</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;left&quot;</span>&gt;</span>&amp;laquo;<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;right&quot;</span>&gt;</span>&amp;raquo;<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">&quot;block&quot;</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;#right&quot;</span> ).click(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;.block&quot;</span> ).animate({ <span class="string">&quot;left&quot;</span>: <span class="string">&quot;+=50px&quot;</span> }, <span class="string">&quot;slow&quot;</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;#left&quot;</span> ).click(<span class="keyword">function</span>(){</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;.block&quot;</span> ).animate({ <span class="string">&quot;left&quot;</span>: <span class="string">&quot;-=50px&quot;</span> }, <span class="string">&quot;slow&quot;</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div>
+<div class="entry-example" id="example-2">
+<p>The first button shows how an unqueued animation works.  It expands the div out to 90% width <strong>while</strong> the font-size is increasing. Once the font-size change is complete, the border animation will begin.
+
+The second button starts a traditional chained animation, where each animation will start once the previous animation on the element has completed.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+						<div class="line n32">32</div>
+					
+						<div class="line n33">33</div>
+					
+						<div class="line n34">34</div>
+					
+						<div class="line n35">35</div>
+					
+						<div class="line n36">36</div>
+					
+						<div class="line n37">37</div>
+					
+						<div class="line n38">38</div>
+					
+						<div class="line n39">39</div>
+					
+						<div class="line n40">40</div>
+					
+						<div class="line n41">41</div>
+					
+						<div class="line n42">42</div>
+					
+						<div class="line n43">43</div>
+					
+						<div class="line n44">44</div>
+					
+						<div class="line n45">45</div>
+					
+						<div class="line n46">46</div>
+					
+						<div class="line n47">47</div>
+					
+						<div class="line n48">48</div>
+					
+						<div class="line n49">49</div>
+					
+						<div class="line n50">50</div>
+					
+						<div class="line n51">51</div>
+					
+						<div class="line n52">52</div>
+					
+						<div class="line n53">53</div>
+					
+						<div class="line n54">54</div>
+					
+						<div class="line n55">55</div>
+					
+						<div class="line n56">56</div>
+					
+						<div class="line n57">57</div>
+					
+						<div class="line n58">58</div>
+					
+						<div class="line n59">59</div>
+					
+						<div class="line n60">60</div>
+					
+						<div class="line n61">61</div>
+					
+						<div class="line n62">62</div>
+					
+						<div class="line n63">63</div>
+					
+						<div class="line n64">64</div>
+					
+						<div class="line n65">65</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>animate demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css"></span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">div</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#bca</span>;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">width</span>:<span class="value"> <span class="number">200</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">height</span>:<span class="value"> <span class="number">1.1</span>em;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">text-align</span>:<span class="value"> center;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">border</span>:<span class="value"> <span class="number">2</span>px solid green;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">3</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">button</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">14</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">style</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;go1&quot;</span>&gt;</span>&amp;raquo; Animate Block1<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;go2&quot;</span>&gt;</span>&amp;raquo; Animate Block2<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;go3&quot;</span>&gt;</span>&amp;raquo; Animate Both<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;go4&quot;</span>&gt;</span>&amp;raquo; Reset<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">&quot;block1&quot;</span>&gt;</span>Block1<span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">&quot;block2&quot;</span>&gt;</span>Block2<span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;#go1&quot;</span> ).click(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;#block1&quot;</span> )</code></div></div><div class="container"><div class="line"><code>    .animate({</code></div></div><div class="container"><div class="line"><code>      width: <span class="string">&quot;90%&quot;</span></code></div></div><div class="container"><div class="line"><code>    }, {</code></div></div><div class="container"><div class="line"><code>      queue: <span class="literal">false</span>,</code></div></div><div class="container"><div class="line"><code>      duration: <span class="number">3000</span></code></div></div><div class="container"><div class="line"><code>    })</code></div></div><div class="container"><div class="line"><code>    .animate({ fontSize: <span class="string">&quot;24px&quot;</span> }, <span class="number">1500</span> )</code></div></div><div class="container"><div class="line"><code>    .animate({ borderRightWidth: <span class="string">&quot;15px&quot;</span> }, <span class="number">1500</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;#go2&quot;</span> ).click(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;#block2&quot;</span> )</code></div></div><div class="container"><div class="line"><code>    .animate({ width: <span class="string">&quot;90%&quot;</span> }, <span class="number">1000</span> )</code></div></div><div class="container"><div class="line"><code>    .animate({ fontSize: <span class="string">&quot;24px&quot;</span> }, <span class="number">1000</span> )</code></div></div><div class="container"><div class="line"><code>    .animate({ borderLeftWidth: <span class="string">&quot;15px&quot;</span> }, <span class="number">1000</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;#go3&quot;</span> ).click(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;#go1&quot;</span> ).add( <span class="string">&quot;#go2&quot;</span> ).click();</code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;#go4&quot;</span> ).click(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;div&quot;</span> ).css({</code></div></div><div class="container"><div class="line"><code>    width: <span class="string">&quot;&quot;</span>,</code></div></div><div class="container"><div class="line"><code>    fontSize: <span class="string">&quot;&quot;</span>,</code></div></div><div class="container"><div class="line"><code>    borderWidth: <span class="string">&quot;&quot;</span></code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div>
+<div class="entry-example" id="example-3">
+<p>Animates the first div&apos;s left property and synchronizes the remaining divs, using the step function to set their left properties at each stage of the animation. </p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+						<div class="line n32">32</div>
+					
+						<div class="line n33">33</div>
+					
+						<div class="line n34">34</div>
+					
+						<div class="line n35">35</div>
+					
+						<div class="line n36">36</div>
+					
+						<div class="line n37">37</div>
+					
+						<div class="line n38">38</div>
+					
+						<div class="line n39">39</div>
+					
+						<div class="line n40">40</div>
+					
+						<div class="line n41">41</div>
+					
+						<div class="line n42">42</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>animate demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css"></span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">div</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">position</span>:<span class="value"> relative;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">background-color</span>:<span class="value"> <span class="hexcolor">#abc</span>;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">width</span>:<span class="value"> <span class="number">40</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">height</span>:<span class="value"> <span class="number">40</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">float</span>:<span class="value"> left;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">5</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">style</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">p</span>&gt;</span><span class="tag">&lt;<span class="title">button</span> <span class="attribute">id</span>=<span class="value">&quot;go&quot;</span>&gt;</span>Run &#xBB;<span class="tag">&lt;/<span class="title">button</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">&quot;block&quot;</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">&quot;block&quot;</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">&quot;block&quot;</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">&quot;block&quot;</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">&quot;block&quot;</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">&quot;block&quot;</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;#go&quot;</span> ).click(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;.block:first&quot;</span> ).animate({</code></div></div><div class="container"><div class="line"><code>    left: <span class="number">100</span></code></div></div><div class="container"><div class="line"><code>  }, {</code></div></div><div class="container"><div class="line"><code>    duration: <span class="number">1000</span>,</code></div></div><div class="container"><div class="line"><code>    step: <span class="keyword">function</span>( now, fx ){</code></div></div><div class="container"><div class="line"><code>      $( <span class="string">&quot;.block:gt(0)&quot;</span> ).css( <span class="string">&quot;left&quot;</span>, now );</code></div></div><div class="container"><div class="line"><code>    }</code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div>
+<div class="entry-example" id="example-4">
+<p>Animate all paragraphs to toggle both height and opacity, completing the animation within 600 milliseconds.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;p&quot;</span> ).animate({</code></div></div><div class="container"><div class="line"><code>  height: <span class="string">&quot;toggle&quot;</span>,</code></div></div><div class="container"><div class="line"><code>  opacity: <span class="string">&quot;toggle&quot;</span></code></div></div><div class="container"><div class="line"><code>}, <span class="string">&quot;slow&quot;</span> );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-5">
+<p>Animate all paragraphs to a left style of 50 and opacity of 1 (opaque, visible), completing the animation within 500 milliseconds.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;p&quot;</span> ).animate({</code></div></div><div class="container"><div class="line"><code>  left: <span class="number">50</span>,</code></div></div><div class="container"><div class="line"><code>  opacity: <span class="number">1</span></code></div></div><div class="container"><div class="line"><code>}, <span class="number">500</span> );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-6">
+<p>Animate the left and opacity style properties of all paragraphs; run the animation <em>outside</em> the queue, so that it will automatically start without waiting for its turn.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;p&quot;</span> ).animate({</code></div></div><div class="container"><div class="line"><code>  left: <span class="string">&quot;50px&quot;</span>,</code></div></div><div class="container"><div class="line"><code>  opacity: <span class="number">1</span></code></div></div><div class="container"><div class="line"><code>}, {</code></div></div><div class="container"><div class="line"><code>  duration: <span class="number">500</span>,</code></div></div><div class="container"><div class="line"><code>  queue: <span class="literal">false</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-7">
+<p>An example of using an &apos;easing&apos; function to provide a different style of animation. This will only work if you have a plugin that provides this easing function.  Note, this code will do nothing unless the paragraph element is hidden.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;p&quot;</span> ).animate({</code></div></div><div class="container"><div class="line"><code>  opacity: <span class="string">&quot;show&quot;</span></code></div></div><div class="container"><div class="line"><code>}, <span class="string">&quot;slow&quot;</span>, <span class="string">&quot;easein&quot;</span> );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-8">
+<p>Animates all paragraphs to toggle both height and opacity, completing the animation within 600 milliseconds.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;p&quot;</span> ).animate({</code></div></div><div class="container"><div class="line"><code>  height: <span class="string">&quot;toggle&quot;</span>,</code></div></div><div class="container"><div class="line"><code>  opacity: <span class="string">&quot;toggle&quot;</span></code></div></div><div class="container"><div class="line"><code>}, {</code></div></div><div class="container"><div class="line"><code>  duration: <span class="string">&quot;slow&quot;</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-9">
+<p>Use an easing function to provide a different style of animation. This will only work if you have a plugin that provides this easing function.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;p&quot;</span> ).animate({</code></div></div><div class="container"><div class="line"><code>  opacity: <span class="string">&quot;show&quot;</span></code></div></div><div class="container"><div class="line"><code>}, {</code></div></div><div class="container"><div class="line"><code>  duration: <span class="string">&quot;slow&quot;</span>,</code></div></div><div class="container"><div class="line"><code>  easing: <span class="string">&quot;easein&quot;</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-10">
+<p>Animate all paragraphs and execute a callback function when the animation is complete.  The first argument is an object of CSS properties, the second specifies that the animation should take 1000 milliseconds to complete, the third states the easing type, and the fourth argument is an anonymous callback function. </p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;p&quot;</span> ).animate({</code></div></div><div class="container"><div class="line"><code>  height: <span class="number">200</span>,</code></div></div><div class="container"><div class="line"><code>  width: <span class="number">400</span>,</code></div></div><div class="container"><div class="line"><code>  opacity: <span class="number">0.5</span></code></div></div><div class="container"><div class="line"><code>}, <span class="number">1000</span>, <span class="string">&quot;linear&quot;</span>, <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  alert( <span class="string">&quot;all done&quot;</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

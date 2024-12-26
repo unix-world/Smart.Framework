@@ -1,0 +1,39 @@
+Usage
+Add highlight
+
+Download jquery.highlight-5.js (2 KB) and add it to your page after jQuery. A Closure Compiler compressed version (1 KB) is also available.
+Style the highlight class
+
+Create an entry in your style sheet for the highlight class.
+
+highlight: JavaScript text higlighting jQuery plugin
+
+.highlight { background-color: yellow }
+
+Highlight terms
+
+Call the highlight function with the text to highlight. To highlight all occurrances of “bla” (case insensitive) in all li elements, use the following code:
+
+$('li').highlight('bla');
+
+Remove highlighting
+
+The highlight can be removed from any element with the removeHighlight function. In this example, all highlights under the element with the ID highlight-plugin are removed.
+
+$('#highlight-plugin').removeHighlight();
+
+Forks and Extensions
+
+    Jon Raasch changed the normalize function to make highlight work in Internet Explorer 6.
+    Marshal made a variation that supports regular expressions.
+    Chintan Tank made highlight support arrays.
+    Paul Lang has added support for arbitrary class names beyond “highlight.”.
+    Julian’s fork supports multiple class names.
+
+Changelog
+
+    2014-01-11: Bugfix for character expansion during uppercasing. Thanks Guido Jansen.
+    2009-02-22: Bugfix for one or two strange problems with IE. Also made API easier to use.
+    2008-06-04: Bugfix for incorrect DOM normalization. Thanks Georgy.
+    2007-09-15: Initial release.
+

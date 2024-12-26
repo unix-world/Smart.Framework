@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="\SmartFileSystem final class \ SmartFileSystem { } :: Class: SmartFileSystem - provides the File System Access functions. This class enforces the use of">
+<meta name="keywords" content="smartfilesystem, final, class, provides, the, file, system, access, functions, this, enforces, use, of, relative, paths, to, force, using, correct, path, in, a, web, environment, application, must, be, folder, as, some folder, or, some folder my file txt, absolute, are, denied, by, internal, checks, they, not, safe, from, security, point, view, also, backward, like, some file or folder, is, above, exposed, reasons, files, and, folders, contain, only, characters, a z, can, slashes, separators, no, spaces, allowed, all, operations, against, toc tou, time of check, time of use, expoits, language, php, located, at, lib core lib filesys php, package, application filesystem, namespace, name, version, v, depends, classes, smart, smartenvironment, constants, smart framework chmod dirs, smart framework chmod files, hints, handle, thread, concurency, filesystem, way">
+<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartFileSystem">
+<link rel="icon" href="data:,">
+<title>PHP Documentation for: \SmartFileSystem</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+		float: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3c4663;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework : PHP Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+		<ul class="menu">
+		<li><a href="index.html#Package--ApplicationFileSystem-" title="return to Index">return to Index</a></li>
+	</ul>
+	
+</nav>
+<!-- skip logo -->
+<!-- class r.20220331 -->
+<!-- Styles -->
+<!-- styles r.20220906 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located,
+.doc-version {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-frozen,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	top: 75px;
+	right: 175px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #3C4663;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Headings -->
+<h1 title="PHP class: `\SmartFileSystem` @ PHP Namespace: `\`" id="Class--Summary-">
+	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\</span><span class="doc-name">SmartFileSystem</span><br>
+	
+	
+	{
+	
+	}&nbsp;::
+</h1>
+<!-- Description -->
+<div class="doc-comments">Class: SmartFileSystem - provides the File System Access functions.<br>
+This class enforces the use of RELATIVE PATHS to force using correct path access in a web environment application.<br>
+Relative paths must be relative to the web application folder as folder: `some-folder/` or file: `some-folder/my-file.txt`.<br>
+Absolute paths are denied by internal checks as they are NOT SAFE in a Web Application from the security point of view ...<br>
+Also the backward path access like `../some-file-or-folder` is denied from the above exposed reasons.<br>
+Files and Folders must contain ONLY safe characters as: `[a-z] [A-Z] [0-9] _ - . @ #` ; folders can also contain slashes `/` (as path separators); no spaces are allowed in paths !!<br>
+All operations in this class are safe against TOC/TOU (time-of-check to time-of-use) expoits</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/core/lib_filesys.php</span></li>
+		<li><span class="doc-package"><b>Package:</b> Application:FileSystem</span></li>
+		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> SmartFileSystem</span></li>
+		
+		<li><b>Version:</b> v.20240119</li>
+		<li><b>Depends:</b> classes:  Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_CHMOD_DIRS, SMART_FRAMEWORK_CHMOD_FILES</li>
+		<li><b>Hints:</b> This  class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be mostly safe ; Reads can also use optional shared locking if needed</li>
+		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
+		
+		
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">class Methods</h2>
+</div>
+<!-- methods r.20200121 -->
+<div class="doc-container" id="Method--fix_dir_chmod">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>fix_dir_chmod</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$dir_name` Parameter is REQUIRED">$dir_name</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if success, FALSE if not<br>
+@param: {STRING} $dir_name: The relative path to the directory name to fix chmod for (folder)</div>
+	
+			<div class="doc-method-comments">Fix the Directory CHMOD as defined in SMART_FRAMEWORK_CHMOD_DIRS.<br>
+This provides a safe way to fix chmod on directories (symlinks or files will be skipped) ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--fix_file_chmod">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>fix_file_chmod</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if success, FALSE if not<br>
+@param: {STRING} $file_name: The relative path to the file name to fix chmod for (file)</div>
+	
+			<div class="doc-method-comments">Fix the File CHMOD as defined in SMART_FRAMEWORK_CHMOD_FILES.<br>
+This provides a safe way to fix chmod on files (symlinks or dirs will be skipped) ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_file_size">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_file_size</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} 0 (zero) if file does not exists or invalid file type ; the file size in bytes for the rest of cases<br>
+@param: {STRING} $file_name: The relative path to the file name to get the size for (file or symlink)</div>
+	
+			<div class="doc-method-comments">GET the File Size in Bytes. If invalid file or not file or broken link will return 0 (zero).<br>
+This provides a safe way to get the file size (works also with symlinks) ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_file_ctime">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_file_ctime</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} 0 (zero) if file does not exists or invalid file type ; the file creation timestamp for the rest of cases<br>
+@param: {STRING} $file_name: The relative path to the file name to get the creation timestamp for (file or symlink)</div>
+	
+			<div class="doc-method-comments">GET the File Creation Timestamp. If invalid file or not file or broken link will return 0 (zero).<br>
+This provides a safe way to get the file creation timestamp (works also with symlinks) ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_file_mtime">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_file_mtime</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} 0 (zero) if file does not exists or invalid file type ; the file modification timestamp for the rest of cases<br>
+@param: {STRING} $file_name: The relative path to the file name to get the last modification timestamp for (file or symlink)</div>
+	
+			<div class="doc-method-comments">GET the File Modification Timestamp. If invalid file or not file or broken link will return 0 (zero).<br>
+This provides a safe way to get the file modification timestamp (works also with symlinks) ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_file_md5_checksum">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_file_md5_checksum</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} empty string if file does not exists or invalid file type ; the file md5 checksum for the rest of cases<br>
+@param: {STRING} $file_name: The relative path to the file name to get the last modification timestamp for (file or symlink)</div>
+	
+			<div class="doc-method-comments">GET the File MD5 Checksum. If invalid file or not file or broken link will return empty string.<br>
+This provides a safe way to get the md5_file checksum (works also with symlinks) ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--is_type_dir">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>is_type_dir</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if directory (folder), FALSE if not<br>
+@param: {STRING} $path: The relative path name to be checked (file or dir or symlink)</div>
+	
+			<div class="doc-method-comments">CHECK if a path is a directory (folder) type and exists.<br>
+This provides a safe way to check if a path is directory (folder) (works also with symlinks) ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--is_type_file">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>is_type_file</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if file, FALSE if not<br>
+@param: {STRING} $path: The relative path name to be checked (file or dir or symlink)</div>
+	
+			<div class="doc-method-comments">CHECK if a path is a file type and exists.<br>
+This provides a safe way to check if a path is file (works also with symlinks) ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--is_type_link">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>is_type_link</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if symlink, FALSE if not<br>
+@param: {STRING} $path: The relative path name to be checked (file or dir or symlink)</div>
+	
+			<div class="doc-method-comments">CHECK if a path directory or file is a symlink and exists. Will not check if symlink is broken (not check if symlink origin exists)<br>
+This provides a safe way to check if a path is symlink (may be broken or not) ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--have_access_read">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>have_access_read</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if readable, FALSE if not<br>
+@param: {STRING} $path: The relative path name to be checked (file or dir or symlink)</div>
+	
+			<div class="doc-method-comments">CHECK if a path directory or file exists and is readable (includding if a symlink).<br>
+This provides a safe way to check if a path is readable ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--have_access_write">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>have_access_write</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if writable, FALSE if not<br>
+@param: {STRING} $path: The relative path name to be checked (file or dir or symlink)</div>
+	
+			<div class="doc-method-comments">CHECK if a path directory or file exists and is writable (includding if a symlink).<br>
+This provides a safe way to check if a path is writable ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--have_access_executable">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>have_access_executable</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if file, FALSE if not<br>
+@param: {STRING} $path: The relative path name to be checked (file or symlink)</div>
+	
+			<div class="doc-method-comments">CHECK if a path is an executable file.<br>
+This provides a safe way to check if a file path is executable (works also with symlinks) ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--path_exists">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>path_exists</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if exists, FALSE if not<br>
+@param: {STRING} $path: The relative path name to be checked (file or dir or symlink)</div>
+	
+			<div class="doc-method-comments">CHECK if a path exists (includding if a symlink or a broken symlink).<br>
+This provides a safe way to check if a path exists because using only PHP file_exists() will return false if the path is a broken symlink ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--path_real_exists">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>path_real_exists</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if exists, FALSE if not<br>
+@param: {STRING} $path: The relative path name to be checked (file or dir or symlink)</div>
+	
+			<div class="doc-method-comments">CHECK if a path real exists (excluding if a symlink or a broken symlink).<br>
+This provides a way to check if a path exists but only if take in consideration that the path may be a broken symlink that will return false if checked<br>
+For normal checking if a path exists use SmartFileSystem::path_exists().<br>
+Use this in special cases where you need to check if a path that may be a broken link ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--read">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$file_len` Parameter is OPTIONAL, with the Default Value: 0">$file_len</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$markchmod` Parameter is OPTIONAL, with the Default Value: &quot;no&quot;">$markchmod</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;no&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$safelock` Parameter is OPTIONAL, with the Default Value: &quot;no&quot;">$safelock</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;no&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$allow_protected_paths` Parameter is OPTIONAL, with the Default Value: false">$allow_protected_paths</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The file contents (or a part of file contents if $file_len parameter is used) ; if the file does not exists will return an empty string<br>
+@param: {STRING} $file_name: The relative path of file to be read (can be a symlink to a file)<br>
+@param: {INTEGER+} $file_len: DEFAULT is 0 (zero) ; If zero will read the entire file ; If &gt; 0 (ex: 100) will read only the first 100 bytes fro the file or less if the file size is under 100 bytes<br>
+@param: {YES/NO} $markchmod: DEFAULT is 'no' ; If 'yes' will force a chmod (as defined in SMART_FRAMEWORK_CHMOD_FILES) on the file before trying to read to ensure consistent chmod on all accesible files.<br>
+@param: {YES/NO} $safelock: DEFAULT is 'no' ; If 'yes' will try to get a read shared lock on file prior to read ; If cannot lock the file will return empty string to avoid partial content read where reading a file that have intensive writes (there is always a risk to cannot achieve the lock ... there is no perfect scenario for intensive file operations in multi threaded environments ...)<br>
+@param: {BOOLEAN} $allow_protected_paths: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...) ; for task area this is always hardcoded to TRUE and cannot be overrided</div>
+	
+			<div class="doc-method-comments">Safe READ A FILE contents. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/file.ext).<br>
+It can read the full file content or just a part, starting from the zero offset (ex: first 100 bytes only)<br>
+IT CANNOT BE USED TO ACCESS TEMPORARY UPLOAD FILES WHICH ARE ALWAYS ABSOLUTE PATHS. To access uploaded files use the method SmartFileSystem::read_uploaded()</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--write">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>write</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$file_content` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$file_content</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$write_mode` Parameter is OPTIONAL, with the Default Value: &quot;w&quot;">$write_mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;w&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$allow_protected_paths` Parameter is OPTIONAL, with the Default Value: false">$allow_protected_paths</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)<br>
+@param: {STRING} $file_name: The relative path of file to be written (can be an existing symlink to a file)<br>
+@param: {STRING} $file_content: DEFAULT is '' ; The content string to be written to the file (binary safe)<br>
+@param: {ENUM} $write_mode: DEFAULT is 'w' Write (If file exists then overwrite. If the file does not exist create it) ; If 'a' will use Write-Append by appending the content to a file which can exists or not.<br>
+@param: {BOOLEAN} $allow_protected_paths: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...) ; for task area this is always hardcoded to TRUE and cannot be overrided</div>
+	
+			<div class="doc-method-comments">Safe CREATE AND/OR WRITE/APPEND CONTENTS TO A FILE. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/file.ext).<br>
+It can create a new file or overwrite an existing file.<br>
+It also can to write append to a file.<br>
+The file will be chmod standardized, as set in SMART_FRAMEWORK_CHMOD_FILES.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--write_if_not_exists">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>write_if_not_exists</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_content` Parameter is REQUIRED">$file_content</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_chkcompare` Parameter is OPTIONAL, with the Default Value: &quot;no&quot;">$y_chkcompare</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;no&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$allow_protected_paths` Parameter is OPTIONAL, with the Default Value: false">$allow_protected_paths</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)<br>
+@param: {STRING} $file_name: The relative path of file to be written (can be an existing symlink to a file)<br>
+@param: {STRING} $file_content: DEFAULT is '' ; The content string to be written to the file (binary safe)<br>
+@param: {YES/NO} $y_chkcompare: DEFAULT is 'no' ; If 'yes' will check the existing fiile contents and will overwrite if different than the passed contents in $file_content<br>
+@param: {BOOLEAN} $allow_protected_paths: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...) ; for task area this is always hardcoded to TRUE and cannot be overrided</div>
+	
+			<div class="doc-method-comments">Safe CREATE OR WRITE TO A FILE IF NOT EXISTS OR CONTENT DIFFERS. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/file.ext).<br>
+It can only create a new file or overwrite an existing file if the content does not match.<br>
+The file will be chmod standardized, as set in SMART_FRAMEWORK_CHMOD_FILES.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--copy">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>copy</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$newlocation` Parameter is REQUIRED">$newlocation</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$overwrite_destination` Parameter is OPTIONAL, with the Default Value: false">$overwrite_destination</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$check_copy_contents` Parameter is OPTIONAL, with the Default Value: true">$check_copy_contents</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$allow_protected_paths` Parameter is OPTIONAL, with the Default Value: false">$allow_protected_paths</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)<br>
+@param: {STRING} $file_name: The relative path of file to be copied (can be a symlink to a file)<br>
+@param: {STRING} $newlocation: The relative path of the destination file (where to copy)<br>
+@param: {BOOLEAN} $overwrite_destination: DEFAULT is FALSE ; If set to FALSE will FAIL if destination file exists ; If set to TRUE will overwrite the file destination if exists<br>
+@param: {BOOLEAN} $check_copy_contents: DEFAULT is TRUE ; If set to TRUE (safe mode) will compare the copied content from the destination file with the original file content using sha1-file checksums ; If set to FALSE (non-safe mode) will not do this comparison check (but may save a big amount of time when working with very large files)<br>
+@param: {BOOLEAN} $allow_protected_paths: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...) ; for task area this is always hardcoded to TRUE and cannot be overrided</div>
+	
+			<div class="doc-method-comments">Safe COPY A FILE TO A DIFFERENT LOCATION. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/file.ext).<br>
+It will copy the file from source location to a destination location (includding across partitions).<br>
+The destination file will be chmod standardized, as set in SMART_FRAMEWORK_CHMOD_FILES.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--rename">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>rename</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$newlocation` Parameter is REQUIRED">$newlocation</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$overwrite_destination` Parameter is OPTIONAL, with the Default Value: false">$overwrite_destination</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$allow_protected_paths` Parameter is OPTIONAL, with the Default Value: false">$allow_protected_paths</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)<br>
+@param: {STRING} $file_name: The relative path of file to be renamed or moved (can be a symlink to a file)<br>
+@param: {STRING} $newlocation: The relative path of the destination file (new file name to rename or a new path where to move)<br>
+@param: {BOOL} $overwrite_destination: DEFAULT is FALSE ; If set to FALSE will FAIL if destination file exists ; If set to TRUE will overwrite the file destination if exists<br>
+@param: {BOOLEAN} $allow_protected_paths: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...) ; for task area this is always hardcoded to TRUE and cannot be overrided</div>
+	
+			<div class="doc-method-comments">Safe RENAME OR MOVE A FILE TO A DIFFERENT LOCATION. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/file.ext).<br>
+It will rename or move the file from source location to a destination location (includding across partitions).<br>
+The destination file will NOT be rewritten if exists and the $overwrite_destination is set to FALSE, so in this case<br>
+be sure to check and remove the destination if you intend to overwrite it.<br>
+If the $overwrite_destination is set to TRUE the $newlocation will be overwritten.<br>
+After rename or move the destination will be chmod standardized, as set in SMART_FRAMEWORK_CHMOD_FILES.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--read_uploaded">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read_uploaded</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The file contents ; if the file does not exists or it is not an uploaded file will return an empty string<br>
+@param: {STRING} $file_name: The absolute path of the uploaded file to be read</div>
+	
+			<div class="doc-method-comments">Safe READ AN UPLOADED FILE contents. WORKS WITH ABSOLUTE PATHS (Ex: /tmp/path/to/uploaded-file.ext).<br>
+INFO: This function is 100% SAFE ON LINUX and UNIX file systems.<br>
+WARNING: This function is NOT VERY SAFE TO USE ON WINDOWS file systems (use it on your own risk) because extra checks over the absolute path are not available on windows paths, thus in theory it may lead to insecure path access if crafted paths may result ...<br>
+It will read the full file content of the uploaded file.<br>
+IT SHOULD BE USED TO ACCESS ONLY TEMPORARY UPLOAD FILES. To read other files use the method SmartFileSystem::read()</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--move_uploaded">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>move_uploaded</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$newlocation` Parameter is REQUIRED">$newlocation</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$check_moved_contents` Parameter is OPTIONAL, with the Default Value: true">$check_moved_contents</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)<br>
+@param: {STRING} $file_name: The absolute path of the uploaded file to be moved<br>
+@param: {STRING} $newlocation: The relative path of the destination file (the path where to move)<br>
+@param: {BOOLEAN} $check_moved_contents: If TRUE will compare the TMP File with Destination using SHA1-File</div>
+	
+			<div class="doc-method-comments">Safe MOVE AN UPLOADED FILE to a new RELATIVE location. WORKS WITH ABSOLUTE PATH FOR UPLOADED FILE (Ex: /tmp/path/to/uploaded-file.ext) and a RELATIVE PATH FOR THE DESTINATION FILE (Ex: path/to/a/file.ext).<br>
+INFO: This function is 100% SAFE ON LINUX and UNIX file systems.<br>
+WARNING: This function is NOT VERY SAFE TO USE ON WINDOWS file systems (use it on your own risk) because extra checks over the absolute path are not available on windows paths, thus in theory it may lead to insecure path access if crafted paths may result ...<br>
+It will move an uploaded file to a new destination.<br>
+The destination file will be rewritten if exists.<br>
+IT SHOULD BE USED TO MOVE ONLY TEMPORARY UPLOAD FILES. To move/rename other files use the method SmartFileSystem::rename()</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--delete">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>delete</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$allow_protected_paths` Parameter is OPTIONAL, with the Default Value: false">$allow_protected_paths</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)<br>
+@param: {STRING} $file_name: The relative path of file to be deleted (can be a symlink to a file)<br>
+@param: {BOOLEAN} $allow_protected_paths: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...) ; for task area this is always hardcoded to TRUE and cannot be overrided</div>
+	
+			<div class="doc-method-comments">Safe DELETE A FILE. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/file.ext).<br>
+It will delete a file (or a symlink) if exists</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `link_get_origin()` -->
+<!-- Skip Internal-Priv Method: `link_create()` -->
+<div class="doc-container" id="Method--dir_create">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>dir_create</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$dir_name` Parameter is REQUIRED">$dir_name</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$recursive` Parameter is OPTIONAL, with the Default Value: false">$recursive</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$allow_protected_paths` Parameter is OPTIONAL, with the Default Value: false">$allow_protected_paths</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)<br>
+@param: {STRING} $dir_name: The relative path of directory to be created (can be an existing symlink to a directory)<br>
+@param: {BOOLEAN} $recursive: DEFAULT is FALSE ; If TRUE will attempt to create the full directory (folder) structure if not exists and apply over each segment the standardized chmod, as set in SMART_FRAMEWORK_CHMOD_DIRS<br>
+@param: {BOOLEAN} $allow_protected_paths: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...) ; for task area this is always hardcoded to TRUE and cannot be overrided</div>
+	
+			<div class="doc-method-comments">Safe CREATE A DIRECTORY (FOLDER) RECURSIVE OR NON-RECURSIVE. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/new-dir).<br>
+It will create a new directory (folder) if not exists. If non-recursive will try to create just the last directory (folder) segment.<br>
+The directory (folder) will be chmod standardized, as set in SMART_FRAMEWORK_CHMOD_DIRS.<br>
+WARNING: The $allow_protected_paths parameter MUST BE SET TO TRUE ONLY FOR VERY SPECIAL USAGE ONLY, TO ALLOW relative paths like : #path/to/a/new-dir that may not be used with standard SmartFileSystem functions as they should be PROTECTED.<br>
+Protected Paths (Directories / Folders) are intended for separing the accesible part of filesystem (for regular operations provided via this class) by the protected part of filesystem that can be by example accessed only from special designed libraries.<br>
+Example: create a folder #db/sqlite/ and it's content (files, sub-dirs) will not be accessed by this class but only from outside libraries like SQLite).<br>
+This feature implements a separation between regular file system folders that this class can access and other application level protected folders in order to avoid filesystem direct access to the protected folders.<br>
+As long as all file system operations will be provided only by this class and not using the PHP internal file system functions this separation is safe and secure.</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `dir_copy()` -->
+<div class="doc-container" id="Method--dir_rename">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>dir_rename</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$dir_name` Parameter is REQUIRED">$dir_name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$new_dir_name` Parameter is REQUIRED">$new_dir_name</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)<br>
+@param: {STRING} $dir_name: The relative path of directory (folder) to be renamed or moved (can be a symlink to a directory)<br>
+@param: {STRING} $new_dir_name: The relative path of the destination directory (folder) or a new directory (folder) name to rename or a new path where to move</div>
+	
+			<div class="doc-method-comments">Safe RENAME OR MOVE A DIRECTORY (FOLDER) TO A DIFFERENT LOCATION. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/some-dir).<br>
+It will rename or move the source directory (folder) to a new location (destination), includding across partitions.<br>
+It will FAIL if the destination directory exists, so be sure to check and remove the destination if you intend to overwrite it.<br>
+After rename or move the destination will be chmod standardized, as set in SMART_FRAMEWORK_CHMOD_DIRS.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--dir_delete">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>dir_delete</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$dir_name` Parameter is REQUIRED">$dir_name</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$recursive` Parameter is OPTIONAL, with the Default Value: true">$recursive</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)<br>
+@param: {STRING} $dir_name: The relative path of directory (folder) to be deleted (removed) ; it can be a symlink to another directory<br>
+@param: {BOOLEAN} $recursive: DEFAULT is TRUE ; If set to TRUE will remove directory and all it's content ; If FALSE will try just to remove the directory if empty, otherwise will FAIL</div>
+	
+			<div class="doc-method-comments">Safe DELETE (REMOVE) A DIRECTORY (FOLDER). IF RECURSIVE WILL REMOVE ALL THE SUB-DIR CONTENTS (FILES AND SUB-DIRS). WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/some-dir).<br>
+It will try to remove the directory (folder) if empty in non-recursive mode or will try to delete all directory content (files and sub-folders), if recursive mode enabled.<br>
+It will FAIL in non-recursive mode if the directory (folder) is not empty.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--compare_folders">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>compare_folders</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$dir1` Parameter is REQUIRED">$dir1</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$dir2` Parameter is REQUIRED">$dir2</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$include_dot_files` Parameter is OPTIONAL, with the Default Value: true">$include_dot_files</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$recurring` Parameter is OPTIONAL, with the Default Value: true">$recurring</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} Array of Differences ; If Empty Array, there are no diferences ; If array size &gt; 0, will contain the differences between the compared directories (folders)<br>
+@param: {STRING} $dir1: The relative path of the LEFT directory (folder) to compare ; it can be a symlink to another directory<br>
+@param: {STRING} $dir2: The relative path of the RIGHT directory (folder) to compare ; it can be a symlink to another directory<br>
+@param: {BOOLEAN} $include_dot_files: DEFAULT is TRUE ; If set to TRUE will compare also dot files (ex: .gitignore) ; If FALSE will skip comparing dot files<br>
+@param: {BOOLEAN} $recurring: DEFAULT is TRUE ; If set to TRUE will do a full comparison (recuring) ; If set to FALSE will compare just the first level of each directory and will not recurse and compare into sub-directories</div>
+	
+			<div class="doc-method-comments">Safe COMPARE TWO DIRECTORIES (FOLDERS) FROM LEFT TO RIGHT. RECURSIVE OR NOT. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/some-dir).</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `create_protected_dir()` -->
+
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20200121 -->
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20200121 -->
+<div class="doc-container" id="Constant--APP_DB_FOLDER">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>APP_DB_FOLDER</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;#db/&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+
+<!-- Sample Code -->
+<br>
+<div class="doc-container" id="SAMPLE--Code-">
+	<h2 class="doc-header">Sample code: PHP</h2>
+</div>
+<div class="doc-code">
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+</span><span style="color: #999999">// Usage example:
+ </span><span style="color: #FFFFFF">SmartFileSystem</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);
+
+</span><span style="color: #999999">// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+</div>
+<!-- Summary List -->
+<br>
+<!-- summary r.20210420 -->
+<script>
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* PHP Class \SmartFileSystem # Documentation Index *</option>
+		<optgroup label="Class \SmartFileSystem">
+			<option value="Class--Summary-">Class definition</option>
+		</optgroup>
+		<optgroup label="Class Methods">
+			<option value="Methods--Summary-">Methods list</option>
+						<option value="Method--fix_dir_chmod"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;fix_dir_chmod()</option>
+			
+			
+						<option value="Method--fix_file_chmod"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;fix_file_chmod()</option>
+			
+			
+						<option value="Method--get_file_size"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_file_size()</option>
+			
+			
+						<option value="Method--get_file_ctime"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_file_ctime()</option>
+			
+			
+						<option value="Method--get_file_mtime"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_file_mtime()</option>
+			
+			
+						<option value="Method--get_file_md5_checksum"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_file_md5_checksum()</option>
+			
+			
+						<option value="Method--is_type_dir"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;is_type_dir()</option>
+			
+			
+						<option value="Method--is_type_file"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;is_type_file()</option>
+			
+			
+						<option value="Method--is_type_link"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;is_type_link()</option>
+			
+			
+						<option value="Method--have_access_read"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;have_access_read()</option>
+			
+			
+						<option value="Method--have_access_write"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;have_access_write()</option>
+			
+			
+						<option value="Method--have_access_executable"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;have_access_executable()</option>
+			
+			
+						<option value="Method--path_exists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;path_exists()</option>
+			
+			
+						<option value="Method--path_real_exists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;path_real_exists()</option>
+			
+			
+						<option value="Method--read"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read()</option>
+			
+			
+						<option value="Method--write"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;write()</option>
+			
+			
+						<option value="Method--write_if_not_exists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;write_if_not_exists()</option>
+			
+			
+						<option value="Method--copy"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;copy()</option>
+			
+			
+						<option value="Method--rename"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;rename()</option>
+			
+			
+						<option value="Method--read_uploaded"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read_uploaded()</option>
+			
+			
+						<option value="Method--move_uploaded"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;move_uploaded()</option>
+			
+			
+						<option value="Method--delete"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;delete()</option>
+			
+			
+			
+			
+			
+			
+						<option value="Method--dir_create"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;dir_create()</option>
+			
+			
+			
+			
+						<option value="Method--dir_rename"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;dir_rename()</option>
+			
+			
+						<option value="Method--dir_delete"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;dir_delete()</option>
+			
+			
+						<option value="Method--compare_folders"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;compare_folders()</option>
+			
+			
+			
+			
+			
+		</optgroup>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+						<option value="Constant--APP_DB_FOLDER">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;APP_DB_FOLDER</option>
+			
+			
+		</optgroup>
+				<optgroup label="Class Sample usage">
+			<option value="SAMPLE--Code-">Sample code</option>
+		</optgroup>
+		
+	</select>
+</div>
+<!-- summary-selectjs r.20210420 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div><center>
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
+</center></div>
+</body>
+</html>

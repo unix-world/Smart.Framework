@@ -1,0 +1,28 @@
+/* RowReorder 1.2.5
+ * (c) 2015-2018 SpryMedia Ltd - MIT License # https://github.com/DataTables
+ */
+
+table.dt-rowReorder-float {
+	position: absolute !important;
+	opacity: 0.8;
+	table-layout: fixed;
+	outline: 2px solid #888;
+	outline-offset: -2px;
+	z-index: 2001;
+}
+
+tr.dt-rowReorder-moving {
+	outline: 2px solid #555;
+	outline-offset: -2px;
+}
+
+body.dt-rowReorder-noOverflow {
+	overflow-x: hidden;
+}
+
+table.dataTable td.reorder {
+	text-align: center;
+	cursor: move;
+}
+
+/* END */

@@ -1,0 +1,182 @@
+
+/* -- CSS Start :: Smart.Framework / Components / Notifications :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* Notifications r.20231020 */
+
+div#operation_display,   div.operation_display,
+div#operation_result,    div.operation_result,
+div#operation_info,      div.operation_info,
+div#operation_notice,    div.operation_notice,
+div#operation_important, div.operation_important,
+div#operation_hint,      div.operation_hint,
+div#operation_question,  div.operation_question,
+div#operation_success,   div.operation_success,
+div#operation_warn,      div.operation_warn,
+div#operation_error,     div.operation_error {
+	line-height: 2.25rem;
+	text-align: left;
+	font-size: 1.25rem;
+	font-weight: bold;
+	font-style: normal;
+	padding-left: 16px;
+	padding-right: 16px;
+	padding-top: 12px;
+	padding-bottom: 8px;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	max-width: calc(100% - 10px) !important;
+	min-width: 100px;
+	min-height: 40px;
+	height: auto !important;
+	border-radius: 5px;
+	box-sizing: content-box !important;
+	opacity: 1 !important;
+}
+
+/* ----------------------------- */
+
+div#operation_display,
+div.operation_display {
+	background-color: #6F7996 !important;
+	color: #FFFFFF !important;
+}
+
+/* -- */
+
+div#operation_result,
+div.operation_result {
+	background-color: #555560 !important;
+	color: #FFFFFF !important;
+}
+
+/* -- */
+
+div#operation_info,
+div.operation_info {
+	background-color: #EFEFEF !important;
+	color: #333333 !important;
+}
+
+/* -- */
+
+div#operation_notice,
+div.operation_notice {
+	background-color: #E9EDCA !important;
+	color: #444444 !important;
+}
+
+/* -- */
+
+div#operation_important,
+div.operation_important {
+	background-color: #4D5774 !important;
+	color: #FDFDFD !important;
+}
+
+/* -- */
+
+div#operation_hint,
+div.operation_hint {
+	background-color: #448FCE !important;
+	color: #FDFDFD !important;
+}
+
+/* -- */
+
+div#operation_question,
+div.operation_question {
+	background-color: #778888 !important;
+	color: #FFFFFF !important;
+}
+
+/* -- */
+
+div#operation_success,
+div.operation_success {
+	background-color: #A9D837 !important;
+	color: #333333 !important;
+}
+
+/* -- */
+
+div#operation_warn,
+div.operation_warn {
+	background-color: #FFD218 !important;
+	color: #3E2723 !important;
+}
+
+/* -- */
+
+div#operation_error,
+div.operation_error {
+	background-color: #ED2839 !important;
+	color: #FFFFFF !important;
+}
+
+/* ----------------------------- */
+
+@media all and (max-width:1279px) {
+	div#operation_display,   div.operation_display,
+	div#operation_result,    div.operation_result,
+	div#operation_info,      div.operation_info,
+	div#operation_notice,    div.operation_notice,
+	div#operation_important, div.operation_important,
+	div#operation_hint,      div.operation_hint,
+	div#operation_question,  div.operation_question,
+	div#operation_success,   div.operation_success,
+	div#operation_warn,      div.operation_warn,
+	div#operation_error,     div.operation_error {
+		max-width: calc(99% - 10px) !important;
+	}
+}
+
+@media all and (max-width:959px) {
+	div#operation_display,   div.operation_display,
+	div#operation_result,    div.operation_result,
+	div#operation_info,      div.operation_info,
+	div#operation_notice,    div.operation_notice,
+	div#operation_important, div.operation_important,
+	div#operation_hint,      div.operation_hint,
+	div#operation_question,  div.operation_question,
+	div#operation_success,   div.operation_success,
+	div#operation_warn,      div.operation_warn,
+	div#operation_error,     div.operation_error {
+		max-width: calc(98% - 10px) !important;
+	}
+}
+
+@media all and (max-width:767px) {
+	div#operation_display,   div.operation_display,
+	div#operation_result,    div.operation_result,
+	div#operation_info,      div.operation_info,
+	div#operation_notice,    div.operation_notice,
+	div#operation_important, div.operation_important,
+	div#operation_hint,      div.operation_hint,
+	div#operation_question,  div.operation_question,
+	div#operation_success,   div.operation_success,
+	div#operation_warn,      div.operation_warn,
+	div#operation_error,     div.operation_error {
+		max-width: calc(97% - 10px) !important;
+	}
+}
+
+@media all and (max-width:639px) {
+	div#operation_display,   div.operation_display,
+	div#operation_result,    div.operation_result,
+	div#operation_info,      div.operation_info,
+	div#operation_notice,    div.operation_notice,
+	div#operation_important, div.operation_important,
+	div#operation_hint,      div.operation_hint,
+	div#operation_question,  div.operation_question,
+	div#operation_success,   div.operation_success,
+	div#operation_warn,      div.operation_warn,
+	div#operation_error,     div.operation_error {
+		max-width: calc(96% - 10px) !important;
+	}
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */

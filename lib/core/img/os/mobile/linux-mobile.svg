@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="128" height="128" viewBox="0 0 128 128" id="linux-mobile">
+	<defs id="dfs1">
+		<linearGradient gradientUnits="userSpaceOnUse" y2="108.17625" x2="1043.105" y1="589.11401" x1="1037.0122" id="linearGradient4172" xlink:href="#linearGradient4166"/>
+		<linearGradient id="linearGradient4166">
+			<stop id="stop4168" offset="0" style="stop-color:#c35781;stop-opacity:1"/>
+			<stop id="stop4170" offset="1" style="stop-color:#25458b;stop-opacity:1"/>
+		</linearGradient>
+		<linearGradient gradientUnits="userSpaceOnUse" y2="414.90842" x2="1082.9858" y1="651.76404" x1="1090.6018" id="linearGradient4211" xlink:href="#linearGradient4205"/>
+		<linearGradient id="linearGradient4205">
+			<stop id="stop4207" offset="0" style="stop-color:#bf73d3;stop-opacity:1"/>
+			<stop id="stop4209" offset="1" style="stop-color:#ff8428;stop-opacity:1"/>
+		</linearGradient>
+		<linearGradient gradientTransform="translate(0,27.637839)" gradientUnits="userSpaceOnUse" y2="536.67523" x2="821.90533" y1="376.56763" x1="843.57886" id="linearGradient4167" xlink:href="#linearGradient4160"/>
+		<linearGradient id="linearGradient4160">
+			<stop id="stop4162" offset="0" style="stop-color:#dca11f;stop-opacity:1"/>
+			<stop id="stop4164" offset="1" style="stop-color:#eab3b3;stop-opacity:1"/>
+		</linearGradient>
+	</defs>
+	<g id="layer1">
+		<g transform="matrix(0.21961721,0,0,0.21961721,-141.39626,-30.571275)" id="g873" style="display:inline">
+			<circle style="fill:url(#linearGradient4172);fill-opacity:1;stroke:none" id="path4164" cx="927.33038" cy="430.61868" r="264.71988"/>
+			<path style="fill:url(#linearGradient4211);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 1080.4555,537.32068 38.1444,15.74037 15.7707,-5.98679 20.2642,9.33048 -14.6515,24.80379 -53.7168,55.48237 -43.0596,-79.82053 z" id="path4201"/>
+			<path style="fill:url(#linearGradient4167);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.62636828px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 834.1095,384.08401 c -41.45954,-3.51793 -118.97644,53.75431 -153.78138,108.78122 17.05315,124.9403 122.4467,218.03398 247.00196,218.17579 56.67237,-0.0172 111.65232,-19.56096 155.90042,-55.41797 -4.8149,-36.95036 -21.3288,-72.04022 -62.9063,-119.85938 C 969.59279,476.49172 891.64607,393.68252 834.1095,384.08401 Z" id="path3342" transform="translate(0,-27.637839)"/>
+			<path style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 927.33035,157.01284 A 270.19457,273.60616 0 0 0 657.13594,430.61868 270.19457,273.60616 0 0 0 927.33035,704.22454 270.19457,273.60616 0 0 0 1197.5248,430.61868 270.19457,273.60616 0 0 0 927.33035,157.01284 Z m 0,22.37675 A 248.09645,251.22901 0 0 1 1175.4267,430.61868 248.09645,251.22901 0 0 1 927.33035,681.84777 248.09645,251.22901 0 0 1 679.23404,430.61868 248.09645,251.22901 0 0 1 927.33035,179.38959 Z" id="path3453"/>
+			<path style="fill:#000000;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 917.14258,289.21094 c -8.13609,0.0897 -16.63117,0.70493 -25.56446,2.01562 -64.59711,9.4777 -105.98244,34.99257 -159.00585,98.98438 -21.54324,25.99966 -40.58238,57.33689 -54.20118,81.39258 0.47295,8.88167 1.4085,17.73187 2.80274,26.51367 37.20986,-51.49342 140.80398,-127.62993 164.12695,-94.06446 26.70322,38.43018 -50.22042,91.8447 -39.89453,106.36329 11.0643,15.55682 59.52321,-9.13152 104.49609,-12.36133 50.20861,-3.60581 76.88359,11.92997 110.42186,37.70898 -8.4465,-15.93779 -13.986,-27.57882 -17.1992,-39.00781 -6.67897,-23.75671 11.1475,-45.83857 17.8144,-58.83982 10.5924,-20.65612 19.5129,-49.43408 35.2598,-64.96877 27.5602,-27.18887 75.6746,-41.26066 118.1856,-55.36719 13.304,-4.41469 25.097,-3.47976 38.9726,-6.51953 -12.8776,-7.18791 -28.9512,-9.85045 -42.0801,-10.04493 -69.9869,-1.03663 -112.6386,9.5687 -140.8828,6.49219 -35.82252,-3.90198 -69.31704,-18.78111 -113.25192,-18.29687 z" id="path3481" transform="translate(0,-27.637839)"/>
+			<ellipse style="fill:#555753;fill-opacity:1;stroke:none;stroke-width:0.9341765" id="path3485" cx="977.5799" cy="147.54634" rx="18.49461" ry="18.33036" transform="rotate(11.377029)"/>
+			<ellipse ry="16.600554" rx="16.749302" cy="147.84395" cx="980.40277" id="ellipse3487" style="fill:#000000;stroke:none;stroke-width:0.60365272" transform="rotate(11.377029)"/>
+			<path id="path4068" d="m 993.87415,346.08898 c 14.83695,-7.69445 22.00655,-14.09219 56.65945,-22.74977 33.6391,-8.40428 75.4857,-28.71875 109.152,-36.60344 -57.5991,6.9405 -127.0948,21.47023 -165.81145,59.35321 z" style="fill:#65251e;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.72564411px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"/>
+			<path style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 750.62305,532.66406 c -11.8806,-0.21098 -40.38695,12.65966 -54.99024,19.38867 a 249.63339,252.78535 0 0 0 27.95313,51.72852 c 8.39951,-35.45059 37.46534,-60.05894 31.90039,-69.23047 -0.76957,-1.26831 -2.47453,-1.8443 -4.86328,-1.88672 z" id="path4152" transform="translate(0,-27.637839)"/>
+			<path style="fill:#181818;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 1066.2941,318.82021 c 30.1191,-8.39327 82.0821,-28.88822 119.974,-33.67004 -6.9772,-1.3021 -19.6044,0.84219 -26.5825,1.58563 -37.4189,7.40843 -73.943,22.32884 -93.3915,32.08444 z" id="path4179"/>
+			<circle style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-opacity:1" id="path4181" cx="864.29846" cy="227.40021" r="3.4812589"/>
+			<circle r="2.4604979" cy="214.70039" cx="884.56329" id="circle4187" style="fill:#acaad1;fill-opacity:1;stroke:none;stroke-opacity:1"/>
+			<circle style="fill:#7572b2;fill-opacity:1;stroke:none;stroke-opacity:1" id="circle4213" cx="1037.4409" cy="249.13057" r="2.4604979"/>
+		</g>
+	</g>
+</svg>

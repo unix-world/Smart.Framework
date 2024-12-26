@@ -1,0 +1,116 @@
+/*
+* CSS themes for simplePagination.js v1.6
+* Author: Flavius Matis - http://flaviusmatis.github.com/
+* URL: https://github.com/flaviusmatis/simplePagination.js
+*
+* (c) 2016-2023 unix-world.org
+* contains fixes by unixman r.20231107:
+* 	- style improvements
+* 	- fixes for google.closures.stylesheet
+* 	- removed compact theme
+* 	- all styles optimized
+*/
+
+ul.simple-pagination {
+	list-style: none;
+}
+
+.simple-pagination {
+	display: block;
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+}
+
+.simple-pagination ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.simple-pagination li {
+	list-style: none;
+	float: left;
+	padding: 0;
+	margin: 0;
+	margin-top: 7px;
+	margin-bottom: 7px;
+}
+
+.simple-pagination li .prev,
+.simple-pagination li .next,
+.simple-pagination li span.ellipse {
+	font-weight: bold;
+}
+
+.simple-pagination li span.ellipse.clickable {
+	cursor: pointer;
+}
+
+.simple-pagination li span.ellipse input {
+	color: #444444 !important;
+	background: #FFFFFF !important;
+	border: 0 !important;
+	width: 100% !important;
+	height: 100% !important;
+	vertical-align: middle !important;
+}
+
+.simple-pagination a,
+.simple-pagination span,
+.simple-pagination span.ellipse.clickable {
+	float: left;
+	display: block;
+	vertical-align: middle;
+	line-height: 1.5rem;
+	font-size: 0.875rem;
+	font-weight: normal;
+	text-align: center;
+	min-width: 0.875rem;
+	max-width: 3.5rem;
+	height: 1.5rem;
+	padding: 0 7px 0 7px;
+	margin: 0 5px 0 0;
+	border-radius: 3px;
+}
+
+.simple-pagination a,
+.simple-pagination a:hover {
+	text-decoration: none;
+}
+
+.simple-pagination .ellipse {
+	background: none;
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	cursor: default;
+}
+
+.simple-pagination .current {
+	cursor: default;
+}
+
+/* Light and Dark Theme */
+
+.simple-pagination.light-theme a,
+.simple-pagination.light-theme span,
+.simple-pagination.light-theme span.ellipse.clickable,
+.simple-pagination.dark-theme .current {
+	color: #666666;
+	background: #FCFCFC;
+	border: 1px solid #DDDDDD;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.simple-pagination.dark-theme a,
+.simple-pagination.dark-theme span,
+.simple-pagination.dark-theme span.ellipse.clickable,
+.simple-pagination.light-theme .current {
+	color: #EEEEEE;
+	background: #555555;
+	border: 1px solid #444444;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.8);
+}
+
+/* END */

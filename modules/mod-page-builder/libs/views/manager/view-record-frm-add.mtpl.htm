@@ -1,0 +1,68 @@
+<!-- Pagebuilder / Manage @ Form / Add Record :: v.20220915 -->
+<div style="max-width:920px!important;">
+<table width="100%" border="0" cellpadding="2" cellspacing="0">
+	<tr>
+		<td align="center">[###BUTTONS-CLOSE###]</td>
+	</tr>
+</table>
+<br>
+<div id="tabs" style="width: 99%;">
+	<ul>
+		<li><a id="nolink" href="#tabs-all">[###THE-TTL###]</a></li>
+	</ul>
+	<div id="tabs-all">
+		<table width="100%" border="0" cellpadding="1" cellspacing="0">
+			<tr>
+				<td align="left">&nbsp;</td>
+				<td align="right">&nbsp;</td>
+			</tr>
+		</table>
+		[###REFRESH-PARENT###]
+		<form class="ux-form" method="post" name="[###FORM-NAME###]" id="[###FORM-NAME###]" action="#" onsubmit="return false;">
+			<table width="100%" border="0" cellpadding="1" cellspacing="0">
+				<!-- add -->
+				<tr>
+					<td><b>[###LABELS-TYPE###]:</b></td>
+					<td>&nbsp;</td>
+					<td>
+						[###CONTROLS-TYPE###]
+					</td>
+				</tr>
+				<tr>
+					<td><b>[###LABELS-ID###]:</b></td>
+					<td>&nbsp;</td>
+					<td>
+						<input type="text" name="frm[id]" value="" size="65" maxlength="63" placeholder="Unique Object Slug: [a-z0-9_-]" required>
+					</td>
+				</tr>
+				<tr>
+					<td><b>[###LABELS-NAME###]:</b></td>
+					<td>&nbsp;</td>
+					<td>
+						<input type="text" name="frm[name]" value="" size="70" maxlength="150" placeholder="Object Name" required>
+					</td>
+				</tr>
+				[%%%COMMENT%%%]<!--
+				<tr>
+					<td><b>[###LABELS-CTRL###]:</b></td>
+					<td>&nbsp;</td>
+					<td>
+						<input type="text" name="frm[ctrl]" value="" size="65" maxlength="128" placeholder="Controller Name (Optional)">
+					</td>
+				</tr> -->
+				[%%%/COMMENT%%%]
+				<!-- end -->
+			</table>
+			<hr>
+			<div><center>
+				[###BUTTONS-SUBMIT###]
+			</center></div>
+		</form>
+	</div>
+</div>
+</div>
+<script>
+	smartJ$UI.TabsInit('tabs');
+	smartJ$UI.TabsActivate('tabs', false);
+</script>
+<!-- #END -->

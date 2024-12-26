@@ -1,0 +1,80 @@
+<!-- v.20231114 -->
+[@@@SUB-TEMPLATE:partials/app-release-styles.inc.htm@@@]
+<script>
+const passphraseComplexityCheck = (pass) => { // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
+	pass = smartJ$Utils.stringPureVal(pass, true);
+	const anUpperCase = /[A-Z]/;
+	const aLowerCase = /[a-z]/;
+	const aNumber = /[0-9]/;
+	const aSpecial = /[^A-Za-z0-9]/;
+	if((pass.length < 8) || (pass.search(anUpperCase) == -1) || (pass.search(aLowerCase) == -1) || (pass.search(aNumber) == -1) || (pass.search(aSpecial) == -1)) {
+		return false;
+	}
+	return true;
+};
+const generateEncryptedPass = () => {
+	const theSecret = smartJ$Utils.stringPureVal($('#secret').val(), true);
+	const thePass = smartJ$Utils.stringPureVal($('#pass').val(), true);
+	if((theSecret.length < 28) || (theSecret.length > 98) || (passphraseComplexityCheck(theSecret) !== true)) { // {{{SYNC-APPCODE-CONDITION-VALIDATE-SECRET}}}
+		smartJ$Browser.AlertDialog(
+			'<div class="operation_notice">App Deploy Secret must be at leat 28 characters and must contain at least a lower-case letter, an upper-case letter, a number and a special character ...</div>',
+			null,
+			'App Deploy Secret Notice &nbsp; <i class="sfi sfi-lock sfi-xl"></i>',
+			700,
+			255,
+			'alertable',
+			true // title is HTML
+		);
+	} else {
+		if((thePass.length < 7) || (thePass.length > 30) || (passphraseComplexityCheck(thePass) !== true)) { // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
+			smartJ$Browser.AlertDialog(
+				'<div class="operation_notice">Password must be between 8 and 30 characters and must contain at least a lower-case letter, an upper-case letter, a number and a special character ...</div>',
+				null,
+				'Password Notice &nbsp; <i class="sfi sfi-key sfi-xl"></i>',
+				700,
+				255,
+				'alertable',
+				true // title is HTML
+			);
+		} else {
+			const theEncPass = smartJ$CipherCrypto.bfEnc(theSecret, thePass);
+			smartJ$Browser.AlertDialog(
+				'<div class="operation_important">The encrypted password is below:</div><textarea spellcheck="false" style="width:100%; height:100px;" onClick="$(this).focus().select();">' + smartJ$Utils.escape_html(theEncPass) + '</textarea>',
+				null,
+				'Encrypted Password &nbsp; <i class="sfi sfi-key sfi-xl"></i>',
+				700,
+				300,
+				'alertable',
+				true // title is HTML
+			);
+		}
+	}
+};
+const togglePassFieldView = (fieldId) => {
+	fieldId = smartJ$Utils.create_htmid(smartJ$Utils.stringPureVal(fieldId, true));
+	if(fieldId == '') {
+		alert('Empty Field Selected !');
+	}
+	const $fld = jQuery('input#' + fieldId);
+	if($fld.attr('type') == 'password') {
+		$fld.attr('type','text');
+	} else {
+		$fld.attr('type','password');
+	};
+};
+</script>
+[@@@SUB-TEMPLATE:partials/app-release-top.inc.htm@@@]
+<hr>
+<div class="sTaskTitle">
+<center>
+	<h2>Password Encryption Utility for AppCodeUnPack Manager</h2>
+</center>
+</div>
+<hr>
+<br>
+<input type="password" name="password" style="background:#FF3300; display:none;"><!-- fake field to avoid autocomplete -->
+<div><center>
+<i style="color:#ECECEC;" class="sfi sfi-eye sfi-2x" title="Toggle View" onclick="togglePassFieldView('secret');"></i>&nbsp;&nbsp;<input type="password" id="secret" size="40" maxlength="255" autocomplete="off" class="ux-field ux-field-xl customInput" placeholder="Enter the App Deploy Secret here ..." title="Secret"><br>
+<i style="color:#ECECEC;" class="sfi sfi-eye sfi-2x" title="Toggle View" onclick="togglePassFieldView('pass');"></i>&nbsp;&nbsp;<input type="password" id="pass" size="32" maxlength="32" autocomplete="off" class="ux-field ux-field-xl customInput" placeholder="Enter a complex password between 7 and 30 characters" title="Password"><br>
+<button id="bttn-url-sel" class="ux-button ux-button-alt" onClick="generateEncryptedPass(); return false;" title="Click this button to generate an encrypted password to be used with AppCodeUnPack Manager"><i class="sfi sfi-key"></i> &nbsp; Generate an encrypted password for AppCodeUnPack Manager</button>
+</center></div>

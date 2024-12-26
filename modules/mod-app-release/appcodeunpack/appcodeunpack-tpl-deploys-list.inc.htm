@@ -1,0 +1,98 @@
+<!-- deploys list v.20231114 -->
+<style>
+div.deploysRow {
+	background: #ECECEC;
+	color: #555555;
+	padding: 5px;
+	margin: 2px;
+	margin-left: 12px;
+	margin-right: 12px;
+	font-weight: bold;
+	font-size: 1.125rem;
+}
+div.deploysRow:hover {
+	background: #DDEEFF;
+}
+div.deploysRow:focus {
+	background: #FFFF88;
+}
+span.filterInfo {
+	font-size: 0.875rem !important;
+}
+span.filter-search-value {
+	color: #333333;
+}
+</style>
+<script>
+const getSelectedList = (name) => {
+	let arr = [];
+	name = AppJs.stringPureVal(name, true);
+	if(name == '') {
+		console.warn('getSelectedList', 'Empty Name');
+		return arr;
+	}
+	$('input:checkbox[name=' + name + ']:checked').each((idx, el) => {
+		arr.push($(el).val());
+	});
+	if(arr.length <= 0) {
+		AppJs.displayAlertDialog('<div class="operation_notice">Nothing selected</div>', null, 'Selection', 550, 200);
+	}
+	return arr;
+};
+const submitSelectedList = (name) => {
+	const arr = getSelectedList(name);
+	if(arr.length > 0) {
+		AppJs.displayConfirmDialog(
+			'<div class="operation_important">Remove selected Deployments from the Server ? Press OK to Confirm.</div><div class="operation_info">This operation cannot be undone ...</div>',
+			() => {
+				const dTime = new Date();
+				const uuid = AppJs.sha1(dTime) + '-' + AppJs.md5(dTime);
+				const theList = AppJs.b64enc(AppJs.tfEnc(uuid, JSON.stringify(arr)));
+				const theData = {
+					frm: {
+						uuid: uuid,
+						list: theList,
+						checksum: AppJs.sh3a512(theList + '#' + uuid, true),
+					}
+				};
+				showLoader();
+				AppJs.removeAllGrowls();
+				setTimeout(() => {
+					AppJs.SubmitAjaxRequest(AppJs.url_add_suffix('[###SCRIPT|js###]', 'action=deploys-cleanup'), theData, () => { hideLoader(); setTimeout(() => { self.location=self.location; }, 2500); }, () => { hideLoader(); }, () => { hideLoader(); });
+				}, 750);
+			},
+			'DEPLOYMENTS Cleanup Confirmation',
+			700,
+			300
+		);
+	} else {
+		AppJs.displayAlertDialog('<div class="operation_notice">Nothing selected</div>', null, 'Selection', 550, 200);
+	}
+};
+</script>
+[%%%IF:DEPLOYS-ARR:@>0;%%%]
+<div class="operation_info">
+	List of Deployments:
+	&nbsp;&nbsp;&nbsp;
+	<button class="ux-button ux-button-super ux-button-highlight" onClick="submitSelectedList('deploys'); return false;">Cleanup: Delete Selected Deployments</button>
+</div>
+<div>
+<div class="deploysRow">
+	<input type="checkbox" onClick="(() => { const isSelected = AppJs.selectAllCheckBoxes('deploys'); $(this).prop('checked', isSelected); })();"> &nbsp;
+	&nbsp;&nbsp;&nbsp;
+	<input type="text" class="ux-field" id="filter-list" maxlength="255"> <button class="ux-button ux-button-info ux-button-small" onClick="filterList(true);">Display by Filter</button> <button class="ux-button ux-button-secondary ux-button-small" onClick="filterList(false);">Display All</button> <span id="filter-info" class="filterInfo">Displaying ALL Results</span><span class="filterInfo"> ; Reverse Order (newest first)</span>
+</div>
+[%%%LOOP:DEPLOYS-ARR%%%]
+<div class="deploysRow filter-search-container" tabindex="[###DEPLOYS-ARR.-_INDEX_-|int###]">
+	[%%%IF:DEPLOYS-ARR._-ITERATOR-_:>0;%%%]
+	<input type="checkbox" name="deploys" value="[###DEPLOYS-ARR._-VAL-_|html###]"> &nbsp;
+	[%%%ELSE:DEPLOYS-ARR._-ITERATOR-_%%%]
+	<span title="The last deployment cannot be deleted !" style="cursor: help;">&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;</span>
+	[%%%/IF:DEPLOYS-ARR._-ITERATOR-_%%%]
+	[###DEPLOYS-ARR.-_INDEX_-|html###]. &nbsp; <span class="filter-search-value">[###DEPLOYS-ARR._-VAL-_|html###]</span>
+</div>
+[%%%/LOOP:DEPLOYS-ARR%%%]
+</div>
+[%%%ELSE:DEPLOYS-ARR%%%]
+<div class="operation_notice">There are no deployments on this App Server ...</div>
+[%%%/IF:DEPLOYS-ARR%%%]

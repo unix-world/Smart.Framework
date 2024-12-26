@@ -1,0 +1,27 @@
+<!-- start Marker-TPL template v.20210603 -->
+[%%%COMMENT%%%] Template: templating-test.mtpl.htm [%%%/COMMENT%%%]<!-- comments are removed -->
+<script>
+	var jsDate = '[###DATE-TIME|js###]';
+</script>
+<center><div>
+	<div>
+		<img src="lib/framework/img/sf-logo.svg" width="160" height="160">
+		<br>
+		[%%%IF:VERSION:!=;%%%]<span style="color:#778899;"><b><i>Marker-TPL</i></b> <i>Templating</i> Engine [###VERSION|html###]</span>[%%%/IF:VERSION%%%]
+	</div>
+	[###HELLO__WORLD###]
+	<div>
+		<a href="?/page/samples.templating-test" class="ux-button ux-button-small ux-button-info"><i class="sfi sfi-loop2"></i> &nbsp; Reload TPL Render Test</a>
+		&nbsp;&nbsp;
+		<a href="?/page/samples.templating-test/op/viewsource" target="tpl_m_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-primary"><i class="sfi sfi-embed"></i> &nbsp; View TPL Source</a>
+		&nbsp;&nbsp;
+		<a href="?/page/samples.templating-test/op/viewpartialsource" target="tpl_m_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-secondary"><i class="sfi sfi-embed2"></i> &nbsp; View Sub-TPL Source</a>
+	</div>
+	<br>
+	<div style="color:#777777;" id="the-dateTime">?</div>
+	[@@@SUB-TEMPLATE:templating-test.inc.htm@@@]
+</div></center>
+<script>
+	jQuery('#the-dateTime').text(jsDate);
+</script>
+<!-- end Marker-TPL template -->

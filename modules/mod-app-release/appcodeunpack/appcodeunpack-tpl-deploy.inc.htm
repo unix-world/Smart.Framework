@@ -1,0 +1,98 @@
+<!-- deploy form v.20231106 -->
+<form name="unpack-form" id="unpack-form" method="post" enctype="multipart/form-data" action="#" onsubmit="return false;">
+<div class="boxTable greyTable">
+	<table width="width:100%;">
+		<tr valign="top">
+			<td>
+			<div style="font-size:1.75rem !important;">*** DEPLOYING AN APPCODEPACK PACKAGE ON SERVER CANNOT BE UNDONE ***</div>
+			<div style="font-size:1.50rem !important;">** TO UPGRADE/ROLLBACK ANY APP ON THE SERVER REQUIRES TO UPLOAD A NEW APPCODEPACK PACKAGE ... **</div>
+<pre style="font-size:1rem; line-height:1.5 !important; white-space: pre-wrap;">
+* APPCODEPACK PACKAGE DEPLOYMENT INSTRUCTIONS: *
+	1. SELECT an AppID from the list below and UPLOAD a valid AppCodePack Package (.z-netarch, NetArchive format, created by AppRelease.CodePack) that match the selected AppID using a valid AppID-Hash.
+	2. AFTER THE UPLOAD, if the Package is validated, IT WILL BE DEPLOYED on the Apache/PHP server within the coresponding AppID folder (directory).
+	3. Deploying the Package on the server WILL REPLACE ANY EXISTING FILES AND FOLDERS within the coresponding AppID base folder, if they exist in archive, except: [ `tmp` folder, and @symlinks ].
+	4. If the Package archive contains a file or folder named `tmp` or a file or folder that match an existing @symlink it will raise a fatal error !
+	5. If the Package contains a file `maintenance.html` in the root of the archive the HTTP 503 Maintenance Mode will be automatically enabled (must be supported also by http server or .htaccess settings).
+	6. If the Package contains a file `appcode-upgrade.php` (App Deploy Task/Upgrade script) it will be executed prior to disable the Maintenance Mode.
+	7. If there are any errors while running the `appcode-upgrade.php` script there are 2 options: deploy a new package or fix the problem manually by removing the maintenance and upgrade files ...
+</pre>
+			</td>
+		</tr>
+	</table>
+</div>
+<center>
+<select id="select-appid" name="frm[appid]" title="Select an AppID from the list" class="ux-field ux-field-xl customList" autocomplete="off" required>
+<option value="">--- No AppID Selected ---</option>
+[%%%LOOP:APP-IDS-ARR%%%]
+<option value="[###APP-IDS-ARR._-VAL-_|html###]">[###APP-IDS-ARR._-VAL-_|html###]</option>
+[%%%/LOOP:APP-IDS-ARR%%%]
+</select> &nbsp; <input type="text" name="frm[appid-hash]" size="128" maxlength="128" class="ux-field ux-field-xl customInput" placeholder="AppID-Hash" title="Enter the AppID-Hash" autocomplete="off" required>
+<br>
+<input type="file" accept=".z-netarch" title="Browse a NetArchive (.z-netarch) AppPackCode Package" name="znetarch" id="file-znetarch" class="ux-field ux-field-xl customInput" autocomplete="off" required> &nbsp; <span style="color:#888888;">Max File Size support (php.ini): [###MAX-UPLD-SIZE|html###]</span>
+<br>
+<button id="unpack-bttn-form" type="button" class="ux-button ux-button-super ux-button-special" title="Click this button to proceed" onClick="return false;">Upload Package and Deploy the Code on this App Server for the selected AppID</button>
+</center>
+</form>
+<!-- # -->
+[%%%IF:HTML-WATCH:!=;%%%]
+<style>
+#Watch-Clock {
+	opacity: 0.7;
+}
+</style>
+<center>
+[###HTML-WATCH###]
+</center>
+[%%%ELSE:HTML-WATCH%%%]
+<!-- Watch not set -->
+[%%%/IF:HTML-WATCH%%%]
+<script>
+const currentFormURL = '[###SCRIPT|js###]?action=deploy';
+const currentFormID = 'unpack-form';
+const showCurrentForm = () => {
+	showForm(currentFormID);
+};
+const hideCurrentForm = () => {
+	hideForm(currentFormID);
+};
+(() => {
+	$('#unpack-bttn-form').on('click', () => {
+		AppJs.displayConfirmDialog(
+			'<div class="operation_important">Deploy the Appcodepack Package on Server ? Press OK to Confirm.</div><div class="operation_info">This operation cannot be undone ...</div><center><h5>Selected AppID: <span style="color:#ED2839;">' + AppJs.escape_html($('#select-appid').val()) + '</span></h5></center>',
+			() => {
+				const crrIsoDate = AppJs.getCrrIsoDateTime();
+				AppJs.removeAllGrowls();
+				hideCurrentForm();
+				setTimeout(() => {
+					AppJs.SubmitTheFormByAjax(
+						currentFormID, currentFormURL,
+						(fid, u, msg) => {
+							hideLoader();
+							enableHomeLinks();
+							AppJs.displayGrowl(
+								'Package Deploy Completed: OK',
+								'<h4>' + AppJs.escape_html(crrIsoDate) + '</h4><h5>UUID:&nbsp;`' + AppJs.escape_html(AppJs.createUUID(crrIsoDate)) + '`</h5>' + '<pre>' + AppJs.escape_html(msg.message) + '</pre>',
+								0,
+								true,
+								'info',
+								{
+									before_close: () => {
+										setTimeout(() => {
+											self.location = self.location;
+										}, 500);
+									}
+								}
+							);
+						},
+						'showCurrentForm()',
+						'showCurrentForm()'
+					);
+				}, 750);
+			},
+			'DEPLOY Confirmation',
+			700,
+			300
+		);
+	});
+})();
+</script>

@@ -1,0 +1,33 @@
+<script>{
+		"title":
+			"deferred.reject()",
+		"excerpt":
+			" Reject a Deferred object and call any failCallbacks with the given args. ",
+		"termSlugs": {
+			"category": [
+				"deferred-object","version/1.5"
+			]
+		}
+	}</script><article id="deferred-reject1" class="entry method"><h2 class="section-title">
+<span class="name">deferred.reject(  [args ] )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Deferred">Deferred</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong> Reject a Deferred object and call any failCallbacks with the given <code>args</code>. </p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.5/">1.5</a></span><a id="deferred-reject-args" href="#deferred-reject-args"><span class="icon-link"></span>deferred.reject(  [args ] )</a>
+</h4>
+<ul><li>
+<div><strong>args</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Anything">Anything</a>
+</div>
+<div>
+        Optional arguments that are passed to the failCallbacks.
+      </div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>Normally, only the creator of a Deferred should call this method; you can prevent other code from changing the Deferred&apos;s state by returning a restricted Promise object through <a href="/deferred.promise/"><code>deferred.promise()</code></a>.</p>
+    <p>When the Deferred is rejected, any failCallbacks added by <a href="/deferred.then/"><code>deferred.then()</code></a> or <a href="/deferred.fail/"><code>deferred.fail()</code></a> are called. Callbacks are executed in the order they were added. Each callback is passed the <code>args</code> from the <code>deferred.reject()</code> call. Any failCallbacks added after the Deferred enters the rejected state are executed immediately when they are added, using the arguments that were passed to the <code>deferred.reject()</code> call. For more information, see the documentation for <a href="/jQuery.Deferred/">jQuery.Deferred()</a>.</p>
+  </div>
+</div></article>

@@ -1,0 +1,165 @@
+<script>{
+		"title":
+			".ajaxError()",
+		"excerpt":
+			"Register a handler to be called when Ajax requests complete with an error. This is an Ajax Event.",
+		"termSlugs": {
+			"category": [
+				"ajax/global-ajax-event-handlers","version/1.0"
+			]
+		}
+	}</script><article id="ajaxError1" class="entry method"><h2 class="section-title">
+<span class="name">.ajaxError( handler )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#jQuery">jQuery</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Register a handler to be called when Ajax requests complete with an error. This is an <a href="/Ajax_Events/">Ajax Event</a>.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0/">1.0</a></span><a id="ajaxError-handler" href="#ajaxError-handler"><span class="icon-link"></span>.ajaxError( handler )</a>
+</h4>
+<ul><li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Event">Event</a> event, <a href="http://api.jquery.com/Types/#jqXHR">jqXHR</a> jqXHR, <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a> ajaxSettings, <a href="http://api.jquery.com/Types/#String">String</a> thrownError )</div>
+<div>The function to be invoked.</div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>Whenever an Ajax request completes with an error, jQuery triggers the <code>ajaxError</code> event. Any and all handlers that have been registered with the <code>.ajaxError()</code> method are executed at this time. <strong>Note:</strong> <em>This handler is not called for cross-domain script and cross-domain JSONP requests.</em></p>
+    <p>To observe this method in action, set up a basic Ajax load request.</p>
+    <div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">button</span> <span class="attribute">class</span>=<span class="value">&quot;trigger&quot;</span>&gt;</span>Trigger<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">&quot;result&quot;</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">&quot;log&quot;</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>Attach the event handler to the document:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( document ).ajaxError(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;.log&quot;</span> ).text( <span class="string">&quot;Triggered ajaxError handler.&quot;</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>Now, make an Ajax request using any jQuery method:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;button.trigger&quot;</span> ).on( <span class="string">&quot;click&quot;</span>, <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;div.result&quot;</span> ).load( <span class="string">&quot;ajax/missing.html&quot;</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>When the user clicks the button and the Ajax request fails, because the requested file is missing, the log message is displayed.</p>
+    <p>All <code>ajaxError</code> handlers are invoked, regardless of what Ajax request was completed. To differentiate between the requests, use the parameters passed to the handler. Each time an <code>ajaxError</code> handler is executed, it is passed the event object, the <code>jqXHR</code> object (prior to jQuery 1.5, the <code><abbr title="XMLHttpRequest">XHR</abbr></code> object), and the settings object that was used in the creation of the request. When an HTTP error occurs, the fourth argument (<code>thrownError</code>) receives the textual portion of the HTTP status, such as &quot;Not Found&quot; or &quot;Internal Server Error.&quot; For example, to restrict the error callback to only handling events dealing with a particular URL:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( document ).ajaxError(<span class="keyword">function</span>( event, jqxhr, settings, thrownError ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">if</span> ( settings.url == <span class="string">&quot;ajax/missing.html&quot;</span> ) {</code></div></div><div class="container"><div class="line"><code>    $( <span class="string">&quot;div.log&quot;</span> ).text( <span class="string">&quot;Triggered ajaxError handler.&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+  </div>
+<h3>Additional Notes:</h3>
+<div class="longdesc"><ul>
+<li>
+			As of jQuery 1.9, all the handlers for the <a href="/category/ajax/global-ajax-event-handlers/">jQuery global Ajax events</a>, including those added with the <code>.ajaxError()</code> method, <em>must</em> be attached to <code>document</code>.
+		</li>
+<li>
+			If <code><a href="/jQuery.Ajax/">$.ajax()</a></code> or <code><a href="/jQuery.ajaxSetup/">$.ajaxSetup()</a></code> is called with the <code>global</code> option set to <code>false</code>, the <code>.ajaxError()</code> method will not fire.
+		</li>
+</ul></div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Show a message when an Ajax request fails.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( document ).ajaxError(<span class="keyword">function</span>( event, request, settings ) {</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;#msg&quot;</span> ).append( <span class="string">&quot;&lt;li&gt;Error requesting page &quot;</span> + settings.url + <span class="string">&quot;&lt;/li&gt;&quot;</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

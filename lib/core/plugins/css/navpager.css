@@ -1,0 +1,98 @@
+
+/* -- CSS Start :: Smart.Framework / Components / NavPager :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* v.20221006 */
+
+/* ----------------------------- */
+
+/* NavBox Pager */
+
+#nav-pager-box {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#nav-pager-box * {
+	font-size: 0.8125rem;
+	font-weight: normal;
+}
+
+#nav-pager-box a#nav-pager-item,
+#nav-pager-box span#nav-pager-current,
+#nav-pager-box span#nav-pager-dots,
+#nav-pager-box span#nav-pager-dsbl-item {
+	text-decoration: none;
+	display: inline-block;
+	margin: 2px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-left: 9px;
+	padding-right: 9px;
+	border-radius: 3px;
+}
+
+#nav-pager-box a#nav-pager-item {
+	color: #666666;
+	background: #FCFCFC;
+	border: 1px solid #DDDDDD;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+#nav-pager-box a#nav-pager-item:hover {
+	text-decoration: underline;
+}
+
+#nav-pager-box span#nav-pager-current {
+	color: #EEEEEE;
+	background: #555555;
+	border: 1px solid #444444;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.8);
+}
+#nav-pager-box span#nav-pager-dots,
+#nav-pager-box span#nav-pager-dsbl-item {
+	color: #666666;
+	background: #FCFCFC;
+	border: 1px solid #DDDDDD;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+	cursor: default;
+}
+
+/* NavBox Arrows */
+table.nav-arrows-tbl {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+table.nav-arrows-tbl td {
+	background: #FFFFFF;
+	color: #333333;
+	padding: 4px;
+}
+a.nav-arrows-link {
+	cursor: pointer;
+	text-decoration: none;
+/*	border-bottom: dotted 1px #666666; */
+}
+div.nav-arrows-start {
+	width: 10px;
+	height: 16px;
+	background: url(img/navpager/nav-start.svg) no-repeat left top;
+}
+div.nav-arrows-prev {
+	width: 6px;
+	height: 16px;
+	background: url(img/navpager/nav-prev.svg) no-repeat left top;
+}
+div.nav-arrows-next {
+	width: 6px;
+	height: 16px;
+	background: url(img/navpager/nav-next.svg) no-repeat left top;
+}
+div.nav-arrows-end {
+	width: 10px;
+	height: 16px;
+	background: url(img/navpager/nav-end.svg) no-repeat left top;
+}
+/* -- */
+
+/* ----------------------------- */
+
+/* -- CSS End -- */

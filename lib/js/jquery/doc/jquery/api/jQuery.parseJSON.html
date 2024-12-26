@@ -1,0 +1,72 @@
+<script>{
+		"title":
+			"jQuery.parseJSON()",
+		"excerpt":
+			"Takes a well-formed JSON string and returns the resulting JavaScript value.",
+		"termSlugs": {
+			"category": [
+				"utilities","version/1.4.1","deprecated/deprecated-3.0"
+			]
+		}
+	}</script><article id="jQuery-parseJSON1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.parseJSON( json )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#String">String</a> or <a href="http://api.jquery.com/Types/#Number">Number</a> or <a href="http://api.jquery.com/Types/#Object">Object</a> or <a href="http://api.jquery.com/Types/#Array">Array</a> or <a href="http://api.jquery.com/Types/#Boolean">Boolean</a></span><span class="version-details">version deprecated: <a href="/category/version/3.0/">3.0</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Takes a well-formed JSON string and returns the resulting JavaScript value.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.4.1/">1.4.1</a></span><a id="jQuery-parseJSON-json" href="#jQuery-parseJSON-json"><span class="icon-link"></span>jQuery.parseJSON( json )</a>
+</h4>
+<ul><li>
+<div><strong>json</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>The JSON string to parse.</div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>As of jQuery 3.0, <code>$.parseJSON</code> is deprecated. To parse JSON strings use the native <code>JSON.parse</code> method instead.</p>
+    <p>Passing in a malformed JSON string results in a JavaScript exception being thrown. For example, the following are all invalid JSON strings:</p>
+    <ul>
+      <li>
+<code>&quot;{test: 1}&quot;</code> (test does not have double quotes around it).</li>
+      <li>
+<code>&quot;{&apos;test&apos;: 1}&quot;</code> (&apos;test&apos; is using single quotes instead of double quotes).</li>
+      <li>
+<code>&quot;&apos;test&apos;&quot;</code> (&apos;test&apos; is using single quotes instead of double quotes).</li>
+      <li>
+<code>&quot;.1&quot;</code> (a number must start with a digit; <code>&quot;0.1&quot;</code> would be valid).</li>
+      <li>
+<code>&quot;undefined&quot;</code> (<code>undefined</code> cannot be represented in a JSON string; <code>null</code>, however, can be).</li>
+      <li>
+<code>&quot;NaN&quot;</code> (<code>NaN</code> cannot be represented in a JSON string; direct representation of <code>Infinity</code> is also not permitted).</li>
+    </ul>
+    <p>The JSON standard does not permit &quot;control characters&quot; such as a tab or newline. An example like <code>$.parseJSON( &apos;{ &quot;testing&quot;:&quot;1\t2\n3&quot; }&apos; )</code> will throw an error in most implementations because the JavaScript parser converts the string&apos;s tab and newline escapes into literal tab and newline; doubling the backslashes like <code>&quot;1\\t2\\n3&quot;</code> yields expected results. This problem is often seen when injecting JSON into a JavaScript file from a server-side language such as PHP.</p>
+    <p>Where the browser provides a native implementation of <code>JSON.parse</code>, jQuery uses it to parse the string. For details on the JSON format, see <a href="https://json.org/">https://json.org/</a>.</p>
+    <p>Prior to jQuery 1.9, <code>$.parseJSON</code> returned <code>null</code> instead of throwing an error if it was passed an empty string, <code>null</code>, or <code>undefined</code>, even though those are not valid JSON.</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Parse a JSON string.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> obj = jQuery.parseJSON( <span class="string">&apos;{ &quot;name&quot;: &quot;John&quot; }&apos;</span> );</code></div></div><div class="container"><div class="line"><code>alert( obj.name === <span class="string">&quot;John&quot;</span> );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

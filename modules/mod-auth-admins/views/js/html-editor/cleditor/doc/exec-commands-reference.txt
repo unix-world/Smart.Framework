@@ -1,0 +1,68 @@
+ExecCommand
+The Internet Explorer 4.0 specific execCommand method can be used to execute a number of commands over a TextRange object. The syntax is:
+
+    Boolean = object.execCommand(command [, bool [, value]])
+
+where:
+
+command
+    is one of the possible Command Identifier (see below)
+bool
+    A boolean value setting whether to show any possible interface that the particular command may have
+value
+    A possible value, the contents/data type of which are determined by the specific command used
+
+The possible Command Identifiers are:
+
+Command 	Description 	Value
+BackColor 	sets the background colour of the referenced text 	#rrggbb|Colour name
+Bold 	Wraps a <B> element around the referenced object 	-
+Copy 	Copies the referenced object to the clipboard 	-
+CreateBookmark 	Wraps a <A NAME="..."> element around the referenced object 	String - bookmark to use
+Create Link 	Wraps a <A HREF="..."> element around the referenced object 	String - URL for link
+Cut 	Copies the referenced object to the clipboard, then removes it from the document 	-
+Delete 	Deletes the referenced object 	-
+FontName 	Sets the typeface for the referenced object 	String - Font Name
+FontSize 	Sets the font size for the referenced object 	String - size
+ForeColor 	Sets the foreground (i.e. text) colour for the referenced object 	#rrggbb | Colour Name
+FormatBlock 	Wraps a specified block-level element around the referenced object 	String - block level element to use
+Indent 	Indents the referenced object 	-
+InsertButton 	Inserts a <BUTTON> element at the current insertion point 	String - ID value
+InsertFieldSet 	Inserts a <FIELDSET> element at the current insertion point 	String - ID value
+InsertHorizontalRule 	Inserts a <HR> element at the current insertion point 	String - ID value
+InsertIFrame 	Inserts a <IFRAME> element at the current insertion point 	String - SRC value
+InsertInputButton 	Inserts a <INPUT TYPE="button"> element at the current insertion point 	String - ID value
+InsertInputCheckbox 	Inserts a <INPUT TYPE="checkbox"> element at the current insertion point 	String - ID value
+InsertInputFileUpload 	Inserts a <INPUT TYPE="FileUpload"> element at the current insertion point 	String - ID value
+InsertInputHidden 	Inserts a <INPUT TYPE="hidden"> element at the current insertion point 	String - ID value
+InsertInputPassword 	Inserts a <INPUT TYPE="password"> element at the current insertion point 	String - ID value
+InsertInputRadio 	Inserts a <INPUT TYPE="radio"> element at the current insertion point 	String - ID value
+InsertInputReset 	Inserts a <INPUT TYPE="reset"> element at the current insertion point 	String - ID value
+InsertInputSubmit 	Inserts a <INPUT TYPE="submit"> element at the current insertion point 	String - ID value
+InsertInputText 	Inserts a <INPUT TYPE="text"> element at the current insertion point 	String - ID value
+InsertMarquee 	Inserts a <MARQUEE> element at the current insertion point 	String - ID value
+InsertOrderedList 	Inserts a <OL> element at the current insertion point 	String - ID value
+InsertParagraph 	Inserts a <P> element at the current insertion point 	String - ID value
+InsertSelectDropdown 	Inserts a <SELECT TYPE="dropdown"> element at the current insertion point 	String - ID value
+InsertSelectListbox 	Inserts a <SELECT TYPE="Listbox"> element at the current insertion point 	String - ID value
+InsertTextArea 	Inserts a <TEXTAREA> element at the current insertion point 	String - ID value
+InsertUnorderedList 	Inserts a <IL> element at the current insertion point 	String - ID value
+Italic 	Wraps a <I> element around the referenced object 	-
+JustifyCenter 	Centers the referenced object 	-
+JustifyFull 	Full justifies the referenced object 	-
+JustifyLeft 	Left justifies the referenced object 	-
+JustifyRight 	Right justifies the referenced object 	-
+Outdent 	Outdents the referenced object 	-
+OverWrite 	Sets the typing mode - insert or over-write 	Boolean - true=over-write, false=insert
+Paste 	Places clipboard contents at the current insertion point (can only paste text copied by the copy command in script 	-
+PlayImage 	Starts playing any dynamic (i.e. video, animated GIF's etc) images with the referenced object 	-
+Refresh 	Reloads the source of the current document 	-
+RemoveFormat 	Removes formatting for the referenced object 	-
+RemoveParaFormat 	Removes any paragraph formatting for the referenced object 	-
+SelectAll 	Selects the whole document text 	-
+StopImage 	Stops playing of all dynamic images 	-
+Underline 	Wraps a <U> around the referenced object 	-
+Unlink 	Removes a link 	-
+Unselect 	Empties any selections from the document 	-
+
+Note : Different Command Identifiers are supported 4.0 for the TextRange object (or the Document Object object).

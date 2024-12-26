@@ -1,0 +1,61 @@
+<!-- Partial Template: TestUnit.Main -->
+<script>
+const TESTUNIT_BASE_URL = '[###TESTUNIT_BASE_URL|js###]';
+const TESTUNIT_AREA_PFX = '[###TEST-UNIT-AREA|js###]';
+</script>
+<div align="left" style="width: 100%;">
+	[###TEST-VAR###]
+	<!-- start tabs -->
+	<div id="tabs_draw">
+		<div id="tabs_nav">
+			<ul>
+				<li><a href="#tabs_tests_core"><i class="sfi sfi-cog"></i> &nbsp; Core</a></li>
+				<li><a href="#tabs_tests_templating"><i class="sfi sfi-lab"></i> &nbsp; Templating</a></li>
+				<li><a href="#tabs_tests_forms"><i class="sfi sfi-insert-template"></i> &nbsp; Forms</a></li>
+				<li><a href="#tabs_tests_interractions"><i class="sfi sfi-new-tab"></i> &nbsp; Interract</a></li>
+				<li><a href="[###TESTUNIT-TPL-PATH|html###]test-unit-tabext-smartgrid-test.inc.htm"><i class="sfi sfi-table2"></i> &nbsp; Smart Grid</a></li>
+				<li><a href="[###TESTUNIT-TPL-PATH|html###]test-unit-tabext-slickgrid-test.inc.htm"><i class="sfi sfi-command"></i> &nbsp; BigData Grid</a></li>
+				<li><a href="[###TESTUNIT-TPL-PATH|html###]test-unit-tabext-charts-test.inc.htm"><i class="sfi sfi-pie-chart"></i> &nbsp; Charts</a></li>
+				<li><a href="[###TESTUNIT-TPL-PATH|html###]test-unit-tabext-barcodes-test.inc.htm"><i class="sfi sfi-qrcode"></i> &nbsp; Barcodes</a></li>
+				<li><a href="#tabs_tests_ui_components"><i class="sfi sfi-display"></i> &nbsp; UI / Components</a></li>
+				<li><a href="broken-link.html"><i class="sfi sfi-eye-blocked"></i> &nbsp; Broken Link</a></li><!-- this is just for testing (broken), the URL actually does not exists -->
+			</ul>
+		</div>
+		<div id="tabs_tests_core">
+			[@@@SUB-TEMPLATE:test-unit-tab-tests.inc.htm@@@]
+		</div>
+		<div id="tabs_tests_interractions">
+			[@@@SUB-TEMPLATE:test-unit-tab-interractions.inc.htm@@@]
+		</div>
+		<div id="tabs_tests_forms">
+			[@@@SUB-TEMPLATE:test-unit-tab-forms.inc.htm@@@]
+		</div>
+		<div id="tabs_tests_templating">
+			[@@@SUB-TEMPLATE:%test-unit-tab-templating%@@@]
+		</div>
+		<div id="tabs_tests_ui_components">
+			[###TEST-UI-COMPONENTS###]
+		</div>
+	</div>
+	[###TEST-JS_SCRIPTS_INIT-TABS###]
+	<!-- end tabs -->
+</div>
+<div style="text-align:right; color:#999999;">
+	Smart.Framework TestUnit: Demo and Samples, License: BSD
+</div>
+<style>
+div#dhkx-exchange-test,
+div#dhkx-exchange-test * {
+	color: #DCDCDC;
+	font-size: 0.75rem !important;
+}
+</style>
+<div id="dhkx-exchange-test">
+[###TEST-DHKX-EXCHANGE-HTML###]
+</div>
+<script>
+jQuery(document).ready(function(){
+	smartJ$UI.ToolTip('a, button');
+});
+</script>
+<!-- #END :: Partial Template: TestUnit.Main -->

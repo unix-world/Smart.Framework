@@ -1,0 +1,68 @@
+<!-- {{{SYNC-MARKER-ALL-TEST-SEQUENCES}}} -->
+[%%%COMMENT%%%] File: partials/templating-test-extended.inc.htm # v.20210608 [%%%/COMMENT%%%]
+<pre id="test-mtpl-area-[###MARK-AREA|htmid|html###]" style="background:#ECECEC; font-size:8px; overflow:hidden; overflow-x:auto;">
+[###MARKER###]							MARKER
+[%%%|SPACE%%%]@SPACE[%%%|T%%%]@TAB[%%%|R%%%]@NEW-LINE(CR+LF)[%%%|N%%%]@NEW-LINE(LF) # and a fake marker [%%%|SB-L%%%]###FAKE-MARKER###[%%%|SB-R%%%]
+[###MARKER|bool###]						MARKER|bool
+[###MARKER|int###]						MARKER|int
+[###MARKER|num###]						MARKER|num
+[###MARKER|htmid###]					MARKER|htmid
+[###MARKER|jsvar###]					MARKER|jsvar
+[###MARKER|json###]						MARKER|json
+[###MARKER|json|url###]					MARKER|json|url
+[###MARKER|json|js###] 					MARKER|json|js
+[###MARKER|json|html###]				MARKER|json|html
+[###MARKER|json|url|js###]				MARKER|json|url|js
+[###MARKER|json|url|html###]			MARKER|json|url|html
+[###MARKER|json|js|html###] 			MARKER|json|js|html
+[###MARKER|json|url|js|html###] 		MARKER|json|url|js|html
+[###SPECIALS|html###]					SPECIALS|html
+[###SPECIALS|js|html###]				SPECIALS|js|html
+[###TEXTSTR|substr1|html###]			TEXTSTR|substr1|html
+[###TEXTSTR|substr55|html###]			TEXTSTR|substr55|html
+[###TEXTSTR|subtxt5|html###]			TEXTSTR|subtxt5|html
+[###TEXTSTR|subtxt55|html###]			TEXTSTR|subtxt55|html
+[###TEXTSTR|subtxt65535|html###]		TEXTSTR|subtxt65535|html
+[###MARKER|url###]						MARKER|url
+[###MARKER|url|js###]					MARKER|url|js
+[###MARKER|url|html###]					MARKER|url|html
+[###MARKER|url|js|html###] 				MARKER|url|js|html
+[###MARKER|js|html|url###] 				MARKER|js|html|url
+[###MARKER|html|js|url###] 				MARKER|html|js|url
+[###MARKER|js###]						MARKER|js
+[###MARKER|js|js###] 					MARKER|js|js
+[###MARKER|js|html###] 					MARKER|js|html
+[###MARKER|html|js###] 					MARKER|html|js
+[###MARKER|hex###]						MARKER|hex
+[###MARKER|html###]						MARKER|html
+[###MARKER|html|syntaxhtml###]			MARKER|html|syntaxhtml
+[###MARKER|html|nl2br###]				MARKER|html|nl2br
+[###MARKER|html|url###]					MARKER|html|url
+[###MARKER|html|nl2br|js###]			MARKER|html|nl2br|js
+[###MARKER|html|nl2br|url###]			MARKER|html|nl2br|url
+[###MARKER|html|url|js###]				MARKER|html|url|js
+[###MARKER|html|nl2br|js|url###]		MARKER|html|nl2br|js|url
+[###MARKER|html|nl2br|url|js###]		MARKER|html|nl2br|url|js
+[###NUMBER|dec1###]						NUMBER|dec1
+[###NUMBER|dec2###]						NUMBER|dec2
+[###NUMBER|dec3###]						NUMBER|dec3
+[###NUMBER|dec4###]						NUMBER|dec4
+[###TEST-UNISTR|html###]				TEST-UNISTR|html
+[###TEST-UNISTR|slug###]				TEST-UNISTR|slug
+[###TEST_CSSSTR|css###]					TEST_CSSSTR|css
+[###TEST-UNISTR|lower|html###]			TEST-UNISTR|lower|html
+[###TEST-UNISTR|upper|html###]			TEST-UNISTR|upper|html
+[###TEST-UNISTR|ucfirst|html###]		TEST-UNISTR|ucfirst|html
+[###TEST-UNISTR|ucwords|html###]		TEST-UNISTR|ucwords|html
+[###TEST-UNISTR|idtxt|html###] 			TEST-UNISTR|idtxt|html
+[###TEST-STRTOTRIM|html###]				TEST-STRTOTRIM|html
+[###TEST-STRTOTRIM|trim|html###]		TEST-STRTOTRIM|trim|html
+[###TEST-EMPTY|trim|html###]			TEST-EMPTY|trim|html
+[###TEST-EMPTY|bool###]					TEST-EMPTY|bool
+[###TEST-EMPTY|num###]					TEST-EMPTY|num
+[###TEST-EMPTY|dec1###]					TEST-EMPTY|dec1
+[###TEST-EMPTY|int###]					TEST-EMPTY|int
+</pre>
+[%%%COMMENT%%%]
+	!!! This is another comment, it must not be shown ... !!!
+[%%%/COMMENT%%%]

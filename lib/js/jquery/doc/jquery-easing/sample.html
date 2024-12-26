@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>jQuery Easing</title>
+	<script src="../../jquery.js"></script>
+	<script src="../../jquery.easing.js"></script>
+	<style type="text/css">
+	h1 {
+		padding-top:1em;
+	}
+	.big {
+		background:#EEE;
+		height:100px;
+	}
+	.big a {
+		display:block;
+		padding:5px 0 0 10px;
+		font-size:2em;
+	}
+	</style>
+</head>
+<body>
+
+<div id="examples">
+<h2 style="background: rgb(255, 255, 187) none repeat scroll 0% 0%;">Example</h2>
+<p>Select easing types for the demo first one for down, second one for up. Then click the clicker.</p>
+<p id="controls"></p>
+<p id="example" class="big" style="height: 100px; display: block;"><a href="#example" id="toggle">The Clicker</a></p>
+</div>
+
+<script>
+$(function() {
+
+	jQuery.easing.def = 'easeOutBounce';
+	// $('<div id="controls">').appendTo('#examples');
+	var sel1 = $("<select>").appendTo('#controls');
+	for(x in jQuery.easing) {
+		if(x != 'linear' && x != 'swing') {
+			sel1.append($('<option>').attr('value', x).text(x));
+		}
+	}
+	sel2 = sel1.clone().appendTo('#controls');
+	sel1.val('easeInOutCirc');
+	sel2.val('easeOutBounce');
+	$("#toggle").click(function(e){
+		e.preventDefault();
+		this.blur();
+		// var el = $('#' + this.href.split('#')[1]);
+		var method1 = sel1.val();
+		var method2 = sel2.val();
+		$('#example').animate({height:200}, {duration: 1000, easing: method1}).animate({height:100}, {duration: 1000, easing: method2});
+	});
+	$('h2').css({background:"#FFB"}).toggle(function() { $(this).animate({width:300}, 1000);},function() { $(this).animate({width:"100%"}, 1000);})
+
+});
+</script>
+</body>
+</html>

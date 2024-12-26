@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="\SmartAuth final class \ SmartAuth { } :: Class: Smart Authentication - provides a safe, in-memory object, to store the authentication data and to provide">
+<meta name="keywords" content="smartauth, final, class, smart, authentication, provides, a, safe, in memory, object, to, store, the, data, and, provide, standard, way, work, with, inside, smart framework, modules, it, must, be, re populated, on, each, execution, this, ensure, using, good, practice, for, auth, mechanisms, core, only, static, methods, integrate, very, important, security, concerns, regarding, protection, against, forgery, mechanism, implemented, in, will, offer, by, constants, so, after, successful, or, failed, page, needs, refresh, load, another, order, change, comes, as, result, of, more, than, years, research, over, web, client server, technologies, best, practices, are, never, objects, session, because, can, forged, avoid, such, bad, just, is, login">
+<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartAuth">
+<link rel="icon" href="data:,">
+<title>PHP Documentation for: \SmartAuth</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+		float: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3c4663;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework : PHP Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+		<ul class="menu">
+		<li><a href="index.html#Package--CoreAuthentication-" title="return to Index">return to Index</a></li>
+	</ul>
+	
+</nav>
+<!-- skip logo -->
+<!-- class r.20220331 -->
+<!-- Styles -->
+<!-- styles r.20220906 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located,
+.doc-version {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-frozen,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	top: 75px;
+	right: 175px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #3C4663;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Headings -->
+<h1 title="PHP class: `\SmartAuth` @ PHP Namespace: `\`" id="Class--Summary-">
+	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\</span><span class="doc-name">SmartAuth</span><br>
+	
+	
+	{
+	
+	}&nbsp;::
+</h1>
+<!-- Description -->
+<div class="doc-comments">Class: Smart Authentication - provides a safe, in-memory object, to store the authentication data and to provide a standard way to work with authentication inside the Smart.Framework / modules.<br>
+It must be re-populated on each execution. This ensure using a good practice for Auth mechanisms.<br>
+It provides the core and only STATIC methods to integrate authentication with Smart.Framework<br>
+The very important security concerns regarding the authentication protection against forgery,<br>
+the mechanism implemented in this class will offer a very good protection by using CONSTANTS,<br>
+so after a successful or failed authentication, the page needs to refresh or load another page<br>
+in order to change authentication data.<br>
+This comes as a result of more than 15 years research over web and client/server technologies ...<br>
+The best practices are to never store Authentication objects in session because session can be forged.<br>
+To avoid such bad practices this object provide just STATIC methods !!<br>
+The best way is to store just the login ID and a safe password HASH (irreversible) in session<br>
+and re-check authentication each time when the page is loaded or to use the HTTP AUTH mechanism<br>
+to avoid store in session the username / password hash. Or this can be combined with cookies, but requires<br>
+much more atention to pay by avoiding session forgery or cookie leakage.<br>
+Session must be protected against forgery by implementing advanced detection mechanisms based on<br>
+IP address and the browser signature of the client. The Smart Session provides a good layer for this purpose.</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/lib_auth.php</span></li>
+		<li><span class="doc-package"><b>Package:</b> @Core:Authentication</span></li>
+		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> SmartAuth</span></li>
+		
+		<li><b>Version:</b> v.20240119</li>
+		<li><b>Depends:</b> Smart,  SmartEnvironment, SmartCipherCrypto</li>
+		
+		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
+		
+		
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">class Methods</h2>
+</div>
+<!-- methods r.20200121 -->
+<div class="doc-container" id="Method--validate_auth_username">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validate_auth_username</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$auth_user_name` Parameter is REQUIRED">$auth_user_name</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$check_reasonable` Parameter is OPTIONAL, with the Default Value: false">$check_reasonable</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if the username is valid or FALSE if not<br>
+@param: {STRING} $auth_user_name: The Auth User Name to be validated ; max length is 25, can contain just: a-z 0-9 .<br>
+@param: {BOOL} $check_reasonable: Check for reasonable length ; if FALSE, min length is 3 ; if TRUE, min length is 5</div>
+	
+			<div class="doc-method-comments">Validate an Auth User Name</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--validate_auth_password">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validate_auth_password</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$auth_user_pass` Parameter is REQUIRED">$auth_user_pass</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$check_complexity` Parameter is OPTIONAL, with the Default Value: false">$check_complexity</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if the password is valid or FALSE if not<br>
+@param: {STRING} $auth_user_pass: The Auth Password (plain text) to be validated ; min length is 7 (8 if complexity is enabled) ; max length is 55<br>
+@param: {BOOL} $check_complexity: Check for password complexity ; if set to TRUE will allow just complex passwords</div>
+	
+			<div class="doc-method-comments">Validate an Auth Password</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--password_hash_create">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>password_hash_create</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$plainpass` Parameter is REQUIRED">$plainpass</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} will return an EMPTY string if the password is not valid or in case of failure ; if all OK will always return a 60 character string<br>
+@param: {STRING} $plainpass: The plain password ; min length is 7 ; max length is 55</div>
+	
+			<div class="doc-method-comments">Creates a SAFE Auth Password Hash, using algo=PASSWORD_BCRYPT (strong one-way hashing algorithm) ; cost=8 (fast, considered an acceptable baseline cost, with low hardware usage)<br>
+Password min length is 7 (8 if complexity is enabled) ; max length is 55 (as supported by PASSWORD_BCRYPT algo)<br>
+This will produce a standard crypt() compatible hash using the `$2y$` identifier<br>
+The salt is RANDOM and will be returned as standard being part of the hashed password<br>
+A random salt will always be used here, because:<br>
+- the salt option is deprecated since PHP 7.4 and removed since PHP 8.0<br>
+- it is now preferred to simply use a random salt that is generated by default<br>
+It will return a 60 character string if success or empty string in case of failure</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `password_hash_validate_format()` -->
+<div class="doc-container" id="Method--password_hash_check">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>password_hash_check</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$plainpass` Parameter is REQUIRED">$plainpass</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$passhash` Parameter is REQUIRED">$passhash</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOL} Will return TRUE if password match or FALSE if not<br>
+@param: {STRING} $plainpass: The plain password ; min length is 7 ; max length is 55<br>
+@param: {STRING} $passhash: The password hash to be checked</div>
+	
+			<div class="doc-method-comments">Check (verify) a password hash provided by SmartAuth::password_hash_create()<br>
+It must use the same complexity check as it was used when password was hashed ; if not may return wrong results</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--set_login_data">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>set_login_data</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_method` Parameter is REQUIRED">$y_method</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_hashpass` Parameter is REQUIRED">$y_hashpass</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_user_id` Parameter is REQUIRED">$y_user_id</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_user_name` Parameter is REQUIRED">$y_user_name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_user_email` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_user_email</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_user_fullname` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_user_fullname</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>ARRAY/STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_user_privileges_list` Parameter is OPTIONAL, with the Default Value: [0 =&gt; &quot;none&quot;, 1 =&gt; &quot;no-privilege&quot;]">$y_user_privileges_list</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[0 =&gt; &quot;none&quot;, 1 =&gt; &quot;no-privilege&quot;]</b></span>, 
+	<i>ARRAY/STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_user_restrictions_list` Parameter is OPTIONAL, with the Default Value: [0 =&gt; &quot;none&quot;, 1 =&gt; &quot;no-restriction&quot;]">$y_user_restrictions_list</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[0 =&gt; &quot;none&quot;, 1 =&gt; &quot;no-restriction&quot;]</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_user_quota` Parameter is OPTIONAL, with the Default Value: -1">$y_user_quota</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>-1</b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_user_metadata` Parameter is OPTIONAL, with the Default Value: []">$y_user_metadata</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_keys` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_keys</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if all data is OK, FALSE if not or try to reauthenticate under the same execution (which is not allowed ; must be just once per execution)<br>
+@param: {STRING} $y_realm: *OPTIONAL* The user Authentication Realm(s)<br>
+@param: {ENUM} $y_method: *OPTIONAL* The authentication method used, as description only: HTTP-BASIC / OTHER / ...<br>
+@param: {STRING} $y_hashpass: *OPTIONAL* The user login password hash or plain password ; for admin/task area it only supports the SmartHashCrypto::password() type pass hash (fixed, 128 characters long) and NOT the plain password ; for index area (and other areas) it may store either: the plain password (7..55 characters) or the pass hash (60..128 characters) ; is not recommended to store here the plain password ; however, it will be stored in memory as encrypted to avoid exposure<br>
+@param: {STRING} $y_user_id: The user (login) ID ; can be the Username or Email (on backend this should be always set with the same value as Username)<br>
+@param: {STRING} $y_user_name: The user username ; Mandatory ; must be valid safe username<br>
+@param: {STRING} $y_user_email: *OPTIONAL* The user Email ; if email is used as login ID this may be redundant !<br>
+@param: {STRING} $y_user_fullname: *OPTIONAL* The user Full Name (First Name + Last Name)<br>
+@param: {ARRAY/STRING} $y_user_privileges_list: *OPTIONAL* The user Privileges List as string '&lt;priv-a&gt;,&lt;priv-b&gt;,...' or array ['priv-a','priv-b'] that list all the current user privileges ; a privilege key must have 3..28 characters and can contain only: a-z -<br>
+@param: {ARRAY/STRING} $y_user_restrictions_list: *OPTIONAL* The user Restrictions List as string '&lt;restr-a&gt;,&lt;restr-b&gt;,...' or array ['restr-a','restr-b'] that list all the current user restrictions ; a restriction key must have 3..28 characters and can contain only: a-z -<br>
+@param: {STRING} $y_user_quota: *OPTIONAL* The user (storage) Quota<br>
+@param: {ARRAY} $y_user_metadata: *OPTIONAL* The user metainfo, associative array with max 7 levels (sub-arrays must have no more than 6 sub-levels, can be either associative or not) ; Ex: [ 'some-key' =&gt; 101, 'another-key' =&gt; 'abc', '3rd-key' =&gt; true, '4th-key' =&gt; [0, 1, 2, 'a', 'b', 'c'], '5th-key' =&gt; [ 'x' =&gt; 'X', 'y' =&gt; 'y', 'z' =&gt; 'Z' ] ]<br>
+@param: {STRING} $y_keys: *OPTIONAL* The user Private Key (will be stored in memory as encrypted to avoid exposure)</div>
+	
+			<div class="doc-method-comments">Set the (in-memory) Auth Login Data<br>
+It can be used just once per execution (session) as it stores the data using constants,<br>
+and the data cannot be changed after a successful or failed authentication has set.</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--check_login">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>check_login</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if current user is Logged-in, FALSE if not</div>
+	
+			<div class="doc-method-comments">Check the (in-memory) Auth Login Data if the current user is logged-in</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_login_data">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_login_data</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_skip_sensitive` Parameter is OPTIONAL, with the Default Value: false">$y_skip_sensitive</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} a complete array containing all the meta-data of the current auth user</div>
+	
+			<div class="doc-method-comments">Get the (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_auth_area">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_auth_area</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The user auth area: [IDX] or [ADM/TSK]</div>
+	
+			<div class="doc-method-comments">Get the auth area method from (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_auth_method">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_auth_method</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The user login method</div>
+	
+			<div class="doc-method-comments">Get the auth user login method from (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_auth_realm">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_auth_realm</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} returns the current user auth realm or an empty string if not set</div>
+	
+			<div class="doc-method-comments">Get the auth realm of the current user stored in the (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_auth_id">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_auth_id</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} if current user is Logged-in will get the user (login) ID which is mandatory, else an empty string</div>
+	
+			<div class="doc-method-comments">Get the current user auth ID from the (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_auth_username">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_auth_username</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} returns the user login username or an empty string if not set</div>
+	
+			<div class="doc-method-comments">Get the current user auth username from the (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_auth_passhash">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_auth_passhash</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The plain password if was set or empty string</div>
+	
+			<div class="doc-method-comments">Get the auth (safe) stored password hash from (in-memory)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_user_email">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_user_email</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} returns the user login email or an empty string if not set</div>
+	
+			<div class="doc-method-comments">Get the current user email from the (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_user_privkey">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_user_privkey</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The plain private-key if was set and valid or empty string</div>
+	
+			<div class="doc-method-comments">Get the auth user (safe) stored private-key from (in-memory)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_user_fullname">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_user_fullname</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} returns the user login full name or an empty string if not set</div>
+	
+			<div class="doc-method-comments">Get the current user Full Name (First + Last Name) from the (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_user_privileges">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_user_privileges</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} returns user login privileges as list-string like: '&lt;privilege-one&gt;,&lt;privilege-two&gt;,...' or an empty string if not set</div>
+	
+			<div class="doc-method-comments">Get the list of the current user privileges stored in the (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_user_arr_privileges">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_user_arr_privileges</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} returns user login privileges as array like: [ '&lt;privilege-one&gt;', '&lt;privilege-two&gt;', ... ] or an empty array if not set</div>
+	
+			<div class="doc-method-comments">Get the list as Array of the current user privileges stored in the (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_user_restrictions">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_user_restrictions</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} returns user login restrictions as list-string like: '&lt;restriction-one&gt;,&lt;restriction-two&gt;,...' or an empty string if not set</div>
+	
+			<div class="doc-method-comments">Get the list of the current user restrictions stored in the (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_user_arr_restrictions">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_user_arr_restrictions</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} returns user login restrictions as array like: [ '&lt;restriction-one&gt;', '&lt;restriction-two&gt;', ... ] or an empty string if not set</div>
+	
+			<div class="doc-method-comments">Get the list as Array of the current user restrictions stored in the (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--test_login_privilege">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>test_login_privilege</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_privilege_to_test` Parameter is REQUIRED">$y_privilege_to_test</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_list_to_test` Parameter is OPTIONAL, with the Default Value: null">$y_list_to_test</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if the current user have the tested privilege or FALSE if does not</div>
+	
+			<div class="doc-method-comments">Test if the current user privileges contain the tested one using the (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--test_login_restriction">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>test_login_restriction</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_restriction_to_test` Parameter is REQUIRED">$y_restriction_to_test</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_list_to_test` Parameter is OPTIONAL, with the Default Value: null">$y_list_to_test</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if the current user have the tested restriction or FALSE if does not</div>
+	
+			<div class="doc-method-comments">Test if the current user restrictions contain the tested one using the (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--validate_privilege_or_restriction_key">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validate_privilege_or_restriction_key</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key_to_validate` Parameter is REQUIRED">$y_key_to_validate</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if the current user have the tested Privilege/Restriction or FALSE if does not</div>
+	
+			<div class="doc-method-comments">Test if a Privilege/Restriction key is valid and contain only allowed chars</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_user_quota">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_user_quota</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} returns the user (storage) quota</div>
+	
+			<div class="doc-method-comments">Get the current user quota stored in the (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--get_user_metadata">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_user_metadata</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} returns an array with all current user metadata</div>
+	
+			<div class="doc-method-comments">Get the current user metadata stored in the (in-memory) Auth Login Data</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--encrypt_privkey">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>encrypt_privkey</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_pkey` Parameter is REQUIRED">$y_pkey</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_secret` Parameter is REQUIRED">$y_secret</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} returns a string with the safe encrypted privacy-key or empty string if was empty<br>
+@param: {STRING} $y_pkey: The private key to be safe encrypted<br>
+@param: {STRING} $y_secret: The encryption secret</div>
+	
+			<div class="doc-method-comments">Safe Encrypt a private key using a password, using Twofish+Blowfish CBC<br>
+The provided password have to be the same as the login password for the user is being used to avoid decryption of the key by other users<br>
+This is completely safe as long as the users login passwords are supposed to be stored as ireversible hashes (by default they are ... but with custom login implementations they can be or not, depending the developer's choice)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--decrypt_privkey">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>decrypt_privkey</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_pkey` Parameter is REQUIRED">$y_pkey</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_secret` Parameter is REQUIRED">$y_secret</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} returns a string with the privacy-key (decrypted, if any, and if valid) which was supposed to be provided as encrypted<br>
+@param: {STRING} $y_pkey: The private key to be decrypted<br>
+@param: {STRING} $y_secret: The encryption secret</div>
+	
+			<div class="doc-method-comments">Decrypt a private key using a password, using Twofish+Blowfish CBC<br>
+The provided password have to be the same as the login password for the user is being used to avoid decryption of the key by other users<br>
+This is completely safe as long as the users login passwords are supposed to be stored as ireversible hashes (by default they are ... but with custom login implementations they can be or not, depending the developer's choice)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--safe_arr_privileges_or_restrictions">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>safe_arr_privileges_or_restrictions</b></span>&nbsp;(
+		<i>STRING/ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_list` Parameter is REQUIRED">$y_list</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$nonassociative` Parameter is OPTIONAL, with the Default Value: false">$nonassociative</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} returns the associative/non-associative array of auth Privileges or Restrictions as [ 'key-a' =&gt; 'Key A', 'key-b' =&gt; 'Key B', ..., 'key-n' =&gt; 'Key N' ] or [ 'key-a', 'key-b', ..., 'key-n' ]<br>
+@param: {STRING/ARRAY} $y_list: List of Privileges or Restrictions as ARRAY [ 'key-a', 'key-b', ..., 'key-n' ] or STRING '&lt;key-a&gt;, &lt;key-b&gt;, ..., &lt;key-n&gt;'<br>
+@param: {BOOL} $nonassociative: Default is FALSE ; if TRUE will return non-associative (simple) ; if FALSE (default) will return associative</div>
+	
+			<div class="doc-method-comments">Build the associative Array of Auth Privileges or Restrictions</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `swt_token_validate()` -->
+<!-- Skip Internal-Priv Method: `swt_token_create()` -->
+<!-- Skip Internal-Priv Method: `registerInternalCacheToDebugLog()` -->
+
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20200121 -->
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20200121 -->
+<div class="doc-container" id="Constant--DEFAULT_PRIVILEGES">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>DEFAULT_PRIVILEGES</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;&lt;super-admin&gt;,&lt;admin&gt;&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--REGEX_VALID_PRIV_KEY">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>REGEX_VALID_PRIV_KEY</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;/^([a-z]{1}[a-z0-9\\-\\:]{0,20}[a-z0-9]{1})$/&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--PASSWORD_BHASH_LENGTH">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>PASSWORD_BHASH_LENGTH</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>60</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--PASSWORD_BHASH_PREFIX">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>PASSWORD_BHASH_PREFIX</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;$2y$08$&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--SWT_VERSION_PREFIX">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>SWT_VERSION_PREFIX</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;SWT&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--SWT_VERSION_SUFFIX">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>SWT_VERSION_SUFFIX</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;v1.3&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--SWT_VERSION_SIGNATURE">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>SWT_VERSION_SIGNATURE</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;swt:1.3&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--SWT_MAX_LIFETIME">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>SWT_MAX_LIFETIME</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>86400</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+
+<!-- Sample Code -->
+<br>
+<div class="doc-container" id="SAMPLE--Code-">
+	<h2 class="doc-header">Sample code: PHP</h2>
+</div>
+<div class="doc-code">
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+</span><span style="color: #999999">// Usage example:
+ </span><span style="color: #FFFFFF">SmartAuth</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);
+
+</span><span style="color: #999999">// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+</div>
+<!-- Summary List -->
+<br>
+<!-- summary r.20210420 -->
+<script>
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* PHP Class \SmartAuth # Documentation Index *</option>
+		<optgroup label="Class \SmartAuth">
+			<option value="Class--Summary-">Class definition</option>
+		</optgroup>
+		<optgroup label="Class Methods">
+			<option value="Methods--Summary-">Methods list</option>
+						<option value="Method--validate_auth_username"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_auth_username()</option>
+			
+			
+						<option value="Method--validate_auth_password"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_auth_password()</option>
+			
+			
+						<option value="Method--password_hash_create"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;password_hash_create()</option>
+			
+			
+			
+			
+						<option value="Method--password_hash_check"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;password_hash_check()</option>
+			
+			
+						<option value="Method--set_login_data"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;set_login_data()</option>
+			
+			
+						<option value="Method--check_login"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;check_login()</option>
+			
+			
+						<option value="Method--get_login_data"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_login_data()</option>
+			
+			
+						<option value="Method--get_auth_area"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_auth_area()</option>
+			
+			
+						<option value="Method--get_auth_method"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_auth_method()</option>
+			
+			
+						<option value="Method--get_auth_realm"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_auth_realm()</option>
+			
+			
+						<option value="Method--get_auth_id"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_auth_id()</option>
+			
+			
+						<option value="Method--get_auth_username"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_auth_username()</option>
+			
+			
+						<option value="Method--get_auth_passhash"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_auth_passhash()</option>
+			
+			
+						<option value="Method--get_user_email"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_user_email()</option>
+			
+			
+						<option value="Method--get_user_privkey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_user_privkey()</option>
+			
+			
+						<option value="Method--get_user_fullname"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_user_fullname()</option>
+			
+			
+						<option value="Method--get_user_privileges"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_user_privileges()</option>
+			
+			
+						<option value="Method--get_user_arr_privileges"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_user_arr_privileges()</option>
+			
+			
+						<option value="Method--get_user_restrictions"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_user_restrictions()</option>
+			
+			
+						<option value="Method--get_user_arr_restrictions"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_user_arr_restrictions()</option>
+			
+			
+						<option value="Method--test_login_privilege"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;test_login_privilege()</option>
+			
+			
+						<option value="Method--test_login_restriction"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;test_login_restriction()</option>
+			
+			
+						<option value="Method--validate_privilege_or_restriction_key"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_privilege_or_restriction_key()</option>
+			
+			
+						<option value="Method--get_user_quota"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_user_quota()</option>
+			
+			
+						<option value="Method--get_user_metadata"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_user_metadata()</option>
+			
+			
+						<option value="Method--encrypt_privkey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;encrypt_privkey()</option>
+			
+			
+						<option value="Method--decrypt_privkey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decrypt_privkey()</option>
+			
+			
+						<option value="Method--safe_arr_privileges_or_restrictions"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;safe_arr_privileges_or_restrictions()</option>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</optgroup>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+						<option value="Constant--DEFAULT_PRIVILEGES">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;DEFAULT_PRIVILEGES</option>
+			
+						<option value="Constant--REGEX_VALID_PRIV_KEY">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;REGEX_VALID_PRIV_KEY</option>
+			
+						<option value="Constant--PASSWORD_BHASH_LENGTH">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;PASSWORD_BHASH_LENGTH</option>
+			
+						<option value="Constant--PASSWORD_BHASH_PREFIX">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;PASSWORD_BHASH_PREFIX</option>
+			
+						<option value="Constant--SWT_VERSION_PREFIX">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;SWT_VERSION_PREFIX</option>
+			
+						<option value="Constant--SWT_VERSION_SUFFIX">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;SWT_VERSION_SUFFIX</option>
+			
+						<option value="Constant--SWT_VERSION_SIGNATURE">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;SWT_VERSION_SIGNATURE</option>
+			
+						<option value="Constant--SWT_MAX_LIFETIME">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;SWT_MAX_LIFETIME</option>
+			
+			
+		</optgroup>
+				<optgroup label="Class Sample usage">
+			<option value="SAMPLE--Code-">Sample code</option>
+		</optgroup>
+		
+	</select>
+</div>
+<!-- summary-selectjs r.20210420 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div><center>
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
+</center></div>
+</body>
+</html>

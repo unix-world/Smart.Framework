@@ -1,0 +1,105 @@
+<!-- Partial Template: TestUnit.SmartGrid -->
+<div style="margin-bottom:5px;"><b>Data Grid - Loading <span style="color:#FF5500;">async data with pagination</span> from a sample SQLite3 database</b> (based on Slickgrid, with some fixes and improvements)</div>
+<style>
+.smartGrid_AlignCenter {
+	text-align: center;
+}
+.smartGrid_AlignRight {
+	text-align: right;
+}
+.smartGrid_Highlight {
+	font-weight: bold;
+}
+.smartGrid_Important {
+	font-weight: bold;
+}
+.smartGrid_column_UUID {
+	color: #999999;
+	text-align: center;
+}
+.smartGrid_HeadHighlight {
+	background-color: #999999 !important;
+	color: #FFFFFF !important;
+}
+</style>
+<script>
+
+var TheGrid;
+
+$(() => {
+
+	var IdOfGrid = 'SmartTestSlickGrid';
+
+	TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', TESTUNIT_BASE_URL+'&op=testunit.json-sqlite3-smartgrid', TESTUNIT_AREA_PFX+'_smart_test_slickgrid_list', 'iso', 'ASC', '', 'filtering');
+
+	// Grid Data Defs
+	let columns = [
+		{id:'iso', field:'iso', name:'ISO Code', sortable:true, width:75, cssClass:'smartGrid_Highlight', editor:TextCellSelector},
+		{id:'name', field:'name', name:'Name', sortable:true, defaultSortDir:1, width:110, cssClass:'smartGrid_Important', editor:TextCellSelector},
+		{id:'iso3', field:'iso3', name:'ISO3 Code', sortable:true, width:70, defaultSortDir:0, editor:TextCellSelector},
+		{id:'numcode', field:'numcode', name:'Numeric Code', sortable:true, width:70, editor:TextCellSelector},
+		{id:'uuid', field:'uuid', name:'UUID', toolTip:'UUID - Not Sortable ...', sortable:false, width:100, editor:TextCellSelector, cssClass:'smartGrid_column_UUID', cssHeadClass:'smartGrid_HeadHighlight'}
+	];
+
+	//-- Grid Options
+	let options = {
+		enableAddRow: false,
+		enableCellNavigation: true,
+		enableColumnReorder: false,
+		enableAsyncPostRender: true,
+		forceFitColumns: false,
+		asyncPostRenderDelay: 15,
+		rowHeight: 27,
+		editable: true,
+		autoEdit: false,
+	//	enableTextSelectionOnCells: false,
+		asyncEditorLoading: false
+	};
+
+	//-- Runtime
+	TheGrid.initNavPager('SmartTestNavPager', 3);
+	TheGrid.initGrid(columns, options);
+	TheGrid.loadGridData(0);
+
+	//-- Grid Sizing
+	const resizeTheGrid = () => {
+		let winW = $(window).width();
+		let winH = $(window).height();
+		$('#' + IdOfGrid).css({ 'width': Math.floor(parseInt(winW) - 75) + 'px', 'height': Math.floor(parseInt(winH) - 275) + 'px' });
+		TheGrid.grid.resizeCanvas();
+		TheGrid.grid.autosizeColumns();
+	} //end function
+
+	//-- Grid Re-Sizing Handler
+	$(window).resize(() => {
+		setTimeout(() => { resizeTheGrid(); }, 5);
+	});
+	setTimeout(() => { resizeTheGrid(); }, 100);
+
+});
+
+</script>
+<form id="filtering" name="filtering" class="ux-form" onSubmit="return false;">
+	<table class="ux-reflow-table">
+		<tr>
+			<td>
+				<input type="text" id="filter-src" name="src" placeholder="ISO | Name | ISO3 | Numeric Code" value="" class="ux-input-def" style="width:99%;">
+			</td>
+			<td>
+				<button type="button" class="ux-button ux-button-details" onClick="TheGrid.loadGridData(0);" title="Filter Table Results">Filter &nbsp; <i class="sfi sfi-search"></i></button>
+			</td>
+			<td>
+				<button type="button" class="ux-button ux-button-secondary" onClick="TheGrid.resetGrid(); TheGrid.loadGridData(0);" title="Remove Filter (display all results)">Reset &nbsp; <i class="sfi sfi-history"></i></button>
+			</td>
+			<td>
+				<div style="width:32px;">&nbsp;</div>
+			</td>
+			<td>
+				<span style="color:#778899; font-size:24px; font-weight:bold;">Sample Data List / Countries :: <span id="infoTotalRows"># / # @</span></span>
+			</td>
+		</tr>
+	</table>
+</form>
+<div id="SmartTestNavPager"></div>
+<form class="ux-form"><div id="SmartTestSlickGrid" class="slickgrid-table" style="font-size:10px;width:100%;height:10px;"></div></form>
+<!-- #END :: Partial Template: TestUnit.SmartGrid -->

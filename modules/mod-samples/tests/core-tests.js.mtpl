@@ -1,0 +1,168 @@
+[%%%COMMENT%%%]
+// IMPORTANT: use only JavaScript code here, no HTML !
+[%%%/COMMENT%%%]
+//===== QUnit Tests.Core: START :: r.20241216
+
+(() => {
+
+	const theTimeOutIframe = 500;
+	const theTimeOutAjax = 250;
+
+	let localTests = {};
+	localTests.FileSystemOps = [###TEST-FILESYSTEM|bool###];
+
+	let testsDisabled = 0;
+	for(let val in localTests) {
+		if(localTests[val] !== true) {
+			testsDisabled++;
+		} //end if
+	} //end for
+	smartQUnitDisabledTests += testsDisabled;
+
+	QUnit.module('Core', () => {
+
+		QUnit.test('Direct Output Test - Line By Line with 1s Delay: PHP :: iFrame', (assert) => {
+			SmartQUnit.runiFrameTest(
+				String(baseScript) + '?page=direct-output',
+				theTimeOutIframe,
+				assert,
+				'Test OK: Smart.Framework Direct Output.',
+				'qunit-test-result' // optional param ; the html element id to test ; default is: qunit-test-result as (#qunit-test-result)
+			);
+		});
+
+		QUnit.test('Cookies Test: PHP / Javascript :: ajax', (assert) => {
+			SmartQUnit.runAjaxTest(
+				String(baseScript) + '?page=testunit&op=testunit.cookies',
+				'GET',
+				'text', // data type
+				assert,
+				'Test OK: PHP / Javascript Cookies.',
+				(QAsyncTestDone, testOK, msg) => {
+					let value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
+					let testMsg = testOK;
+					if((typeof(msg) == 'string') && (smartJ$Utils.stringContains(msg, 'COOKIE-TEST: ', 0) === true) && (smartJ$Utils.stringContains(msg, ' = ') === true)) {
+						const arr = smartJ$Utils.stringSplitbyColon(msg);
+						const arx = smartJ$Utils.stringSplitbyEqual(arr[1]);
+						const test = smartJ$Utils.stringTrim(smartJ$Browser.getCookie(arx[0]));
+						if(test === arx[1]) {
+							value = 'Test OK: PHP / Javascript Cookies.';
+							testMsg = testOK + ': ' + arr[1] + ' / ' + arx[0] + ' = ' + test;
+						} //end if
+					} //end if else
+					assert.equal(
+						value, testOK,
+						testMsg
+					);
+					QAsyncTestDone();
+				} //end
+			);
+		});
+
+		QUnit.test('Unicode Strings Test: PHP :: ajax', (assert) => {
+			SmartQUnit.runAjaxTest(
+				String(baseScript) + '?/page/samples.testunit/op/testunit.strings-test-json/time/1545319279/str_php/Platform%20%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%83%97%E3%83%A9%E3%83%83%E3%83%88%E3%83%95%E3%82%A9%E3%83%BC%E3%83%A0%20%27%C3%A1%C3%A2%C3%A3%C3%A4%C3%A5%C4%81%C4%83%C4%85%C3%81%C3%82%C3%83%C3%84%C3%85%C4%80%C4%82%C4%84%C4%87%C4%89%C4%8D%C3%A7%C4%86%C4%88%C4%8C%C3%87%C4%8F%C4%8E%C3%A8%C3%A9%C3%AA%C3%AB%C4%93%C4%95%C4%97%C4%9B%C4%99%C3%88%C3%89%C3%8A%C3%8B%C4%92%C4%94%C4%96%C4%9A%C4%98%C4%9D%C4%A3%C4%9C%C4%A2%C4%A5%C4%A7%C4%A4%C4%A6%C3%AC%C3%AD%C3%AE%C3%AF%C4%A9%C4%AB%C4%AD%C8%89%C8%8B%C4%AF%C3%8C%C3%8D%C3%8E%C3%8F%C4%A8%C4%AA%C4%AC%C8%88%C8%8A%C4%AE%C4%B3%C4%B5%C4%B2%C4%B4%C4%B7%C4%B6%C4%BA%C4%BC%C4%BE%C5%82%C4%B9%C4%BB%C4%BD%C5%81%C3%B1%C5%84%C5%86%C5%88%C3%91%C5%83%C5%85%C5%87%C3%B2%C3%B3%C3%B4%C3%B5%C3%B6%C5%8D%C5%8F%C5%91%C3%B8%C5%93%C3%92%C3%93%C3%94%C3%95%C3%96%C5%8C%C5%8E%C5%90%C3%98%C5%92%C5%95%C5%97%C5%99%C5%94%C5%96%C5%98%C8%99%C5%9F%C5%A1%C5%9B%C5%9D%C3%9F%C8%98%C5%9E%C5%A0%C5%9A%C5%9C%C8%9B%C5%A3%C5%A5%C8%9A%C5%A2%C5%A4%C3%B9%C3%BA%C3%BB%C3%BC%C5%A9%C5%AB%C5%AD%C5%AF%C5%B1%C5%B3%C3%99%C3%9A%C3%9B%C3%9C%C5%A8%C5%AA%C5%AC%C5%AE%C5%B0%C5%B2%C5%B5%C5%B4%E1%BA%8F%E1%BB%B3%C5%B7%C3%BF%C3%BD%E1%BA%8E%E1%BB%B2%C5%B6%C5%B8%C3%9D%C5%BA%C5%BC%C5%BE%C5%B9%C5%BB%C5%BD%20%22%20%3Cp%3E%3C%2Fp%3E%20%3F%20%26%20%2A%20%5E%20%24%20%40%20%21%20%60%20~%20%25%20%28%29%20%5B%5D%20%7B%7D%20%7C%20%5C%20%2F%20%2B%20-%20_%20%3A%20%3B%20%2C%20.%20%23%270.51085630%201454529172%23%0D%0A%09%60~%40%23%24%25%5E%26%2A%28%29-_%3D%2B%5B%7B%5D%7D%7C%3B%3A%22%3C%3E%2C.%3F%2F%5C+./&str_js=Platform%20%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%83%97%E3%83%A9%E3%83%83%E3%83%88%E3%83%95%E3%82%A9%E3%83%BC%E3%83%A0%20%27%C3%A1%C3%A2%C3%A3%C3%A4%C3%A5%C4%81%C4%83%C4%85%C3%81%C3%82%C3%83%C3%84%C3%85%C4%80%C4%82%C4%84%C4%87%C4%89%C4%8D%C3%A7%C4%86%C4%88%C4%8C%C3%87%C4%8F%C4%8E%C3%A8%C3%A9%C3%AA%C3%AB%C4%93%C4%95%C4%97%C4%9B%C4%99%C3%88%C3%89%C3%8A%C3%8B%C4%92%C4%94%C4%96%C4%9A%C4%98%C4%9D%C4%A3%C4%9C%C4%A2%C4%A5%C4%A7%C4%A4%C4%A6%C3%AC%C3%AD%C3%AE%C3%AF%C4%A9%C4%AB%C4%AD%C8%89%C8%8B%C4%AF%C3%8C%C3%8D%C3%8E%C3%8F%C4%A8%C4%AA%C4%AC%C8%88%C8%8A%C4%AE%C4%B3%C4%B5%C4%B2%C4%B4%C4%B7%C4%B6%C4%BA%C4%BC%C4%BE%C5%82%C4%B9%C4%BB%C4%BD%C5%81%C3%B1%C5%84%C5%86%C5%88%C3%91%C5%83%C5%85%C5%87%C3%B2%C3%B3%C3%B4%C3%B5%C3%B6%C5%8D%C5%8F%C5%91%C3%B8%C5%93%C3%92%C3%93%C3%94%C3%95%C3%96%C5%8C%C5%8E%C5%90%C3%98%C5%92%C5%95%C5%97%C5%99%C5%94%C5%96%C5%98%C8%99%C5%9F%C5%A1%C5%9B%C5%9D%C3%9F%C8%98%C5%9E%C5%A0%C5%9A%C5%9C%C8%9B%C5%A3%C5%A5%C8%9A%C5%A2%C5%A4%C3%B9%C3%BA%C3%BB%C3%BC%C5%A9%C5%AB%C5%AD%C5%AF%C5%B1%C5%B3%C3%99%C3%9A%C3%9B%C3%9C%C5%A8%C5%AA%C5%AC%C5%AE%C5%B0%C5%B2%C5%B5%C5%B4%E1%BA%8F%E1%BB%B3%C5%B7%C3%BF%C3%BD%E1%BA%8E%E1%BB%B2%C5%B6%C5%B8%C3%9D%C5%BA%C5%BC%C5%BE%C5%B9%C5%BB%C5%BD%20%22%20%3Cp%3E%3C%2Fp%3E%20%3F%20%26%20%2A%20%5E%20%24%20%40%20%21%20%60%20~%20%25%20%28%29%20%5B%5D%20%7B%7D%20%7C%20%5C%20%2F%20%2B%20-%20_%20%3A%20%3B%20%2C%20.%20%23%270.51085630%201454529172%23%0D%0A%09%60~%40%23%24%25%5E%26*()-_%3D%2B%5B%7B%5D%7D%7C%3B%3A%22%3C%3E%2C.%3F%2F%5C+.', // the URL must be in a special format for the test
+				'GET',
+				'json', // data type
+				assert,
+				'Test OK: PHP Unicode Strings.',
+				(QAsyncTestDone, testOK, msg, testHtmlDiv) => {
+					const value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
+					if((typeof(msg) == 'object') && (msg.div_content_html) && (typeof(msg.div_content_html) == 'string')) {
+						testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg.div_content_html, theTimeOutAjax);
+					} else {
+						assert.equal(
+							value, testOK,
+							testOK
+						);
+						QAsyncTestDone();
+					} //end if else
+				} //end
+			);
+		});
+
+		QUnit.test('Cryptography Test: PHP / Javascript :: ajax', (assert) => {
+			SmartQUnit.runAjaxTest(
+				String(baseScript) + '?page=samples.testunit&op=testunit.crypto-test',
+				'GET',
+				'html', // data type
+				assert,
+				'Test OK: PHP / Javascript Cryptography.',
+				(QAsyncTestDone, testOK, msg, testHtmlDiv) => {
+					const value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
+					if(typeof(msg) == 'string') {
+						testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, theTimeOutAjax);
+					} else {
+						assert.equal(
+							value, testOK,
+							testOK
+						);
+						QAsyncTestDone();
+					} //end if else
+				} //end
+			);
+		});
+
+		if(localTests.FileSystemOps) {
+
+			QUnit.test('FileSystem Operations Test: PHP :: ajax', (assert) => {
+				SmartQUnit.runAjaxTest(
+					String(baseScript) + '?page=samples.testunit&op=testunit.filesys-test',
+					'GET',
+					'html', // data type
+					assert,
+					'Test OK: PHP FileSystem Operations.',
+					(QAsyncTestDone, testOK, msg, testHtmlDiv) => {
+						const value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
+						if(typeof(msg) == 'string') {
+							testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, theTimeOutAjax);
+						} else {
+							assert.equal(
+								value, testOK,
+								testOK
+							);
+							QAsyncTestDone();
+						} //end if else
+					} //end
+				);
+			});
+
+		} //end if
+
+	});
+
+
+	QUnit.module('Utils', () => {
+
+		QUnit.test('Download Link Encode/Decode Test: PHP :: iFrame', (assert) => {
+			SmartQUnit.runiFrameTest(
+				String(baseScript) + '?page=test-download',
+				theTimeOutIframe,
+				assert,
+				'Test OK: PHP / Download Link Encode/Decode Test: SVG.'
+			);
+		});
+
+		QUnit.test('JSON Encode/Decode Test: PHP :: iFrame', (assert) => {
+			SmartQUnit.runiFrameTest(
+				String(baseScript) + '?page=samples.testunit&op=test.json',
+				theTimeOutIframe,
+				assert,
+				'Test OK: PHP JSON Encode/Decode.'
+			);
+		});
+
+		QUnit.test('Markdown Render Test: PHP :: iFrame', (assert) => {
+			SmartQUnit.runiFrameTest(
+				String(baseScript) + '?page=samples.testunit&op=test.markdown',
+				theTimeOutIframe,
+				assert,
+				'Test OK: PHP Markdown Render.'
+			);
+		});
+
+	});
+
+})();
+
+//===== QUnit Tests.Core: #END

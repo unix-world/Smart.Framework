@@ -1,0 +1,13 @@
+# Language File: RO / CORE / Messages :: r.8.7 / smart.framework.v.8.7
+TRANSLATIONS:
+  @language: RO
+  @area: core
+  @version: 2021-05-26
+  messages:
+    lang: 'Limba'
+    yes: 'Da'
+    no: 'Nu'
+    ok: 'OK'
+    cancel: 'Anulare'
+    warn_undone: 'ATENȚIE: Nu se mai poate reveni asupra acestei acțiuni !'
+#END

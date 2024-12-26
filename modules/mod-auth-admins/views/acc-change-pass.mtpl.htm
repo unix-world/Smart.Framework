@@ -1,0 +1,32 @@
+<!-- v.20231018 -->
+[@@@SUB-TEMPLATE:acc-styles-form.mtpl.inc.htm@@@]
+<center><div><table><tr><td>
+	<form id="change_pass_form" name="change_pass_form" class="ux-form ux-form-aligned" onSubmit="return false;">
+		<legend><h1>Change Account Password</h1></legend><br>
+		<input type="password" name="password" style="background:#FF3300; display:none;"><!-- fake field to avoid autocomplete -->
+		<div class="ux-control-group">
+			<label><i class="sfi sfi-user"></i>&nbsp;UserName&nbsp;/&nbsp;ID</label>
+			<input type="hidden" name="frm[id]" value="[###ID|html###]">
+			<h6 id="user-id" style="display:inline;">[###ID|html###]</h6>
+		</div>
+		<div class="ux-control-group">
+			<label>New Password</label>
+			<input id="pass" type="password" autocomplete="off" name="frm[pass]" placeholder="New Password" class="ux-input-1-2" pattern=".{8,30}" required title="password length must be between 8 and 30 characters">
+		</div>
+		<div class="ux-control-group">
+			<label>Retype New Password</label>
+			<input id="repass" type="password" autocomplete="off" name="frm[repass]" placeholder="New Password Retype" class="ux-input-1-2" title="Retype the password" pattern=".{7,30}" required title="must match the password field above">
+		</div>
+	[%%%IF:LEN-KEYS:>0;%%%]
+		[%%%IF:CRR-ID:==###ID###;%%%]
+		<div title="[###LEN-KEYS|int###]" class="operation_important" style="display:inline-block; max-width:600px!important;">Important:<div>Your account already have a private key set. <i class="sfi sfi-fa-umbrella" style="color:#FFCC00;"></i><br><br>Before you change your password be sure to make a safe backup of your private key which cannot be recovered if any fatal error will happen during this operation. If the private key is lost some sensitive encrypted information can no more be decrypted and will become inaccesible forever.</div></div>
+		[%%%ELSE:CRR-ID%%%]
+		<div title="[###LEN-KEYS|int###]" class="operation_hint" style="display:inline-block; max-width:600px!important;">Important:<div>The selected account already have a private key set. <i class="sfi sfi-fa-umbrella" style="color:#FFCC00;"></i><br><br>Since you are about to change the password for a different account than yours be sure to ask the account owner first to have a safe backup of it's own private key. If any fatal error will happen during this operation the private key may be lost and will can not be recovered anymore without a backup. If the private key is lost some sensitive encrypted information can no more be decrypted and will become inaccesible forever.</div></div>
+		[%%%/IF:CRR-ID%%%]
+	[%%%/IF:LEN-KEYS%%%]
+		<div class="ux-controls">
+			<button type="button" class="ux-button ux-button-spacing" onClick="self.location = '[###ACTIONS-URL|js|html###]edit-form&id=[###ID|js|html###]&viewonly=yes'; return false;"> Cancel &nbsp; <i style="color:#555555;" class="sfi sfi-spinner11"></i></button>
+			<button type="button" class="ux-button ux-button-highlight ux-button-spacing" onClick="smartJ$Browser.SubmitFormByAjax('change_pass_form', '[###ACTIONS-URL|js|html###]change-pass-update', 'yes'); return false;"> Save &nbsp; <i class="sfi sfi-checkmark"></i></button>
+		</div>
+	</form>
+</td></tr></table></div></center>

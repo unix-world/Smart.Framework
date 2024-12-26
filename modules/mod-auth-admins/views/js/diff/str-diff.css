@@ -1,0 +1,29 @@
+/* css for str-diff.js */
+
+.str-diff {
+}
+
+.str-diff ins {
+	display: inline-block;
+	padding: 2px;
+	background: #BBDDFF;
+	text-decoration: overline;
+	text-decoration-color: #AACCEE;
+}
+
+.str-diff ins:hover {
+	text-decoration: none;
+}
+
+.str-diff del {
+	display: inline-block;
+	padding: 2px;
+	background: #F5CBE1;
+	text-decoration-color: #E4BAD0;
+}
+
+.str-diff del:hover {
+	text-decoration: none;
+}
+
+/* END */

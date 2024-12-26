@@ -1,0 +1,58 @@
+<!-- Partial Template: Plugins.NavPager.Arrows r.20221006 -->
+<nav id="nav-arrows-area" aria-label="page-nums-nav" role="navigation">
+<div id="nav-arrows-box" aria-label="page-nums-navbox" role="navigation" style="padding-top:5px; padding-bottom:5px;">
+<table cellspacing="0" class="nav-arrows-tbl" aria-label="page-nums-nav-area" role="navigation">
+	<tr valign="middle">
+	<!-- First -->
+	[%%%IF:NAV-SHOW-FIRST:!=no;%%%]
+		<td align="left">
+		[%%%IF:NAV-LNK-START:!=;(1)%%%]
+			<a class="nav-arrows-link" href="[###NAV-LNK-START|html###]">
+		[%%%/IF:NAV-LNK-START(1)%%%]
+			<div class="nav-arrows-start" title="[###NAV-TXT-START|html###]"></div>
+		[%%%IF:NAV-LNK-START:!=;(2)%%%]
+			</a>
+		[%%%/IF:NAV-LNK-START(2)%%%]
+		</td>
+	[%%%/IF:NAV-SHOW-FIRST%%%]
+	<!-- Prev -->
+		<td align="left">
+		[%%%IF:NAV-LNK-PREV:!=;(1)%%%]
+			<a class="nav-arrows-link" href="[###NAV-LNK-PREV|html###]">
+		[%%%/IF:NAV-LNK-PREV(1)%%%]
+			<div class="nav-arrows-prev" title="[###NAV-TXT-PREV|html###]"></div>
+		[%%%IF:NAV-LNK-PREV:!=;(2)%%%]
+			</a>
+		[%%%/IF:NAV-LNK-PREV(2)%%%]
+		</td>
+	<!-- Info -->
+		<td align="center">
+			<div title="[###NAV-TXT-RES|html###]: [###NAV-RES-MIN|html###] - [###NAV-RES-MAX|html###] / [###NAV-RES-TOTAL|html###]">&nbsp;&nbsp;[###NAV-TXT-LISTED|html###]&nbsp;[###NAV-PG-MIN|html###]&nbsp;[###NAV-TXT-OF|html###]&nbsp;[###NAV-PG-MAX|html###]&nbsp;&nbsp;</div>
+		</td>
+	<!-- Next -->
+		<td align="left">
+		[%%%IF:NAV-LNK-NEXT:!=;(1)%%%]
+			<a class="nav-arrows-link" href="[###NAV-LNK-NEXT|html###]">
+		[%%%/IF:NAV-LNK-NEXT(1)%%%]
+			<div class="nav-arrows-next" title="[###NAV-TXT-NEXT|html###]"></div>
+		[%%%IF:NAV-LNK-NEXT:!=;(2)%%%]
+			</a>
+		[%%%/IF:NAV-LNK-NEXT(2)%%%]
+		</td>
+	<!-- Last -->
+	[%%%IF:NAV-SHOW-LAST:!=no;%%%]
+		<td align="left">
+		[%%%IF:NAV-LNK-END:!=;(1)%%%]
+			<a class="nav-arrows-link" href="[###NAV-LNK-END|html###]">
+		[%%%/IF:NAV-LNK-END(1)%%%]
+			<div class="nav-arrows-end" title="[###NAV-TXT-END|html###]"></div>
+		[%%%IF:NAV-LNK-END:!=;(2)%%%]
+			</a>
+		[%%%/IF:NAV-LNK-END(2)%%%]
+		</td>
+	[%%%/IF:NAV-SHOW-LAST%%%]
+	</tr>
+</table>
+</div>
+</nav>
+<!-- #END :: Partial Template: Plugins.NavPager.Arrows -->

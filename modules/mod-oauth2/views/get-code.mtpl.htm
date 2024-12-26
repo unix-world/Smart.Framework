@@ -1,0 +1,192 @@
+<!-- View: get-code v.20231122 -->
+<style>
+#server-logo {
+	position: absolute !important;
+	left: auto !important;
+	bottom: auto !important;
+	top: 30px !important;
+	right: 40px !important;
+	opacity: 0.4 !important;
+	z-index: 778 !important;
+}
+img#oauth2-logo {
+	cursor: help;
+	position: absolute;
+	top: 15px;
+	right: 25px;
+	z-index: 777 !important;
+}
+img#sf-logo {
+	cursor: help;
+	display: block;
+	margin-left: auto;
+}
+span#oauth2-area-code {
+	font-size: 2rem !important;
+}
+div#oauth2-code {
+	display: inline-block !important;
+	font-size: 1.5rem !important;
+	background: #FFFFFF;
+	color: #C2203F !important;
+	padding: 0 !important;
+	padding-left: 4px !important;
+	padding-right: 4px !important;
+	margin: 0 !important;
+	margin-bottom: 10px !important;
+}
+pre#oauth2-vars {
+	margin: 0 !important;
+	margin-bottom: 10px !important;
+	padding: 4px !important;
+	background: #F7F7F7 !important;
+	color: #778899 !important;
+}
+div.oauth2DivGrey,
+span.oauth2DivGrey {
+	color: #CDCDCD !important;
+}
+button.btn {
+	display: inline-block !important;
+	width: 200px !important;
+	overflow: hidden !important;
+	white-space: nowrap !important;
+	margin-left: 0 !important;
+	margin-top: 0 !important;
+	margin-right: 10px !important;
+	margin-bottom: 10px !important;
+	padding: 2px 32px !important;
+	text-align: center !important;
+	text-decoration: none !important;
+	font-size: 1rem !important;
+	font-weight: bold !important;
+	border-radius: 3px !important;
+	cursor: pointer !important;
+	z-index: 788 !important;
+}
+button#btn-copy {
+	border: 1px solid #2256B1 !important;
+	background-color: #3367C2 !important;
+	color: #FFFFFF !important;
+}
+button#btn-copy:hover {
+	border: 1px solid #1145A0 !important;
+	background-color: #2256B1 !important;
+	color: #FFFFFF !important;
+}
+button#btn-close {
+	border: 1px solid #2A9DF4 !important;
+	background-color: #3BAEF5 !important;
+	color: #FFFFFF !important;
+}
+button#btn-close:hover {
+	border: 1px solid #198CE3 !important;
+	background-color: #2A9DF4 !important;
+	color: #FFFFFF !important;
+}
+div#area-bttns {
+	display: inline-block !important;
+	margin: 10px !important;
+}
+</style>
+<hr>
+<div class="operation_result">Server DateTime: <span title="Date: `[###CRR-TIME|date###]` ; DateTime: `[###CRR-TIME|datetime###]`" style="cursor:help;">[###CRR-TIME|datetimez###]</span></div>
+[%%%IF:CSRF-VALID:==1;%%%]
+<div class="operation_success">CSRF State Verification SUCCESS ...</div>
+[%%%ELSE:CSRF-VALID%%%]
+<div class="operation_warn">CSRF State Verification FAILED, the `State` parameter is empty or missing from reply.<br>The `OAuth2-Code` may be valid or not. If it does not work, retry the entire operation ...</div>
+[%%%/IF:CSRF-VALID%%%]
+<div class="operation_info">
+<span id="oauth2-area-code">OAuth2-Code:</span> &nbsp;&nbsp; <div id="area-bttns"><button id="btn-copy" class="btn" type="button" onclick="handleCopyBtn(); return false;">Copy Code</button><button id="btn-close" class="btn" type="button" onclick="handleCloseBtn(); return false;">[ Go Back ]</button></div>
+<br>
+<div id="oauth2-code">[###CODE|emptye|html###]</div>
+<br>
+[%%%IF:PRETTY-VARS:!=;%%%]
+OAuth2-Reply-Parameters:<br>
+<pre id="oauth2-vars">[###PRETTY-VARS|html###]</pre>
+[%%%/IF:PRETTY-VARS%%%]
+<span class="oauth2DivGrey">URL-Referer: `[###HTTP-REFERER|emptyna|html###]`</span>
+<div class="oauth2DivGrey">Csrf-State: `[###CSRF-STATE|emptye|html###]`</div>
+<div class="oauth2DivGrey">Csrf-Verification: `[###CSRF-VALUE|emptye|html###]`</div>
+</div>
+<img id="sf-logo" alt="sf-logo" width="64" height="64" title="Powered by Smart.Framework" src="data:image/svg+xml,[@@@SUB-TEMPLATE:!lib/framework/img/sf-logo.svg!|tpl-uri-encode@@@]">
+<br>
+<img id="oauth2-logo" alt="oauth2-logo" width="128" height="128" title="OAuth2 Logo" src="data:image/svg+xml,[@@@SUB-TEMPLATE:!modules/mod-oauth2/views/img/logo-oauth.svg!|tpl-uri-encode@@@]">
+<script>
+const mainFx = () => {
+	const oauth2Code = '[###CODE|js###]';
+	const d = document;
+	const w = window;
+	const closeWnd = () => {
+		setTimeout(() => { try { self.close(); } catch(err){} }, 250);
+	};
+	const copyCodeToClipboard = (elId) => {
+		let elem;
+		elId = String(elId || '').trim();
+		if(elId == '') {
+			return String('ERR: No ID');
+		}
+		try {
+			elem = d.getElementById(elId);
+		} catch(err) {
+			return String('ERR: ' + err);
+		}
+		try {
+			const range = d.createRange();
+			range.selectNode(elem);
+			w.getSelection().removeAllRanges();
+			w.getSelection().addRange(range);
+			d.execCommand('copy');
+			setTimeout(() => { w.getSelection().removeAllRanges(); }, 250);
+		} catch(err) {
+			return String('ERR: ' + err);
+		}
+		return '';
+	};
+	const wParent = w.opener;
+	let isPopUp = false;
+	try {
+		isPopUp = !! wParent; // is pop-up, test
+	} catch(err) {
+		console.warn('ERR: isPopUp test Failed:', err);
+	}
+	let codeCopied = false;
+	let codePassedBack = false;
+	const handleCloseBtn = () => {
+		let canClose = true;
+		if((!codeCopied) && (!codePassedBack)) {
+			canClose = confirm('Make sure you Copy the Code before closing this window and manual Paste this Code in the OAuth2 Form.\n\nCLOSE THIS WINDOW NOW ?');
+		}
+		if(canClose) {
+			closeWnd();
+		}
+	};
+	const handleCopyBtn = () => {
+		const err = copyCodeToClipboard('oauth2-code');
+		if(!!err) {
+			console.warn('FAILED to Copy the Code to Clipboard', err);
+		} else {
+			codeCopied = true;
+		}
+		if(isPopUp === true) {
+			try {
+				if(typeof(wParent.oauth2FormHandler) === 'object') {
+					if(typeof(wParent.oauth2FormHandler.setFormOauth2Code) === 'function') {
+						codePassedBack = !! wParent.oauth2FormHandler.setFormOauth2Code(String(oauth2Code || ''));
+					} else {
+						console.warn('ERR: parent::oauth2FormHandler.setFormOauth2Code is NOT a Function');
+					}
+				} else {
+					console.warn('ERR: parent::oauth2FormHandler is NOT a Class Object');
+				}
+			} catch(err) {
+				codePassedBack = false;
+				console.warn('ERR: parent::oauth2FormHandler.setFormOauth2Code FAILED:', err);
+			}
+		}
+	};
+	self.handleCloseBtn = handleCloseBtn;
+	self.handleCopyBtn = handleCopyBtn;
+};
+mainFx();
+</script>

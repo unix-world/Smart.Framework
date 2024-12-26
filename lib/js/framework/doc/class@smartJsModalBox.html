@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="smartJ$ModalBox static class smartJ$ModalBox { } . CLASS :: Smart ModalBox (ES6) a Modal iFrame component for JavaScript / jQuery Language: Javascript">
+<meta name="keywords" content="smartj modalbox, static, class, smart, modalbox, es6, a, modal, iframe, component, for, javascript, jquery, language, located, at, lib js framework smart framework pak js, ifmodalbox js, package, sf javascript browser, name, frozen, yes, version, usage, smartj modalbox method, fires, show, load, unload, hide, listens, gethandleronbeforeunload, that, can, be, set, by, sethandleronbeforeunload, depends, smartj utils, smartj browser, optional, scanner, only, methods, public, getname, string, return, the, of, box, get, getstatus, status, as, visible, or, setrefreshparent, boolean, state, yurl, void, param, true, will, false, unset, refresh, url, execute, on, destruct, set unset, parent, state url, function, fx, if, is, and, else, type, ifboxbeforeunload, handler, log, an, error, per instance, before, custom, loadurl, yprotect, integer, windowwidth, windowheight">
+<meta name="summary" content="Smart.Framework : Javascript Documentation: smartJ$ModalBox">
+<link rel="icon" href="data:,">
+<title>JS Documentation for: smartJ$ModalBox</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+		float: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3c4663;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework : Javascript Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+		<ul class="menu">
+		<li><a href="index.html#Package--SfJavascriptBrowser-" title="return to Index">return to Index</a></li>
+	</ul>
+	
+</nav>
+<!-- skip logo -->
+<!-- class r.20220331 -->
+<!-- Styles -->
+<!-- styles r.20220906 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located,
+.doc-version {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-frozen,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	top: 75px;
+	right: 175px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #3C4663;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Headings -->
+<h1 title="PHP class: `smartJ$ModalBox` @ JavaScript" id="Class--Summary-">
+	<span class="doc-modifiers">static</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-name">smartJ$ModalBox</span><br>
+	{
+	}&nbsp;.
+</h1>
+<!-- Description -->
+<div class="doc-comments">CLASS :: Smart ModalBox (ES6)<br>
+a Modal iFrame component for JavaScript / jQuery</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> Javascript<span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/js/framework/smart-framework.pak.js; ifmodalbox.js</span></li>
+		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Browser</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> smartJ$ModalBox</span></li>
+		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20220730</span></li>
+		<li><b>Usage:</b> smartJ$ModalBox.method();</li>
+		
+		<li><b>Fires:</b> iFrame: Show / Load / Unload / Hide</li>
+		<li><b>Listens:</b> getHandlerOnBeforeUnload() that can be set by setHandlerOnBeforeUnload(()=&gt;{})</li>
+		<li><b>Depends:</b> jQuery, smartJ$Utils, *smartJ$Browser  (optional, for scanner only)</li>
+		
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">class Methods</h2>
+</div>
+<!-- methods r.20210414 -->
+<div class="doc-container" id="Method--getName">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>getName</b></span>&nbsp;=&nbsp;(
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The name of the Modal Box<br>
+	
+	
+	
+	
+	
+	</div>
+			<div class="doc-method-comments">Get the Name of Smart Modal Box</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--getStatus">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>getStatus</b></span>&nbsp;=&nbsp;(
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The status of the Modal Box as: 'visible' or ''<br>
+	
+	
+	
+	
+	
+	</div>
+			<div class="doc-method-comments">Get the Status of Smart Modal Box</div>
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `getVersion()` -->
+<div class="doc-container" id="Method--setRefreshParent">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>setRefreshParent</b></span>&nbsp;=&nbsp;(
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`state` Parameter">state</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`yURL` Parameter">yURL</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
+	<div class="doc-method-ret-params">
+	
+	
+	
+	
+	
+	@param: {Boolean} state :: TRUE will SET / FALSE will UNSET<br>
+	@param: {String} yURL the Refresh URL that will execute on destruct of the Modal Box<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Set/Unset the Refresh Parent State/URL for Smart Modal Box</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--setHandlerOnBeforeUnload">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>setHandlerOnBeforeUnload</b></span>&nbsp;=&nbsp;(
+	<i>{Function}</i>&nbsp;<span class="doc-param-name"><b><span title="`fx` Parameter">fx</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} If fx is function and set, will return TRUE else FALSE<br>
+	
+	
+	
+	@param: {Function} fx :: if type FUNCTION, will set the iFBoxBeforeUnload handler else will log an error<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Set Per-Instance Before Unload custom Handler: ()=&gt;{} // return true or false; }</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--LoadURL">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>LoadURL</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`yURL` Parameter">yURL</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`yProtect` Parameter">yProtect</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`windowWidth` Parameter">windowWidth</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`windowHeight` Parameter">windowHeight</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
+	<div class="doc-method-ret-params">
+	
+	
+	
+	
+	
+	@param: {String} yURL :: the URL to be loaded ; must differ from the URL loaded in parent !<br>
+	@param: {Boolean} yProtect :: default is NULL ; if TRUE will protect closing Modal Box by Escape or click outside and can be closed only by close button<br>
+	@param: {Integer} windowWidth :: the width of the Modal Box<br>
+	@param: {Integer} windowHeight :: the height of the Modal Box<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Make the Smart Modal Box to Load a new URL ; after load will show</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--UnloadURL">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>UnloadURL</b></span>&nbsp;(
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
+	<div class="doc-method-ret-params">
+	
+	
+	
+	
+	
+	
+	
+	</div>
+			<div class="doc-method-comments">Make the Smart Modal Box to Unload the URL ; after unload will hide</div>
+	
+	
+</div>
+
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20210417 -->
+<div class="doc-container" id="Property--param_UseProtection">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>let</i></span> <b>param_UseProtection</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>false</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{Boolean}</i>
+	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .ModalBox.UseProtection ; [after] can be changed by setting the 2nd param of the LoadURL() method to TRUE or FALSE, will persist</span></div>
+	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">N/A</span></div>
+			<div class="doc-method-comments">Use Protection used to allow (when TRUE) the click on overlay to close the modal</div>
+	
+</div>
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20210417 -->
+<div class="doc-container" id="Constant--param_LoaderImg">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>const</i></span> <b>param_LoaderImg</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'lib/js/framework/img/loading.svg'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Constant"><b>.</b></span>&nbsp;<i>{String}</i>
+	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .ModalBox.LoaderImg</span></div>
+	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">N/A</span></div>
+			<div class="doc-method-comments">Loader Image used to display when loading ...</div>
+	
+</div>
+<!-- Skip Internal-Priv Constant: `param_LoaderBlank` -->
+<div class="doc-container" id="Constant--param_CloseImg">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>const</i></span> <b>param_CloseImg</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'lib/js/framework/img/close.svg'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Constant"><b>.</b></span>&nbsp;<i>{String}</i>
+	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .ModalBox.CloseImg</span></div>
+	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">N/A</span></div>
+			<div class="doc-method-comments">Close Button Image</div>
+	
+</div>
+<div class="doc-container" id="Constant--param_CloseAlign">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>const</i></span> <b>param_CloseAlign</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'right'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Constant"><b>.</b></span>&nbsp;<i>{String}</i>
+	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .ModalBox.CloseAlign</span></div>
+	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">N/A</span></div>
+			<div class="doc-method-comments">Close Button Horizontal Align Mode :: 'left' or 'right'</div>
+	
+</div>
+<!-- Skip Internal-Priv Constant: `param_CloseBtnAltHtml` -->
+<div class="doc-container" id="Constant--param_vAlign">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>const</i></span> <b>param_vAlign</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'top'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Constant"><b>.</b></span>&nbsp;<i>{String}</i>
+	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .ModalBox.vAlign</span></div>
+	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">N/A</span></div>
+			<div class="doc-method-comments">Close Box Vertical Align Mode :: 'top' or 'middle' / 'center'</div>
+	
+</div>
+<!-- Skip Internal-Priv Constant: `param_DelayOpen` -->
+<!-- Skip Internal-Priv Constant: `param_DelayClose` -->
+<div class="doc-container" id="Constant--param_CssOverlayBgColor">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>const</i></span> <b>param_CssOverlayBgColor</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'#333333'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Constant"><b>.</b></span>&nbsp;<i>{String}</i>
+	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .ModalBox.CssOverlayBgColor</span></div>
+	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">N/A</span></div>
+			<div class="doc-method-comments">Overlay Customization - Background Color<br>
+Allowed Values: hexa color between '#000000' .. '#FFFFFF'</div>
+	
+</div>
+<div class="doc-container" id="Constant--param_CssOverlayOpacity">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>const</i></span> <b>param_CssOverlayOpacity</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>0.85</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Constant"><b>.</b></span>&nbsp;<i>{Float}</i>
+	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .ModalBox.CssOverlayOpacity</span></div>
+	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">N/A</span></div>
+			<div class="doc-method-comments">Overlay Customization - Opacity<br>
+Allowed Values: between 0 and 1</div>
+	
+</div>
+
+<!-- Sample Code -->
+
+<!-- Summary List -->
+<br>
+<!-- summary r.20210414 -->
+<script>
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* Javascript Class smartJ$ModalBox # Documentation Index *</option>
+		<optgroup label="Class smartJ$ModalBox">
+			<option value="Class--Summary-">Class definition</option>
+		</optgroup>
+		<optgroup label="Class Methods">
+			<option value="Methods--Summary-">Methods list</option>
+						<option value="Method--getName"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;getName()</option>
+			
+						<option value="Method--getStatus"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;getStatus()</option>
+			
+			
+						<option value="Method--setRefreshParent"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;setRefreshParent()</option>
+			
+						<option value="Method--setHandlerOnBeforeUnload"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;setHandlerOnBeforeUnload()</option>
+			
+						<option value="Method--LoadURL"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;LoadURL()</option>
+			
+						<option value="Method--UnloadURL"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;UnloadURL()</option>
+			
+			
+		</optgroup>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+						<option value="Property--param_UseProtection"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; let&nbsp;param_UseProtection</option>
+			
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+						<option value="Constant--param_LoaderImg">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;param_LoaderImg</option>
+			
+			
+						<option value="Constant--param_CloseImg">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;param_CloseImg</option>
+			
+						<option value="Constant--param_CloseAlign">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;param_CloseAlign</option>
+			
+			
+						<option value="Constant--param_vAlign">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;param_vAlign</option>
+			
+			
+			
+						<option value="Constant--param_CssOverlayBgColor">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;param_CssOverlayBgColor</option>
+			
+						<option value="Constant--param_CssOverlayOpacity">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;param_CssOverlayOpacity</option>
+			
+			
+		</optgroup>
+		
+	</select>
+</div>
+<!-- summary-selectjs r.20210420 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 17:00:46 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div><center>
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
+</center></div>
+</body>
+</html>

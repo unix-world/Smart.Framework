@@ -1,0 +1,127 @@
+<!-- Partial Template: TestUnit.Partials.TplSyntaxDesc@NoSyntax -->
+<div style="margin-top:10px;">
+	<table width="99%" id="mtpl-syntax-tbl" class="display ux-reflow-table">
+		<thead>
+			<tr>
+				<th>&nbsp;</th>
+				<th>Marker-TPL Syntax</th>
+				<th>Explanation</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr valign="top" title="Feature is currently supported in both PHP and Javascript">
+				<td style="cursor:help;">1.</td>
+				<td>
+					<b>MARKERS</b>
+					<br>
+					* with optional escapings or transformers
+				</td>
+				<td>
+					<span class="sf__test__span__tpl__features">[###MARKER###] with optional escapings or transformers that may be combined in logic chains: [###MARKER|bool###], [###MARKER|int###], [###MARKER|dec{1..4}###], [###MARKER|num###], [###MARKER|slug|lower###], [###MARKER|htmid###], [###MARKER|jsvar###], [###MARKER|json###], [###MARKER|lower###], [###MARKER|upper###], [###MARKER|ucfirst###], [###MARKER|ucwords###], [###MARKER|trim###], [###MARKER|substr{1..65535}###], [###MARKER|subtxt{5..65535}###], [###MARKER|url###], [###MARKER|js###], [###MARKER|html###], [###MARKER|nl2br###], [###MARKER|url|js###], [###MARKER|html|nl2br###], [###MARKER|trim|js|html###], [###MARKER|dec2|url###], [###MARKER|js|html###], [###MARKER|css|html###], ..., [###MARKER|url|js|html###], ...)</span>
+				</td>
+			</tr>
+			<tr valign="top" title="Feature is currently supported in both PHP and Javascript">
+				<td style="cursor:help;">2.</td>
+				<td>
+					<b>SPECIAL CHARACTERS and COMMENTS</b>
+					<br>
+					* special characters can be used in templates to assure consistency
+					<br>
+					* commented code in a template will not be rendered at all
+				</td>
+				<td>
+					<span class="sf__test__span__tpl__features">
+						[%%%|SB-L%%%] ensures a LEFT SQUARE BRACKET [<br>
+						[%%%|SB-R%%%] ensures a RIGHT SQUARE BRACKET ]<br>
+						[%%%|SPACE%%%] ensures a SPACE &bbrk;<br>
+						[%%%|T%%%] ensures a TAB \t<br>
+						[%%%|N%%%] ensures a LINE FEED \n<br>
+						[%%%|R%%%] ensures a CARRIAGE RETURN \r<br>
+						[%%%|R%%%][%%%|N%%%] ensures a CRLF (CARRIAGE RETURN + LINE FEED) \r\n<br>
+						[%%%COMMENT%%%] This text will never be displayed and will be cut off when rendering this template [%%%/COMMENT%%%]
+					</span>
+				</td>
+			</tr>
+			<tr valign="top" title="Feature is currently supported only in PHP">
+				<td style="cursor:help;">3.</td>
+				<td>
+					<b>IF / ELSE</b><sup> [**] </sup>
+					<br>
+					* conditionals are available with optional ELSE syntax
+				</td>
+				<td>
+					<span class="sf__test__span__tpl__features">[%%%IF:VARIABLE:@==|@!=|@&lt;=|@&lt;|@&gt;=|@&gt;|==|!=|&lt;=|&lt;|&gt;=|&gt;|!%|%|!?|?|^~|^*|&amp;~|&amp;*|$~|$*{string/number/a|list|with|elements/###MARKER###};%%%]<br> conditional IF part, display when condition is matched <br>[%%%ELSE:VARIABLE%%%]<br> conditional ELSE part, display otherwise (optional) <br>[%%%/IF:VARIABLE%%%]</span>
+				</td>
+			</tr>
+			<tr valign="top" title="Feature is currently supported only in PHP">
+				<td style="cursor:help;">4.</td>
+				<td>
+					<b>LOOP</b><sup> [**] </sup>
+					<br>
+					* expect associative array: (by key/val) or non-associative (by iterator)
+				</td>
+				<td>
+					<span class="sf__test__span__tpl__features">[%%%LOOP:ARRAY-VAR%%%]
+					<br><span><i>Rendering of Loop syntax is depending upon the array type ; it can be combined with IF / ELSE and the other syntax elements ...</i></span><br>
+					* if ARRAY-VAR is a NON-ASSOCIATIVE ARRAY [0=&gt;[row]..n=&gt;[row]] can display for each row the columns 'column-A', 'column-N' which are as ARRAY-VAR[i][column-a] and ARRAY-VAR[i][column-n] where 'i' is the row number for non-associative array and 'row' is an associative array of key/val pairs which must contain at least the keys (columns) 'column-a' and 'column-n' such as: [###ARRAY-VAR.COLUMN-A|int###], [###ARRAY-VAR.COLUMN-B|html###]
+					<br>
+					* if ARRAY-VAR is an ASSOCIATIVE ARRAY [key1=>val1,...,keyN=>valueN] can display for each key/value pair: [###ARRAY-VAR._-KEY-_|html###] = [###ARRAY-VAR._-VAL-_|trim|html###]
+					<br>
+					[%%%/LOOP:ARRAY-VAR%%%]</span>
+				</td>
+			</tr>
+			<tr valign="top" title="Feature is currently supported only in PHP">
+				<td style="cursor:help;">5.</td>
+				<td>
+					<b>INCLUDE Sub-Template</b><sup> [**] </sup>
+					<br>
+					* can include subtemplates mandatory or optional, includding make use of variable path
+				</td>
+				<td>
+					<span class="sf__test__span__tpl__features">[@@@SUB-TEMPLATE:the-main-tpl-relative-path/partials/the-partial-tpl-to-be-includded.inc.htm@@@] mandatory include a partial from the same directory under the sub-directory 'partials'
+					<br>
+					[@@@SUB-TEMPLATE:!web-dir/relative/tpl-path/the-partial-tpl-to-be-includded.inc.htm!@@@] mandatory include a partial from another directory, from inside the app web root
+					<br>
+					[@@@SUB-TEMPLATE:?!web-dir/relative/tpl-alternate-path/the-partial-tpl-to-be-includded-if-exists-only.inc.htm!@@@] optional include a partial from another alternate directory, from inside the app web root
+					<br>
+					[@@@SUB-TEMPLATE:%variable-relative-path-of-sub-tpl-to-include%@@@]</span> mandatory include a variable path partial which is set at the controller level in the section: '%variable-relative-path-of-sub-tpl-to-include%'
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div style="font-weight:bold; font-style: italic; color:#777777;">
+		[**]: Feature is currently supported only when rendering a Marker-TPL Template from server-side PHP (not also if rendering it directly from client-side Javascript)
+	</div>
+	<script>
+	jQuery(document).ready(function() {
+		smartJ$UI.DataTableInit('mtpl-syntax-tbl', {
+		//	filter: false,
+			sort: true,
+			paginate: false,
+			colorder: [
+				[ 0, 'asc' ],
+		//		[ 1, 'desc' ]
+			],
+			coldefs: [
+				{
+					targets: 0,
+					width: '25px',
+					render: function(data, type, row) {
+						if(type === 'type' || type === 'sort' || type === 'filter') {
+							return data;
+						} else {
+							return '<span style="color:#CCCCCC;">' + smartJ$Utils.escape_html(data) + '</span>';
+						}
+					}
+				},
+				{
+					targets: 1,
+					width: '275px'
+				}
+			]
+		});
+		smartJ$UI.DataTableColumnsFilter('mtpl-syntax-tbl', 0, '^(.*)$');
+	});
+	</script>
+</div>
+<!-- #END :: Partial Template: TestUnit.Partials.TplSyntaxDesc@NoSyntax -->

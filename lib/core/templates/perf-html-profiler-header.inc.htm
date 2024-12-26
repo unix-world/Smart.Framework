@@ -1,0 +1,16 @@
+<!-- HTML Performance Profiler (header) # r.20210526 -->
+<script>
+var SmartFrameworkHTMLPerformanceProfilerSTARTMark = 'Smart.Framework.HTML.Performance.Profiler.Page.Render.START';
+var SmartFrameworkHTMLPerformanceProfilerENDMark = 'Smart.Framework.HTML.Performance.Profiler.Page.Render.DONE';
+var SmartFrameworkHTMLPerformanceProfilerEnabled = false;
+
+if(window.performance) {
+	try {
+		SmartFrameworkHTMLPerformanceProfilerEnabled = true;
+		window.performance.mark(SmartFrameworkHTMLPerformanceProfilerSTARTMark);
+	} catch(err){
+		SmartFrameworkHTMLPerformanceProfilerEnabled = false;
+	}
+}
+</script>
+<!-- # -->

@@ -1,0 +1,201 @@
+<script>{
+		"title":
+			".ready()",
+		"excerpt":
+			"Specify a function to execute when the DOM is fully loaded.",
+		"termSlugs": {
+			"category": [
+				"events/document-loading","version/1.0"
+			]
+		}
+	}</script><article id="ready1" class="entry method"><h2 class="section-title">
+<span class="name">.ready( handler )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#jQuery">jQuery</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Specify a function to execute when the DOM is fully loaded.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0/">1.0</a></span><a id="ready-handler" href="#ready-handler"><span class="icon-link"></span>.ready( handler )</a>
+</h4>
+<ul><li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>A function to execute after the DOM is ready.</div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>The <code>.ready()</code> method offers a way to run JavaScript code as soon as the page&apos;s Document Object Model (DOM) becomes safe to manipulate. This will often be a good time to perform tasks that are needed before the user views or interacts with the page, for example to add event handlers and initialize plugins. When multiple functions are added via successive calls to this method, they run when the DOM is ready in the order in which they are added. As of jQuery 3.0, jQuery ensures that an exception occuring in one handler does not prevent subsequently added handlers from executing.</p>
+
+    <p>Most browsers <a href="https://caniuse.com/#search=DOMContentLoaded">provide similar functionality</a> in the form of a <code>DOMContentLoaded</code> event. However, jQuery&apos;s <code>.ready()</code> method differs in an important and useful way: If the DOM becomes ready and the browser fires <code>DOMContentLoaded</code> before the code calls <code>.ready( handler )</code>, the function <code>handler</code> will still be executed. In contrast, a <code>DOMContentLoaded</code> event listener added after the event fires is never executed.</p>
+
+    <p>Browsers also provide the <code>load</code> event on the <code>window</code> object. When this event fires it indicates that all assets on the page have loaded, including images. This event can be watched in jQuery using <code>$( window ).on( &quot;load&quot;, handler )</code>. In cases where code relies on loaded assets (for example, if the dimensions of an image are required), the code should be placed in a handler for the <code>load</code> event instead.</p>
+    
+    <p>Note that although the DOM always becomes ready before the page is fully loaded, it is <em>usually not safe</em> to attach a <code>load</code> event listener in code executed during a <code>.ready()</code> handler. For example, scripts can be loaded dynamically long after the page has loaded using methods such as <code>$.getScript()</code>. Although handlers added by <code>.ready()</code> will always be executed in a dynamically loaded script, the <code>window</code>&apos;s <code>load</code> event has already occurred and those listeners will never run.</p>
+
+    <p>jQuery offers several ways to attach a function that will run when the DOM is ready. All of the following syntaxes are equivalent:</p>
+
+    <ul>
+      <li><code>$( handler )</code></li>
+      <li><code>$( document ).ready( handler )</code></li>
+      <li><code>$( &quot;document&quot; ).ready( handler )</code></li>
+      <li><code>$( &quot;img&quot; ).ready( handler )</code></li>
+      <li><code>$().ready( handler )</code></li>
+    </ul>
+
+    <p>As of jQuery 3.0, only the first syntax is recommended; the other syntaxes still work but are deprecated. This is because the selection has no bearing on the behavior of the <code>.ready()</code> method, which is inefficient and can lead to incorrect assumptions about the method&apos;s behavior. For example, the third syntax works with <code>&quot;document&quot;</code> which selects nothing. The fourth syntax waits for the document to be ready but implies (incorrectly) that it waits for images to become ready. </p>
+
+    <p>There is also <code>$(document).on( &quot;ready&quot;, handler )</code>, <em>deprecated as of jQuery 1.8 and removed in jQuery 3.0</em>. Note that if the DOM becomes ready before this event is attached, the handler <em>will not be executed</em>.</p>
+
+    <p>The <code>.ready()</code> method is typically used with an anonymous function:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( document ).ready(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Handler for .ready() called.</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>Which is equivalent to the recommended way of calling:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Handler for .ready() called.</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <h4>Aliasing the jQuery Object</h4>
+    <p>When <code><a href="/jQuery.noConflict/">$.noConflict()</a></code> is used to avoid namespace conflicts, the <code>$</code> shortcut is no longer available. However, the <code>.ready()</code> handler is passed a reference to the <code>jQuery</code> object that called the method. This allows the handler to use a jQuery object, for example as <code>$</code>, without knowing its aliased name:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>jq2 = jQuery.noConflict();</code></div></div><div class="container"><div class="line"><code>jq2(<span class="keyword">function</span>( $ ) {</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Code using $ as usual goes here; the actual jQuery object is jq2</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Display a message when the DOM is loaded.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>ready demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css"></span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">p</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">color</span>:<span class="value"> red;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">style</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  $(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="string">&quot;p&quot;</span> ).text( <span class="string">&quot;The DOM is now loaded and can be manipulated.&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">p</span>&gt;</span>Not loaded yet.<span class="tag">&lt;/<span class="title">p</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div></section>
+</div></article>

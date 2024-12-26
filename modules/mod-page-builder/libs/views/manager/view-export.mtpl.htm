@@ -1,0 +1,39 @@
+<!-- Pagebuilder / Manage @ Export / Records :: v.20220915 -->
+<script>
+function smartModJS_PgBldr_Validate_Form() {
+	var lang = jQuery('#sel-lang').val();
+	if(!lang) {
+		smartJ$Browser.AlertDialog('Please select the Export Language from the list', null, 'Notification');
+		return false;
+	}
+	var mode = jQuery('#sel-mode').val();
+	if(!mode) {
+		smartJ$Browser.AlertDialog('Please select the Export Mode from the list', null, 'Notification');
+		return false;
+	}
+	return true;
+}
+</script>
+<center><div>
+	<h1>Export <i>PageBuilder</i> Translations</h1>
+	<br>
+	<form id="export_form" name="export_form" method="post" action="[###URL-FORM-ACTION|html###]" class="ux-form" autocomplete="off">
+		<select id="sel-lang" name="exportlang" class="ux-field">
+			<option value="">--- Export Language ---</option>
+			[%%%LOOP:LANGUAGES-ARR%%%]
+			<option value="[###LANGUAGES-ARR._-KEY-_|html###]" title="[###LANGUAGES-ARR._-KEY-_|html###]">[###LANGUAGES-ARR._-VAL-_|html###][%%%IF:LANGUAGES-ARR._-KEY-_:==###LANGUAGE-DEFAULT###;%%%] *[%%%/IF:LANGUAGES-ARR._-KEY-_%%%]</option>[%%%|N%%%]
+			[%%%/LOOP:LANGUAGES-ARR%%%]
+		</select>
+		<select id="sel-mode" name="mode" class="ux-field">
+			<option value="">--- Export Mode ---</option>
+			<option value="all">All Translations</option>
+			<option value="missing">Missing Translations</option>
+		</select>
+		<br>
+		<span style="color:#CCCCCC;"><b>Download as XL03/XML Spreadsheet</b></span>
+		<br>
+		<br>
+		<button type="submit" class="ux-button ux-button-regular" onClick="return smartModJS_PgBldr_Validate_Form();"><i class="sfi sfi-download2" style="margin-right:10px;"></i> Export Translations</button>
+	</form>
+</div></center>
+<!-- #END -->

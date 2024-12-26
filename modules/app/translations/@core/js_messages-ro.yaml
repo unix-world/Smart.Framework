@@ -1,0 +1,10 @@
+# Language File: RO / CORE / JsMessages :: r.8.7 / smart.framework.v.8.7
+TRANSLATIONS:
+  @language: RO
+  @area: core
+  @version: 2021-05-26
+  js_messages:
+    btn_reset: 'Resetare'
+    btn_select: 'Selecție'
+    page_away: 'Confirmați că doriți să părăsiți aceată pagină ?'
+#END

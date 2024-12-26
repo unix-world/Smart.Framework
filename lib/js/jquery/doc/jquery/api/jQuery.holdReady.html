@@ -1,0 +1,59 @@
+<script>{
+		"title":
+			"jQuery.holdReady()",
+		"excerpt":
+			"Holds or releases the execution of jQuery's ready event.",
+		"termSlugs": {
+			"category": [
+				"core","properties/global-jquery-object-properties","events/document-loading","version/1.6"
+			]
+		}
+	}</script><article id="jQuery-holdReady1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.holdReady( hold )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#undefined">undefined</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Holds or releases the execution of jQuery&apos;s ready event.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.6/">1.6</a></span><a id="jQuery-holdReady-hold" href="#jQuery-holdReady-hold"><span class="icon-link"></span>jQuery.holdReady( hold )</a>
+</h4>
+<ul><li>
+<div><strong>hold</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Boolean">Boolean</a>
+</div>
+<div>Indicates whether the ready hold is being requested or released</div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>The <code>$.holdReady()</code> method allows the caller to delay jQuery&apos;s ready event. This <em>advanced feature</em> would typically be used by dynamic script loaders that want to load additional JavaScript such as jQuery plugins before allowing the ready event to occur, even though the DOM may be ready. This method must be called early in the document, such as in the <code>&lt;head&gt;</code> immediately after the jQuery script tag. Calling this method after the ready event has already fired will have no effect. </p>
+    <p>To delay the ready event, first call <code>$.holdReady( true )</code>. When the ready event should be released to execute, call <code>$.holdReady( false )</code>. Note that multiple holds can be put on the ready event, one for each <code>$.holdReady( true )</code> call. The ready event will not actually fire until all holds have been released with a corresponding number of <code>$.holdReady( false )</code> calls <em>and</em> the normal document ready conditions are met. (See <a href="/ready/"><code>ready</code></a> for more information.)</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Delay the ready event until a custom plugin has loaded.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.holdReady( <span class="literal">true</span> );</code></div></div><div class="container"><div class="line"><code>$.getScript( <span class="string">&quot;myplugin.js&quot;</span>, <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  $.holdReady( <span class="literal">false</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

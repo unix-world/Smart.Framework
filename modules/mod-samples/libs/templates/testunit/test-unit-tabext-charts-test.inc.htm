@@ -1,0 +1,684 @@
+<!-- Partial Template: TestUnit.SampleCharts -->
+<b>A full set of responsive Charts: Line, Z-Line (+/- ErrorBars), Area, Bubbles, Bars (+/- ErrorBars), Stacked Bars, Stacked Area (+/- Relative), Doughnut, Pie, Polar, Radar. Optionals: Bezier Curves, Legend for charts. Customizable: Colors, Tooltips, Legends, Axis and many more ...</b>
+<script src="lib/js/jscharts/charts.pak.js"></script>
+<script>
+function randomScalingFactor() {
+	return Math.round(Math.random()*1000);
+} //END FUNCTION
+</script>
+<table cellpadding="16" width="96%" class="ux-reflow-table">
+<tr valign="top">
+<td width="50%">
+<center><h2 class="inline">Line Chart</h2></center>
+<div style="width:90%">
+	<canvas id="canvas-line" width="600" height="400"></canvas>
+</div>
+<div id="legend-line" style="padding:8px; border: 1px solid #ECECEC;"></div>
+<script>
+function Smart_JsCharts_LineChart() {
+	//--
+	var lineChartData = {
+		labels : ["January","February","March","April","May","June","July"],
+		datasets : [
+			{
+				label: "My First dataset",
+				fillColor : "rgba(240,73,73,0.5)",
+				strokeColor : "rgba(240,73,73,0.8)",
+				pointColor : "rgba(240,73,73,0.75)",
+				pointStrokeColor : "#fff",
+				pointHighlightFill : "#fff",
+				pointHighlightStroke : "rgba(240,73,73,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+			},
+			{
+				label: "My Second dataset",
+				fillColor : "rgba(220,220,220,0.2)",
+				strokeColor : "rgba(220,220,220,1)",
+				pointColor : "rgba(220,220,220,1)",
+				pointStrokeColor : "#fff",
+				pointHighlightFill : "#fff",
+				pointHighlightStroke : "rgba(220,220,220,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+			},
+			{
+				label: "My Third dataset",
+				fillColor : "rgba(151,187,205,0.2)",
+				strokeColor : "rgba(151,187,205,1)",
+				pointColor : "rgba(151,187,205,1)",
+				pointStrokeColor : "#fff",
+				pointHighlightFill : "#fff",
+				pointHighlightStroke : "rgba(151,187,205,1)",
+				data : [-250,randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+			}
+		]
+	};
+	//--
+	var LineChartCanvas = document.getElementById('canvas-line').getContext('2d');
+	LineChartCanvas.clearRect(0, 0, LineChartCanvas.width, LineChartCanvas.height); // reset the canvas (example)
+	var LineGfx = new Chart(LineChartCanvas).Line(lineChartData, {
+		//scaleBeginAtZero: true,
+		scaleStartValue: -300,
+		responsive: true,
+		animationSteps: 20,
+		multiTooltipTemplate: "<%= datasetLabel %> : <%= value %>",
+		datasetFill: false,
+		pointDotRadius: 6,
+		legendTemplate : "<% for (var i=0; i<datasets.length; i++){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=smartJ$Utils.escape_html(datasets[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+	});
+	//--
+	document.getElementById('legend-line').innerHTML = LineGfx.generateLegend();
+	//--
+} //END FUNCTION
+</script>
+</td>
+<td width="50%">
+<center><h2 class="inline">Area Chart</h2></center>
+<div style="width:90%">
+	<canvas id="canvas-area" width="600" height="400"></canvas>
+</div>
+<div id="legend-area" style="padding:8px; border: 1px solid #ECECEC; text-align:right;"></div>
+<script>
+function Smart_JsCharts_AreaChart() {
+	//--
+	var lineChartData = {
+		labels : ["January","February","March","April","May","June","July"],
+		datasets : [
+			{
+				label: "My First dataset",
+				fillColor : "rgba(220,220,220,0.2)",
+				strokeColor : "rgba(220,220,220,1)",
+				pointColor : "rgba(220,220,220,1)",
+				pointStrokeColor : "#fff",
+				pointHighlightFill : "#fff",
+				pointHighlightStroke : "rgba(220,220,220,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+			},
+			{
+				label: "My Second dataset",
+				fillColor : "rgba(151,187,205,0.2)",
+				strokeColor : "rgba(151,187,205,1)",
+				pointColor : "rgba(151,187,205,1)",
+				pointStrokeColor : "#fff",
+				pointHighlightFill : "#fff",
+				pointHighlightStroke : "rgba(151,187,205,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+			}
+		]
+	};
+	//--
+	var AreaChartCanvas = document.getElementById('canvas-area').getContext('2d');
+	var AreaChartGfx = new Chart(AreaChartCanvas).Line(lineChartData, {
+		responsive: true,
+		animationSteps: 20,
+		multiTooltipTemplate: "<%= datasetLabel %> : <%= value %>",
+		datasetFill: true,
+		legendTemplate : "<% for (var i=0; i<datasets.length; i++){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=smartJ$Utils.escape_html(datasets[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+	});
+	//--
+	document.getElementById('legend-area').innerHTML = AreaChartGfx.generateLegend();
+	//--
+} //END FUNCTION
+</script>
+</td>
+</tr>
+<tr valign="top">
+<td width="50%">
+<center><h2 class="inline">Stacked Area Chart</h2></center>
+<div style="width:90%">
+	<canvas id="canvas-stacked-area" width="600" height="400"></canvas>
+</div>
+<div id="legend-stacked-area" style="padding:8px; border: 1px solid #ECECEC; text-align:center;"></div>
+<script>
+function Smart_JsCharts_StackedAreaChart() {
+	//--
+	var areaChartData = {
+		labels: ["January", "February", "March", "April", "May", "June", "July"],
+		datasets: [{
+			label: "Series #1",
+			fillColor: "rgba(220,220,220,0.5)",
+			strokeColor: "rgba(220,220,220,0.8)",
+			pointColor: "rgba(220,220,220,0.8)",
+			pointStrokeColor: "rgba(220,220,220,0.8)",
+			pointHighlightFill: "rgba(220,220,220,0.75)",
+			pointHighlightStroke: "rgba(220,220,220,1)",
+			data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+		}, {
+			label: "Series #2",
+			fillColor: "rgba(151,187,205,0.5)",
+			strokeColor: "rgba(151,187,205,0.8)",
+			pointColor: "rgba(151,187,205,0.8)",
+			pointStrokeColor: "rgba(151,187,205,0.8)",
+			pointHighlightFill: "rgba(151,187,205,0.75)",
+			pointHighlightStroke: "rgba(151,187,205,1)",
+			data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+		}, {
+			label: "Series #3",
+			fillColor: "rgba(240,73,73,0.5)",
+			strokeColor: "rgba(240,73,73,0.8)",
+			pointColor: "rgba(240,73,73,0.8)",
+			pointStrokeColor: "rgba(240,73,73,0.8)",
+			pointHighlightFill: "rgba(240,73,73,0.75)",
+			pointHighlightStroke: "rgba(240,73,73,1)",
+			data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+		}]
+	};
+	//--
+	var StackedAreaChartCanvas = document.getElementById('canvas-stacked-area').getContext('2d');
+	var StackedAreaGfx = new Chart(StackedAreaChartCanvas).StackedArea(areaChartData, {
+		responsive: true,
+		animationSteps: 20,
+		multiTooltipTemplate: "<%= datasetLabel %> : <%= value %>",
+		legendTemplate: "<% for (var i=datasets.length-1; i>=0; i--){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=smartJ$Utils.stringReplaceAll(' ', '&nbsp;', smartJ$Utils.escape_html(datasets[i].label))%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+	});
+	document.getElementById('legend-stacked-area').innerHTML = StackedAreaGfx.generateLegend();
+	//--
+} //END FUNCTION
+</script>
+</td>
+<td width="50%">
+<center><h2 class="inline">Stacked Relative Area Chart</h2></center>
+<div style="width:90%">
+	<canvas id="canvas-stacked-relative-area" width="600" height="400"></canvas>
+</div>
+<div id="legend-stacked-relative-area" style="padding:8px; border: 1px solid #ECECEC; text-align:center;"></div>
+<script>
+function Smart_JsCharts_StackedRelativeAreaChart() {
+	//--
+	var areaChartData = {
+		labels: ["January", "February", "March", "April", "May", "June", "July"],
+		datasets: [{
+			label: "Series #1",
+			fillColor: "rgba(220,220,220,0.5)",
+			strokeColor: "rgba(220,220,220,0.8)",
+			pointColor: "rgba(220,220,220,0.8)",
+			pointStrokeColor: "rgba(220,220,220,0.8)",
+			pointHighlightFill: "rgba(220,220,220,0.75)",
+			pointHighlightStroke: "rgba(220,220,220,1)",
+			data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+		}, {
+			label: "Series #2",
+			fillColor: "rgba(151,187,205,0.5)",
+			strokeColor: "rgba(151,187,205,0.8)",
+			pointColor: "rgba(151,187,205,0.8)",
+			pointStrokeColor: "rgba(151,187,205,0.8)",
+			pointHighlightFill: "rgba(151,187,205,0.75)",
+			pointHighlightStroke: "rgba(151,187,205,1)",
+			data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+		}, {
+			label: "Series #3",
+			fillColor: "rgba(240,73,73,0.5)",
+			strokeColor: "rgba(240,73,73,0.8)",
+			pointColor: "rgba(240,73,73,0.8)",
+			pointStrokeColor: "rgba(240,73,73,0.8)",
+			pointHighlightFill: "rgba(240,73,73,0.75)",
+			pointHighlightStroke: "rgba(240,73,73,1)",
+			data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+		}]
+	};
+	//--
+	var StackedAreaChartCanvas = document.getElementById('canvas-stacked-relative-area').getContext('2d');
+	var StackedRelativeAreaGfx = new Chart(StackedAreaChartCanvas).StackedArea(areaChartData, {
+		responsive: true,
+		animationSteps: 20,
+		multiTooltipTemplate: "<%= datasetLabel %> : <%= value %>",
+		relativePoints: true,
+		bezierCurve: false,
+		legendTemplate: "<% for (var i=datasets.length-1; i>=0; i--){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=smartJ$Utils.stringReplaceAll(' ', '&nbsp;', smartJ$Utils.escape_html(datasets[i].label))%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+	});
+	document.getElementById('legend-stacked-relative-area').innerHTML = StackedRelativeAreaGfx.generateLegend();
+	//--
+} //END FUNCTION
+</script>
+</td>
+</tr>
+<tr valign="top">
+<td width="50%">
+<center><h2 class="inline">Z-Line Chart, with ErrorBars</h2></center>
+<div style="width:90%">
+	<canvas id="canvas-zline" width="600" height="400"></canvas>
+</div>
+<script>
+function Smart_JsCharts_ZLineChart() {
+	//--
+	var lineChartData = {
+		labels : ["January","February","March","April","May","June","July"],
+		datasets : [
+			{
+				label: "My First dataset",
+				fillColor : "rgba(240,73,73,0.5)",
+				strokeColor : "rgba(240,73,73,0.8)",
+				pointColor : "rgba(240,73,73,0.75)",
+				pointStrokeColor : "#fff",
+				pointHighlightFill : "#fff",
+				pointHighlightStroke : "rgba(240,73,73,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()],
+				error : [randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10]
+			},
+			{
+				label: "My Second dataset",
+				fillColor : "rgba(220,220,220,0.2)",
+				strokeColor : "rgba(220,220,220,1)",
+				pointColor : "rgba(220,220,220,1)",
+				pointStrokeColor : "#fff",
+				pointHighlightFill : "#fff",
+				pointHighlightStroke : "rgba(220,220,220,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()],
+				error : [randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10]
+			},
+			{
+				label: "My Third dataset",
+				fillColor : "rgba(151,187,205,0.2)",
+				strokeColor : "rgba(151,187,205,1)",
+				pointColor : "rgba(151,187,205,1)",
+				pointStrokeColor : "#fff",
+				pointHighlightFill : "#fff",
+				pointHighlightStroke : "rgba(151,187,205,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()],
+				error : [randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10]
+			}
+		]
+	};
+	//--
+	var LineChartCanvas = document.getElementById('canvas-zline').getContext('2d');
+	new Chart(LineChartCanvas).Line(lineChartData, {
+		responsive: true,
+		animationSteps: 20,
+		multiTooltipTemplate: "<%= datasetLabel %> : <%= value %>",
+		datasetFill: false,
+		bezierCurve: false,
+		pointDotRadius: 8
+	});
+	//--
+} //END FUNCTION
+</script>
+</td>
+<td width="50%">
+<center><h2 class="inline">Bubble Chart</h2></center>
+<div style="width:90%">
+	<canvas id="canvas-bubbles" width="600" height="400"></canvas>
+</div>
+<script>
+function Smart_JsCharts_BubbleChart() {
+	//--
+	var lineChartData = {
+		labels : ["January","February","March","April","May","June","July"],
+		datasets : [
+			{
+				label: "Regression",
+				fillColor : "rgba(0,0,0,0.5)",
+				strokeColor : "rgba(0,0,0,0.8)",
+				pointColor : "rgba(0,0,0,1)",
+				pointStrokeColor : "#000",
+				pointHighlightFill : "#000",
+				pointHighlightStroke : "rgba(70,70,70,1)",
+				data : [randomScalingFactor(),null,null,randomScalingFactor(),null,null,randomScalingFactor()],
+				havestroke: true
+			},
+			{
+				label: "My First dataset",
+				fillColor : "rgba(240,73,73,0.5)",
+				strokeColor : "rgba(240,73,73,0.8)",
+				pointColor : "rgba(240,73,73,0.75)",
+				pointStrokeColor : "#fff",
+				pointHighlightFill : "#fff",
+				pointHighlightStroke : "rgba(240,73,73,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()],
+				bubbles : [2,8,16,42,30,11,27]
+			},
+			{
+				label: "My Second dataset",
+				fillColor : "rgba(220,220,220,0.2)",
+				strokeColor : "rgba(220,220,220,1)",
+				pointColor : "rgba(220,220,220,1)",
+				pointStrokeColor : "#fff",
+				pointHighlightFill : "#fff",
+				pointHighlightStroke : "rgba(220,220,220,1)",
+				data : [randomScalingFactor(), null,randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()],
+				bubbles : [14,13,22,33,44,23,57]
+			},
+			{
+				label: "My Third dataset",
+				fillColor : "rgba(151,187,205,0.2)",
+				strokeColor : "rgba(151,187,205,1)",
+				pointColor : "rgba(151,187,205,1)",
+				pointStrokeColor : "#fff",
+				pointHighlightFill : "#fff",
+				pointHighlightStroke : "rgba(151,187,205,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()],
+				bubbles : [randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10]
+			}
+		]
+	};
+	//--
+	var BubblesChartCanvas = document.getElementById('canvas-bubbles').getContext('2d');
+	new Chart(BubblesChartCanvas).Line(lineChartData, {
+		responsive: true,
+		animationSteps: 20,
+		multiTooltipTemplate: "<%= datasetLabel %> : <%= value %>, <%= radius %>",
+		datasetFill: false,
+		pointDotRadius: 1,
+		datasetStrokeWidth: 0,
+		bezierCurve: true,
+		datasetStroke: false
+	});
+	//--
+} //END FUNCTION
+</script>
+</td>
+</tr>
+<tr valign="top">
+<td width="50%">
+<center><h2 class="inline">Bar Chart, with ErrorBars for 3rd Dataset</h2></center>
+<div style="width:90%">
+	<canvas id="canvas-bar" width="600" height="400"></canvas>
+</div>
+<div id="legend-bar" style="padding:8px; border: 1px solid #ECECEC;"></div>
+<script>
+function Smart_JsCharts_BarChart() {
+	//--
+	var barChartData = {
+		labels : ["January","February","March","April","May","June","July"],
+		datasets : [
+			{
+				label: "My First Bar",
+				fillColor : "rgba(220,220,220,0.5)",
+				strokeColor : "rgba(220,220,220,0.8)",
+				highlightFill: "rgba(220,220,220,0.75)",
+				highlightStroke: "rgba(220,220,220,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()],
+				//error : [randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10]
+			},
+			{
+				label: "My Second Bar",
+				fillColor : "rgba(151,187,205,0.5)",
+				strokeColor : "rgba(151,187,205,0.8)",
+				highlightFill : "rgba(151,187,205,0.75)",
+				highlightStroke : "rgba(151,187,205,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()],
+				//error : [randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10]
+			},
+			{
+				label: "My Third Bar",
+				fillColor : "rgba(240,73,73,0.5)",
+				strokeColor : "rgba(240,73,73,0.8)",
+				highlightFill : "rgba(240,73,73,0.75)",
+				highlightStroke : "rgba(240,73,73,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()],
+				error : [randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10,randomScalingFactor()/10]
+			}
+		]
+	};
+	//--
+	var BarChartCanvas = document.getElementById('canvas-bar').getContext('2d');
+	var BarChartGfx = new Chart(BarChartCanvas).Bar(barChartData, {
+		responsive: true,
+		animationSteps: 20,
+		multiTooltipTemplate: "<%= datasetLabel %> : <%= value %>",
+		legendTemplate : "<% for (var i=0; i<datasets.length; i++){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=smartJ$Utils.escape_html(datasets[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+	});
+	//--
+	document.getElementById('legend-bar').innerHTML = BarChartGfx.generateLegend();
+	//--
+} //END FUNCTION
+</script>
+</td>
+<td width="50%">
+<center><h2 class="inline">Stacked Bar Chart</h2></center>
+<div style="width:90%">
+	<canvas id="canvas-sbar" width="600" height="400"></canvas>
+</div>
+<div id="legend-stacked-bar" style="padding:8px; border: 1px solid #ECECEC; text-align:right;"></div>
+<script>
+function Smart_JsCharts_StackedBarChart() {
+	//--
+	var barChartData = {
+		labels : ["January","February","March","April","May","June","July"],
+		datasets : [
+			{
+				label: "My First Bar",
+				fillColor : "rgba(220,220,220,0.5)",
+				strokeColor : "rgba(220,220,220,0.8)",
+				highlightFill: "rgba(220,220,220,0.75)",
+				highlightStroke: "rgba(220,220,220,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+			},
+			{
+				label: "My Second Bar",
+				fillColor : "rgba(151,187,205,0.5)",
+				strokeColor : "rgba(151,187,205,0.8)",
+				highlightFill : "rgba(151,187,205,0.75)",
+				highlightStroke : "rgba(151,187,205,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+			},
+			{
+				label: "My Third Bar",
+				fillColor : "rgba(240,73,73,0.5)",
+				strokeColor : "rgba(240,73,73,0.8)",
+				highlightFill : "rgba(240,73,73,0.75)",
+				highlightStroke : "rgba(240,73,73,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+			}
+		]
+	};
+	//--
+	var SBarChartCanvas = document.getElementById('canvas-sbar').getContext('2d');
+	var BarStackedChartGfx = new Chart(SBarChartCanvas).StackedBar(barChartData, {
+		responsive: true,
+		animationSteps: 20,
+		multiTooltipTemplate: "<%= datasetLabel %> : <%= value %>",
+		legendTemplate : "<% for (var i=0; i<datasets.length; i++){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=smartJ$Utils.escape_html(datasets[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+	});
+	//--
+	document.getElementById('legend-stacked-bar').innerHTML = BarStackedChartGfx.generateLegend();
+	//--
+} //END FUNCTION
+</script>
+</td>
+</tr>
+<tr valign="top">
+<td width="50%">
+<center><h2 class="inline">Doughnut Chart</h2></center>
+<div style="width:90%">
+	<canvas id="canvas-doughnut" width="600" height="400"></canvas>
+</div>
+<div id="legend-doughnut" style="padding:8px; border: 1px solid #ECECEC;"></div>
+<script>
+function Smart_JsCharts_DoughnutChart() {
+	//--
+	var doughnutData = [
+		{
+			value: 300,
+			color:"#F7464A",
+			highlight: "#FF5A5E",
+			label: "Red"
+		},
+		{
+			value: 50,
+			color: "#46BFBD",
+			highlight: "#5AD3D1",
+			label: "Green"
+		},
+		{
+			value: 100,
+			color: "#FDB45C",
+			highlight: "#FFC870",
+			label: "Yellow"
+		},
+		{
+			value: 40,
+			color: "#949FB1",
+			highlight: "#A8B3C5",
+			label: "Grey"
+		},
+		{
+			value: 120,
+			color: "#4D5360",
+			highlight: "#616774",
+			label: "Dark Grey"
+		}
+	];
+	//--
+	var DoughnutChartCanvas = document.getElementById('canvas-doughnut').getContext('2d');
+	var DoughnutChartGfx = new Chart(DoughnutChartCanvas).Doughnut(doughnutData, {
+		responsive: true,
+		animationSteps: 20,
+		legendTemplate : "<% for (var i=0; i<segments.length; i++){%><span style=\"padding:2px; background-color:<%=segments[i].fillColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(segments[i].label){%><%=smartJ$Utils.escape_html(segments[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+	});
+	//--
+	document.getElementById('legend-doughnut').innerHTML = DoughnutChartGfx.generateLegend();
+	//--
+} //END FUNCTION
+</script>
+</td>
+<td width="50%">
+<center><h2 class="inline">Pie Chart</h2></center>
+<div style="width:90%">
+	<canvas id="canvas-pie" width="600" height="400"></canvas>
+</div>
+<div id="legend-pie" style="padding:8px; border: 1px solid #ECECEC; text-align:right;"></div>
+<script>
+function Smart_JsCharts_PieChart() {
+	//--
+	var data = [
+		{
+			value: 30,
+			color:"#F38630",
+			label: 'Bears'
+		},
+		{
+			value : 50,
+			color : "#E0E4CC",
+			label: 'Lynxes'
+		},
+		{
+			value : 100,
+			color : "#69D2E7",
+			label: 'Reindeer'
+		}
+	];
+	//--
+	var PieChartCanvas = document.getElementById('canvas-pie').getContext('2d');
+	var PieChartGfx = new Chart(PieChartCanvas).Pie(data, {
+		responsive: true,
+		animationSteps: 20,
+		legendTemplate : "<% for (var i=0; i<segments.length; i++){%><span style=\"padding:2px; background-color:<%=segments[i].fillColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(segments[i].label){%><%=smartJ$Utils.escape_html(segments[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+	});
+	//--
+	document.getElementById('legend-pie').innerHTML = PieChartGfx.generateLegend();
+	//--
+} //END FUNCTION
+</script>
+</td>
+</tr>
+<tr valign="top">
+<td width="50%">
+<center><h2 class="inline">Polar Area Chart</h2></center>
+<div style="width:90%;">
+	<canvas id="canvas-polar" width="600" height="400"></canvas>
+</div>
+<script>
+function Smart_JsCharts_PolarAreaChart() {
+	//--
+	var polarData = [
+		{
+			value: 300,
+			color:"#F7464A",
+			highlight: "#FF5A5E",
+			label: "Red"
+		},
+		{
+			value: 50,
+			color: "#46BFBD",
+			highlight: "#5AD3D1",
+			label: "Green"
+		},
+		{
+			value: 100,
+			color: "#FDB45C",
+			highlight: "#FFC870",
+			label: "Yellow"
+		},
+		{
+			value: 40,
+			color: "#949FB1",
+			highlight: "#A8B3C5",
+			label: "Grey"
+		},
+		{
+			value: 120,
+			color: "#4D5360",
+			highlight: "#616774",
+			label: "Dark Grey"
+		}
+	];
+	//--
+	var PolarChartCanvas = document.getElementById('canvas-polar').getContext('2d');
+	new Chart(PolarChartCanvas).PolarArea(polarData, {
+		responsive: true,
+		animationSteps: 20
+	});
+	//--
+} //END FUNCTION
+</script>
+</td>
+<td width="50%">
+<center><h2 class="inline">Radar Chart</h2></center>
+<div style="width:90%;">
+	<canvas id="canvas-radar" width="600" height="400"></canvas>
+</div>
+<script>
+function Smart_JsCharts_RadarChart() {
+	//--
+	var radarChartData = {
+		labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
+		datasets: [
+			{
+				label: "My First dataset",
+				fillColor: "rgba(220,220,220,0.2)",
+				strokeColor: "rgba(220,220,220,1)",
+				pointColor: "rgba(220,220,220,1)",
+				pointStrokeColor: "#fff",
+				pointHighlightFill: "#fff",
+				pointHighlightStroke: "rgba(220,220,220,1)",
+				data: [65,59,90,81,56,55,40]
+			},
+			{
+				label: "My Second dataset",
+				fillColor: "rgba(151,187,205,0.2)",
+				strokeColor: "rgba(151,187,205,1)",
+				pointColor: "rgba(151,187,205,1)",
+				pointStrokeColor: "#fff",
+				pointHighlightFill: "#fff",
+				pointHighlightStroke: "rgba(151,187,205,1)",
+				data: [28,48,40,19,96,27,100]
+			}
+		]
+	};
+	//--
+	var RadarChartCanvas = document.getElementById('canvas-radar').getContext('2d');
+	new Chart(RadarChartCanvas).Radar(radarChartData, {
+		responsive: true,
+		animationSteps: 20,
+		multiTooltipTemplate: "<%= datasetLabel %> : <%= value %>",
+	});
+	//--
+} //END FUNCTION
+</script>
+</td>
+</tr>
+</table>
+<script>
+	Smart_JsCharts_LineChart();
+	Smart_JsCharts_AreaChart();
+	Smart_JsCharts_StackedAreaChart()
+	Smart_JsCharts_StackedRelativeAreaChart();
+	Smart_JsCharts_ZLineChart();
+	Smart_JsCharts_BubbleChart();
+	Smart_JsCharts_BarChart();
+	Smart_JsCharts_StackedBarChart();
+	Smart_JsCharts_DoughnutChart();
+	Smart_JsCharts_PieChart();
+	Smart_JsCharts_PolarAreaChart();
+	Smart_JsCharts_RadarChart();
+</script>
+<!-- #END :: Partial Template: TestUnit.SampleCharts -->

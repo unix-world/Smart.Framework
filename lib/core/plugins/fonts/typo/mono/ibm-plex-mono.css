@@ -1,0 +1,47 @@
+/* font-family: 'IBM Plex Mono' :: v1.0.2 :: Latin + Latin Extended + Cyrillic :: r.8.7 / smart.framework.v.8.7 */
+
+@font-face {
+	font-family: 'IBM Plex Mono';
+	font-style: normal;
+	font-weight: 400;
+	src: local('IBM Plex Mono'), local('IBMPlexMono'),
+		 url('ibm-plex-mono-regular.woff2') format('woff2'),
+		 url('ibm-plex-mono-regular.ttf') format('truetype');
+	font-display: swap;
+	text-rendering: auto;
+}
+
+@font-face {
+	font-family: 'IBM Plex Mono';
+	font-style: normal;
+	font-weight: 600; /* semi-bold */
+	src: local('IBM Plex Mono SemiBold'), local('IBMPlexMono-SemiBold'),
+		 url('ibm-plex-mono-semibold.woff2') format('woff2'),
+		 url('ibm-plex-mono-semibold.ttf') format('truetype');
+	font-display: swap;
+	text-rendering: auto;
+}
+
+@font-face {
+	font-family: 'IBM Plex Mono';
+	font-style: italic;
+	font-weight: 400;
+	src: local('IBM Plex Mono Italic'), local('IBMPlexMono-Italic'),
+		 url('ibm-plex-mono-italic.woff2') format('woff2'),
+		 url('ibm-plex-mono-italic.ttf') format('truetype');
+	font-display: swap;
+	text-rendering: auto;
+}
+
+@font-face {
+	font-family: 'IBM Plex Mono';
+	font-style: italic;
+	font-weight: 600; /* semi-bold */
+	src: local('IBM Plex Mono SemiBold Italic'), local('IBMPlexMono-SemiBoldItalic'),
+		 url('ibm-plex-mono-semibold-italic.woff2') format('woff2'),
+		 url('ibm-plex-mono-semibold-italic.ttf') format('truetype');
+	font-display: swap;
+	text-rendering: auto;
+}
+
+/* END */

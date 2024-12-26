@@ -1,0 +1,30 @@
+<!-- Js Framework (Default) :: r.20221007 -->
+[@@@SUB-TEMPLATE:!etc/templates/default/js-check.inc.htm!@@@]
+<script>
+const smartJ$Options = {
+	BrowserTest: {
+		isMobile: 'auto', // '[###CLIENT-IS-MOBILE|js###]'
+	},
+	ModalBox: {
+		CssOverlayOpacity: 0.8,
+	},
+	BrowserUtils: {
+		LanguageId: '[###LANG|js###]',
+		Charset: '[###CHARSET|js###]',
+		CookieLifeTime: [###CLIENT-UID-COOKIE-LIFETIME|int###],
+		CookieDomain: '[###CLIENT-UID-COOKIE-DOMAIN|js###]',
+		CookieSameSitePolicy: '[###CLIENT-UID-COOKIE-SAMESITE|js###]',
+		Notifications: [%%%IF:SEMAPHORE:&*<skip:growl>;(88)%%%]'dialog'[%%%ELSE:SEMAPHORE(88)%%%]'growl'[%%%/IF:SEMAPHORE(88)%%%],
+		NotificationDialogType: [%%%IF:SEMAPHORE:&*<dialog:alertable>;(88)%%%]'alertable'[%%%ELSE:SEMAPHORE(88)%%%]'auto'[%%%/IF:SEMAPHORE(88)%%%],
+		ModalBoxProtected: [%%%IF:APP-REALM:!=IDX;(87)%%%]true[%%%ELSE:APP-REALM(87)%%%]false[%%%/IF:APP-REALM(87)%%%],
+		NotifyLoadError: [%%%IF:APP-REALM:!=IDX;(87)%%%]true[%%%ELSE:APP-REALM(87)%%%]false[%%%/IF:APP-REALM(87)%%%],
+		CssOverlayOpacity: 0.8,
+	},
+};
+Object.freeze(smartJ$Options); // sec.
+window.smartJ$Options = smartJ$Options; // g-exp.
+</script>
+<script src="lib/js/framework/smart-framework.pak.js?[###RELEASE-HASH|url|html###]"></script>
+[%%%IF:DEBUG-MODE:==yes;%%%]<script>smartJ$Browser.setFlag('DebugEnabled', true);</script><!-- DEBUG IS ON -->[%%%/IF:DEBUG-MODE%%%]
+[%%%IF:APP-REALM:==ADM;(87)%%%]<script>(() => { if(!smartJ$TestBrowser.checkCookies()) { const errCokkies = 'NOTICE: Your browser does not support Cookies !'; console.warn(errCokkies); if(typeof(jQuery) != 'undefined') { try { jQuery(() => { jQuery('body').append('<div class="sf--notify--cookies" style="position:fixed; top:5px; right:5px; z-index:2147483646; padding:10px; background:#ED2839; color:#FFFFFF; font-size:1rem; font-weight:bold; opacity:0.88;">' + errCokkies + '</div>'); jQuery('.sf--notify--cookies').delay(3250).fadeOut(); }); } catch(err){} } } })();</script><!-- Cookie check -->[%%%/IF:APP-REALM(87)%%%]
+<!-- # -->

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="mime-part-error" version="1.1" viewBox="0 0 96 96" height="96px" width="96px">
+ <defs id="defs1412" />
+ <g id="layer1">
+  <rect style="display:inline;fill:#aa0000;fill-opacity:1;fill-rule:nonzero;stroke:none" id="rect2419" y="6" x="6" ry="6" rx="6" height="84" width="84" />
+  <path d="m 42.75,18.3125 -4.65625,16.5 L 18.3125,31.5 31.5,44.6875 15,51.3125 l 17.4375,2.875 -14.125,16.90625 19.59375,-5.5625 3.5,12.15625 9.90625,-9.875 16.5,9.875 L 63.875,59.25 81,57.90625 66.5625,47.59375 l 10.3125,-6.1875 -10.8125,-1.25 11.625,-18.5625 -24.75,11.34375 z M 45,38 h 6 c 0.554,0 1,0.446 1,1 v 12 c 0,0.554 -0.446,1 -1,1 h -6 c -0.554,0 -1,-0.446 -1,-1 V 39 c 0,-0.554 0.446,-1 1,-1 z m 0,16 h 6 c 0.554,0 1,0.446 1,1 v 6 c 0,0.554 -0.446,1 -1,1 h -6 c -0.554,0 -1,-0.446 -1,-1 v -6 c 0,-0.554 0.446,-1 1,-1 z" id="Symbol" style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none" />
+ </g>
+</svg>

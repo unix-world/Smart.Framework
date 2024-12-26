@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<!-- App Domain is: [###APP-DOMAIN###] -->
+<!-- Base URL is: [###BASE-URL###] -->
+<!-- Base Path is: [###BASE-PATH###] -->
+<!-- [###TEMPLATE-FILE###] -->
+<!-- Version: 20220915 -->
+<html>
+<head>
+<meta charset="[###CHARSET|html###]">
+<meta http-equiv="Content-Type" content="text/html; charset=[###CHARSET|html###]">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Smart.Framework">
+<link rel="icon" href="data:,">
+<title>[###TITLE###]</title>
+<!-- Meta Extra -->
+<meta name="description" content="[###META-DESCRIPTION###]">
+<meta name="keywords" content="[###META-KEYWORDS###]">
+<!-- Styles -->
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/css-app.inc.htm!@@@]
+<!-- Scripts -->
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-base.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-media.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-ui.inc.htm!@@@]
+</head>
+<body>
+[###AREA.TOP###]
+<div style="width:100% !important; padding-left:10px; padding-top:2px; padding-right:10px; box-sizing: border-box !important; -moz-box-sizing: border-box !important; -webkit-box-sizing: border-box !important;">
+[###MAIN###]
+</div>
+[###AREA.FOOTER###]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-search-term-highlight.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-hljs.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-unveil.inc.htm!@@@]
+</body>
+</html>

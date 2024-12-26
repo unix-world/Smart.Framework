@@ -1,0 +1,18 @@
+# Language File: RO / CORE / NavTexts :: r.8.7 / smart.framework.v.8.7
+TRANSLATIONS:
+  @language: RO
+  @area: core
+  @version: 2021-05-26
+  nav_texts:
+    asort: 'Sortează Crescător [^]'
+    dsort: 'Sortează Descrescător [v]'
+    xsort: 'Anulează Sortarea [*]'
+    listed: 'Pagina'
+    res: 'Rezultate'
+    empty: 'Nu există \'rezultate\''
+    of: 'din'
+    start: '« Început'
+    prev: '‹ Pagina Precedentă'
+    next: 'Pagina Următoare ›'
+    end: 'Sfârșit »'
+#END

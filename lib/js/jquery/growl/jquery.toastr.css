@@ -1,0 +1,296 @@
+/*
+ * Toastr v.3.1.7.2
+ * (c) 2021-2023 unix-world.org
+ *
+ * Based on Toastr v.2.1.1
+ * Copyright 2012-2015
+ * Authors: John Papa, Hans Fjällemark, and Tim Ferrell.
+ * All Rights Reserved.
+ * Use, reproduction, distribution, and modification of this code is subject to the terms and
+ * conditions of the MIT license
+ * ARIA Support: Greta Krafsig
+ * Project: https://github.com/CodeSeven/toastr
+ */
+
+/*
+// (c) 2021-2023 unix-world.org
+// fixes by unixman r.20231028:
+// 	* Added renders: darknote, notice
+//	* Change the color theme
+*/
+
+.toast-title {
+	font-weight: bold;
+	word-wrap: break-word;
+}
+
+.toast-message {
+	margin-top: 8px;
+	word-wrap: break-word;
+}
+
+.toast-message a:hover {
+	text-decoration: none;
+}
+
+.toast-message h1 {
+	font-size: 1.75rem;
+}
+.toast-message h2 {
+	font-size: 1.5rem;
+}
+.toast-message h3 {
+	font-size: 1.375rem;
+}
+.toast-message h4 {
+	font-size: 1.25rem;
+}
+.toast-message h5 {
+	font-size: 1.125rem;
+}
+.toast-message h6 {
+	font-size: 1rem;
+}
+
+.toast-close-button {
+	z-index: 2147483001;
+	position: relative;
+	right: -0.3em;
+	top: -0.3em;
+	float: right;
+	font-size: 20px;
+	font-weight: bold;
+	text-shadow: 0 1px 0 #ffffff;
+	opacity: 0.6;
+}
+.toast-close-button:hover,
+.toast-close-button:focus {
+	text-decoration: none;
+	cursor: pointer;
+	opacity: 0.8;
+}
+button.toast-close-button { /* Additional properties for button version iOS requires the button element instead of an anchor tag. If you want the anchor version, it requires `href="#"`. */
+	padding: 0;
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+}
+
+.toast-top-center {
+	top: 0;
+	right: 0;
+	width: 100%;
+}
+.toast-bottom-center {
+	bottom: 0;
+	right: 0;
+	width: 100%;
+}
+.toast-top-full-width {
+	top: 0;
+	right: 0;
+	width: 100%;
+}
+.toast-bottom-full-width {
+	bottom: 0;
+	right: 0;
+	width: 100%;
+}
+.toast-top-left {
+	top: 6px;
+	left: 12px;
+}
+.toast-top-right {
+	top: 6px;
+	right: 12px;
+}
+.toast-bottom-right {
+	right: 12px;
+	bottom: 12px;
+}
+.toast-bottom-left {
+	bottom: 12px;
+	left: 12px;
+}
+
+#toast-container {
+	position: fixed;
+	z-index: 2147483000;
+}
+#toast-container * {
+	box-sizing: border-box;
+}
+#toast-container > div {
+	font-size: 14px;
+	position: relative;
+	overflow: hidden;
+	margin: 0 0 10px 0;
+	padding: 15px 15px 15px 20px;
+	width: 400px;
+	max-width: 44vw;
+	max-height: 96vh !important;
+	overflow-y: auto;
+	overflow-x: hidden;
+	border-radius: 3px 3px 3px 3px;
+	background-position: 15px center;
+	background-repeat: no-repeat;
+	box-shadow: 0 0 4px rgba(136,136,136,0.72);
+	opacity: 0.98;
+}
+@media all and (max-width:767px) {
+	#toast-container > div {
+		max-width: 88vw;
+	}
+}
+#toast-container > :hover {
+	box-shadow: 0 0 6px #888888;
+	opacity: 1;
+/*	cursor: pointer; */
+}
+#toast-container.toast-top-center > div,
+#toast-container.toast-bottom-center > div {
+	margin: auto;
+}
+#toast-container.toast-top-full-width > div,
+#toast-container.toast-bottom-full-width > div {
+	min-width: 96%;
+	max-width: 96%;
+	margin: auto;
+}
+
+.toast-progress {
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 4px;
+	opacity: 0.6;
+}
+
+/* appearance */
+
+.toast-message input,
+.toast-message button {
+	margin: 2px;
+	border: 1px solid #DDDDDD;
+}
+.toast-message input {
+	background: #FFFFFF;
+	color: #444444;
+}
+.toast-message button {
+	background: #EEEEEE;
+	color: #222222;
+}
+.toast-message button:hover {
+	background: #DDDDDD;
+}
+
+.toast,
+.toast * {
+	background: #FFFFDD;
+}
+.toast > .toast-progress {
+	background: #FFFFFF;
+}
+.toast,
+.toast * {
+	color: #222222;
+}
+
+.toast-darknote,
+.toast-darknote * {
+	background: #444444;
+}
+.toast-darknote > .toast-progress {
+	background: #FFFFFF;
+}
+.toast-darknote,
+.toast-darknote * {
+	color: #FFFFFF;
+}
+
+.toast-notice,
+.toast-notice * {
+	background: #FFFFFF;
+}
+.toast-notice > .toast-progress {
+	background: #778888;
+}
+.toast-notice,
+.toast-notice * {
+	color: #555555;
+}
+
+.toast-light,
+.toast-light * {
+	background: #E9EDCA;
+}
+.toast-light > .toast-progress {
+	background: #5E6885;
+}
+.toast-light,
+.toast-light * {
+	color: #333333;
+}
+
+.toast-info,
+.toast-info * {
+	background: #4D5774;
+}
+.toast-info > .toast-progress {
+	background: #FFFFFF;
+}
+.toast-info,
+.toast-info * {
+	color: #FFFFFF;
+}
+
+.toast-success,
+.toast-success * {
+	background: #7CAE0A;
+}
+.toast-success > .toast-progress {
+	background: #FFFFFF;
+}
+.toast-success,
+.toast-success * {
+	color: #FFFFFF;
+}
+
+.toast-warning,
+.toast-warning * {
+	background: #FDC300;
+}
+.toast-warning > .toast-progress {
+	background: #FFFFFF;
+}
+.toast-warning,
+.toast-warning * {
+	color: #333333;
+}
+
+.toast-error,
+.toast-error * {
+	background: #ED2839;
+}
+.toast-error > .toast-progress {
+	background: #FFFFFF;
+}
+.toast-error,
+.toast-error * {
+	color: #FFFFFF;
+}
+
+.toast-colored,
+.toast-colored * {
+	background: #FF4173;
+}
+.toast-colored > .toast-progress {
+	background: #FFFFFF;
+}
+.toast-colored,
+.toast-colored * {
+	color: #FFFFFF;
+}
+
+/* END */

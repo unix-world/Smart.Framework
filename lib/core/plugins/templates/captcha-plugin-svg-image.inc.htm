@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="[###WIDTH|int###]" height="[###HEIGHT|int###]" viewBox="0 0 [###WIDTH|int###] [###HEIGHT|int###]">
+	<defs id="definitions-[###PATTERN-ID-HASH|htmid|html###]" data-time-s="[###EXECUTION-TIME|html###]">
+		<pattern id="pattern-[###PATTERN-ID-HASH|htmid|html###]" x="0" y="0" width="0.125" height="0.125">
+			<rect id="square1-[###PATTERN-ID-HASH|htmid|html###]" x="1" y="1" width="5" height="5" fill="[###PATTERN-COLOR|html###]" />
+			<rect id="square2-[###PATTERN-ID-HASH|htmid|html###]" x="3" y="3" width="7" height="7" fill="[###PATTERN-COLOR|html###]" />
+			<rect id="square3-[###PATTERN-ID-HASH|htmid|html###]" x="5" y="5" width="10" height="10" fill="[###PATTERN-COLOR|html###]" />
+		</pattern>
+	</defs>
+	<g id="group-[###CAPTCHA-ID-HASH|htmid|html###]">
+		<rect id="back-[###CAPTCHA-ID-HASH|htmid|html###]" fill="[###BACKGROUND-COLOR|html###]" stroke="[###ELEMENT-BORDER-COLOR|html###]" width="[###WIDTH|int###]" height="[###HEIGHT|int###]" />
+		<rect id="grid-[###CAPTCHA-ID-HASH|htmid|html###]" fill="url(#pattern-[###PATTERN-ID-HASH|htmid|html###])" width="[###WIDTH|int###]" height="[###HEIGHT|int###]" />
+		<path id="stroke-[###CAPTCHA-ID-HASH|htmid|html###]" width="100%" height="100%" style="fill:[###CAPTHA-STROKE-FILL|html###];stroke:[###CAPTCHA-COLOR|html###];stroke-width:[###CAPTHA-STROKE-WIDTH|int###]px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:[###CAPTCHA-OPACITY|dec1###]" d="[###CAPTCHA-PATH|html###]" />
+	</g>
+</svg><!-- Partial Template: Plugins.CaptchaFormSvgImage r.20231117 -->

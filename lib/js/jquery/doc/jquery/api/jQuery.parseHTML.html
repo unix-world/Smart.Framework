@@ -1,0 +1,144 @@
+<script>{
+		"title":
+			"jQuery.parseHTML()",
+		"excerpt":
+			"Parses a string into an array of DOM nodes.",
+		"termSlugs": {
+			"category": [
+				"utilities","version/1.8"
+			]
+		}
+	}</script><article id="jQuery-parseHTML1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.parseHTML( data [, context ] [, keepScripts ] )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Array">Array</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Parses a string into an array of DOM nodes.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.8/">1.8</a></span><a id="jQuery-parseHTML-data-context-keepScripts" href="#jQuery-parseHTML-data-context-keepScripts"><span class="icon-link"></span>jQuery.parseHTML( data [, context ] [, keepScripts ] )</a>
+</h4>
+<ul>
+<li>
+<div><strong>data</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>HTML string to be parsed</div>
+</li>
+<li>
+<div>
+<strong>context</strong> (default: <code>document</code>)</div>
+<div>Type: <a href="http://api.jquery.com/Types/#Element">Element</a>
+</div>
+<div>Document element to serve as the context in which the HTML fragment will be created</div>
+</li>
+<li>
+<div>
+<strong>keepScripts</strong> (default: <code>false</code>)</div>
+<div>Type: <a href="http://api.jquery.com/Types/#Boolean">Boolean</a>
+</div>
+<div>A Boolean indicating whether to include scripts passed in the HTML string</div>
+</li>
+</ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p><code>jQuery.parseHTML</code> uses native methods to convert the string to a set of DOM nodes, which can then be inserted into the document. These methods do render all trailing or leading text (even if that&apos;s just whitespace). To prevent trailing/leading whitespace from being converted to text nodes you can pass the HTML string through <a href="/jQuery.trim/"><code>jQuery.trim</code></a>.</p>
+    <p>By default, the <code>context</code> is the current <code>document</code> if not specified or given as <code>null</code> or <code>undefined</code>. If the HTML was to be used in another document such as an iframe, that frame&apos;s document could be used.</p>
+    <p>As of 3.0 the default behavior is changed. If the <code>context</code> is not specified or given as <code>null</code> or <code>undefined</code>, a new <code>document</code> is used. This can potentially improve security because inline events will not execute when the HTML is parsed. Once the parsed HTML is injected into a document it does execute, but this gives tools a chance to traverse the created DOM and remove anything deemed unsafe. This improvement does not apply to internal uses of <code>jQuery.parseHTML</code> as they usually pass in the current <code>document</code>. Therefore, a statement like <code>$( &quot;#log&quot; ).append( $( htmlString ) )</code> is still subject to the injection of malicious code.</p>
+	<h2>Security Considerations</h2>
+	<p>Most jQuery APIs that accept HTML strings will run scripts that are included in the HTML. <code>jQuery.parseHTML</code> does not run scripts in the parsed HTML unless <code>keepScripts</code> is explicitly <code>true</code>. However, it is still possible in most environments to execute scripts indirectly, for example via the <code>&lt;img onerror&gt;</code> attribute. The caller should be aware of this and guard against it by cleaning or escaping any untrusted inputs from sources such as the URL or cookies. For future compatibility, callers should not depend on the ability to run <em>any</em> script content when <code>keepScripts</code> is unspecified or <code>false</code>.</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Create an array of DOM nodes using an HTML string and insert it into a div.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+						<div class="line n32">32</div>
+					
+						<div class="line n33">33</div>
+					
+						<div class="line n34">34</div>
+					
+						<div class="line n35">35</div>
+					
+						<div class="line n36">36</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>jQuery.parseHTML demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">&quot;log&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">h3</span>&gt;</span>Content:<span class="tag">&lt;/<span class="title">h3</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> $log = $( <span class="string">&quot;#log&quot;</span> ),</code></div></div><div class="container"><div class="line"><code>  str = <span class="string">&quot;hello, &lt;b&gt;my name is&lt;/b&gt; jQuery.&quot;</span>,</code></div></div><div class="container"><div class="line"><code>  html = $.parseHTML( str ),</code></div></div><div class="container"><div class="line"><code>  nodeNames = [];</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Append the parsed HTML</span></code></div></div><div class="container"><div class="line"><code>$log.append( html );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Gather the parsed HTML&apos;s node names</span></code></div></div><div class="container"><div class="line"><code>$.each( html, <span class="keyword">function</span>( i, el ) {</code></div></div><div class="container"><div class="line"><code>  nodeNames[ i ] = <span class="string">&quot;&lt;li&gt;&quot;</span> + el.nodeName + <span class="string">&quot;&lt;/li&gt;&quot;</span>;</code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Insert the node names</span></code></div></div><div class="container"><div class="line"><code>$log.append( <span class="string">&quot;&lt;h3&gt;Node Names:&lt;/h3&gt;&quot;</span> );</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;&lt;ol&gt;&lt;/ol&gt;&quot;</span> )</code></div></div><div class="container"><div class="line"><code>  .append( nodeNames.join( <span class="string">&quot;&quot;</span> ) )</code></div></div><div class="container"><div class="line"><code>  .appendTo( $log );</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div></section>
+</div></article>

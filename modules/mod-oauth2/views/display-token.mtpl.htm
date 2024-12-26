@@ -1,0 +1,43 @@
+<!-- View: display-record v.20231122 -->
+[@@@SUB-TEMPLATE:partials/styles.mtpl.htm@@@]
+<style>
+#area-token {
+	text-align: left !important;
+	margin: 8px !important;
+	padding: 12px !important;
+	white-space: pre !important;
+	overflow: auto !important;
+}
+button {
+	margin-left: 10px;
+	margin-bottom: 10px;
+}
+</style>
+<script>
+const copyElemToClipboard = () => {
+	const img = '<br><i class="sfi sfi-clipboard"></i>';
+	const err = smartJ$Browser.copyToClipboard('area-token');
+	if(!!err) {
+		console.error('ERR: copyElemToClipboard:', err);
+		smartJ$Browser.GrowlNotificationAdd('Copy to Clipboard', 'FAILED to Copy the Token to Clipboard' + img, null, 3500, false, 'pink');
+	} else {
+		smartJ$Browser.GrowlNotificationAdd('Copy to Clipboard', 'Token has been Copied to Clipboard' + img, null, 1500, false, 'blue');
+	}
+};
+</script>
+<h1 style="color:#666699;!important">[###TITLE|html###]</h1>
+<h3 style="color:#444444;">[###ID|html###]</h3>
+<div style="font-size:2rem; font-weight:bold;">
+	Status:&nbsp;[&nbsp;[###STATUS|html###]&nbsp;]
+	<br>
+	<img width="64" height="64" src="[###IMG|html###]" alt="svg">
+</div>
+<br>
+<div style="max-width:820px!important;">
+	<h5 style="color:#888888;">Token:</h5>
+	<h6 id="area-token" style="background:#F7F7F7; color:#448FCE">[###TOKEN|html###]</h6>
+</div><br>
+<button class="ux-button ux-button-details" style="cursor:cell;" onClick="copyElemToClipboard(); return false;">Copy to Clipboard &nbsp; <i class="sfi sfi-lg sfi-stack" style="color:#FFCC00;"></i></button>
+<button class="ux-button ux-button-dark" onClick="self.location='[###URL-BACK|js|html###]'; return false;">Go Back &nbsp; <i class="sfi sfi-lg sfi-spinner11"></i></button>
+<script type="text/javascript">smartJ$Browser.RefreshParent();</script>
+<!-- View: #end -->

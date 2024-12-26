@@ -1,0 +1,191 @@
+<script>{
+		"title":
+			"jQuery.ajaxPrefilter()",
+		"excerpt":
+			"Handle custom Ajax options or modify existing options before each request is sent and before they are processed by $.ajax().",
+		"termSlugs": {
+			"category": [
+				"ajax/low-level-interface","version/1.5"
+			]
+		}
+	}</script><article id="jQuery-ajaxPrefilter1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.ajaxPrefilter(  [dataTypes ], handler )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#undefined">undefined</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Handle custom Ajax options or modify existing options before each request is sent and before they are processed by <code>$.ajax()</code>.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.5/">1.5</a></span><a id="jQuery-ajaxPrefilter-dataTypes-handler" href="#jQuery-ajaxPrefilter-dataTypes-handler"><span class="icon-link"></span>jQuery.ajaxPrefilter(  [dataTypes ], handler )</a>
+</h4>
+<ul>
+<li>
+<div><strong>dataTypes</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>An optional string containing one or more space-separated dataTypes</div>
+</li>
+<li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a> options, <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a> originalOptions, <a href="http://api.jquery.com/Types/#jqXHR">jqXHR</a> jqXHR )</div>
+<div>A handler to set default values for future Ajax requests.</div>
+</li>
+</ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>A typical prefilter registration using <code>$.ajaxPrefilter()</code> looks like this:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.ajaxPrefilter(<span class="keyword">function</span>( options, originalOptions, jqXHR ) {</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Modify options, control originalOptions, store jqXHR, etc</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>where:</p>
+    <ul>
+      <li>
+<code>options</code> are the request options</li>
+      <li>
+<code>originalOptions</code> are the options as provided to the <code>$.ajax()</code> method, unmodified and, thus, without defaults from <code>ajaxSettings</code>
+</li>
+      <li>
+<code>jqXHR</code> is the jqXHR object of the request</li>
+    </ul>
+    <p>Prefilters are a perfect fit when custom options need to be handled.  Given the following code, for example, a call to <code>$.ajax()</code> would automatically abort a request to the same URL if the custom <code>abortOnRetry</code> option is set to <code>true</code>:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> currentRequests = {};</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$.ajaxPrefilter(<span class="keyword">function</span>( options, originalOptions, jqXHR ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">if</span> ( options.abortOnRetry ) {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">if</span> ( currentRequests[ options.url ] ) {</code></div></div><div class="container"><div class="line"><code>      currentRequests[ options.url ].abort();</code></div></div><div class="container"><div class="line"><code>    }</code></div></div><div class="container"><div class="line"><code>    currentRequests[ options.url ] = jqXHR;</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>Prefilters can also be used to modify existing options. For example, the following proxies cross-domain requests through https://mydomain.net/proxy/:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.ajaxPrefilter(<span class="keyword">function</span>( options ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">if</span> ( options.crossDomain ) {</code></div></div><div class="container"><div class="line"><code>    options.url = <span class="string">&quot;https://mydomain.net/proxy/&quot;</span> + encodeURIComponent( options.url );</code></div></div><div class="container"><div class="line"><code>    options.crossDomain = <span class="literal">false</span>;</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>If the optional <code>dataTypes</code> argument is supplied, the prefilter will be only be applied to requests with the indicated dataTypes. For example, the following only applies the given prefilter to JSON and script requests:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.ajaxPrefilter( <span class="string">&quot;json script&quot;</span>, <span class="keyword">function</span>( options, originalOptions, jqXHR ) {</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Modify options, control originalOptions, store jqXHR, etc</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>The <code>$.ajaxPrefilter()</code> method can also redirect a request to another dataType by returning that dataType. For example, the following sets a request as &quot;script&quot; if the URL has some specific properties defined in a custom <code>isActuallyScript()</code> function:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.ajaxPrefilter(<span class="keyword">function</span>( options ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">if</span> ( isActuallyScript( options.url ) ) {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">return</span> <span class="string">&quot;script&quot;</span>;</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>This would ensure not only that the request is considered &quot;script&quot; but also that all the prefilters specifically attached to the script dataType would be applied to it.</p>
+  </div>
+</div></article>

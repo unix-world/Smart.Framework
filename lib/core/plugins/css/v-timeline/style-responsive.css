@@ -1,0 +1,88 @@
+/***** V-TimeLine Responsive CSS :: r.8.7 / smart.framework.v.8.7 *****/
+
+/* V-TimeLine r.20220918
+	License: BSD
+	(c) 2015-2022 unix-world.org
+	This software component was inspired from the following opensource projects:
+		(c) 2017 https://github.com/RyanFitzgerald/vertical-timeline
+		(c) 2014 https://github.com/soundarapandian/timeline
+		(c) 2015 https://github.com/CodyHouse/vertical-timeline
+*/
+
+@media all and (min-width: 1024px) {
+
+	.vtml-responsive-container::before {
+		left: 50%;
+		margin-left: -2px;
+	}
+
+	.vtml-responsive-container .vtml-timeline-block {
+		margin: 4rem 0;
+	}
+	.vtml-responsive-container .vtml-timeline-block:first-child {
+		margin-top: 0;
+	}
+	.vtml-responsive-container .vtml-timeline-block:last-child {
+		margin-bottom: 0;
+	}
+
+	.vtml-responsive-container .vtml-timeline-icon,
+	.vtml-responsive-container .vtml-small-container .vtml-timeline-icon {
+		left: 50% !important;
+		margin-left: -30px;
+		margin-top: 10px;
+	}
+
+	.vtml-responsive-container .vtml-timeline-content,
+	.vtml-responsive-container .vtml-small-container .vtml-timeline-content {
+		margin-left: 0;
+		padding: 0.75rem 1.25rem 0.75rem 1.25rem;
+		width: 45%;
+	}
+	.vtml-responsive-container .vtml-timeline-content::before,
+	.vtml-responsive-container .vtml-small-container .vtml-timeline-content::before {
+		top: 24px;
+		left: 100%;
+		border-color: transparent;
+		border-left-color: #F5F5F5;
+	}
+	.vtml-responsive-container .vtml-timeline-content .vtml-read-more,
+	.vtml-responsive-container .vtml-small-container .vtml-timeline-content .vtml-read-more {
+		float: left;
+	}
+	.vtml-responsive-container .vtml-timeline-content .vtml-date,
+	.vtml-responsive-container .vtml-small-container .vtml-timeline-content .vtml-date {
+		width: 100%;
+		text-align: right;
+	}
+	.vtml-responsive-container .vtml-timeline-block:nth-child(even) .vtml-timeline-content .vtml-date,
+	.vtml-responsive-container .vtml-timeline-block:nth-child(even) .vtml-small-container .vtml-timeline-content .vtml-date {
+		text-align: left !important;
+	}
+	.vtml-responsive-container .vtml-small-container .vtml-timeline-content .vtml-date {
+		font-size: 0.9375rem;
+	}
+
+	.vtml-responsive-container .vtml-timeline-block:nth-child(even) .vtml-timeline-content {
+		float: right;
+		text-align: right;
+	}
+	.vtml-responsive-container .vtml-timeline-block:nth-child(even) .vtml-timeline-content::before {
+		top: 24px;
+		left: auto;
+		right: 100%;
+		border-color: transparent;
+		border-right-color: #F5F5F5;
+	}
+	.vtml-responsive-container .vtml-timeline-block:nth-child(even) .vtml-timeline-content .vtml-read-more {
+		float: right;
+	}
+	.vtml-responsive-container .vtml-timeline-block:nth-child(even) .vtml-timeline-content .vtml-date {
+		left: auto;
+		right: 122%;
+		text-align: right;
+	}
+
+}
+
+/* END */

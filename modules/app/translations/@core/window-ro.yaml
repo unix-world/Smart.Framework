@@ -1,0 +1,14 @@
+# Language File: RO / CORE / Window :: r.8.7 / smart.framework.v.8.7
+TRANSLATIONS:
+  @language: RO
+  @area: core
+  @version: 2021-05-26
+  window:
+    action_back: 'Înapoi (la pagina anterioară)'
+    button_back: '[ Înapoi ]'
+    button_close: '[ Închide ]'
+    button_modal_close: '[ Înapoi la Fereastra Principală ]'
+    button_print: '[ Printează ]'
+    confirm_action: 'Apăsaţi [OK] pentru a CONFIRMA această Acţiune. Nu se poate Reveni.'
+    form_submit_wait: '... în curs de expediere, aşteptaţi'
+#END

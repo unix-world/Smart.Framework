@@ -1,0 +1,434 @@
+<script>{
+		"title":
+			"jQuery.cssHooks",
+		"excerpt":
+			"Hook directly into jQuery to override how particular CSS properties are retrieved or set, normalize CSS property naming, or create custom properties.",
+		"termSlugs": {
+			"category": [
+				"css","version/1.4.3"
+			]
+		}
+	}</script><article id="jQuery-cssHooks1" class="entry property"><h2 class="section-title">
+<span>jQuery.cssHooks</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Object">Object</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Hook directly into jQuery to override how particular CSS properties are retrieved or set, normalize CSS property naming, or create custom properties.</p>
+<ul class="signatures"><li class="signature"><h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.4.3/">1.4.3</a></span>jQuery.cssHooks</h4></li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>The <code>$.cssHooks</code> object provides a way to define functions for getting and setting particular CSS values. It can also be used to create new cssHooks for normalizing CSS3 features such as box shadows and gradients. </p>
+    <p>For example, some versions of Webkit-based browsers require <code>-webkit-border-radius</code> to set the <code>border-radius</code> on an element, while earlier Firefox versions require <code>-moz-border-radius</code>. A css hook can normalize these vendor-prefixed properties to let <code>.css()</code> accept a single, standard property name (<code>border-radius</code>, or with DOM property syntax, <code>borderRadius</code>).</p>
+    <p>In addition to providing fine-grained control over how specific style properties are handled, <code>$.cssHooks</code> also extends the set of properties available to the <code>.animate()</code> method.</p>
+    <p>Defining a new css hook is straight-forward. The skeleton template below can serve as a guide to creating your own. </p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>(<span class="keyword">function</span>( $ ) {</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// First, check to see if cssHooks are supported</span></code></div></div><div class="container"><div class="line"><code><span class="keyword">if</span> ( !$.cssHooks ) {</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// If not, output an error message</span></code></div></div><div class="container"><div class="line"><code>  <span class="keyword">throw</span>( <span class="keyword">new</span> Error( <span class="string">&quot;jQuery 1.4.3 or above is required for this plugin to work&quot;</span> ) );</code></div></div><div class="container"><div class="line"><code>}</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Wrap in a document ready call, because jQuery writes</span></code></div></div><div class="container"><div class="line"><code><span class="comment">// cssHooks at this time and will blow away your functions</span></code></div></div><div class="container"><div class="line"><code><span class="comment">// if they exist.</span></code></div></div><div class="container"><div class="line"><code>$(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span></code></div></div><div class="container"><div class="line"><code>  $.cssHooks[ <span class="string">&quot;someCSSProp&quot;</span> ] = {</code></div></div><div class="container"><div class="line"><code>    get: <span class="keyword">function</span>( elem, computed, extra ) {</code></div></div><div class="container"><div class="line"><code>      <span class="comment">// Handle getting the CSS property</span></code></div></div><div class="container"><div class="line"><code>    },</code></div></div><div class="container"><div class="line"><code>    set: <span class="keyword">function</span>( elem, value ) {</code></div></div><div class="container"><div class="line"><code>      <span class="comment">// Handle setting the CSS value</span></code></div></div><div class="container"><div class="line"><code>    }</code></div></div><div class="container"><div class="line"><code>  };</code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>})( jQuery );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <h4 id="feature-testing">Feature Testing</h4>
+    <p>Before normalizing a vendor-specific CSS property, first determine whether the browser supports the standard property or a vendor-prefixed variation. For example, to check for support of the <code>border-radius</code> property, see if any variation is a member of a temporary element&apos;s <code>style</code> object.</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+						<div class="line n32">32</div>
+					
+						<div class="line n33">33</div>
+					
+						<div class="line n34">34</div>
+					
+						<div class="line n35">35</div>
+					
+						<div class="line n36">36</div>
+					
+						<div class="line n37">37</div>
+					
+						<div class="line n38">38</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>(<span class="keyword">function</span>( $ ) {</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="function"><span class="keyword">function</span> <span class="title">styleSupport</span><span class="params">( prop )</span> {</span></code></div></div><div class="container"><div class="line"><code>  <span class="keyword">var</span> vendorProp, supportedProp,</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>    <span class="comment">// Capitalize first character of the prop to test vendor prefix</span></code></div></div><div class="container"><div class="line"><code>    capProp = prop.charAt( <span class="number">0</span> ).toUpperCase() + prop.slice( <span class="number">1</span> ),</code></div></div><div class="container"><div class="line"><code>    prefixes = [ <span class="string">&quot;Moz&quot;</span>, <span class="string">&quot;Webkit&quot;</span>, <span class="string">&quot;ms&quot;</span> ],</code></div></div><div class="container"><div class="line"><code>    div = document.createElement( <span class="string">&quot;div&quot;</span> );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="keyword">if</span> ( prop <span class="keyword">in</span> div.style ) {</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>    <span class="comment">// Browser supports standard CSS property name</span></code></div></div><div class="container"><div class="line"><code>    supportedProp = prop;</code></div></div><div class="container"><div class="line"><code>  } <span class="keyword">else</span> {</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>    <span class="comment">// Otherwise test support for vendor-prefixed property names</span></code></div></div><div class="container"><div class="line"><code>    <span class="keyword">for</span> ( <span class="keyword">var</span> i = <span class="number">0</span>; i &lt; prefixes.length; i++ ) {</code></div></div><div class="container"><div class="line"><code>      vendorProp = prefixes[ i ] + capProp;</code></div></div><div class="container"><div class="line"><code>      <span class="keyword">if</span> ( vendorProp <span class="keyword">in</span> div.style ) {</code></div></div><div class="container"><div class="line"><code>        supportedProp = vendorProp;</code></div></div><div class="container"><div class="line"><code>        <span class="keyword">break</span>;</code></div></div><div class="container"><div class="line"><code>      }</code></div></div><div class="container"><div class="line"><code>    }</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Avoid memory leak in IE</span></code></div></div><div class="container"><div class="line"><code>  div = <span class="literal">null</span>;</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Add property to $.support so it can be accessed elsewhere</span></code></div></div><div class="container"><div class="line"><code>  $.support[ prop ] = supportedProp;</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> supportedProp;</code></div></div><div class="container"><div class="line"><code>}</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Call the function, e.g. testing for &quot;border-radius&quot; support:</span></code></div></div><div class="container"><div class="line"><code>styleSupport( <span class="string">&quot;borderRadius&quot;</span> );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>})( jQuery );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <h4 id="defining-complete-csshook">Defining a complete css hook</h4>
+    <p>To define a complete css hook, combine the support test with a filled-out version of the skeleton template provided in the first example:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+						<div class="line n32">32</div>
+					
+						<div class="line n33">33</div>
+					
+						<div class="line n34">34</div>
+					
+						<div class="line n35">35</div>
+					
+						<div class="line n36">36</div>
+					
+						<div class="line n37">37</div>
+					
+						<div class="line n38">38</div>
+					
+						<div class="line n39">39</div>
+					
+						<div class="line n40">40</div>
+					
+						<div class="line n41">41</div>
+					
+						<div class="line n42">42</div>
+					
+						<div class="line n43">43</div>
+					
+						<div class="line n44">44</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>(<span class="keyword">function</span>( $ ) {</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="keyword">if</span> ( !$.cssHooks ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">throw</span>( <span class="keyword">new</span> Error( <span class="string">&quot;jQuery 1.4.3+ is needed for this plugin to work&quot;</span> ) );</code></div></div><div class="container"><div class="line"><code>}</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="function"><span class="keyword">function</span> <span class="title">styleSupport</span><span class="params">( prop )</span> {</span></code></div></div><div class="container"><div class="line"><code>  <span class="keyword">var</span> vendorProp, supportedProp,</code></div></div><div class="container"><div class="line"><code>    capProp = prop.charAt( <span class="number">0</span> ).toUpperCase() + prop.slice( <span class="number">1</span> ),</code></div></div><div class="container"><div class="line"><code>    prefixes = [ <span class="string">&quot;Moz&quot;</span>, <span class="string">&quot;Webkit&quot;</span>, <span class="string">&quot;ms&quot;</span> ],</code></div></div><div class="container"><div class="line"><code>    div = document.createElement( <span class="string">&quot;div&quot;</span> );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="keyword">if</span> ( prop <span class="keyword">in</span> div.style ) {</code></div></div><div class="container"><div class="line"><code>    supportedProp = prop;</code></div></div><div class="container"><div class="line"><code>  } <span class="keyword">else</span> {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">for</span> ( <span class="keyword">var</span> i = <span class="number">0</span>; i &lt; prefixes.length; i++ ) {</code></div></div><div class="container"><div class="line"><code>      vendorProp = prefixes[ i ] + capProp;</code></div></div><div class="container"><div class="line"><code>      <span class="keyword">if</span> ( vendorProp <span class="keyword">in</span> div.style ) {</code></div></div><div class="container"><div class="line"><code>        supportedProp = vendorProp;</code></div></div><div class="container"><div class="line"><code>        <span class="keyword">break</span>;</code></div></div><div class="container"><div class="line"><code>      }</code></div></div><div class="container"><div class="line"><code>    }</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  div = <span class="literal">null</span>;</code></div></div><div class="container"><div class="line"><code>  $.support[ prop ] = supportedProp;</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> supportedProp;</code></div></div><div class="container"><div class="line"><code>}</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> borderRadius = styleSupport( <span class="string">&quot;borderRadius&quot;</span> );</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Set cssHooks only for browsers that support a vendor-prefixed border radius</span></code></div></div><div class="container"><div class="line"><code><span class="keyword">if</span> ( borderRadius &amp;&amp; borderRadius !== <span class="string">&quot;borderRadius&quot;</span> ) {</code></div></div><div class="container"><div class="line"><code>  $.cssHooks.borderRadius = {</code></div></div><div class="container"><div class="line"><code>    get: <span class="keyword">function</span>( elem, computed, extra ) {</code></div></div><div class="container"><div class="line"><code>      <span class="keyword">return</span> $.css( elem, borderRadius );</code></div></div><div class="container"><div class="line"><code>    },</code></div></div><div class="container"><div class="line"><code>    set: <span class="keyword">function</span>( elem, value) {</code></div></div><div class="container"><div class="line"><code>      elem.style[ borderRadius ] = value;</code></div></div><div class="container"><div class="line"><code>    }</code></div></div><div class="container"><div class="line"><code>  };</code></div></div><div class="container"><div class="line"><code>}</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>})( jQuery );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>You can then set the border radius in a supported browser using either the DOM (camelCased) style or the CSS (hyphenated) style:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;#element&quot;</span> ).css( <span class="string">&quot;borderRadius&quot;</span>, <span class="string">&quot;10px&quot;</span> );</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;#another&quot;</span> ).css( <span class="string">&quot;border-radius&quot;</span>, <span class="string">&quot;20px&quot;</span> );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>If the browser lacks support for any form of the CSS property, vendor-prefixed or not, the style is not applied to the element. However, if the browser supports a proprietary alternative, it can be applied to the cssHooks instead. </p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>(<span class="keyword">function</span>( $ ) {</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Feature test for support of a CSS property</span></code></div></div><div class="container"><div class="line"><code><span class="comment">// and a proprietary alternative</span></code></div></div><div class="container"><div class="line"><code><span class="comment">// ...</span></code></div></div><div class="container"><div class="line"><code><span class="keyword">if</span> ( $.support.someCSSProp &amp;&amp; $.support.someCSSProp !== <span class="string">&quot;someCSSProp&quot;</span> ) {</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="comment">// Set cssHooks for browsers that</span></code></div></div><div class="container"><div class="line"><code>  <span class="comment">// support only a vendor-prefixed someCSSProp</span></code></div></div><div class="container"><div class="line"><code>  $.cssHooks.someCSSProp = {</code></div></div><div class="container"><div class="line"><code>    get: <span class="keyword">function</span>( elem, computed, extra ) {</code></div></div><div class="container"><div class="line"><code>      <span class="keyword">return</span> $.css( elem, $.support.someCSSProp );</code></div></div><div class="container"><div class="line"><code>    },</code></div></div><div class="container"><div class="line"><code>    set: <span class="keyword">function</span>( elem, value) {</code></div></div><div class="container"><div class="line"><code>      elem.style[ $.support.someCSSProp ] = value;</code></div></div><div class="container"><div class="line"><code>    }</code></div></div><div class="container"><div class="line"><code>  };</code></div></div><div class="container"><div class="line"><code>} <span class="keyword">else</span> <span class="keyword">if</span> ( supportsProprietaryAlternative ) {</code></div></div><div class="container"><div class="line"><code>  $.cssHooks.someCSSProp = {</code></div></div><div class="container"><div class="line"><code>    get: <span class="keyword">function</span>( elem, computed, extra ) {</code></div></div><div class="container"><div class="line"><code>      <span class="comment">// Handle crazy conversion from the proprietary alternative</span></code></div></div><div class="container"><div class="line"><code>    },</code></div></div><div class="container"><div class="line"><code>    set: <span class="keyword">function</span>( elem, value ) {</code></div></div><div class="container"><div class="line"><code>      <span class="comment">// Handle crazy conversion to the proprietary alternative</span></code></div></div><div class="container"><div class="line"><code>    }</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>}</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>})( jQuery );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <h4 id="special-units">Special units</h4>
+    <p>By default, jQuery adds a &quot;px&quot; unit to the values passed to the <code>.css()</code> method. This behavior can be prevented by adding the property to the <a href="/jQuery.cssNumer/"><code>jQuery.cssNumber</code></a> object</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.cssNumber.someCSSProp = <span class="literal">true</span>;</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <h4 id="animating">Animating with cssHooks</h4>
+    <p>A css hook can also hook into jQuery&apos;s animation mechanism by adding a property to the <code>jQuery.fx.step</code> object:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.fx.step.someCSSProp = <span class="keyword">function</span>( fx ) {</code></div></div><div class="container"><div class="line"><code>  $.cssHooks.someCSSProp.set( fx.elem, fx.now + fx.unit );</code></div></div><div class="container"><div class="line"><code>};</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>Note that this works best for simple numeric-value animations. More custom code may be required depending on the CSS property, the type of value it returns, and the animation&apos;s complexity.</p>
+  </div>
+</div></article>

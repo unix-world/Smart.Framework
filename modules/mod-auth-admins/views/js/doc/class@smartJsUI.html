@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="smartJ$UI static class smartJ$UI { } . CLASS :: UIUtils # SimpleUI :: (ES6) The class is a standalone implementation of the UI components (Javascript) in">
+<meta name="keywords" content="smartj ui, static, class, uiutils, simpleui, es6, the, is, a, standalone, implementation, of, ui, components, javascript, in, smart framework, an, alternate, compatible, provided, using, jqueryui, and, can, be, loaded, by, loading, from, smart framework modules, modules mod ui jqueryui toolkit jquery smartframework ui js, provides, methods, to, simplify, several, basic, language, located, at, lib js framework smart framework pak js, jquery smartframework ui js, package, sf javascript ui, name, frozen, yes, version, usage, smartj ui method, depends, jquery, smartj utils, smartj date, smartj browser, jquery gritter jquery toastr, smartsimpledialog, smartsimpletabs, smartautosuggest, jquery listselect, jquery datepicker, jquery timepicker, jquery datatable, public, function, growladd, string, title, text, image, integer, time, boolean, sticky, enum, css class, array obj, options, return, true, if, success, false, fail, param, for, notification, html, it, empty, main, message, mandatory, url, link, icon">
+<meta name="summary" content="Smart.Framework.Modules : Javascript Documentation: smartJ$UI">
+<link rel="icon" href="data:,">
+<title>JS Documentation for: smartJ$UI</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+		float: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3c4663;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework.Modules : Javascript Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+	
+</nav>
+<!-- skip logo -->
+<!-- class r.20220331 -->
+<!-- Styles -->
+<!-- styles r.20220906 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located,
+.doc-version {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-frozen,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	top: 75px;
+	right: 175px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #3C4663;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Headings -->
+<h1 title="PHP class: `smartJ$UI` @ JavaScript" id="Class--Summary-">
+	<span class="doc-modifiers">static</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-name">smartJ$UI</span><br>
+	{
+	}&nbsp;.
+</h1>
+<!-- Description -->
+<div class="doc-comments">CLASS :: UIUtils # SimpleUI :: (ES6)<br>
+The class is a standalone implementation of the UI components (Javascript) in Smart.Framework<br>
+An alternate implementation 100% compatible is provided using jQueryUI and can be loaded by loading from Smart.Framework.Modules: modules/mod-ui-jqueryui/toolkit/jquery.smartframework.ui.js<br>
+The JavaScript class provides methods to simplify implementation of several basic UI components.</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> Javascript<span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/js/framework/smart-framework.pak.js; jquery.smartframework.ui.js</span></li>
+		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:UI</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> smartJ$UI</span></li>
+		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20230123</span></li>
+		<li><b>Usage:</b> smartJ$UI.method();</li>
+		
+		
+		
+		<li><b>Depends:</b> jQuery, smartJ$Utils, smartJ$Date, smartJ$Browser, jQuery.gritter/jQuery.toastr, SmartSimpleDialog, SmartSimpleTabs, SmartAutoSuggest, jQuery.ListSelect, jQuery.DatePicker, jQuery.TimePicker, jQuery.DataTable</li>
+		
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">class Methods</h2>
+</div>
+<!-- methods r.20210414 -->
+<div class="doc-container" id="Method--GrowlAdd">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>GrowlAdd</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`title` Parameter">title</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`text` Parameter">text</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`image` Parameter">image</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`time` Parameter">time</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`sticky` Parameter">sticky</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`css_class` Parameter">css_class</span></b></span>, 
+	<i>{Array-Obj}</i>&nbsp;<span class="doc-param-name"><b><span title="`options` Parameter">options</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} TRUE if Success FALSE if Fail<br>
+	
+	
+	
+	@param: {String} title a title for the notification (HTML) ; it can be empty string<br>
+	@param: {String} text the main notification message (HTML) ; it is mandatory<br>
+	@param: {String} image the URL link to a notification icon image (svg/gif/png/jpg/webp) or null<br>
+	@param: {Integer} time the notification display time in milliseconds ; use 0 for sticky ; between 0 (0 sec) and 60000 (60 sec)<br>
+	@param: {Boolean} sticky *Optional* FALSE by default (will auto-close after the display time expire) ; TRUE to set sticky (require manual close, will not auto-close)<br>
+	@param: {Enum} css_class *Optional* a CSS class name for the notification or empty string to use default one: darknote (black), notice (white), info (blue), success (green), warning (yellow), error (red)<br>
+	@param: {Array-Obj} options *Optional* Extra Growl Properties:<br>
+	
+	@requires: jQuery<br>
+	@requires: jQuery.gritter/jQuery.toastr<br>
+	
+	</div>
+			<div class="doc-method-comments">Create a Message Growl Notification<br>
+{ // example of extra Options<br>
+before_open: 	() =&gt; {},<br>
+after_open: 	() =&gt; {},<br>
+before_close: 	() =&gt; {},<br>
+after_close: 	() =&gt; {}<br>
+}</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--GrowlRemove">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>GrowlRemove</b></span>&nbsp;(
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} TRUE if Success FALSE if Fail<br>
+	
+	
+	
+	
+	@requires: jQuery<br>
+	@requires: jQuery.gritter/jQuery.toastr<br>
+	
+	</div>
+			<div class="doc-method-comments">Remove all Growl Notifications from the current browser window (page)</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--ToolTip">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ToolTip</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`selector` Parameter">selector</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object}  :: The jQuery HTML Element<br>
+	
+	
+	
+	@param: {String} selector :: The jQuery element selector ; Ex: '.class' or '#id'<br>
+	
+	@requires: jQuery<br>
+	@requires: jquery.tiptop.css<br>
+	@requires: jquery.tiptop.js<br>
+	
+	</div>
+			<div class="doc-method-comments">Display a Tooltip ; UI Component</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--DialogAlert">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>DialogAlert</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_message_html` Parameter">y_message_html</span></b></span>, 
+	<i>{Function}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_title` Parameter">y_title</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_width` Parameter">y_width</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_height` Parameter">y_height</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object}  :: The jQuery HTML Element<br>
+	
+	
+	
+	@param: {String} y_message_html :: Message to Display, HTML<br>
+	@param: {Function} evcode :: The code to execute on press OK: () =&gt; {} or null<br>
+	@param: {String} y_title :: The Title of Dialog, TEXT<br>
+	@param: {Integer+} y_width :: The Dialog Width, *Optional*, Default: 550 (px)<br>
+	@param: {Integer+} y_height :: The Dialog Height, *Optional*, Default: 250 (px)<br>
+	
+	@requires: jQuery<br>
+	@requires: dialog/simple-dialog.css<br>
+	@requires: dialog/simple-dialog.js<br>
+	
+	</div>
+			<div class="doc-method-comments">Display an Alert Dialog, with 1 button: OK ; UI Component</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--DialogConfirm">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>DialogConfirm</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_question_html` Parameter">y_question_html</span></b></span>, 
+	<i>{Function}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_title` Parameter">y_title</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_width` Parameter">y_width</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_height` Parameter">y_height</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object}  :: The jQuery HTML Element<br>
+	
+	
+	
+	@param: {String} y_question_html :: Message (Question) to Display, HTML<br>
+	@param: {Function} evcode :: The code to execute on press OK: () =&gt; {} or null<br>
+	@param: {String} y_title :: The Title of Dialog, TEXT<br>
+	@param: {Integer+} y_width :: The Dialog Width, *Optional*, Default: 550 (px)<br>
+	@param: {Integer+} y_height :: The Dialog Height, *Optional*, Default: 250 (px)<br>
+	
+	@requires: jQuery<br>
+	@requires: dialog/simple-dialog.css<br>
+	@requires: dialog/simple-dialog.js<br>
+	
+	</div>
+			<div class="doc-method-comments">Display a Confirm Dialog, with 2 buttons: OK and Cancel ; UI Component</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--SelectList">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>SelectList</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`elemID` Parameter">elemID</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`dimW` Parameter">dimW</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`dimH` Parameter">dimH</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`isMulti` Parameter">isMulti</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`useFilter` Parameter">useFilter</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+			@hint: onChange handler is taken from onBlur html attribute of the element the component binds to ; can be: (elemID) =&gt; {} or null<br>
+	
+	
+			@return: {Object}  :: The jQuery HTML Element<br>
+	
+	
+	
+	@param: {String} elemID :: The HTML Element ID to bind to (ussualy a real list single or multi)<br>
+	@param: {Integer+} dimW :: The element Width (can be overriden with a CSS style !important)<br>
+	@param: {Integer+} dimH :: The element Height (can be overriden with a CSS style !important)<br>
+	@param: {Boolean} isMulti :: If the list is multi (TRUE) or single (FALSE)<br>
+	@param: {Boolean} useFilter :: If TRUE will display a search filter list<br>
+	
+	@requires: jQuery<br>
+	@requires: smartJ$Utils<br>
+	@requires: listselect/css/chosen.css<br>
+	@requires: listselect/chosen.jquery.js<br>
+	
+	</div>
+			<div class="doc-method-comments">Display a Single or Multi Select List ; UI Component</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--DatePickerInit">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>DatePickerInit</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`elemID` Parameter">elemID</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`dateFmt` Parameter">dateFmt</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`selDate` Parameter">selDate</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`calStart` Parameter">calStart</span></b></span>, 
+	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`calMinDate` Parameter">calMinDate</span></b></span>, 
+	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`calMaxDate` Parameter">calMaxDate</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`noOfMonths` Parameter">noOfMonths</span></b></span>, 
+	<i>{Function}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object}  :: The jQuery HTML Date Picker<br>
+	
+	
+	
+	@param: {String} elemID :: The HTML Element ID to bind to (ussualy a text input)<br>
+	@param: {String} dateFmt :: Calendar Date Format, used to display only ; Ex: 'dd.mm.yy'<br>
+	@param: {String} selDate :: Calendar selected date, ISO format as yyyy-mm-dd or empty string<br>
+	@param: {Integer+} calStart :: Calendar first day of week (0..6) ; 0 = Sunday, 1 = Monday ...<br>
+	@param: {Mixed} calMinDate :: Calendar min date to display and allow selection ; Ex Object: new Date(1937, 1 - 1, 1) ; Ex String: '-1y -1m -1d'<br>
+	@param: {Mixed} calMaxDate :: Calendar max date to display and allow selection ; Ex Object: new Date(2037, 12 - 1, 31) ; Ex String: '1y 1m 1d'<br>
+	@param: {Integer+} noOfMonths :: Calendar number of months to display ; Default is 1<br>
+	@param: {Function} evcode :: The code to execute on select: (date, altdate, inst, elemID) =&gt; {} or null<br>
+	
+	@requires: jQuery<br>
+	@requires: datepicker/css/datepicker.css<br>
+	@requires: datepicker/datepicker.js<br>
+	
+	</div>
+			<div class="doc-method-comments">Initialize a Date Picker ; UI Component<br>
+The selected date will be in ISO format as yyyy-mm-dd</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--DatePickerDisplay">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>DatePickerDisplay</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`datepicker_id` Parameter">datepicker_id</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object}  :: The jQuery HTML Date Picker<br>
+	
+	
+	
+	@param: {String} datepicker_id :: The HTML Element ID to bind to (ussualy a text input) ; must be previous initialized with smartJ$UI.DatePickerInit()<br>
+	
+	@requires: jQuery<br>
+	@requires: datepicker/css/datepicker.css<br>
+	@requires: datepicker/datepicker.js<br>
+	
+	</div>
+			<div class="doc-method-comments">Handle Display for an already Initialized Date Picker ; UI Component<br>
+The selected date will be in ISO format as yyyy-mm-dd</div>
+	
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> <span class="hljs-keyword">let</span> selectedDate = <span class="hljs-string">''</span>; <span class="hljs-comment">// or can be yyyy-mm-dd</span>
+ <span class="hljs-keyword">let</span> elemID = <span class="hljs-string">'myDatePicker'</span>;
+ <span class="hljs-keyword">let</span> html = <span class="hljs-string">'
+ &lt;span id=&quot;date-area-'</span> + myDatePicker + <span class="hljs-string">'&quot;&gt;
+   &lt;input type=&quot;hidden&quot; id=&quot;'</span> + myDatePicker + <span class="hljs-string">'&quot; name=&quot;date&quot; value=&quot;'</span> + selectedDate + <span class="hljs-string">'&quot;&gt;&lt;!-- holds the ISO formatted date --&gt;
+   &lt;input type=&quot;text&quot; id=&quot;date-entry-'</span> + myDatePicker + <span class="hljs-string">'&quot; name=&quot;dtfmt__date&quot; maxlength=&quot;13&quot; value=&quot;'</span> + selectedDate + <span class="hljs-string">'&quot; readonly=&quot;readonly&quot; class=&quot;datetime_Field_DatePicker&quot; autocomplete=&quot;off&quot;&gt;&lt;!-- holds the custom formatted date --&gt;
+ &lt;/span&gt;
+ '</span>;
+ $(<span class="hljs-string">'body'</span>).append(html);
+ smartJ$UI.DatePickerInit(elemID, <span class="hljs-string">'dd.mm.yy'</span>, <span class="hljs-string">''</span>, <span class="hljs-number">1</span>, <span class="hljs-string">'-1y -1m -1d'</span>, <span class="hljs-string">'1y 1m 1d'</span>, <span class="hljs-number">1</span>); <span class="hljs-comment">// initialize the date picker</span>
+ $(<span class="hljs-string">'#date-entry-'</span> + elemID).on(<span class="hljs-string">'click'</span>, (e) =&gt; { smartJ$UI.DatePickerDisplay(elemID); })}); <span class="hljs-comment">// show date picker on click over text input</span>
+ $(<span class="hljs-string">'#date-entry-'</span> + elemID).on(<span class="hljs-string">'dblclick doubletap'</span>, (e) =&gt; { $(<span class="hljs-string">'#'</span> + elemID).val(<span class="hljs-string">''</span>); $(<span class="hljs-string">'#date-entry-'</span> + elemID).val(<span class="hljs-string">''</span>); }); <span class="hljs-comment">// reset on double click the text input</span></code></pre>
+	
+</div>
+<div class="doc-container" id="Method--TimePickerInit">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>TimePickerInit</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`elemID` Parameter">elemID</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`hStart` Parameter">hStart</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`hEnd` Parameter">hEnd</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`mStart` Parameter">mStart</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`mEnd` Parameter">mEnd</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`mInterval` Parameter">mInterval</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`tmRows` Parameter">tmRows</span></b></span>, 
+	<i>{Function}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object}  :: The jQuery HTML Time Picker<br>
+	
+	
+	
+	@param: {String} elemID :: The HTML Element ID to bind to (ussualy a text input)<br>
+	@param: {Integer+} hStart :: Time Start Hour ; 0..22<br>
+	@param: {Integer+} hEnd :: Time End Hour ; 1..23<br>
+	@param: {Integer+} mStart :: Time Start Minute ; 0..58<br>
+	@param: {Integer+} mEnd :: Time End Minute ; 1..59<br>
+	@param: {Integer+} mInterval :: Time Interval in Minutes ; 1..30<br>
+	@param: {Integer+} tmRows :: Time Table Rows ; 1..5 ; Default is 2<br>
+	@param: {Function} evcode :: The code to execute on select: (time, inst, elemID) =&gt; {} or null<br>
+	
+	@requires: jQuery<br>
+	@requires: timepicker/css/jquery.timepicker.css<br>
+	@requires: timepicker/jquery.timepicker.js<br>
+	
+	</div>
+			<div class="doc-method-comments">Initialize a Time Picker ; UI Component<br>
+The selected time will be in ISO format as hh:ii<br>
+The selected value will be get directly from the `value` attribute of the html element is binded to &lt;input id=&quot;MyTimePicker&quot; type=&quot;text&quot; value=&quot;12:30&quot;&gt; element</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--TimePickerDisplay">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>TimePickerDisplay</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`timepicker_id` Parameter">timepicker_id</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object}  :: The jQuery HTML Time Picker<br>
+	
+	
+	
+	@param: {String} timepicker_id :: The HTML Element ID to bind to (ussualy a text input) ; must be previous initialized with smartJ$UI.TimePickerInit()<br>
+	
+	@requires: jQuery<br>
+	@requires: timepicker/css/jquery.timepicker.css<br>
+	@requires: timepicker/jquery.timepicker.js<br>
+	
+	</div>
+			<div class="doc-method-comments">Handle Display for an already Initialized Time Picker ; UI Component<br>
+The selected time will be in ISO format as hh:ii</div>
+	
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> <span class="hljs-keyword">let</span> selectedTime = <span class="hljs-string">''</span>; <span class="hljs-comment">// or can be hh:ii</span>
+ <span class="hljs-keyword">let</span> elemID = <span class="hljs-string">'myTimePicker'</span>;
+ <span class="hljs-keyword">let</span> html = <span class="hljs-string">'
+ &lt;span id=&quot;time-area-'</span> + elemID + <span class="hljs-string">'&quot; title=&quot;&lbrack;&num;&num;&num;TEXT-SELECT|html&num;&num;&num;&rbrack; [HH:ii]&quot;&gt;
+   &lt;input type=&quot;text&quot; name=&quot;time&quot; id=&quot;'</span> + elemID + <span class="hljs-string">'&quot; maxlength=&quot;5&quot; value=&quot;'</span> + selectedTime + <span class="hljs-string">'&quot; readonly=&quot;readonly&quot; class=&quot;datetime_Field_TimePicker&quot; autocomplete=&quot;off&quot;&gt;
+ &lt;/span&gt;
+ '</span>;
+ $(<span class="hljs-string">'body'</span>).append(html);
+ smartJ$UI.TimePickerInit(elemID, <span class="hljs-number">0</span>, <span class="hljs-number">23</span>, <span class="hljs-number">0</span>, <span class="hljs-number">59</span>, <span class="hljs-number">5</span>, <span class="hljs-number">2</span>); <span class="hljs-comment">// initialize the time picker</span>
+ $(<span class="hljs-string">'#'</span> + elemID).on(<span class="hljs-string">'click'</span>, (e) =&gt; { smartJ$UI.TimePickerDisplay(elemID); })}); <span class="hljs-comment">// show time picker on click over text input</span>
+ $(<span class="hljs-string">'#'</span> + elemID).on(<span class="hljs-string">'dblclick doubletap'</span>, (e) =&gt; { $(<span class="hljs-string">'#'</span> + elemID).val(<span class="hljs-string">''</span>); }); <span class="hljs-comment">// reset on double click the text input</span></code></pre>
+	
+</div>
+<div class="doc-container" id="Method--TabsInit">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>TabsInit</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`tabs_id` Parameter">tabs_id</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`tab_selected` Parameter">tab_selected</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`prevent_reload` Parameter">prevent_reload</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object}  :: The jQuery HTML Element<br>
+	
+	
+	
+	@param: {String} tabs_id :: The HTML Element ID to bind to<br>
+	@param: {Integer+} tab_selected :: The selected tab number ; Default is zero<br>
+	@param: {Boolean} prevent_reload :: *Optional* ; Default is TRUE ; If TRUE the tab content will not be reloaded after the first load<br>
+	
+	@requires: jQuery<br>
+	@requires: tabs/jquery.tabs.css<br>
+	@requires: tabs/jquery.tabs.js<br>
+	
+	</div>
+			<div class="doc-method-comments">Initialize Tabs Component ; UI Component<br>
+The content of each tab (from the tabs component) can be loaded async by Ajax when the Tab is selected for display</div>
+	
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> <span class="hljs-keyword">let</span> tabs = <span class="hljs-string">'
+ &lt;div id=&quot;tabs_draw&quot;&gt;
+   &lt;div id=&quot;tabs_nav&quot;&gt;
+     &lt;li&gt;&lt;a href=&quot;#tab-in-page&quot;&gt;Tab with Content Preset&lt;/a&gt;&lt;/li&gt;
+     &lt;li&gt;&lt;a href=&quot;?content=external-tab-content-load-by-ajax&quot;&gt;Tab which loads contents by Ajax&lt;/a&gt;&lt;/li&gt;
+   &lt;/div&gt;
+   &lt;div id=&quot;tab-in-page&quot;&gt;
+     &lt;h1&gt;The content of the first tab ...&lt;/h1&gt;
+   &lt;/div&gt;
+   &lt;!-- second tab does not to be set in HTML, will be created on the fly by the tabs component and populated with the HTML contents that comes by Ajax from a GET request on (example): ?content=external-tab-content-load-by-ajax --&gt;
+ &lt;/div&gt;
+ '</span>;
+ $(<span class="hljs-string">'body'</span>).append(html);
+ smartJ$UI.TabsInit(<span class="hljs-string">'tabs_draw'</span>);</code></pre>
+	
+</div>
+<div class="doc-container" id="Method--TabsActivate">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>TabsActivate</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`tabs_id` Parameter">tabs_id</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`activation` Parameter">activation</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object}  :: The jQuery HTML Element<br>
+	
+	
+	
+	@param: {String} tabs_id :: The HTML Element ID to bind to ; must be previous initialized with smartJ$UI.TabsInit()<br>
+	@param: {Boolean} activation :: If FALSE the Tabs component will become inactive, except the current selected Tab ; when set back to TRUE will re-activate all tabs<br>
+	
+	@requires: jQuery<br>
+	@requires: tabs/jquery.tabs.css<br>
+	@requires: tabs/jquery.tabs.js<br>
+	
+	</div>
+			<div class="doc-method-comments">Activate or Deactivate the Tabs Component ; UI Component<br>
+By default all the Tabs are active ; Use the function to deactivate and perhaps activate again<br>
+When deactivated, only the current selected tab can be used<br>
+It can be useful for using by example with edit operations to prevent switch tabs before saving the current form from the current active Tab</div>
+	
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> smartJ$UI.TabsActivate(<span class="hljs-literal">false</span>); <span class="hljs-comment">// deactivate tabs</span>
+ smartJ$UI.TabsActivate(<span class="hljs-literal">true</span>); <span class="hljs-comment">// re-activate tabs</span></code></pre>
+	
+</div>
+<div class="doc-container" id="Method--AutoCompleteField">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>AutoCompleteField</b></span>&nbsp;(
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`single_or_multi` Parameter">single_or_multi</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`elem_id` Parameter">elem_id</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`data_url` Parameter">data_url</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`param_src` Parameter">param_src</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`min_term_len` Parameter">min_term_len</span></b></span>, 
+	<i>{Function}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object}  :: The jQuery HTML Element<br>
+	
+	
+	
+	@param: {Enum} single_or_multi :: Type: can be: 'single' or 'multilist'<br>
+	@param: {String} elem_id :: The HTML Element ID to bind to ; must be a text input or a text area<br>
+	@param: {String} data_url :: The Data URL Prefix ; Ex: '?op=list&amp;type=autosuggest'<br>
+	@param: {String} param_src :: The Data URL Parameter to be appended as suffix to the above Data URL ; Ex: 'searchTerm' (will use: '?op=list&amp;type=autosuggest&amp;searchTerm=')<br>
+	@param: {Integer+} min_term_len :: The minimum term search length ; expects a value between 0..255 ; will start searching only after the typed term length matches the value<br>
+	@param: {Function} evcode :: The code to execute on select: (id, value, label, data) =&gt; {} or null<br>
+	
+	@requires: jQuery<br>
+	@requires: autosuggest/smart-suggest.css<br>
+	@requires: autosuggest/smart-suggest.js<br>
+	
+	</div>
+			<div class="doc-method-comments">Creates a Single-Value or Multi-Value AutoComplete (AutoSuggest) Field ; UI Component</div>
+	
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> <span class="hljs-comment">// the expected JSON structure that have to be served via the DataURL + ParamSrc</span>
+ [
+ 		{ <span class="hljs-string">&quot;id&quot;</span>:<span class="hljs-string">&quot;id1&quot;</span>, <span class="hljs-string">&quot;value&quot;</span>:<span class="hljs-string">&quot;Value1&quot;</span>,<span class="hljs-string">&quot;label&quot;</span>:<span class="hljs-string">&quot;Label1&quot;</span> },
+ 		{ <span class="hljs-string">&quot;id&quot;</span>:<span class="hljs-string">&quot;id2&quot;</span>, <span class="hljs-string">&quot;value&quot;</span>:<span class="hljs-string">&quot;Value2&quot;</span>,<span class="hljs-string">&quot;label&quot;</span>:<span class="hljs-string">&quot;Label2&quot;</span> },
+ 		<span class="hljs-comment">// ...</span>
+ 		{ <span class="hljs-string">&quot;id&quot;</span>:<span class="hljs-string">&quot;idN&quot;</span>, <span class="hljs-string">&quot;value&quot;</span>:<span class="hljs-string">&quot;ValueN&quot;</span>,<span class="hljs-string">&quot;label&quot;</span>:<span class="hljs-string">&quot;LabelN&quot;</span> },
+ ]
+ <span class="hljs-comment">// the DataURL + ParamSrc controller must take care to return the values filetered by the value sent from the field via ParamSrc via HTTP GET</span></code></pre>
+	
+</div>
+<div class="doc-container" id="Method--DataTableInit">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>DataTableInit</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`elem_id` Parameter">elem_id</span></b></span>, 
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`options` Parameter">options</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+			@hint: Add advanced interaction controls to HTML tables<br>
+	
+	
+			@return: {Object}  :: The jQuery HTML Element<br>
+	
+	
+	
+	@param: {String} elem_id :: The HTML Element ID to bind to ; must be a HTML &lt;table&gt;&lt;/table&gt;<br>
+	@param: {Object} options :: The Options for DataTable<br>
+	
+	@requires: jQuery<br>
+	@requires: datatables/datatables-responsive.css<br>
+	@requires: datatables/datatables-responsive.js<br>
+	@requires: datatables/smart-datatables.js<br>
+	
+	</div>
+			<div class="doc-method-comments">Creates a DataTable from a regular HTML Table ; UI Component<br>
+DataTables is a table enhancing plug-in for the jQuery Javascript library,<br>
+adding sorting, paging and filtering abilities to plain HTML tables.</div>
+	
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> <span class="hljs-comment">// &lt;!-- transform the following table into a DataTable with filtering, pagination, column ordering and many other features --&gt;</span>
+ <span class="hljs-comment">//&lt;table id=&quot;myTable&quot;&gt;</span>
+ <span class="hljs-comment">// &lt;thead&gt;</span>
+ <span class="hljs-comment">// 	&lt;tr&gt;</span>
+ <span class="hljs-comment">// 		&lt;th&gt;Col1&lt;/th&gt;</span>
+ <span class="hljs-comment">// 		&lt;th&gt;Col2&lt;/th&gt;</span>
+ <span class="hljs-comment">// 	&lt;/tr&gt;</span>
+ <span class="hljs-comment">// &lt;/thead&gt;</span>
+ <span class="hljs-comment">// &lt;tbody&gt;</span>
+ <span class="hljs-comment">// 	&lt;tr&gt;</span>
+ <span class="hljs-comment">// 		&lt;td&gt;Col1&lt;/td&gt;</span>
+ <span class="hljs-comment">// 		&lt;td&gt;Col2&lt;/td&gt;</span>
+ <span class="hljs-comment">// 	&lt;/tr&gt;</span>
+ <span class="hljs-comment">// &lt;/tbody&gt;</span>
+ <span class="hljs-comment">// &lt;tfoot&gt;</span>
+ <span class="hljs-comment">// 	&lt;tr&gt;</span>
+ <span class="hljs-comment">// 		&lt;th&gt;Col1&lt;/th&gt;</span>
+ <span class="hljs-comment">// 		&lt;th&gt;Col2&lt;/th&gt;</span>
+ <span class="hljs-comment">// 	&lt;/tr&gt;</span>
+ <span class="hljs-comment">// &lt;/tfoot&gt;</span>
+ <span class="hljs-comment">//&lt;/table&gt;</span>
+ <span class="hljs-comment">//--</span>
+ smartJ$UI.DataTableInit(<span class="hljs-string">'myTable'</span>, {
+ 		<span class="hljs-attr">responsive</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">// if TRUE on responsive mode columns may become fluid on small screens</span>
+		filter: <span class="hljs-literal">true</span>,
+		<span class="hljs-attr">sort</span>: <span class="hljs-literal">true</span>,
+		<span class="hljs-attr">paginate</span>: <span class="hljs-literal">true</span>,
+ 		<span class="hljs-attr">pagesize</span>: <span class="hljs-number">10</span>,
+ 		<span class="hljs-attr">pagesizes</span>: [ <span class="hljs-number">10</span>, <span class="hljs-number">25</span>, <span class="hljs-number">50</span>, <span class="hljs-number">100</span> ],
+ 		<span class="hljs-attr">classField</span>: <span class="hljs-string">'ux-field'</span>, <span class="hljs-comment">// css classes to display input fields (ex: filter)</span>
+ 		classButton: <span class="hljs-string">'ux-button ux-button-small'</span>, <span class="hljs-comment">// css classes to display the buttons</span>
+ 		classActiveButton: <span class="hljs-string">'ux-button-primary'</span>, <span class="hljs-comment">// css classes to display the active buttons</span>
+		colorder: [
+			[ <span class="hljs-number">0</span>, <span class="hljs-string">'asc'</span> ], <span class="hljs-comment">// [ 1, 'desc' ]</span>
+		],
+		<span class="hljs-attr">coldefs</span>: [
+			{ <span class="hljs-comment">// column one</span>
+				targets: <span class="hljs-number">0</span>,
+				<span class="hljs-attr">width</span>: <span class="hljs-string">'25px'</span>,
+ 				<span class="hljs-attr">render</span>: <span class="hljs-function">(<span class="hljs-params">data, type, row</span>) =&gt;</span> {
+ 					<span class="hljs-keyword">if</span>(type === <span class="hljs-string">'type'</span> || type === <span class="hljs-string">'sort'</span> || type === <span class="hljs-string">'filter'</span>) { <span class="hljs-comment">// preserve special objects from column render</span>
+ 						<span class="hljs-keyword">return</span> data;
+ 					} <span class="hljs-keyword">else</span> { <span class="hljs-comment">// customize the appearance of the 1st column</span>
+ 						<span class="hljs-keyword">return</span> <span class="hljs-string">'&lt;span style=&quot;color:#CCCCCC;&quot;&gt;'</span> + smartJ$Utils.escape_html(data) + <span class="hljs-string">'&lt;/span&gt;'</span>;
+ 					}
+ 				}
+ 				<span class="hljs-comment">// for more options see: examples at https://github.com/DataTables/DataTables</span>
+			},
+			{ <span class="hljs-comment">// column two</span>
+				targets: <span class="hljs-number">1</span>,
+				<span class="hljs-attr">width</span>: <span class="hljs-string">'275px'</span>
+			}
+		]
+ });
+ <span class="hljs-comment">//--</span></code></pre>
+	
+</div>
+<div class="doc-container" id="Method--DataTableColumnsFilter">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>DataTableColumnsFilter</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`elem_id` Parameter">elem_id</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`filterColNumber` Parameter">filterColNumber</span></b></span>, 
+	<i>{Regex}</i>&nbsp;<span class="doc-param-name"><b><span title="`regexStr` Parameter">regexStr</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object}  :: The jQuery HTML Element<br>
+	
+	
+	
+	@param: {String} elem_id :: The HTML Element ID to bind to ; must be a DataTable already previous initiated with smartJ$UI.DataTableInit()<br>
+	@param: {Integer+} filterColNumber :: The DataTable column number 0..n<br>
+	@param: {Regex} regexStr :: A valid Regex Partial Expression String (without enclosing slashes /../, as string) to filter the column values ; ex: '^(val1|val\-2)$'<br>
+	
+	@requires: jQuery<br>
+	@requires: datatables/datatables-responsive.css<br>
+	@requires: datatables/datatables-responsive.js<br>
+	@requires: datatables/smart-datatables.js<br>
+	
+	</div>
+			<div class="doc-method-comments">Apply a Filter over DataTable using a regular expression ; UI Component<br>
+If a filter is applied oved data, will display just the filtered data and if no data match the filter will display no data</div>
+	
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> <span class="hljs-comment">// filter a DataTable by column no.1 (2nd column, starting from zero) and display only lines where column no.1 have the value: 'warning' or 'error'</span>
+ smartJ$UI.DataTableColumnsFilter(<span class="hljs-string">'myTable'</span>, <span class="hljs-number">1</span>, <span class="hljs-string">'^(warning|error)$'</span>);</code></pre>
+	
+</div>
+
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20210417 -->
+<div class="doc-container" id="Property--overlayCssClass">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>overlayCssClass</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'simpledialog-overlay'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
+	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">N/A</span></div>
+	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$UI.overlayCssClass</span></div>
+			<div class="doc-method-comments">Overlay CSS class</div>
+	
+</div>
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20210417 -->
+
+<!-- Sample Code -->
+
+<!-- Summary List -->
+<br>
+<!-- summary r.20210414 -->
+<script>
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* Javascript Class smartJ$UI # Documentation Index *</option>
+		<optgroup label="Class smartJ$UI">
+			<option value="Class--Summary-">Class definition</option>
+		</optgroup>
+		<optgroup label="Class Methods">
+			<option value="Methods--Summary-">Methods list</option>
+						<option value="Method--GrowlAdd"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;GrowlAdd()</option>
+			
+						<option value="Method--GrowlRemove"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;GrowlRemove()</option>
+			
+						<option value="Method--ToolTip"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ToolTip()</option>
+			
+						<option value="Method--DialogAlert"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;DialogAlert()</option>
+			
+						<option value="Method--DialogConfirm"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;DialogConfirm()</option>
+			
+						<option value="Method--SelectList"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;SelectList()</option>
+			
+						<option value="Method--DatePickerInit"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;DatePickerInit()</option>
+			
+						<option value="Method--DatePickerDisplay"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;DatePickerDisplay()</option>
+			
+						<option value="Method--TimePickerInit"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;TimePickerInit()</option>
+			
+						<option value="Method--TimePickerDisplay"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;TimePickerDisplay()</option>
+			
+						<option value="Method--TabsInit"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;TabsInit()</option>
+			
+						<option value="Method--TabsActivate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;TabsActivate()</option>
+			
+						<option value="Method--AutoCompleteField"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;AutoCompleteField()</option>
+			
+						<option value="Method--DataTableInit"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;DataTableInit()</option>
+			
+						<option value="Method--DataTableColumnsFilter"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;DataTableColumnsFilter()</option>
+			
+			
+		</optgroup>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+						<option value="Property--overlayCssClass"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;overlayCssClass</option>
+			
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+			
+		</optgroup>
+		
+	</select>
+</div>
+<!-- summary-selectjs r.20210420 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 17:09:48 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div><center>
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
+</center></div>
+</body>
+</html>

@@ -1,0 +1,293 @@
+/***** V-TimeLine CSS :: r.8.7 / smart.framework.v.8.7 *****/
+
+/* V-TimeLine r.20220918
+	License: BSD
+	(c) 2015-2022 unix-world.org
+	This software component was inspired from the following opensource projects:
+		(c) 2017 https://github.com/RyanFitzgerald/vertical-timeline
+		(c) 2014 https://github.com/soundarapandian/timeline
+		(c) 2015 https://github.com/CodyHouse/vertical-timeline
+*/
+
+/* --- Default --- */
+
+.vtml-container {
+	width: 96%;
+	margin: 0 auto;
+	margin-bottom: 25px;
+}
+.vtml-container::after {
+	content: '';
+	display: table;
+	clear: both;
+}
+
+.vtml-container *,
+.vtml-container *:after,
+.vtml-container *:before {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+
+.vtml-container {
+	position: relative;
+	padding: 2rem 0;
+}
+.vtml-container::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 18px;
+	height: 100%;
+	width: 4px;
+	background: #FFFFFF;
+	border: 1px solid #ECECEC;
+}
+
+.vtml-timeline-block {
+	position: relative;
+	margin: 2rem 0;
+}
+.vtml-timeline-block:after {
+	content: "";
+	display: table;
+	clear: both;
+}
+.vtml-timeline-block:first-child {
+	margin-top: 0;
+}
+.vtml-timeline-block:last-child {
+	margin-bottom: 0;
+}
+
+.vtml-timeline-icon {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 60px;
+	height: 60px;
+	margin-left: -13px;
+	border: 4px solid #EEEEEE;
+	border-radius: 1px;
+	cursor: default;
+}
+.vtml-timeline-icon div {
+	position: relative;
+	width: 36px;
+	height: 36px;
+	margin-left: 9px;
+	margin-top: 7px;
+	text-align:center;
+	font-size: 1.875rem;
+}
+.vtml-timeline-icon div .sfi { /* sf icons */
+	margin-left: 0px;
+	margin-top: 7px;
+	display: block;
+	font-size: 2rem !important;
+}
+.vtml-timeline-icon.vtml-green {
+	background: #87B615;
+	color: #FFFFFF;
+}
+.vtml-timeline-icon.vtml-brown {
+	background: #896B60;
+	color: #FFFFFF;
+}
+.vtml-timeline-icon.vtml-red {
+	background: #ED2839;
+	color: #FFFFFF;
+}
+.vtml-timeline-icon.vtml-yellow {
+	background: #F2C801;
+	color: #555555;
+}
+.vtml-timeline-icon.vtml-blue {
+	background: #5E6885;
+	color: #FFFFFF;
+}
+.vtml-timeline-icon.vtml-grey {
+	background: #778888;
+	color: #FFFFFF;
+}
+.vtml-timeline-icon.vtml-black {
+	background: #555555;
+	color: #FFFFFF;
+}
+.vtml-timeline-icon.vtml-white {
+	background: #FFFFFF;
+	color: #555555;
+}
+
+.vtml-timeline-content {
+	position: relative;
+	margin-left: 60px;
+	background: #FFFFFF;
+	border: 1px solid #ECECEC;
+	padding: 0.5rem 1rem 0.5rem 1rem;
+	overflow: hidden;
+}
+.vtml-timeline-content:after {
+	content: "";
+	display: table;
+	clear: both;
+}
+.vtml-timeline-content img {
+	border: 1px solid #F7F7F7;
+	box-sizing: content-box;
+}
+.vtml-timeline-content img.noborder {
+	border: none !important;
+}
+.vtml-timeline-content h1,
+.vtml-timeline-content h2,
+.vtml-timeline-content h3,
+.vtml-timeline-content h4,
+.vtml-timeline-content h5,
+.vtml-timeline-content h6 {
+	display: inline !important;
+	color: #444444;
+}
+.vtml-timeline-content p,
+.vtml-timeline-content .vtml-read-more,
+.vtml-timeline-content .vtml-date {
+	font-size: 0.875rem;
+	text-align: justify;
+}
+.vtml-timeline-content p {
+	color: #444444;
+	margin: 1rem 0;
+	line-height: 1.6;
+}
+.vtml-timeline-content .vtml-read-more,
+.vtml-timeline-content .vtml-date {
+	display: inline-block;
+}
+.vtml-timeline-content .vtml-read-more {
+	float: right;
+	padding: 0.25rem 0.35rem;
+	background: #666666;
+	border: 1px solid #555555;
+	color: #FFFFFF;
+	border-radius: 0.15rem;
+	text-decoration: none;
+	font-weight: bold;
+	font-style: italic;
+	text-align: center;
+	min-width: 100px;
+}
+.vtml-timeline-content .vtml-read-more:hover {
+	background: #555555;
+	border: 1px solid #444444;
+}
+
+.vtml-timeline-content .vtml-date {
+	font-weight: bold;
+	float: left;
+	padding: 0.8rem 0;
+	font-size: 1rem;
+	color: #444444;
+}
+.vtml-timeline-content::before {
+	content: '';
+	position: absolute;
+	top: 16px;
+	right: 100%;
+	height: 0;
+	width: 0;
+	border: 7px solid transparent;
+	border-right: 7px solid #F5F5F5;
+}
+
+hr.vtml-hr {
+	width: 99%;
+	border: none 0;
+	border-top: 1px solid #EEEEEE;
+	height: 1px;
+}
+
+/* --- Small --- */
+
+/* icons */
+
+.vtml-small-container .vtml-timeline-icon {
+	position: absolute;
+	top: 0;
+	left: 20px !important;
+	width: 48px;
+	height: 48px;
+	margin-left: -24px !important;
+	border: 4px solid #EEEEEE;
+	border-radius: 1px;
+	cursor: default;
+}
+.vtml-small-container .vtml-timeline-icon div {
+	position: relative;
+	width: 24px;
+	height: 24px;
+	margin-left: 8px;
+	margin-top: 7px;
+	text-align:center;
+	font-size: 1.25rem;
+}
+.vtml-small-container .vtml-timeline-icon div .sfi { /* sf icons */
+	margin-left: 0px;
+	margin-top: 2px;
+	display: block;
+	font-size: 1.375rem !important;
+}
+
+/* content */
+
+.vtml-small-container .vtml-timeline-content {
+	padding: 0.75rem;
+}
+.vtml-small-container .vtml-timeline-content h1,
+.vtml-small-container .vtml-timeline-content h2,
+.vtml-small-container .vtml-timeline-content h3,
+.vtml-small-container .vtml-timeline-content h4,
+.vtml-small-container .vtml-timeline-content h5,
+.vtml-small-container .vtml-timeline-content h6 {
+	display: inline !important;
+	color: #444444;
+}
+.vtml-small-container .vtml-timeline-content h1 {
+	font-size: 1.25rem;
+}
+.vtml-small-container .vtml-timeline-content h2 {
+	font-size: 1.125rem;
+}
+.vtml-small-container .vtml-timeline-content h3 {
+	font-size: 1.0625rem;
+}
+.vtml-small-container .vtml-timeline-content h4 {
+	font-size: 1rem;
+}
+.vtml-small-container .vtml-timeline-content h5 {
+	font-size: 0.9375rem;
+}
+.vtml-small-container .vtml-timeline-content h6 {
+	font-size: 0.875rem;
+}
+.vtml-small-container .vtml-timeline-content p,
+.vtml-small-container .vtml-timeline-content .vtml-read-more,
+.vtml-small-container .vtml-timeline-content .vtml-date {
+	font-size: 0.8125rem;
+	text-align: initial;
+}
+.vtml-small-container .vtml-timeline-content p {
+	margin: 0.5rem 0 0.7rem 0;
+	line-height: 1.5;
+}
+.vtml-small-container .vtml-timeline-content .vtml-date {
+	padding: 0;
+	font-size: 0.9375rem;
+}
+.vtml-small-container .vtml-timeline-content .vtml-read-more {
+	text-align: center;
+	font-size: 0.75rem;
+	padding: 0.15rem 0.25rem;
+}
+
+/* END */

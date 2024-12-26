@@ -1,0 +1,37 @@
+<!-- Partial Template: Plugins.NavPager.Numeric r.20221006 -->
+<nav id="nav-pager-area" aria-label="page-nums-nav" role="navigation">
+<div id="nav-pager-box" aria-label="page-nums-navbox" role="navigation">
+[%%%IF:NO-RESULTS:!=;%%%]
+	<span id="nav-pager-dsbl-item">[###NO-RESULTS|html###]</span>
+[%%%ELSE:NO-RESULTS%%%]
+	[%%%IF:SHOW-FIRST:!=no;(1)%%%]
+		[%%%IF:PREV-PAGE:!=;%%%]
+		<a id="nav-pager-item" href="[###PREV-LINK|html###]" title="[###PREV-PAGE|html###]">&lt;</a>
+		[%%%/IF:PREV-PAGE%%%]
+	[%%%/IF:SHOW-FIRST(1)%%%]
+	[%%%LOOP:DATA-ARR%%%]
+		[%%%IF:DATA-ARR._-VAL-_:==SELECTED;(1)%%%]
+			<span id="nav-pager-current">[###DATA-ARR._-KEY-_|html###]</span>
+		[%%%ELSE:DATA-ARR._-VAL-_(1)%%%]
+			[%%%IF:DATA-ARR._-VAL-_:==DOTS;(2)%%%]
+				<span id="nav-pager-dots" title="...">&hellip;</span>
+			[%%%ELSE:DATA-ARR._-VAL-_(2)%%%]
+				[%%%IF:DATA-ARR._-ITERATOR-_:>=###DATA-ARR._-MAXCOUNT-_###;(1)%%%]
+					[%%%IF:SHOW-LAST:!=no;(1)%%%]
+					<a id="nav-pager-item" href="[###DATA-ARR._-VAL-_|html###]">[###DATA-ARR._-KEY-_|html###]</a>
+					[%%%/IF:SHOW-LAST(1)%%%]
+				[%%%ELSE:DATA-ARR._-ITERATOR-_(1)%%%]
+					<a id="nav-pager-item" href="[###DATA-ARR._-VAL-_|html###]">[###DATA-ARR._-KEY-_|html###]</a>
+				[%%%/IF:DATA-ARR._-ITERATOR-_(1)%%%]
+			[%%%/IF:DATA-ARR._-VAL-_(2)%%%]
+		[%%%/IF:DATA-ARR._-VAL-_(1)%%%]
+	[%%%/LOOP:DATA-ARR%%%]
+	[%%%IF:SHOW-FIRST:!=no;(2)%%%]
+		[%%%IF:NEXT-PAGE:!=;%%%]
+		<a id="nav-pager-item" href="[###NEXT-LINK|html###]" title="[###NEXT-PAGE|html###]">&gt;</a>
+		[%%%/IF:NEXT-PAGE%%%]
+	[%%%/IF:SHOW-FIRST(2)%%%]
+[%%%/IF:NO-RESULTS%%%]
+</div>
+</nav>
+<!-- #END :: Partial Template: Plugins.NavPager.Numeric -->

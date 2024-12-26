@@ -1,0 +1,88 @@
+<!-- View: form-record v.20231121 -->
+[@@@SUB-TEMPLATE:partials/styles.mtpl.htm@@@]
+<style>
+label {
+	font-weight: bold !important;
+	color: #555555 !important;
+}
+div#form-container {
+	max-width: 870px !important;
+}
+.ux-form input[type=text],
+.ux-form textarea {
+	min-width: 600px !important;
+}
+.ux-form textarea {
+	min-height: 70px !important;
+	font-size: 0.875rem !important;
+}
+</style>
+<style>
+div.form-step2 {
+	display: none;
+}
+</style>
+<script src="modules/mod-oauth2/views/js/form-record.js"></script>
+<script>
+jQuery(() => {
+	oauth2FormHandler.initForm(
+		[###REGEX-VALID-ID###]g,
+		'[###TPL-AUTH-URL-PARAMS|js###]',
+		'[###TPL-AUTH-URL-CHPART|js###]',
+		'[###STATE-CSRF|js###]',
+		'[###COOKIE-NAME-CSRF|js###]',
+		'[###COOKIE-VALUE-CSRF|js###]',
+		'[###ACTIONS-URL|js###]'
+	);
+});
+</script>
+<div id="form-container"><center>
+<form id="oauth2_form" name="oauth2_form" class="ux-form ux-form-aligned" onSubmit="return false;">
+	<legend><h1>[%%%IF:IS-EDIT-FORM:==yes;%%%]ReAuthorize / Refresh[%%%ELSE:IS-EDIT-FORM%%%]Register New[%%%/IF:IS-EDIT-FORM%%%] OAuth2 API</h1></legend>
+	<br>
+	<div class="ux-control-group form-step1">
+		<label>ID</label>
+		<input id="api_id" type="text" autocomplete="off" spellcheck="false" name="frm[id]" placeholder="A Custom, Unique ID ; Validation: [###REGEX-VALID-ID|nobackslash|html###]" pattern="[###PATTERN-VALID-ID|rxpattern|html###]" title=" [%%%|N%%%]Validation Pattern: `[###PATTERN-VALID-ID|nobackslash|html###]`[%%%|N%%%][%%%|N%%%]Validation Regex: `[###REGEX-VALID-ID|nobackslash|html###]`[%%%|N%%%] " maxlength="127" class="ux-input-1-2" value="[###FORM-ID|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
+	</div>
+	<div class="ux-control-group form-step1">
+		<label>Description</label>
+		<textarea id="api_desc" autocomplete="off" spellcheck="false" name="frm[description]" placeholder="Description[%%%|N%%%][Should not contain sensitive information, will not be encrypted]" maxlength="1024" class="ux-input-1-2" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>[###FORM-DESC|html###]</textarea>
+	</div>
+	<div class="ux-control-group form-step1">
+		<label>Client ID</label>
+		<input id="oauth2_client_id" type="text" autocomplete="off" spellcheck="false" name="frm[client_id]" placeholder="OAuth2 Client ID (Application ID)" maxlength="255" class="ux-input-1-2" value="[###FORM-CLI-ID|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
+	</div>
+	<div class="ux-control-group form-step1">
+		<label>Client Secret</label>
+		<input id="oauth2_client_secret" type="text" autocomplete="off" spellcheck="false" name="frm[client_secret]" placeholder="OAuth2 Client Secret" maxlength="255" class="ux-input-1-2" value="[###FORM-CLI-SECRET|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
+	</div>
+	<div class="ux-control-group form-step1">
+		<label>Scope</label>
+		<input id="oauth2_scope" type="text" autocomplete="off" spellcheck="false" name="frm[scope]" placeholder="OAuth2 Scopes ; Example: `scope1,scope2`" maxlength="255" class="ux-input-1-2" value="[###FORM-SCOPE|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
+	</div>
+	<div class="ux-control-group form-step1">
+		<label>Redirect URL</label>
+		<input id="oauth2_url_redirect" type="text" autocomplete="off" spellcheck="false" name="frm[url_redirect]" placeholder="OAuth2 Redirect URL ; Example: `[###DEFAULT-REDIRECT-URL|html###]`" title="Example: `[###DEFAULT-REDIRECT-URL|html###]`" maxlength="255" class="ux-input-1-2" value="[###FORM-URL-REDIR|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
+	</div>
+	<div class="ux-control-group form-step1">
+		<label>OAuth2 Auth URL</label>
+		<input id="oauth2_url_auth" type="text" autocomplete="off" spellcheck="false" name="frm[url_auth]" placeholder="OAuth2 URL for /authorize" maxlength="255" class="ux-input-1-2" value="[###FORM-URL-AUTH|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
+	</div>
+	<div class="ux-control-group form-step1">
+		<label>OAuth2 Token URL</label>
+		<input id="oauth2_url_token" type="text" autocomplete="off" spellcheck="false" name="frm[url_token]" placeholder="OAuth2 URL for /token" maxlength="255" class="ux-input-1-2" value="[###FORM-URL-TOKEN|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
+	</div>
+	<!-- Only for Step 2 -->
+	<div class="ux-control-group form-step2">
+		<label>OAuth2 Code</label>
+		<input id="oauth2_code" type="text" autocomplete="off" spellcheck="false" name="frm[code]" placeholder="Enter the OAuth2 Code (from Step1)" maxlength="3072" class="ux-input-1-2" value="[###FORM-CODE|html###]" required>
+	</div>
+	<!-- # -->
+	<legend>&nbsp;</legend>
+	<div class="ux-controls">
+		<button type="button" class="ux-button ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="oauth2FormHandler.btnHandlerCancel();"> Cancel &nbsp; <i class="sfi sfi-spinner11"></i></button>
+		<button type="button" class="ux-button ux-button-primary" style="margin-right:10px; margin-bottom:5px;" onClick="oauth2FormHandler.btnHandlerSubmit();" id="btn-submit-btn"> <span id="btn-submit-label"></span> &nbsp; <i class="sfi sfi-checkmark"></i></button>
+	</div>
+</form>
+</center></div>
+<!-- View: #end -->

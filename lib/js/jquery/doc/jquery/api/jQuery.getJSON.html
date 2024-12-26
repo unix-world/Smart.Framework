@@ -1,0 +1,383 @@
+<script>{
+		"title":
+			"jQuery.getJSON()",
+		"excerpt":
+			"Load JSON-encoded data from the server using a GET HTTP request.",
+		"termSlugs": {
+			"category": [
+				"ajax/shorthand-methods","version/1.0","version/1.5"
+			]
+		}
+	}</script><article id="jQuery-getJSON1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.getJSON( url [, data ] [, success ] )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#jqXHR">jqXHR</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Load JSON-encoded data from the server using a GET HTTP request.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0/">1.0</a></span><a id="jQuery-getJSON-url-data-success" href="#jQuery-getJSON-url-data-success"><span class="icon-link"></span>jQuery.getJSON( url [, data ] [, success ] )</a>
+</h4>
+<ul>
+<li>
+<div><strong>url</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>A string containing the URL to which the request is sent.</div>
+</li>
+<li>
+<div><strong>data</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a> or <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>A plain object or string that is sent to the server with the request.</div>
+</li>
+<li>
+<div><strong>success</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a> data, <a href="http://api.jquery.com/Types/#String">String</a> textStatus, <a href="http://api.jquery.com/Types/#jqXHR">jqXHR</a> jqXHR )</div>
+<div>A callback function that is executed if the request succeeds.</div>
+</li>
+</ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>This is a shorthand Ajax function, which is equivalent to:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.ajax({</code></div></div><div class="container"><div class="line"><code>  dataType: <span class="string">&quot;json&quot;</span>,</code></div></div><div class="container"><div class="line"><code>  url: url,</code></div></div><div class="container"><div class="line"><code>  data: data,</code></div></div><div class="container"><div class="line"><code>  success: success</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>Data that is sent to the server is appended to the URL as a query string. If the value of the <code>data</code> parameter is a plain object, it is converted to a string and url-encoded before it is appended to the URL.</p>
+    <p>Most implementations will specify a success handler:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.getJSON( <span class="string">&quot;ajax/test.json&quot;</span>, <span class="keyword">function</span>( data ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">var</span> items = [];</code></div></div><div class="container"><div class="line"><code>  $.each( data, <span class="keyword">function</span>( key, val ) {</code></div></div><div class="container"><div class="line"><code>    items.push( <span class="string">&quot;&lt;li id=&apos;&quot;</span> + key + <span class="string">&quot;&apos;&gt;&quot;</span> + val + <span class="string">&quot;&lt;/li&gt;&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;&lt;ul/&gt;&quot;</span>, {</code></div></div><div class="container"><div class="line"><code>    <span class="string">&quot;class&quot;</span>: <span class="string">&quot;my-new-list&quot;</span>,</code></div></div><div class="container"><div class="line"><code>    html: items.join( <span class="string">&quot;&quot;</span> )</code></div></div><div class="container"><div class="line"><code>  }).appendTo( <span class="string">&quot;body&quot;</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>This example, of course, relies on the structure of the JSON file:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>{</code></div></div><div class="container"><div class="line"><code>  <span class="string">&quot;one&quot;</span>: <span class="string">&quot;Singular sensation&quot;</span>,</code></div></div><div class="container"><div class="line"><code>  <span class="string">&quot;two&quot;</span>: <span class="string">&quot;Beady little eyes&quot;</span>,</code></div></div><div class="container"><div class="line"><code>  <span class="string">&quot;three&quot;</span>: <span class="string">&quot;Little birds pitch by my doorstep&quot;</span></code></div></div><div class="container"><div class="line"><code>}</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>Using this structure, the example loops through the requested data, builds an unordered list, and appends it to the body.</p>
+    <p>The <code>success</code> callback is passed the returned data, which is typically a JavaScript object or array as defined by the JSON structure and parsed using the <code><a href="/jQuery.parseJSON/">$.parseJSON()</a></code> method. It is also passed the text status of the response.</p>
+    <p><strong>As of jQuery 1.5</strong>, the <code>success</code> callback function receives a <a href="/jQuery.get/#jqxhr-object">&quot;jqXHR&quot; object</a> (in <strong>jQuery 1.4</strong>, it received the <code>XMLHttpRequest</code> object). However, since JSONP and cross-domain GET requests do not use <abbr title="XMLHTTPRequest">XHR</abbr>, in those cases the <code>jqXHR</code> and <code>textStatus</code> parameters passed to the success callback are undefined.</p>
+    <div class="warning">
+      <p><strong>Important:</strong> As of jQuery 1.4, if the JSON file contains a syntax error, the request will usually fail silently. Avoid frequent hand-editing of JSON data for this reason. JSON is a data-interchange format with syntax rules that are stricter than those of JavaScript&apos;s object literal notation. For example, all strings represented in JSON, whether they are properties or values, must be enclosed in double-quotes. For details on the JSON format, see <a href="https://json.org/">https://json.org/</a>.</p>
+    </div>
+    <h4 id="jsonp">JSONP</h4>
+    <p>If the URL includes the string &quot;callback=?&quot; (or similar, as defined by the server-side API), the request is treated as JSONP instead. See the discussion of the <code>jsonp</code> data type in <code><a href="/jQuery.ajax/">$.ajax()</a></code> for more details.</p>
+    <h4 id="jqxhr-object">The jqXHR Object</h4>
+    <p><strong>As of jQuery 1.5</strong>, all of jQuery&apos;s Ajax methods return  a superset of the <code>XMLHTTPRequest</code> object. This jQuery XHR object, or &quot;jqXHR,&quot; returned by <code>$.getJSON()</code> implements the Promise interface, giving it all the properties, methods, and behavior of a Promise (see <a href="/category/deferred-object/">Deferred object</a> for more information). The <code>jqXHR.done()</code> (for success), <code>jqXHR.fail()</code> (for error), and <code>jqXHR.always()</code> (for completion, whether success or error; added in jQuery 1.6) methods take a function argument that is called when the request terminates. For information about the arguments this function receives, see the <a href="/jQuery.ajax/#jqXHR">jqXHR Object</a> section of the <code>$.ajax()</code> documentation.</p>
+    <p>The Promise interface in jQuery 1.5 also allows jQuery&apos;s Ajax methods, including <code>$.getJSON()</code>, to chain multiple <code>.done()</code>, <code>.always()</code>, and <code>.fail()</code> callbacks on a single request, and even to assign these callbacks after the request may have completed. If the request is already complete, the callback is fired immediately.</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="comment">// Assign handlers immediately after making the request,</span></code></div></div><div class="container"><div class="line"><code><span class="comment">// and remember the jqxhr object for this request</span></code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> jqxhr = $.getJSON( <span class="string">&quot;example.json&quot;</span>, <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  console.log( <span class="string">&quot;success&quot;</span> );</code></div></div><div class="container"><div class="line"><code>})</code></div></div><div class="container"><div class="line"><code>  .done(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    console.log( <span class="string">&quot;second success&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  })</code></div></div><div class="container"><div class="line"><code>  .fail(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    console.log( <span class="string">&quot;error&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  })</code></div></div><div class="container"><div class="line"><code>  .always(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    console.log( <span class="string">&quot;complete&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Perform other work here ...</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// Set another completion function for the request above</span></code></div></div><div class="container"><div class="line"><code>jqxhr.complete(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  console.log( <span class="string">&quot;second complete&quot;</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <h4>Deprecation Notice</h4>
+    <p>The <code>jqXHR.success()</code>, <code>jqXHR.error()</code>, and <code>jqXHR.complete()</code> callback methods are <strong>removed as of jQuery 3.0</strong>. You can use <code>jqXHR.done()</code>, <code>jqXHR.fail()</code>, and <code>jqXHR.always()</code> instead.</p>
+  </div>
+<h3>Additional Notes:</h3>
+<div class="longdesc"><ul>
+<li>
+			Due to browser security restrictions, most &quot;Ajax&quot; requests are subject to the <a title="Same Origin Policy on Wikipedia" href="https://en.wikipedia.org/wiki/Same_origin_policy">same origin policy</a>; the request can not successfully retrieve data from a different domain, subdomain, port, or protocol.
+		</li>
+<li>
+			Script and JSONP requests are not subject to the same origin policy restrictions.
+		</li>
+</ul></div>
+<section class="entry-examples" id="entry-examples"><header><h2>Examples:</h2></header><div class="entry-example" id="example-0">
+<p>Loads the four most recent pictures of Mount Rainier from the Flickr JSONP API.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+						<div class="line n32">32</div>
+					
+						<div class="line n33">33</div>
+					
+						<div class="line n34">34</div>
+					
+						<div class="line n35">35</div>
+					
+						<div class="line n36">36</div>
+					
+						<div class="line n37">37</div>
+					
+						<div class="line n38">38</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>jQuery.getJSON demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css"></span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">img</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">height</span>:<span class="value"> <span class="number">100</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">float</span>:<span class="value"> left;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">style</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">&quot;images&quot;</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code>(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">var</span> flickerAPI = <span class="string">&quot;https://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?&quot;</span>;</code></div></div><div class="container"><div class="line"><code>  $.getJSON( flickerAPI, {</code></div></div><div class="container"><div class="line"><code>    tags: <span class="string">&quot;mount rainier&quot;</span>,</code></div></div><div class="container"><div class="line"><code>    tagmode: <span class="string">&quot;any&quot;</span>,</code></div></div><div class="container"><div class="line"><code>    format: <span class="string">&quot;json&quot;</span></code></div></div><div class="container"><div class="line"><code>  })</code></div></div><div class="container"><div class="line"><code>    .done(<span class="keyword">function</span>( data ) {</code></div></div><div class="container"><div class="line"><code>      $.each( data.items, <span class="keyword">function</span>( i, item ) {</code></div></div><div class="container"><div class="line"><code>        $( <span class="string">&quot;&lt;img&gt;&quot;</span> ).attr( <span class="string">&quot;src&quot;</span>, item.media.m ).appendTo( <span class="string">&quot;#images&quot;</span> );</code></div></div><div class="container"><div class="line"><code>        <span class="keyword">if</span> ( i === <span class="number">3</span> ) {</code></div></div><div class="container"><div class="line"><code>          <span class="keyword">return</span> <span class="literal">false</span>;</code></div></div><div class="container"><div class="line"><code>        }</code></div></div><div class="container"><div class="line"><code>      });</code></div></div><div class="container"><div class="line"><code>    });</code></div></div><div class="container"><div class="line"><code>})();</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div>
+<div class="entry-example" id="example-1">
+<p>Load the JSON data from test.js and access a name from the returned JSON data.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.getJSON( <span class="string">&quot;test.js&quot;</span>, <span class="keyword">function</span>( json ) {</code></div></div><div class="container"><div class="line"><code>  console.log( <span class="string">&quot;JSON Data: &quot;</span> + json.users[ <span class="number">3</span> ].name );</code></div></div><div class="container"><div class="line"><code> });</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-2">
+<p>Load the JSON data from test.js, passing along additional data, and access a name from the returned JSON data.
+      If an error occurs, log an error message instead.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.getJSON( <span class="string">&quot;test.js&quot;</span>, { name: <span class="string">&quot;John&quot;</span>, time: <span class="string">&quot;2pm&quot;</span> } )</code></div></div><div class="container"><div class="line"><code>  .done(<span class="keyword">function</span>( json ) {</code></div></div><div class="container"><div class="line"><code>    console.log( <span class="string">&quot;JSON Data: &quot;</span> + json.users[ <span class="number">3</span> ].name );</code></div></div><div class="container"><div class="line"><code>  })</code></div></div><div class="container"><div class="line"><code>  .fail(<span class="keyword">function</span>( jqxhr, textStatus, error ) {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">var</span> err = textStatus + <span class="string">&quot;, &quot;</span> + error;</code></div></div><div class="container"><div class="line"><code>    console.log( <span class="string">&quot;Request Failed: &quot;</span> + err );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

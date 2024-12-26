@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="icon" href="data:,">
+	<title>jQuery (Nav) Pager</title>
+	<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<link rel="stylesheet" href="../jquery.simplePagination.css">
+	<script type="text/javascript" src="../jquery.simplePagination.js"></script>
+</head>
+<body>
+<h1>jQuery Nav-Pager</h1>
+<div id="myPager"></div>
+<script>
+jQuery(function() {
+	jQuery('#myPager').pagination({
+		items: 100,
+		itemsOnPage: 10,
+		cssStyle: 'light-theme'
+	});
+});
+</script>
+<br>
+<br>
+<div id="myPagerDark"></div>
+<script>
+jQuery(function() {
+	jQuery('#myPagerDark').pagination({
+		items: 100,
+		itemsOnPage: 10,
+		cssStyle: 'dark-theme'
+	});
+});
+</script>
+<br>
+<br>
+<a href="../doc/README.txt" target="_blank">Read the documentation</a>
+</body>
+</html>

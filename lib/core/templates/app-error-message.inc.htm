@@ -1,0 +1,51 @@
+<!-- Partial Template: Core.AppErrorMessage v.20221225 -->
+[%%%COMMENT%%%]
+	This should be ONLY a partial HTML template as is used after raising the main error !
+	IMPORTANT: It must not contain sub-templates as this is preloaded as plain text in memory to assure it will be available also for errors called from register_shutdown_function() handlers
+[%%%/COMMENT%%%]
+<style type="text/css">
+	* {
+		font-family: arial,sans-serif;
+		font-smooth: always;
+	}
+</style>
+<center><div>
+	<table width="[###WIDTH|int###]" cellspacing="0" cellpadding="8" bordercolor="#ECECEC" border="1" style="border-style: solid; border-color: #ECECEC; border-collapse: collapse;">
+		<tr valign="middle" bgcolor="#FFFFFF">
+			<td width="64" align="center">
+				<img src="[###CRR-URL|html###]lib/framework/img/sign-crit-warn.svg">
+			</td>
+			<td align="center">
+				<center><div>
+					<font size="5" color="#DD0000"><b>[###TITLE|html###] :: ERROR</b></font>
+					[%%%IF:AREA:==;%%%]
+					<!-- empty area -->
+					[%%%ELSE:AREA%%%]
+					<br>
+					<font size="4" color="#778899">[###AREA|html###]</font>
+					[%%%/IF:AREA%%%]
+				</div></center>
+			</td>
+		</tr>
+		<tr valign="top" bgcolor="#FFFFFF">
+			<td width="64" align="center">
+				<img width="48" src="[###CRR-URL|html###][###LOGO|html###]">
+				<br>
+				<br>
+				<span style="color:#778899;"><small><sub><b>[###NAME|html###]</b><br><b><i>[###MODE|html###]&nbsp;[###TYPE|html###]</i></b></sub></small></span>
+			</td>
+			<td align="left">
+				<div style="max-width:[###WIDTH|int###]px; overflow-x:auto;">
+				<font size="3" color="#DD0000"><b>[###ERR-MSG|html|nl2br###]</b></font>
+				<br>
+				<br>
+				<font size="3" color="#778899">[%%%IF:AREA-ONE:==;%%%]Debug is OFF[%%%ELSE:AREA-ONE%%%]<pre>[###AREA-ONE|html###]</pre>[%%%/IF:AREA-ONE%%%]</font>
+				<br>
+				<font size="2" color="#333333">[%%%IF:AREA-TWO:==;%%%]View the App ERROR Log for more details about this Error ![%%%ELSE:AREA-TWO%%%]<pre>[###AREA-TWO|html###]</pre><br>[%%%/IF:AREA-TWO%%%]</font>
+				<br>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div></center>
+<!-- #END :: Partial Template: Core.AppErrorMessage -->

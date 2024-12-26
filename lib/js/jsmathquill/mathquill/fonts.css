@@ -1,0 +1,11 @@
+
+/* Customizations # Smart.Framework # r.20220903 */
+
+@import url("../../../../lib/core/plugins/fonts/typo/serif/ibm-plex-serif.css");
+
+div.math-latex * {
+	font-family: 'IBM Plex Serif', times, serif;
+	font-smooth: always;
+}
+
+/* END */

@@ -1,0 +1,35 @@
+<!-- TPL Head (default) r.20231001 :: [###SEMAPHORE|smartlist|html###] -->
+<!-- Template Path: [###TEMPLATE-PATH|html###] -->
+<!-- Template File: [###TEMPLATE-FILE|html###] -->
+<!-- Timezone:      [###TIMEZONE|html###] -->
+<!-- Language:      [###LANG|html###] -->
+<!-- Realm:         [###APP-REALM|html###] -->
+[%%%IF:AUTH-LOGIN-OK:==yes;%%%]
+<!-- Auth-Login-OK:         [###AUTH-LOGIN-OK|html###] -->
+<!-- Auth-Login-ID:         [###AUTH-LOGIN-ID|html###] -->
+<!-- Auth-Login-FullName:   [###AUTH-LOGIN-FULLNAME|html###] -->
+<!-- Auth-Login-Privileges: [###AUTH-LOGIN-PRIVILEGES|smartlist|html###] -->
+[%%%ELSE:AUTH-LOGIN-OK%%%]
+<!-- Auth: N/A -->
+[%%%/IF:AUTH-LOGIN-OK%%%]
+<meta charset="[###CHARSET|html###]">
+<meta http-equiv="Content-Type" content="text/html; charset=[###CHARSET|html###]">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Smart.Framework">
+<link rel="icon" href="data:,">
+<title>[###TITLE|html###]</title>
+<!-- Meta -->
+[###HEAD-META###]
+<!-- Custom Styles -->
+[@@@SUB-TEMPLATE:!etc/templates/default/css-app.inc.htm!@@@]
+<!-- Scripts -->
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-base-jquery.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!etc/templates/default/js-framework.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-media.inc.htm!@@@]
+[%%%IF:SEMAPHORE:&*<load:utils-js>;%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-utils.inc.htm!@@@][%%%ELSE:SEMAPHORE%%%]<!-- Utils: skip -->[%%%/IF:SEMAPHORE%%%]
+[%%%IF:SEMAPHORE:&*<skip:js-ui>;%%%]<!-- LightJS: skip -->[%%%ELSE:SEMAPHORE%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-ui.inc.htm!@@@][%%%/IF:SEMAPHORE%%%]
+<!-- CSS -->
+[###HEAD-CSS###]
+<!-- JS -->
+[###HEAD-JS###]
+<!-- #.# -->

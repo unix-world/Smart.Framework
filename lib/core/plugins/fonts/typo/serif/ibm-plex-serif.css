@@ -1,0 +1,47 @@
+/* font-family: 'IBM Plex Serif' :: v1.0.2 :: Latin + Latin Extended + Cyrillic :: r.8.7 / smart.framework.v.8.7 */
+
+@font-face {
+	font-family: 'IBM Plex Serif';
+	font-style: normal;
+	font-weight: 400;
+	src: local('IBM Plex Serif'), local('IBMPlexSerif'),
+		 url('ibm-plex-serif-regular.woff2') format('woff2'),
+		 url('ibm-plex-serif-regular.ttf') format('truetype');
+	font-display: swap;
+	text-rendering: auto;
+}
+
+@font-face {
+	font-family: 'IBM Plex Serif';
+	font-style: normal;
+	font-weight: 700;
+	src: local('IBM Plex Serif Bold'), local('IBMPlexSerif-Bold'),
+		 url('ibm-plex-serif-bold.woff2') format('woff2'),
+		 url('ibm-plex-serif-bold.ttf') format('truetype');
+	font-display: swap;
+	text-rendering: auto;
+}
+
+@font-face {
+	font-family: 'IBM Plex Serif';
+	font-style: italic;
+	font-weight: 400;
+	src: local('IBM Plex Serif Italic'), local('IBMPlexSerif-Italic'),
+		 url('ibm-plex-serif-italic.woff2') format('woff2'),
+		 url('ibm-plex-serif-italic.ttf') format('truetype');
+	font-display: swap;
+	text-rendering: auto;
+}
+
+@font-face {
+	font-family: 'IBM Plex Serif';
+	font-style: italic;
+	font-weight: 700;
+	src: local('IBM Plex Serif Bold Italic'), local('IBMPlexSerif-BoldItalic'),
+		 url('ibm-plex-serif-bold-italic.woff2') format('woff2'),
+		 url('ibm-plex-serif-bold-italic.ttf') format('truetype');
+	font-display: swap;
+	text-rendering: auto;
+}
+
+/* END */

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>JSON Diff Sample</title>
+	<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../../../../../../lib/js/framework/smart-framework.pak.js"></script>
+	<script src="../str-diff.js"></script>
+	<link href="../json-diff.css" rel="stylesheet" type="text/css">
+	<script src="../json-diff.js"></script>
+	<script type="text/javascript">
+		function RunDiff() {
+			Smart_JsonDiff.Compare(document.getElementById('smart-json-diff-1'), document.getElementById('old').value, document.getElementById('new').value);
+		}
+	</script>
+	<style>
+		* {
+			font-family: tahoma,arial,sans-serif;
+		}
+		h1, h2, h3, h4, h5 {
+			display: inline;
+		}
+		ins {
+			display: inline-block;
+			padding: 2px;
+			background: #BBDDFF;
+			text-decoration: overline;
+			text-decoration-color: #AACCEE;
+		}
+		ins:hover {
+			text-decoration: none;
+		}
+		del {
+			display: inline-block;
+			padding: 2px;
+			background: #F5CBE1;
+			text-decoration-color: #E4BAD0;
+		}
+		del:hover {
+			text-decoration: none;
+		}
+	</style>
+</head>
+<body>
+<div align="center">
+	<table width="780" border="0">
+		<tr>
+			<td colspan="2" align="center">
+				<h1>JSON Diff Sample</h1>
+				<br>
+				<br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<h3>Old (Json) version</h3>
+				<br>
+<textarea class="contentItemText version" id="old" placeholder="Old Json" spellcheck="false" style="font-size:14px; width:340px; height:100px; background:#F7F7F7; border: 1px solid #FF6600; padding:3px;">
+{&quot;contents&quot;:{&quot;style&quot;:{&quot;underline&quot;:1,&quot;bold&quot;:2,&quot;size&quot;:20,&quot;italic&quot;:2,&quot;color&quot;:&quot;4DC3FF&quot;,&quot;fontFamily&quot;:&quot;Arial&quot;},&quot;content&quot;:&quot;feedback&quot;},&quot;format&quot;:&quot;example&quot;,&quot;contents-changed&quot;:[{&quot;align&quot;:&quot;center&quot;,&quot;depth&quot;:0,&quot;list&quot;:false,&quot;content&quot;:[{&quot;style&quot;:{&quot;underline&quot;:1,&quot;bold&quot;:2,&quot;size&quot;:20,&quot;italic&quot;:2,&quot;color&quot;:&quot;FFFFFF&quot;,&quot;fontFamily&quot;:&quot;Arial&quot;},&quot;content&quot;:&quot;And please, feel free to send us your feedback and comments to &quot;},{&quot;style&quot;:{&quot;underline&quot;:1,&quot;bold&quot;:2,&quot;size&quot;:20,&quot;italic&quot;:2,&quot;color&quot;:&quot;4DC3FF&quot;,&quot;fontFamily&quot;:&quot;Arial&quot;},&quot;content&quot;:&quot;hello world&quot;},{&quot;style&quot;:{&quot;underline&quot;:1,&quot;bold&quot;:2,&quot;size&quot;:20,&quot;italic&quot;:2,&quot;color&quot;:&quot;FFFFFF&quot;,&quot;fontFamily&quot;:&quot;Arial&quot;},&quot;content&quot;:&quot;, or just by clicking on the &quot;},{&quot;style&quot;:{&quot;underline&quot;:1,&quot;bold&quot;:2,&quot;size&quot;:20,&quot;italic&quot;:2,&quot;color&quot;:&quot;4DC3FF&quot;,&quot;fontFamily&quot;:&quot;Arial&quot;},&quot;content&quot;:&quot;feedback&quot;}],&quot;ordered&quot;:false}],&quot;version&quot;:3}
+</textarea>
+			</td>
+			<td>
+				<h3>New (Json) version</h3>
+				<br>
+<textarea class="contentItemText version" id="new" placeholder="New Json" spellcheck="false" style="font-size:14px; width:340px; height:100px; border: 1px solid #003399; padding:3px;">
+{&quot;contents&quot;:{&quot;style&quot;:{&quot;underline&quot;:1,&quot;bold&quot;:2,&quot;size&quot;:20,&quot;italic&quot;:2,&quot;color&quot;:&quot;4DC3FF&quot;,&quot;fontFamily&quot;:&quot;Arial&quot;},&quot;content&quot;:&quot;feedback&quot;},&quot;format&quot;:&quot;example&quot;,&quot;version&quot;:3.1,&quot;contents-changed&quot;:[{&quot;list&quot;:false,&quot;depth&quot;:0,&quot;ordered&quot;:false,&quot;content&quot;:[{&quot;content&quot;:&quot;And please, feel free to send us your feedback and comments to &quot;,&quot;style&quot;:{&quot;size&quot;:20,&quot;color&quot;:&quot;FFFFFF&quot;,&quot;name&quot;:&quot;Arial&quot;,&quot;bold&quot;:2,&quot;italic&quot;:2,&quot;underline&quot;:2}},{&quot;content&quot;:&quot;foo&quot;,&quot;style&quot;:{&quot;size&quot;:20,&quot;color&quot;:&quot;4DC2FF&quot;,&quot;name&quot;:&quot;Arial&quot;,&quot;bold&quot;:2,&quot;italic&quot;:2,&quot;underline&quot;:2}},{&quot;content&quot;:&quot;, or just by clicking on the &quot;,&quot;style&quot;:{&quot;size&quot;:20,&quot;color&quot;:&quot;FFFFFF&quot;,&quot;name&quot;:&quot;Arial&quot;,&quot;bold&quot;:2,&quot;italic&quot;:2,&quot;underline&quot;:2}},{&quot;content&quot;:&quot;feedback&quot;,&quot;style&quot;:{&quot;size&quot;:20,&quot;color&quot;:&quot;4DC2FF&quot;,&quot;name&quot;:&quot;Arial&quot;,&quot;bold&quot;:2,&quot;italic&quot;:2,&quot;underline&quot;:2}},{&quot;content&quot;:&quot; button up above.&quot;,&quot;style&quot;:{&quot;size&quot;:20,&quot;color&quot;:&quot;FFFFFF&quot;,&quot;name&quot;:&quot;Arial&quot;,&quot;bold&quot;:2,&quot;italic&quot;:2,&quot;underline&quot;:2}}],&quot;align&quot;:&quot;center&quot;}]}
+</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<button class="button" onclick="RunDiff();">Re-COMPARE OLD Json WITH NEW Json</button>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<br>
+				<div style="border: 1px solid #DDEEFF; padding-top: 10px;">
+					<h2>Json Comparison (Diff)</h2>
+					<div id="smart-json-diff-1"></div>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+<br>
+<script type="text/javascript">
+	RunDiff();
+</script>
+</body>
+</html>

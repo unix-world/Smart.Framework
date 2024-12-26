@@ -1,0 +1,4 @@
+MIT license.
+
+(c) Copyright 2013 Luís Almeida
+https://github.com/luis-almeida

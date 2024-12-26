@@ -1,0 +1,334 @@
+<!-- v.20240119 -->
+[@@@SUB-TEMPLATE:acc-styles-form.mtpl.inc.htm@@@]
+<style>
+table#data-tbl-tokens,
+div#data-tbl-tokens_wrapper * {
+	font-size: 0.8125rem !important;
+}
+table#data-tbl-tokens .dtTbl_ColId {
+	color: #222222;
+	font-weight: bold;
+}
+table#data-tbl-tokens .dtTbl_ColStatusA,
+table#data-tbl-tokens .dtTbl_ColStatusI {
+	font-weight: bold;
+}
+table#data-tbl-tokens .dtTbl_ColStatusA {
+	color: #6D8813;
+}
+table#data-tbl-tokens .dtTbl_ColStatusI {
+	color: #2A9DF4;
+}
+
+table#data-tbl-tokens .dtTbl_ColIsInvalid0,
+table#data-tbl-tokens .dtTbl_ColIsInvalid1,
+table#data-tbl-tokens .dtTbl_ColIsInvalid2,
+table#data-tbl-tokens .dtTbl_ColIsInvalidX {
+	font-weight: bold;
+}
+table#data-tbl-tokens .dtTbl_ColIsInvalid0 {
+	color: #5E6885;
+}
+table#data-tbl-tokens .dtTbl_ColIsInvalid1 {
+	color: #FF8800;
+}
+table#data-tbl-tokens .dtTbl_ColIsInvalid2 {
+	color: #FF3300;
+}
+table#data-tbl-tokens .dtTbl_ColIsInvalidX {
+	color: #FF0000;
+}
+table#data-tbl-tokens .dtTbl_ColHash,
+table#data-tbl-tokens .dtTbl_ColXHash {
+	font-weight: bold;
+}
+table#data-tbl-tokens .dtTbl_ColHash {
+	color: #444444;
+}
+table#data-tbl-tokens .dtTbl_ColXHash {
+	color: #CDCDCD;
+	text-decoration: line-through;
+}
+table#data-tbl-tokens span.dtTbl_ColETime,
+table#data-tbl-tokens span.dtTbl_ColEXTime {
+	font-weight: bold;
+}
+table#data-tbl-tokens span.dtTbl_ColETime {
+	color: #555588;
+}
+table#data-tbl-tokens span.dtTbl_ColEXTime {
+	color: #003399;
+}
+table#data-tbl-tokens .dtTbl_ColName {
+	color: #888888;
+}
+table#data-tbl-tokens .dtTbl_ColCTime {
+	color: #AAAAAA;
+	font-weight: bold;
+}
+</style>
+<script src="lib/js/jsqrsvg/qrcode.js"></script>
+<script>
+const cDlg = () => {
+	const _Utils$ = smartJ$Utils;
+	const _Crypto$Hash = smartJ$CryptoHash;
+	const _BwUtils$ = smartJ$Browser;
+	const fUUID = _Utils$.uuid();
+	const fID = 'form_new_token__' + _Crypto$Hash.md5(fUUID);
+	_BwUtils$.ConfirmDialog('<form name="' + _Utils$.escape_html(fID) + '" id="' + _Utils$.escape_html(fID) + '" class="ux-form" onSubmit="return false;">' + '<h6>Token Name</h6><input type="text" name="frm[name]" value="" minlength="5" maxlength="25" autocomplete="off" placeholder="max 25 chars ; min 5 chars" style="width:100%">' + '<h6>Token Privileges</h6><input type="text" name="frm[priv]" value="" minlength="1" maxlength="255" autocomplete="off" placeholder="max 255 chars ; min 1 char ; ex: `priv-a1, priv-b2` or `*`" title="valid privilege key length: min 2 / max 22 chars ; accepted chars: `a-z`, `0-9`, `:` and `-` ; privileges have to be separed by a comma `,`" style="width:100%">' + '<h6>Token Expiration</h6><input type="text" name="frm[exp]" value="" maxlength="10" autocomplete="off" placeholder="Empty (no expiration) or YYYY-MM-DD" style="width:100%">' + '</form>', () => { _BwUtils$.SubmitFormByAjax(fID, '[###ACTIONS-URL|js###]&action=tokens-create', 'auto', null, null, () => { setTimeout(() => { self.location = self.location; }, 250); }, true); }, 'Create NEW Token', null, null, 'alertable');
+};
+</script>
+<center><div><table><tr><td>
+<h1>Manage Tokens</h1>
+<hr>
+<h4>Account ID: `<span id="user-id">[###ID|html###]</span>`</h4>
+<div style="text-align:right;">
+	<div class="ux-controls">
+		<button type="button" class="ux-button ux-button-primary" style="margin-left:50px;" onClick="cDlg(); return false;"> New Token &nbsp; <i class="sfi sfi-plus"></i></button>
+		<button type="button" class="ux-button ux-button-spacing" onClick="self.location = '[###ACTIONS-URL|js|html###]edit-form&id=[###ID|js|html###]&viewonly=yes'; return false;"> Go Back &nbsp; <i style="color:#555555;" class="sfi sfi-spinner11"></i></button>
+	</div>
+</div>
+[%%%IF:HAVE-ACCESS:!=yes;%%%]
+<div><!-- no access -->
+	<div class="operation_error">Restricted Area !<br>You are logged in as `[###CRR-ID|html###]` - a different account.<br>You can only manage your own Tokens ...</div>
+</div>
+[%%%ELSE:HAVE-ACCESS%%%]
+<div style="width:80vw;">
+<h6>List of Login Tokens for the selected Account (max: [###MAX-TOKENS|int###])</h6>
+<table id="data-tbl-tokens" class="ux-table-striped ux-reflow-table" style="width:100%;"></table>
+<br><br>
+<script>
+let vwTk;
+let dDlg;
+let aDlg;
+const accID = '[###ID|js###]';
+jQuery(() => {
+
+	const _Utils$ = smartJ$Utils;
+	const _Ba$eConv = smartJ$BaseConv;
+	const _Crypto$Hash = smartJ$CryptoHash;
+	const _BwUtils$ = smartJ$Browser;
+
+	const deTk = (eTk) => {
+		eTk = _Utils$.stringPureVal(eTk, true);
+		if(eTk == '') {
+			return '';
+		}
+		return _Utils$.hex2bin(_Ba$eConv.base_to_hex_convert(eTk, 23*4));
+	};
+
+	const deSeed = (eSeed) => {
+		eSeed = _Utils$.stringPureVal(eSeed, true);
+		if(eSeed == '') {
+			return '';
+		}
+		return _Utils$.hex2bin(_Ba$eConv.base_to_hex_convert(eSeed, (16+1)*5));
+	};
+
+	vwTk = (iD, eTk, hS, name) => {
+		const dTK = deTk(eTk);
+		const qrDTK = smartQRCode.getAsSvg(dTK, { pal: ["#8899AA", "#FFFFFF"] });
+		_BwUtils$.AlertDialog('<img align="right" src="data:image/svg+xml,' + _Utils$.escape_html(_Utils$.escape_url(String(qrDTK))) + '">' + '<h4>Token Auth UserName (ID)</h4>' + '<h6 style="color:#DDDDDD;">' + _Utils$.escape_html(iD + '#token') + '</h6>' + '<h4>Token Pass (Key)</h4>' + '<h6 style="color:#DDDDDD;">' + _Utils$.escape_html(dTK) + '</h6>' + '<br>' + '<div style="color:#778899; font-size:0.625rem; word-wrap:break-word;">' + '<b>UUID:</b>&nbsp;' + _Utils$.escape_html(hS) + '</div>', null, 'Token Name: `' + name + '`', 640, 300, 'alertable');
+	};
+
+	dDlg = (iD, hS, nM) => {
+		_BwUtils$.ConfirmDialog('<h3>PERMANENT DELETE this Token ?</h3>' + '<div>' + '<b>Name:</b>' + '`<span style="color:#FF3300;">' + _Utils$.escape_html(nM) + '</span>`' + '</div><br>' + '<div style="color:#778899; font-size:0.625rem; word-wrap:break-word;">' + '<b>UUID:</b>&nbsp;' + _Utils$.escape_html(hS) + '</div>', () => { _BwUtils$.SubmitFormByAjax(null, '[###ACTIONS-URL|js###]&action=tokens-delete' + '&frm[id]=' + _Utils$.escape_url(iD) + '&frm[hs]=' + _Utils$.escape_url(hS), 'auto', null, null, () => { setTimeout(() => { self.location = self.location; }, 250); }, true); }, 'Confirm Token DELETE', null, null, 'alertable');
+	};
+
+	aDlg = (iD, hS, nM, sT, eID) => {
+		const fxActivate = (eID, sT) => {
+			if(sT == 1) {
+				jQuery('#' + eID).removeClass('sfi-checkbox-checked').addClass('sfi-checkbox-unchecked');
+			} else {
+				jQuery('#' + eID).removeClass('sfi-checkbox-unchecked').addClass('sfi-checkbox-checked');
+			}
+		};
+		let txtStatus = 'ACTIVATE';
+		if(sT == 1) {
+			txtStatus = 'DEACTIVATE';
+		}
+		_BwUtils$.ConfirmDialog('<h3>' + _Utils$.escape_html(txtStatus) + ' of this Token ?</h3>' + '<div>' + '<b>Name:</b>' + '`<span style="color:#FF3300;">' + _Utils$.escape_html(nM) + '</span>`' + '</div><br>' + '<div style="color:#778899; font-size:0.625rem; word-wrap:break-word;">' + '<b>UUID:</b>&nbsp;' + _Utils$.escape_html(hS) + '</div>', () => { fxActivate(eID, sT); _BwUtils$.SubmitFormByAjax(null, '[###ACTIONS-URL|js###]&action=tokens-status-change' + '&frm[id]=' + _Utils$.escape_url(iD) + '&frm[hs]=' + _Utils$.escape_url(hS) + '&frm[st]=' + _Utils$.escape_url(sT), 'auto', null, null, () => { setTimeout(() => { self.location = self.location; }, 250); }, true); }, 'Confirm ACTIVATE or DEACTIVATE Token', null, null, 'alertable');
+	};
+
+	const theColumns = [
+		{ // 0
+			data: '#',
+			name: '#',
+			title: '#',
+			render: (data, type, row, meta) => {
+				if(type === 'type' || type === 'sort' || type === 'filter') {
+					return '';
+				} else {
+					return '<button type="button" class="ux-button ux-button-special ux-button-xsmall" title="DELETE Token" data-id="' + _Utils$.escape_html(row['id']) + '" data-hs="' + _Utils$.escape_html(row['token_hash']) + '" data-nm="' + _Utils$.escape_html(row['token_name']) + '" onclick="dDlg(jQuery(this).attr(\'data-id\'), jQuery(this).attr(\'data-hs\'), jQuery(this).attr(\'data-nm\')); return false;">' + '<i class="sfi sfi-bin"></i>' + '</button>';
+				}
+			},
+		},
+		{ // 1
+			data: 'id',
+			name: 'id',
+			title: 'Account ID',
+			className: 'dtTbl_ColId',
+			render: (data, type, row) => {
+				if(type === 'type' || type === 'sort' || type === 'filter') {
+					return data;
+				} else {
+					return _Utils$.escape_html(data);
+				}
+			},
+		},
+		{ // 2
+			data: 'active',
+			name: 'active',
+			title: 'Status',
+			width: '50px',
+			render: (data, type, row) => {
+				if(type === 'type' || type === 'sort') {
+					return data;
+				} else if(type === 'filter') {
+					if(data == 1) {
+						return 'Active';
+					} else {
+						return 'Inactive';
+					}
+				} else {
+					const theId = _Crypto$Hash.sha1(row['id'] + '#' + row['token_hash']);
+					const htmlAtts = 'id="ckbx-' + _Utils$.escape_html(theId) + '" data-id="' + _Utils$.escape_html(row['id']) + '" data-hs="' + _Utils$.escape_html(row['token_hash']) + '" data-nm="' + _Utils$.escape_html(row['token_name']) + '" data-st="' + _Utils$.escape_html(data) + '"';
+					const htmlClick = 'aDlg(jQuery(this).attr(\'data-id\'), jQuery(this).attr(\'data-hs\'), jQuery(this).attr(\'data-nm\'), jQuery(this).attr(\'data-st\'), jQuery(this).attr(\'id\'));';
+					if(data == 1) {
+						return '<i class="sfi sfi-checkbox-checked" style="color:#6D8813; cursor:pointer;" title="Click to DEACTIVATE Token" ' + htmlAtts + ' onclick="' + htmlClick + ' return false;"></i>' + '&nbsp;' + '<span title="' + _Utils$.escape_html(data) + '" class="dtTbl_ColStatusA">Active</span>';
+					} else {
+						return '<i class="sfi sfi-checkbox-unchecked" style="color:#2A9DF4; cursor:pointer;" title="Click to ACTIVATE Token" ' + htmlAtts + ' onclick="' + htmlClick + ' return false;"></i>' + '&nbsp;' + '<span title="' + _Utils$.escape_html(data) + '" class="dtTbl_ColStatusI">Inactive</span>';
+					}
+				}
+			}
+		},
+		{ // 3
+			data: 'expires',
+			name: 'expires',
+			title: 'Expires',
+			render: (data, type, row) => {
+				if(type === 'type' || type === 'sort' || type === 'filter') {
+					return data;
+				} else {
+					let cssClass = 'dtTbl_ColETime';
+					if((data === '') && (row['exp-time'] === '0')) {
+						data = '[No Expiration]';
+						cssClass = 'dtTbl_ColEXTime';
+					}
+					return '<span class="' + _Utils$.escape_html(cssClass) + '" title="' + _Utils$.escape_html(row['exp-time']) + '">' + _Utils$.escape_html(data) + '</span>';
+				}
+			},
+		},
+		{ // 4
+			data: 'is-invalid',
+			name: 'is-invalid',
+			title: 'Valid',
+			width: '25px',
+			render: (data, type, row) => {
+				if(type === 'type' || type === 'sort') {
+					return data;
+				} else if(type === 'filter') {
+					if(data == 2) {
+						return 'Invalid';
+					} else if(data == 1) {
+						return 'Expired';
+					} else if(data == 0) {
+						return 'Valid';
+					} else {
+						return ''; // Unknown
+					} //end if else
+				} else {
+					if(data > 1) {
+						return '<span title="' + _Utils$.escape_html(data) + ' :: ' + _Utils$.escape_html(row['err-invalid']) + '" class="dtTbl_ColIsInvalid2">Invalid</span>';
+					} else if(data == 1) {
+						return '<span title="' + _Utils$.escape_html(data) + '" class="dtTbl_ColIsInvalid1">Expired</span>';
+					} else if(data == 0) {
+						return '<span title="' + _Utils$.escape_html(data) + '" class="dtTbl_ColIsInvalid0">Valid</span>';
+					} else {
+						return '<span title="' + _Utils$.escape_html(data) + ' :: ' + _Utils$.escape_html(row['err-invalid']) + '" class="dtTbl_ColIsInvalidX">Error</span>';
+					}
+				}
+			}
+		},
+		{ // 5
+			data: 'token_hash',
+			name: 'token_hash',
+			title: 'Token Info',
+			render: (data, type, row) => {
+				const tk = deTk(row['token-key']);
+				if(type === 'type' || type === 'sort') {
+					return data;
+				} else if(type === 'filter') {
+					return tk;
+				} else {
+					return '<span title="' + _Utils$.escape_html(data) + '\n\n' + tk + '\n\n' + _Utils$.escape_html(deSeed(row['token-seed'])) + '" class="' + ((!!(row['is-invalid'] === 0)) ? 'dtTbl_ColHash' : 'dtTbl_ColXHash') + '" style="cursor:cell;" data-id="' + _Utils$.escape_html(row['id']) + '" data-tk="' + _Utils$.escape_html(row['token-key']) + '" data-hs="' + _Utils$.escape_html(data) + '" data-name="' + _Utils$.escape_html(row['token_name']) + '" onclick="vwTk(jQuery(this).attr(\'data-id\'), jQuery(this).attr(\'data-tk\'), jQuery(this).attr(\'data-hs\'), jQuery(this).attr(\'data-name\')); return false;">' + _Utils$.escape_html(data.substring(0,28)+'...') + '</span>';
+				}
+			},
+		},
+		{ // 6
+			data: 'token_name',
+			name: 'token_name',
+			title: 'Token Name / Privs',
+			className: 'dtTbl_ColName',
+			render: (data, type, row) => {
+				if(type === 'type' || type === 'sort') {
+					return data;
+				} else if(type === 'filter') {
+					return data + '\n' + row['restr-priv'];
+				} else {
+					let sData = data;
+					if(sData.length > 35) {
+						sData = sData.substring(0,35) + '...';
+					}
+					let theSPrivs = row['restr-priv'];
+					if(theSPrivs.length > 50) {
+						theSPrivs = theSPrivs.substring(0,50) + '...';
+					}
+					return '<span title="' + _Utils$.escape_html(data) + '\n\n' + _Utils$.escape_html(row['restr-priv']) + '" style="cursor:help;">' + '<b>' + _Utils$.escape_html(sData) + '</b>' + '<br>' + '<span style="font-size:0.6875rem!important;">' + _Utils$.escape_html(theSPrivs) + '</span>' + '</span>';
+				}
+			},
+		},
+		{ // 7
+			data: 'created',
+			name: 'created',
+			title: 'Created',
+			className: 'dtTbl_ColCTime',
+			searchable: false,
+			render: (data, type, row) => {
+				if(type === 'type' || type === 'sort') {
+					return data;
+				} else if(type === 'filter') {
+					return '';
+				} else {
+					return '<span title="' + _Utils$.escape_html(row['c-time']) + '">' + _Utils$.escape_html(data) + '</span>';
+				}
+			}
+		},
+	];
+
+	let theData = [###THE-DATA|json###];
+
+	smartJ$UI.DataTableInit('data-tbl-tokens', {
+		data : theData,
+		columns : theColumns,
+		responsive: true,
+		insensitive: false, // case sensitive search
+		filter: true,
+		sort: true,
+		paginate: true,
+		pagesize: 10,
+		pagesizes: [ 10, 25 ],
+		colorder: [
+			[ 7, 'desc' ], // created
+			[ 3, 'asc' ], // expires
+			[ 6, 'asc' ], // name
+		],
+		classButton: 'ux-button ux-button-xsmall',
+		classActiveButton: 'ux-button-primary',
+	});
+
+});
+</script>
+</div>
+[%%%/IF:HAVE-ACCESS%%%]
+</td></tr></table></div></center>

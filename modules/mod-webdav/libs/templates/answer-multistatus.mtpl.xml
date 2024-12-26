@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<d:multistatus xmlns:d="DAV:" xmlns:s="SMARTFRAMEWORKWEBDAV:"[###DAV-XML-PREFIX###]>
+[%%%IF:HTTP-STATUS:==207;%%%]
+	[%%%LOOP:ITEM%%%]
+		[%%%IF:ITEM.DAV-RESOURCE-TYPE:==collection;(1)%%%]
+	[@@@SUB-TEMPLATE:item-collection.mtpl.inc.xml@@@]
+		[%%%ELSE:ITEM.DAV-RESOURCE-TYPE(1)%%%]
+			[%%%IF:ITEM.DAV-RESOURCE-TYPE:==noncollection;(2)%%%]
+	[@@@SUB-TEMPLATE:item-noncollection.mtpl.inc.xml@@@]
+			[%%%ELSE:ITEM.DAV-RESOURCE-TYPE(2)%%%]
+	[@@@SUB-TEMPLATE:item-notfound.mtpl.inc.xml@@@]
+			[%%%/IF:ITEM.DAV-RESOURCE-TYPE(2)%%%]
+		[%%%/IF:ITEM.DAV-RESOURCE-TYPE(1)%%%]
+	[%%%/LOOP:ITEM%%%]
+[%%%ELSE:HTTP-STATUS%%%]
+	[@@@SUB-TEMPLATE:item-notfound.mtpl.inc.xml@@@]
+[%%%/IF:HTTP-STATUS%%%]
+</d:multistatus>
+<!-- # xml # r.20240116 # -->

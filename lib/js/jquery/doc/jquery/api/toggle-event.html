@@ -1,0 +1,144 @@
+<script>{
+		"title":
+			".toggle()",
+		"excerpt":
+			"Bind two or more handlers to the matched elements, to be executed on alternate clicks.",
+		"termSlugs": {
+			"category": [
+				"events/mouse-events","version/1.0","deprecated/deprecated-1.8","removed"
+			]
+		}
+	}</script><article id="toggle1" class="entry method"><h2 class="section-title">
+<span class="name">.toggle( handler, handler [, handler ] )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#jQuery">jQuery</a></span><span class="version-details">version deprecated: <a href="/category/version/1.8/">1.8</a>, removed: <a href="/category/version/1.9/">1.9</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Bind two or more handlers to the matched elements, to be executed on alternate clicks.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0/">1.0</a></span><a id="toggle-handler-handler-handler" href="#toggle-handler-handler-handler"><span class="icon-link"></span>.toggle( handler, handler [, handler ] )</a>
+</h4>
+<ul>
+<li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Event">Event</a> eventObject )</div>
+<div>A function to execute every even time the element is clicked.</div>
+</li>
+<li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Event">Event</a> eventObject )</div>
+<div>A function to execute every odd time the element is clicked.</div>
+</li>
+<li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Event">Event</a> eventObject )</div>
+<div>Additional handlers to cycle through after clicks.</div>
+</li>
+</ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <div class="warning">
+      <p>Note: This method signature was deprecated in jQuery 1.8 and removed in jQuery 1.9. jQuery also provides an animation method named <a href="/toggle/">.toggle()</a> that toggles the visibility of elements. Whether the animation or the event method is fired depends on the set of arguments passed.</p>
+    </div>
+    <p>The <code>.toggle()</code> method binds a handler for the <code>click</code> event, so the rules outlined for the triggering of <code>click</code> apply here as well.</p>
+    <p>For example, consider the HTML:</p>
+    <div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span> <span class="attribute">id</span>=<span class="value">&quot;target&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  Click here</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>Event handlers can then be bound to the <code>&lt;div&gt;</code>:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;#target&quot;</span> ).toggle(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  alert( <span class="string">&quot;First handler for .toggle() called.&quot;</span> );</code></div></div><div class="container"><div class="line"><code>}, <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  alert( <span class="string">&quot;Second handler for .toggle() called.&quot;</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>As the element is clicked repeatedly, the messages alternate:</p>
+    <p>
+      <samp>First handler for .toggle() called.</samp>
+      <br>
+      <samp>Second handler for .toggle() called.</samp>
+      <br>
+      <samp>First handler for .toggle() called.</samp>
+      <br>
+      <samp>Second handler for .toggle() called.</samp>
+      <br>
+      <samp>First handler for .toggle() called.</samp>
+    </p>
+    <p>If more than two handlers are provided, <code>.toggle()</code> will cycle among all of them. For example, if there are three handlers, then the first handler will be called on the first click, the fourth click, the seventh click, and so on.</p>
+    <p>The <code>.toggle()</code> method is provided for convenience. It is relatively straightforward to implement the same behavior by hand, and this can be necessary if the assumptions built into <code>.toggle()</code> prove limiting. For example, <code>.toggle()</code> is not guaranteed to work correctly if applied twice to the same element. Since <code>.toggle()</code> internally uses a <code>click</code> handler to do its work, we must unbind <code>click</code> to remove a behavior attached with <code>.toggle()</code>, so other <code>click</code> handlers can be caught in the crossfire. The implementation also calls <code>.preventDefault()</code> on the event, so links will not be followed and buttons will not be clicked if <code>.toggle()</code> has been called on the element.</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Toggle a style on table cells. (Not recommended. Use .toggleClass() instead.):</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;td&quot;</span> ).toggle(</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="keyword">this</span> ).addClass( <span class="string">&quot;selected&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  }, <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="keyword">this</span> ).removeClass( <span class="string">&quot;selected&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>);</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

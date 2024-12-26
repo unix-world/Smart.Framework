@@ -1,0 +1,67 @@
+<script>{
+		"title":
+			"deferred.always()",
+		"excerpt":
+			" Add handlers to be called when the Deferred object is either resolved or rejected. ",
+		"termSlugs": {
+			"category": [
+				"deferred-object","version/1.6"
+			]
+		}
+	}</script><article id="deferred-always1" class="entry method"><h2 class="section-title">
+<span class="name">deferred.always( alwaysCallbacks [, alwaysCallbacks ] )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Deferred">Deferred</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong> Add handlers to be called when the Deferred object is either resolved or rejected. </p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.6/">1.6</a></span><a id="deferred-always-alwaysCallbacks-alwaysCallbacks" href="#deferred-always-alwaysCallbacks-alwaysCallbacks"><span class="icon-link"></span>deferred.always( alwaysCallbacks [, alwaysCallbacks ] )</a>
+</h4>
+<ul>
+<li>
+<div><strong>alwaysCallbacks</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>
+        A function, or array of functions, that is called when the Deferred is resolved or rejected.
+      </div>
+</li>
+<li>
+<div><strong>alwaysCallbacks</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>
+        Optional additional functions, or arrays of functions, that are called when the Deferred is resolved or rejected.
+      </div>
+</li>
+</ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>The argument can be either a single function or an array of functions. When the Deferred is resolved or rejected, the <code>alwaysCallbacks</code> are called. Since <code>deferred.always()</code> returns the Deferred object, other methods of the Deferred object can be chained to this one, including additional <code>.always()</code> methods. When the Deferred is resolved or rejected, callbacks are executed in the order they were added, using the arguments provided to the <a href="/deferred.resolve/"><code>resolve</code></a>, <a href="/deferred.reject/"><code>reject</code></a>, <a href="/deferred.resolveWith/"><code>resolveWith</code></a> or <a href="/deferred.rejectWith/"><code>rejectWith</code></a> method calls. For more information, see the documentation for <a href="/category/deferred-object/">Deferred object</a>.</p>
+    <p><strong>Note:</strong> The <code>deferred.always()</code> method receives the arguments that were used to <code>.resolve()</code> or <code>.reject()</code> the <code>Deferred</code> object, which are often very different. For this reason, it&apos;s best to use it only for actions that do not require inspecting the arguments. In all other cases, use explicit <a href="/deferred.done/"><code>.done()</code></a> or <a href="/deferred.fail/"><code>.fail()</code></a> handlers since the arguments will have well-known orders.</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Since the <a href="/jQuery.get/"><code>jQuery.get()</code></a> method returns a <code>jqXHR</code> object, which is derived from a Deferred object, we can attach a callback for both success and error using the <code>deferred.always()</code> method.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.get( <span class="string">&quot;test.php&quot;</span> ).always(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  alert( <span class="string">&quot;$.get completed with success or error callback arguments&quot;</span> );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

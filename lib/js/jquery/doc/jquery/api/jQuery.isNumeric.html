@@ -1,0 +1,91 @@
+<script>{
+		"title":
+			"jQuery.isNumeric()",
+		"excerpt":
+			"Determines whether its argument represents a JavaScript number.",
+		"termSlugs": {
+			"category": [
+				"utilities","version/1.7"
+			]
+		}
+	}</script><article id="jQuery-isNumeric1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.isNumeric( value )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Boolean">Boolean</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Determines whether its argument represents a JavaScript number.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.7/">1.7</a></span><a id="jQuery-isNumeric-value" href="#jQuery-isNumeric-value"><span class="icon-link"></span>jQuery.isNumeric( value )</a>
+</h4>
+<ul><li>
+<div><strong>value</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Anything">Anything</a>
+</div>
+<div>The value to be tested.</div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>The <code>$.isNumeric()</code> method checks whether its argument represents a numeric value. If so, it returns <code>true</code>. Otherwise it returns <code>false</code>. The argument can be of any type.</p>
+    <p>As of jQuery 3.0 <code>$.isNumeric()</code> returns <code>true</code> only if the argument is of type <a href="/Types/#Number"><code>number</code></a>, or if it&apos;s of type <code>string</code> and it can be coerced into finite numbers. In all other cases, it returns <code>false</code>.</p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Sample return values of $.isNumeric with various inputs.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="comment">// true (numeric)</span></code></div></div><div class="container"><div class="line"><code>$.isNumeric( <span class="string">&quot;-10&quot;</span> )</code></div></div><div class="container"><div class="line"><code>$.isNumeric( <span class="string">&quot;0&quot;</span> )</code></div></div><div class="container"><div class="line"><code>$.isNumeric( <span class="number">0xFF</span> )</code></div></div><div class="container"><div class="line"><code>$.isNumeric( <span class="string">&quot;0xFF&quot;</span> )</code></div></div><div class="container"><div class="line"><code>$.isNumeric( <span class="string">&quot;8e5&quot;</span> )</code></div></div><div class="container"><div class="line"><code>$.isNumeric( <span class="string">&quot;3.1415&quot;</span> )</code></div></div><div class="container"><div class="line"><code>$.isNumeric( +<span class="number">10</span> )</code></div></div><div class="container"><div class="line"><code>$.isNumeric( <span class="number">0144</span> )</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="comment">// false (non-numeric)</span></code></div></div><div class="container"><div class="line"><code>$.isNumeric( <span class="string">&quot;-0x42&quot;</span> )</code></div></div><div class="container"><div class="line"><code>$.isNumeric( <span class="string">&quot;7.2acdgs&quot;</span> )</code></div></div><div class="container"><div class="line"><code>$.isNumeric( <span class="string">&quot;&quot;</span> )</code></div></div><div class="container"><div class="line"><code>$.isNumeric( {} )</code></div></div><div class="container"><div class="line"><code>$.isNumeric( <span class="literal">NaN</span> )</code></div></div><div class="container"><div class="line"><code>$.isNumeric( <span class="literal">null</span> )</code></div></div><div class="container"><div class="line"><code>$.isNumeric( <span class="literal">true</span> )</code></div></div><div class="container"><div class="line"><code>$.isNumeric( <span class="literal">Infinity</span> )</code></div></div><div class="container"><div class="line"><code>$.isNumeric( <span class="literal">undefined</span> )</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

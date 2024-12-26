@@ -1,0 +1,2 @@
+jQuery 3.3.1
+Api Doc @ https://github.com/jquery/api.jquery.com # 1.12.36

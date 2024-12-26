@@ -1,0 +1,297 @@
+<script>{
+		"title":
+			"deferred.then()",
+		"excerpt":
+			"Add handlers to be called when the Deferred object is resolved, rejected, or still in progress. ",
+		"termSlugs": {
+			"category": [
+				"deferred-object","version/1.5","version/1.7"
+			]
+		}
+	}</script><article id="deferred-then1" class="entry method"><h2 class="section-title">
+<span class="name">deferred.then( doneFilter [, failFilter ] [, progressFilter ] )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Promise">Promise</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Add handlers to be called when the Deferred object is resolved, rejected, or still in progress. </p>
+<ul class="signatures">
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.8/">1.8</a></span><a id="deferred-then-doneFilter-failFilter-progressFilter" href="#deferred-then-doneFilter-failFilter-progressFilter"><span class="icon-link"></span>deferred.then( doneFilter [, failFilter ] [, progressFilter ] )</a>
+</h4>
+<ul>
+<li>
+<div><strong>doneFilter</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>
+        A function that is called when the Deferred is resolved.
+      </div>
+</li>
+<li>
+<div><strong>failFilter</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>
+        An optional function that is called when the Deferred is rejected.
+      </div>
+</li>
+<li>
+<div><strong>progressFilter</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>
+        An optional function that is called when progress notifications are sent to the Deferred.
+      </div>
+</li>
+</ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.5/">1.5</a>, removed: <a href="/category/version/1.8/">1.8</a></span><a id="deferred-then-doneCallbacks-failCallbacks" href="#deferred-then-doneCallbacks-failCallbacks"><span class="icon-link"></span>deferred.then( doneCallbacks, failCallbacks )</a>
+</h4>
+<ul>
+<li>
+<div><strong>doneCallbacks</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>
+        A function, or array of functions, called when the Deferred is resolved.
+      </div>
+</li>
+<li>
+<div><strong>failCallbacks</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>
+        A function, or array of functions, called when the Deferred is rejected.
+      </div>
+</li>
+</ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.7/">1.7</a>, removed: <a href="/category/version/1.8/">1.8</a></span><a id="deferred-then-doneCallbacks-failCallbacks-progressCallbacks" href="#deferred-then-doneCallbacks-failCallbacks-progressCallbacks"><span class="icon-link"></span>deferred.then( doneCallbacks, failCallbacks [, progressCallbacks ] )</a>
+</h4>
+<ul>
+<li>
+<div><strong>doneCallbacks</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>
+        A function, or array of functions, called when the Deferred is resolved.
+      </div>
+</li>
+<li>
+<div><strong>failCallbacks</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>
+        A function, or array of functions, called when the Deferred is rejected.
+      </div>
+</li>
+<li>
+<div><strong>progressCallbacks</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>()</div>
+<div>
+        A function, or array of functions, called when the Deferred notifies progress.
+      </div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="longdesc" id="entry-longdesc">
+    <p><strong>Prior to jQuery 1.8</strong>, the arguments could be a function or an array of functions.</p>
+    <p>For all signatures, the arguments can be <code>null</code> if no callback of that type is desired. Alternatively, use <code>.done()</code>, <code>.fail()</code> or <code>.progress()</code> to set only one type of callback without filtering status or values. </p>
+
+    <p><strong>As of jQuery 1.8</strong>, the <code>deferred.then()</code> method returns a new promise that can filter the status and values of a deferred through a function, replacing the now-deprecated <code>deferred.pipe()</code> method. The <code>doneFilter</code> and <code>failFilter</code> functions filter the original deferred&apos;s resolved / rejected status and values. The <code>progressFilter</code> function filters any calls to the original deferred&apos;s <code>notify</code> or <code>notifyWith</code> methods. These filter functions can return a new value to be passed along to the promise&apos;s <code>.done()</code> or <code>.fail()</code> callbacks, or they can return another observable object (Deferred, Promise, etc) which will pass its resolved / rejected status and values to the promise&apos;s callbacks. If the filter function used is <code>null</code>, or not specified, the promise will be resolved or rejected with the same values as the original.</p>
+
+    <p>Callbacks are executed in the order they were added. Since
+      <code>deferred.then</code> returns a Promise, other methods of the
+      Promise object can be chained to this one, including additional
+      <code>.then()</code> methods.
+    </p>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Examples:</h2></header><div class="entry-example" id="example-0">
+<p>Since the <a href="/jQuery.get/"><code>jQuery.get</code></a> method returns a jqXHR object, which is derived from a Deferred object, we can attach handlers using the <code>.then</code> method.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.get( <span class="string">&quot;test.php&quot;</span> ).then(</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    alert( <span class="string">&quot;$.get succeeded&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  }, <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    alert( <span class="string">&quot;$.get failed!&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  }</code></div></div><div class="container"><div class="line"><code>);</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-1">
+<p>Filter the resolve value:</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>deferred.then demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">button</span>&gt;</span>Filter Resolve<span class="tag">&lt;/<span class="title">button</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">p</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code><span class="keyword">var</span> filterResolve = <span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">var</span> defer = $.Deferred(),</code></div></div><div class="container"><div class="line"><code>    filtered = defer.then(<span class="keyword">function</span>( value ) {</code></div></div><div class="container"><div class="line"><code>      <span class="keyword">return</span> value * <span class="number">2</span>;</code></div></div><div class="container"><div class="line"><code>    });</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  defer.resolve( <span class="number">5</span> );</code></div></div><div class="container"><div class="line"><code>  filtered.done(<span class="keyword">function</span>( value ) {</code></div></div><div class="container"><div class="line"><code>    $( <span class="string">&quot;p&quot;</span> ).html( <span class="string">&quot;Value is ( 2*5 = ) 10: &quot;</span> + value );</code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code>};</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;button&quot;</span> ).on( <span class="string">&quot;click&quot;</span>, filterResolve );</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div>
+<div class="entry-example" id="example-2">
+<p>Filter reject value:</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> defer = $.Deferred(),</code></div></div><div class="container"><div class="line"><code>  filtered = defer.then( <span class="literal">null</span>, <span class="keyword">function</span>( value ) {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">return</span> value * <span class="number">3</span>;</code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>defer.reject( <span class="number">6</span> );</code></div></div><div class="container"><div class="line"><code>filtered.fail(<span class="keyword">function</span>( value ) {</code></div></div><div class="container"><div class="line"><code>  alert( <span class="string">&quot;Value is ( 3*6 = ) 18: &quot;</span> + value );</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<div class="entry-example" id="example-3">
+<p>Chain tasks:</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="keyword">var</span> request = $.ajax( url, { dataType: <span class="string">&quot;json&quot;</span> } ),</code></div></div><div class="container"><div class="line"><code>  chained = request.then(<span class="keyword">function</span>( data ) {</code></div></div><div class="container"><div class="line"><code>    <span class="keyword">return</span> $.ajax( url2, { data: { user: data.userId } } );</code></div></div><div class="container"><div class="line"><code>  });</code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>chained.done(<span class="keyword">function</span>( data ) {</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// data retrieved from url2 as provided by the first request</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

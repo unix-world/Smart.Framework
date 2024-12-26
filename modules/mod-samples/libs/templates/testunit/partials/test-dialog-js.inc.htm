@@ -1,0 +1,16 @@
+[%%%COMMENT%%%]
+// Partial Template: TestUnit.Partials.DialogJs
+[%%%/COMMENT%%%]
+jQuery('#qunit-test-result').html('[###TXT-MAIN-HTML|js###]');
+if((typeof QUnit == 'undefined') && (typeof(smartJ$Browser) != 'undefined')) {
+	smartJ$Browser.AlertDialog(
+		'<img width="32" src="[###IMG-SIGN|js|html###]" align="right"><h3 class="inline">[###TXT-MAIN-HTML|js###]</h3><hr><span style="color:#333333;"><img width="64" src="[###IMG-CHECK|js|html###]" align="right">[###TXT-INFO-HTML|js###]<br>',
+		'',
+		'[###TEST-INFO|js###]',
+		[###DIALOG-WIDTH|int###],
+		[###DIALOG-HEIGHT|int###]
+	);
+}
+[%%%COMMENT%%%]
+// #END :: Partial Template: TestUnit.Partials.DialogJs
+[%%%/COMMENT%%%]

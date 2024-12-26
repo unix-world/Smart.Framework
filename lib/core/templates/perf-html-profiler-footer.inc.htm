@@ -1,0 +1,185 @@
+<!-- HTML Performance Profiler (footer) # r.20210526 -->
+<script>
+(function(){
+
+	var copyright = '(c) 2021 unix-world.org';
+
+	if(
+		(typeof SmartFrameworkHTMLPerformanceProfilerSTARTMark == 'undefined') ||
+		(typeof SmartFrameworkHTMLPerformanceProfilerENDMark == 'undefined') ||
+		(typeof SmartFrameworkHTMLPerformanceProfilerEnabled == 'undefined') ||
+		(SmartFrameworkHTMLPerformanceProfilerEnabled !== true)
+	) {
+		return;
+	}
+
+	if(window.performance) {
+		try {
+			window.performance.mark(SmartFrameworkHTMLPerformanceProfilerENDMark);
+		} catch(err){
+			return;
+		}
+	}
+
+	var displayLocalNumber = function(num, decimals) {
+		if(typeof decimals == 'undefined') {
+			decimals = 1;
+		}
+		var lNum;
+		try {
+			lNum = num.toLocaleString('en-US', { minimumFractionDigits : decimals });
+		} catch(err) {
+			lNum = num;
+		}
+		return lNum;
+	}
+
+	var theNavUrl = '(current)';
+	var timeTotalResources = 0; // if there are parallel threads, making sum of durations is not reflecting the reality ; fix: calculate as ((theTimeLoadingLastResource - theTimeLoadingFirstResource) + theDurationOfLastResource)
+	var theResourcesNum = 0;
+	var theResourcesArr = [];
+	var recordedFirstResourceLoading = false;
+	var theTimeLoadingFirstResource = 0;
+	var theTimeLoadingLastResource = 0;
+	var theDurationOfLastResource = 0;
+	var recordedPaintEvents = 0;
+	var markedPaintEvents = false;
+	var theTimeFirstPaint = 0;
+	var theTimeFirstContentfulPaint = 0;
+	var theTimeRenderStart = 0;
+	var theTimeRenderDone = 0;
+
+	var processPerformanceEntry = function(obj) {
+
+		// var properties = ['name', 'entryType', 'startTime', 'duration'];
+		// var methods = ['toJSON'];
+
+		if((!obj) || (obj === null) || (typeof obj !== 'object')) {
+			return;
+		}
+
+		if(!obj['entryType']) {
+			return;
+		}
+		var entryType = String(obj['entryType'] || '');
+
+		var name = String(obj['name'] || '');
+
+		var startTime = parseInt(obj['startTime'] || 0);
+		if(!isFinite(startTime) || isNaN(startTime)) {
+			startTime = 0;
+		}
+
+		var duration = parseInt(obj['duration'] || 0);
+		if(!isFinite(duration) || isNaN(duration)) {
+			duration = 0;
+		}
+
+		switch(entryType.toLowerCase()) {
+			case 'navigation':
+				theNavUrl = name;
+				break;
+			case 'resource':
+				var theResourcePrefix = '';
+				if(markedPaintEvents === false) {
+					if(recordedPaintEvents > 0) {
+						markedPaintEvents = true;
+						theResourcePrefix = '*** FP/FCP *** ';
+					}
+				}
+				theResourcesArr[theResourcesNum] = '#' + (theResourcesNum + 1) + ' [' + displayLocalNumber(duration) + ' ms] ' + theResourcePrefix + ((name.indexOf('data:') === 0) ? (name.substring(0, 25) + '...') : name); // avoid display long data URLs
+				theResourcesNum++;
+				if(recordedFirstResourceLoading !== true) {
+					recordedFirstResourceLoading = true;
+					theTimeLoadingFirstResource = startTime;
+				}
+				if(startTime >= theTimeLoadingLastResource) {
+					theTimeLoadingLastResource = startTime;
+				}
+				theDurationOfLastResource = duration;
+				break;
+			case 'paint':
+				if(name.toLowerCase() === 'first-paint') {
+					recordedPaintEvents++;
+					if(startTime >= theTimeFirstPaint) {
+						theTimeFirstPaint = startTime;
+					}
+				} else if(name.toLowerCase() === 'first-contentful-paint') {
+					recordedPaintEvents++;
+					if(startTime >= theTimeFirstContentfulPaint) {
+						theTimeFirstContentfulPaint = startTime;
+					}
+				}
+				break;
+			case 'mark':
+				if(name === SmartFrameworkHTMLPerformanceProfilerSTARTMark) {
+					if(startTime >= theTimeRenderStart) {
+						theTimeRenderStart = startTime;
+					}
+				} else if(name === SmartFrameworkHTMLPerformanceProfilerENDMark) {
+					if(startTime >= theTimeRenderDone) {
+						theTimeRenderDone = startTime;
+					}
+				}
+				break;
+			default:
+				// nothing to do ...
+		}
+
+	}
+
+	var theLog = [];
+
+	theLog[theLog.length] = '----- Smart.Framework HTML Performance Profiler LOG: START# -----';
+	theLog[theLog.length] = '    - Navigation URL: `' + theNavUrl + '`';
+
+	if(!window.performance) {
+		theLog[theLog.length] = '    - N/A';
+	} else {
+		var estimationOffset = 1.5;
+		var p;
+		try {
+			p = window.performance.getEntries();
+		} catch(err) {
+			p = null;
+			console.error('HTML Performance Profiler ERRORS: ' + err);
+		}
+		if(Array.isArray(p)) {
+			for(var i=0; i<p.length; i++) {
+				processPerformanceEntry(p[i]);
+			}
+			timeTotalResources = ((theTimeLoadingLastResource - theTimeLoadingFirstResource) + theDurationOfLastResource);
+			theLog[theLog.length] = '    - Page Render Start at: ' + theTimeRenderStart + ' ms';
+			theLog[theLog.length] = '    - First Paint at: ' + ((theTimeFirstPaint ? displayLocalNumber(theTimeFirstPaint) + ' ms' : displayLocalNumber(theTimeRenderStart + estimationOffset) + ' ms (estimated)'));
+			theLog[theLog.length] = '    - First Contentful Paint at: ' + ((theTimeFirstContentfulPaint ? displayLocalNumber(theTimeFirstContentfulPaint) + ' ms' : displayLocalNumber(theTimeRenderStart + estimationOffset) + ' ms (estimated)'));
+			theLog[theLog.length] = '    - Page Render completed in: ' + displayLocalNumber(theTimeRenderDone) + ' ms';
+			theLog[theLog.length] = '    - Background Loading Page Resources (CSS, JS, Media) completed in: ' + displayLocalNumber(timeTotalResources) + ' ms (' + displayLocalNumber(theResourcesNum,0) + ' resources)';
+			theLog[theLog.length] = '    - TOTAL PAGE TIME: ' + displayLocalNumber(theTimeRenderDone + timeTotalResources) + ' ms';
+		} else {
+			theLog[theLog.length] = '    - ! FAILED ! No Performance Objects Found ...';
+		}
+	}
+
+	var theProfilerVersion = [%%%IF:MODE:==dev;%%%]'# Version: [###VERSION|js|html###] ';[%%%ELSE:MODE%%%]''; // no version[%%%/IF:MODE%%%]
+
+	theLog[theLog.length] = '    [ HTML Performance Profiler ' + theProfilerVersion + '# ' + copyright + ' ]';
+
+	console.log('---------- Smart.Framework HTML Performance Profiler LIST OF PAGE RESOURCES: START# ----------\n' + '@ Navigation URL: `' + theNavUrl + '`\n---------- (' + displayLocalNumber(theResourcesNum,0) + ' resources loaded) ----------\n' + theResourcesArr.join('\n') + '\n---------- Smart.Framework HTML Performance Profiler LIST OF PAGE RESOURCES: #END ----------\n');
+
+	theLog[theLog.length] = '----- Smart.Framework HTML Performance Profiler LOG: #END -----';
+
+	console.log(theLog.join('\n'));
+
+[%%%IF:MODE:==dev;%%%]
+	theLog[1] = '    - Navigation URL (see in the browser addressbar)'; // clear Navigation URL
+	try {
+		document.write('<div onmouseover="this.style.opacity=0.95;" onmouseout="this.style.opacity=0.55;" onClick="this.style.visibility=\'hidden\';" title="Smart.Framework.HTML.Performance.Profiler @ Mode: `[###MODE|html|js###]`\nClick on this info message to hide it ..." style="cursor:default; position:fixed; bottom:25px; right:25px; padding:10px; background:#223344; color:#FFFFFF; font-weight:bold; font-size:1rem; opacity:0.55; border-radius:3px;">*** This info message is displayed just in DEV mode. ***<br>Smart.Framework.HTML.Performance.Profiler is ENABLED.<br>Performance metrics are logged in the Browser Console ...<pre id="Smart.Framework.HTML.Performance.Profiler.Log"></pre></div>');
+		setTimeout(function(){ document.getElementById('Smart.Framework.HTML.Performance.Profiler.Log').innerText = theLog.join('\n'); }, 250);
+	} catch(err){}
+[%%%ELSE:MODE%%%]
+	// no info message
+[%%%/IF:MODE%%%]
+
+})();
+</script>
+<!-- # -->

@@ -1,0 +1,143 @@
+<script>{
+		"title":
+			".error()",
+		"excerpt":
+			"Bind an event handler to the \"error\" JavaScript event.",
+		"termSlugs": {
+			"category": [
+				"events/browser-events","version/1.0","version/1.4.3","deprecated/deprecated-1.8","removed"
+			]
+		}
+	}</script><article id="error1" class="entry method"><h2 class="section-title">
+<span class="name">.error( handler )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#jQuery">jQuery</a></span><span class="version-details">version deprecated: <a href="/category/version/1.8/">1.8</a>, removed: <a href="/category/version/3.0/">3.0</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Bind an event handler to the &quot;error&quot; JavaScript event.</p>
+<ul class="signatures">
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.0/">1.0</a></span><a id="error-handler" href="#error-handler"><span class="icon-link"></span>.error( handler )</a>
+</h4>
+<ul><li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Event">Event</a> eventObject )</div>
+<div>A function to execute when the event is triggered.</div>
+</li></ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.4.3/">1.4.3</a></span><a id="error-eventData-handler" href="#error-eventData-handler"><span class="icon-link"></span>.error(  [eventData ], handler )</a>
+</h4>
+<ul>
+<li>
+<div><strong>eventData</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Anything">Anything</a>
+</div>
+<div>An object containing data that will be passed to the event handler.</div>
+</li>
+<li>
+<div><strong>handler</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Event">Event</a> eventObject )</div>
+<div>A function to execute each time the event is triggered.</div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>This method is a shortcut for <code>.on( &quot;error&quot;, handler )</code>.</p>
+    <p><b>As of jQuery 1.8</b>, the <code>.error()</code> method is deprecated. Use <code>.on( &quot;error&quot;, handler )</code> to attach event handlers to the <code>error</code> event instead.</p>
+    <p>The <code>error</code> event is sent to elements, such as images, that are referenced by a document and loaded by the browser. It is called if the element was not loaded correctly.</p>
+    <p>For example, consider a page with a simple image element:</p>
+    <div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">img</span> <span class="attribute">alt</span>=<span class="value">&quot;Book&quot;</span> <span class="attribute">id</span>=<span class="value">&quot;book&quot;</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>The event handler can be bound to the image:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;#book&quot;</span> )</code></div></div><div class="container"><div class="line"><code>  .error(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    alert( <span class="string">&quot;Handler for .error() called.&quot;</span> )</code></div></div><div class="container"><div class="line"><code>  })</code></div></div><div class="container"><div class="line"><code>  .attr( <span class="string">&quot;src&quot;</span>, <span class="string">&quot;missing.png&quot;</span> );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>If the image cannot be loaded (for example, because it is not present at the supplied URL), the alert is displayed:</p>
+    <p>
+      <samp>Handler for .error() called.</samp>
+    </p>
+    <div class="warning">
+      <p>The event handler <em>must</em> be attached before the browser fires the <code>error</code> event, which is why the example sets the <code>src</code> attribute after attaching the handler. Also, the <code>error</code> event may not be correctly fired when the page is served locally; <code>error</code> relies on HTTP status codes and will generally not be triggered if the URL uses the <code>file:</code> protocol.</p>
+    </div>
+    <p>Note: A jQuery <code>error</code> event handler should not be attached to the <code>window</code> object. The browser fires the <code>window</code>&apos;s <code>error</code> event when a script error occurs. However, the window <code>error</code> event receives different arguments and has different return value requirements than conventional event handlers. Use <code>window.onerror</code> instead.</p>
+  </div>
+<h3>Additional Notes:</h3>
+<div class="longdesc"><ul><li>
+			As the <code>.error()</code> method is just a shorthand for <code>.on( &quot;error&quot;, handler )</code>, detaching is possible using <code>.off( &quot;error&quot; )</code>.
+		</li></ul></div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>To replace all the missing images with another, you can update the <code>src</code> attribute inside the callback passed to <code>.error()</code>. Be sure that the replacement image exists; otherwise the <code>error</code> event will be triggered indefinitely.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="comment">// If missing.png is missing, it is replaced by replacement.png</span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;img&quot;</span> )</code></div></div><div class="container"><div class="line"><code>  .error(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>    $( <span class="keyword">this</span> ).attr( <span class="string">&quot;src&quot;</span>, <span class="string">&quot;replacement.png&quot;</span> );</code></div></div><div class="container"><div class="line"><code>  })</code></div></div><div class="container"><div class="line"><code>  .attr( <span class="string">&quot;src&quot;</span>, <span class="string">&quot;missing.png&quot;</span> );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

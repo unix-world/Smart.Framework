@@ -1,0 +1,423 @@
+<!-- MongoDB List Collection -->
+<link rel="stylesheet" href="lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css">
+<style>
+#filter-query, #filter-query *, #records-list *, .json-render-indexes * {
+	font-family: 'IBM Plex Mono', mono;
+	font-smooth: always;
+}
+</style>
+[%%%IF:QMODE:==visual;%%%]
+[@@@SUB-TEMPLATE:!lib/js/jshilitecode/templates/syntax-hilitecode-init.inc.htm!@@@]
+[%%%ELSE:QMODE%%%]
+[@@@SUB-TEMPLATE:partials/code-editor.mtpl.inc.htm@@@]
+<script type="text/javascript">
+var cmInstance;
+jQuery(() => {
+	cmInstance = drawCodeEditor('cmInstance', 'filter-query', 'codeEditorMenuArea', 'calc(100% - 20px)', '100%');
+});
+</script>
+[%%%/IF:QMODE%%%]
+<!-- Json Viewer -->
+<script src="lib/js/jquery/jsonview/jquery.json-viewer.js"></script>
+<link href="lib/js/jquery/jsonview/jquery.json-viewer.css" type="text/css" rel="stylesheet">
+<style type="text/css">
+.record-area {
+	border: 1px solid #EEEEEE;
+	padding: 0.25rem 1rem;
+	margin: 0;
+	margin-bottom: 7px;
+}
+.record-area *, .query-builder * {
+	font-size: 0.8125rem !important;
+}
+.record-area .record-num {
+	color: #778888 !important;
+}
+.record-area .record-id {
+	color: #AABBCC;
+	font-size: 0.75rem !important;
+	text-align: right !important;
+}
+.query-info {
+	font-size: 0.75rem !important;
+	color: #778888 !important;
+	letter-spacing: 0.0625rem;
+}
+.query-builder {
+	background: #FEFEFE;
+	padding: 5px;
+	margin: 0;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+#query-error {
+	display: block;
+	margin-top: 7px;
+	color: #ED2839 !important;
+	font-weight: bold !important;
+	white-space: pre !important;
+}
+.json-render-area {
+	width: 96%;
+	min-height: 27px;
+	border: 0;
+	padding: 0.25rem 1.5rem;
+	margin: 0;
+	margin-left: 1rem;
+}
+label {
+	font-weight: bold;
+}
+#indexes-info {
+	background: #FCFCFC;
+	border: 1px solid #ECECEC;
+	padding: 5px;
+}
+#indexes-info pre {
+	overflow: auto;
+	min-width: 250px;
+	height: 150px;
+}
+</style>
+<script>
+jQuery(() => {
+	const options = {
+		collapsed: -1, // -1 = colapse only 2nd level
+		withQuotes: false // add quotes arround keys
+	};
+	let input = '';
+	let isOK = true;
+	const $el = jQuery('.json-render-indexes');
+	try {
+		input = JSON.parse(String($el.attr('data-json')));
+	} catch(err) {
+		isOK = false;
+		input = '{ERR}';
+	}
+	if(isOK) {
+		$el.jsonViewer(input, options);
+		$el.attr('data-json', '');
+	} else {
+		$el.html('<span style="color:#FF3300; font-weight:bold;">{ERR}</span><br><textarea style="width:250px; height:50px;" spellcheck="false" readonly>' + smartJ$Utils.escape_html($el.attr('data-json')) + '</textarea>');
+	}
+});
+</script>
+<script>
+jQuery(() => {
+	const options = {
+		collapsed: [%%%IF:TOTAL-RECORDS:==1;%%%]false[%%%ELSE:TOTAL-RECORDS%%%]true[%%%/IF:TOTAL-RECORDS%%%], // 1 = colapse only first level
+		withQuotes: [%%%IF:QMODE:==visual;%%%]false[%%%ELSE:QMODE%%%]true[%%%/IF:QMODE%%%] // add quotes arround keys
+	};
+	jQuery('.json-render-area').each((index, elem) => {
+		const $el = jQuery(elem);
+		let input = '';
+		let isOK = true;
+		try {
+			input = JSON.parse(String($el.attr('data-json') || ''));
+		} catch(err) {
+			isOK = false;
+			input = '{ERR}';
+		}
+		if(isOK) {
+			$el.jsonViewer(input, options);
+			$el.attr('data-json', '');
+		} else {
+			$el.empty().html('<span style="color:#FF3300; font-weight:bold;">{ERR}</span><br><textarea style="width:250px; height:50px;" spellcheck="false" readonly>' + smartJ$Utils.escape_html(jQuery(this).attr('data-json')) + '</textarea>');
+		}
+	});
+});
+</script>
+[@@@SUB-TEMPLATE:partials/test-json.mtpl.inc.htm@@@]
+<script>
+var jsonEditor;
+var setDisplayMode = '[###QMODE|js###]';
+const theQDisplayMode = '[###QMODE|js###]';
+const theListLocation = '[###PAGE-URL|js###]';
+const theCookieNameCollection = '[###COOKIENAME-COLLECTION|js###]';
+const sortMax = [###SORT-MAX|int###];
+const NumAllRecords = [###TOTAL-RECORDS|int###];
+const theQFormat = '[###QFORMAT|js###]';
+
+const selectCollection = () => {
+	let selected = jQuery('#collections-list').val();
+	if(!selected) {
+		selected = '';
+	}
+	smartJ$Browser.setCookie(String(theCookieNameCollection), String(selected));
+	self.location = String(theListLocation);
+};
+
+const handleButtonSelectById = () => {
+	const theID = jQuery('#filter-_id').val();
+	let theLocation = String(theListLocation);
+	if(theID) {
+		theLocation = theLocation + '&qf=qry' + '&id_=' + smartJ$Utils.escape_url(theID);
+	}
+	self.location = String(theLocation);
+};
+
+const handleButtonCmd = () => {
+	reLocation = smartJ$Utils.stringPureVal(getQueryURLParams() || '', true);
+	if(reLocation != '') {
+		self.location = String(theListLocation) + '&qf=cmd' + String(reLocation);
+	} else {
+		return false;
+	}
+};
+
+const handleHideDeleteButton = () => {
+	if(theQFormat != 'qry') {
+		return;
+	}
+	const $bttn = jQuery('#delete-all-selected-records-btn');
+	if($bttn.prop('disabled') === true) {
+		return;
+	}
+	$bttn.attr('onclick', '').prop('disabled', true);
+};
+
+const handleButtonDelete = (confirmed) => {
+	const allRecs = smartJ$Utils.format_number_int(NumAllRecords, false);
+	if(allRecs < 1) {
+		jQuery.alertable.alert('<h4>There are NO selected records to Delete ...</h4>', { html:true }).always(() => {
+			return false;
+		});
+	} else {
+		if(confirmed !== 'confirmed') {
+			jQuery.alertable.confirm('<h4 style="color:#ED2839;">Confirm you want to delete `' + smartJ$Utils.escape_html(allRecs) + '` records ?</h4> <br><h5>This action will <i>permanently DELETE</i> all the selected records by the current Query (JSON) from the <i>Collection</i>.</h5>', { html:true }).then(() => {
+				handleButtonDelete('confirmed');
+			}, () => {
+				return false;
+			});
+		} else {
+			reLocation = smartJ$Utils.stringPureVal(getQueryURLParams() || '', true);
+			if(reLocation == '') {
+				console.warn('ERR # Delete Query: Failed handle Query: the query URI is empty');
+				return false;
+			}
+			const pageRefreshOk = () => {
+				setTimeout(() => {
+					self.location = self.location;
+				}, 1750);
+			};
+			const pageRefreshErr = () => {
+				setTimeout(() => {
+					self.location = self.location;
+				}, 3750);
+			};
+			smartJ$Browser.SubmitFormByAjax(null, '[###URL-DELETE-SLRECORDS|js###]' + reLocation, 'yes', pageRefreshOk, pageRefreshErr, pageRefreshErr, true)
+			return false;
+		}
+	}
+	return false;
+};
+
+const handleButtonFind = () => {
+	reLocation = smartJ$Utils.stringPureVal(getQueryURLParams() || '', true);
+	if(reLocation != '') {
+		self.location = String(theListLocation) + '&qf=qry' + String(reLocation);
+	} else {
+		return false;
+	}
+};
+
+const getQueryURLParams = () => {
+	jQuery('#query-error').empty().text('');
+	let theQueryStr = '';
+	if(theQDisplayMode === 'visual') {
+		if(!jsonEditor) {
+			alert('ERROR: JSON Editor not found !');
+			return '';
+		}
+		theQueryStr = JSON.stringify(jsonEditor.get(), null, 2);
+	} else {
+		theQueryStr = jQuery('#filter-query').val();
+	}
+	if(!theQueryStr) {
+		theQueryStr = '{}';
+	}
+	const errTestJson = testValidJson(theQueryStr);
+	if(!!errTestJson) {
+		jQuery('#query-error').empty().text('Invalid Query JSON Format' + '\n' + errTestJson);
+		return '';
+	}
+	let sortingArr = {};
+	let valFld, varSelBox;
+	for(let i=0; i<sortMax; i++) {
+		valFld = String(jQuery('#sort-f' + i).val());
+		varSelBox = String(jQuery('#sort-m' + i).val());
+		varSelBox = varSelBox.toUpperCase();
+		if(varSelBox !== 'DESC') {
+			varSelBox = 'ASC';
+		}
+		if(valFld) {
+			sortingArr[valFld] = varSelBox;
+		}
+	}
+	valFld = null;
+	varSelBox = null;
+	let urlParamSorting = '';
+	for(let key in sortingArr) {
+		if(key) {
+			urlParamSorting += '&sorting[' + smartJ$Utils.escape_url(key) + ']=' + smartJ$Utils.escape_url(sortingArr[key]);
+		}
+	}
+	sortingArr = null;
+	const urlParamsAll = '&mode=' + smartJ$Utils.escape_url(setDisplayMode) + '&query_=' + smartJ$Utils.escape_url(theQueryStr) + urlParamSorting;
+	return String(urlParamsAll);
+}
+[%%%IF:QMODE:==visual;%%%]
+
+const handleButtonShowJson = () => {
+	if(!jsonEditor) {
+		alert('ERROR: JSON Editor not found !');
+		return;
+	}
+	let json;
+	try {
+		json = jsonEditor.get();
+		SmartSimpleDialog.Dialog_Alert('<div id="hjls-div-dlg"><pre style="max-width:calc(100% - 5px) !important; border:1px solid #EEEEEE;"><code id="hilite-json-dlg" data-syntax="mongodb">' + smartJ$Utils.escape_html(String(JSON.stringify(json, null, 2))) + '</code></pre></div><' + 'script' + '>setTimeout(function(){ SmartJS_Custom_Syntax_Highlight(\'#hjls-div-dlg\') }, 10);</' + 'script' + '>', null, 'Query: JSON', Math.floor(jQuery(window).width() * 0.8), Math.floor(jQuery(window).height() * 0.75));
+	} catch(err){
+		jQuery.alertable.alert('Cannot Get Editor JSON `' + err + '`').always(()=>{});
+	}
+}
+[%%%/IF:QMODE%%%]
+</script>
+<img src="lib/core/img/db/mongodb-logo.svg" width="48" height="48" align="right" style="margin-right:5px; cursor:help;" title="MongoDB Server @ `[###HOST|html###]:[###PORT|html###]` # Version: `[###SRV-VERSION|html###]` # PHP-EXT: `[###CLI-VERSION|html###]`">
+<div style="margin-bottom:10px; margin-top:10px;"><div style="display:inline-block; margin-bottom:20px; font-size:1.5rem; font-weight:bold;"><span style="color:#778899;">MongoDB :: </span>Database:&nbsp;<span style="color:#5E6885; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|int###]">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection:&nbsp;</div>[@@@SUB-TEMPLATE:partials/mongodb-collections.mtpl.inc.htm@@@] <a href="[###PAGE-URL|html###]" class="ux-button ux-button-small ux-button-alt ux-button-spacing"><i style="color:#444444;" class="sfi sfi-loop"></i>&nbsp;&nbsp;Refresh</a> <a class="ux-button ux-button-small ux-button-primary ux-button-spacing" data-smart="open.modal" href="[###URL-NEW-RECORD|html###]" title="Insert New Record"><i class="sfi sfi-plus"></i>&nbsp;&nbsp;New&nbsp;Record</a> <a class="ux-button ux-button-special ux-button-small ux-button-spacing" data-smart="open.modal" href="[###URL-DROP-COLLECTION|html###]" title="Drop Collection and Delete All Records"><i class="sfi sfi-bin"></i>&nbsp;&nbsp;Drop&nbsp;Collection</a></div>
+<div class="query-builder">
+	<table width="96%">
+		<tr valign="middle">
+			<td align="left" width="50%">
+				<b>_id:</b> <input id="filter-_id" name="filter[_id]" type="text" maxlength="255" class="ux-field" value="[###FILTER-ID_|html###]" style="width:70%" placeholder="Filter by UID"> <button class="ux-button ux-button-small ux-button-details" onClick="handleButtonSelectById();" title="Find One Record by UID"><i class="sfi sfi-filter"></i>&nbsp;&nbsp;Find&nbsp;Record</button>
+			</td>
+			<td align="right" width="50%">
+				<div style="display:inline-block; border:1px solid #EEEEEE; color:#AAAAAA; font-weight:bold; letter-spacing: 0.125rem; padding-left:5px; padding-right:5px;">mongodb://<span style="color:#FFAA00;">[###HOST|html###]</span>:<span style="color:#FFAA00;">[###PORT|html###]</span>/<span style="color:#61B000;">[###DATABASE|html###]</span>.<span style="color:#ED2838;">[###COLLECTION|html###]</span>&nbsp;#&nbsp;<span style="color:##666699; cursor:help;" title="[###COLL-TOT-SIZE-BYTES|html###] Bytes">[###COLL-TOT-SIZE-PRETTY|html###]</span></div>
+			</td>
+		</tr>
+	</table>
+	<table width="96%">
+		<tr valign="top">
+			<td title="Query" onclick="handleHideDeleteButton();">
+				[%%%IF:QMODE:==visual;%%%]
+				[@@@SUB-TEMPLATE:partials/json-editor.mtpl.inc.htm@@@]
+				<div id="filter-query" data-mode="visual" onclick="handleHideDeleteButton();" style="width: calc(96vw - 720px) !important; min-width:200px !important; height:228px !important;"></div>
+				<script>
+					drawJsonEditor('filter-query', '[###QUERY|js###]');
+				</script>
+				[%%%ELSE:QMODE%%%]
+				<div style="width: calc(96vw - 700px) !important; min-width:188px !important; height:200px;">
+					<div id="codeEditorMenuArea" onclick="handleHideDeleteButton();"></div>
+					<textarea id="filter-query" data-mode="raw" name="filter[query]" maxlength="65535" class="ux-field" style="width:100%; height:100%;" spellcheck="false" onKeyDown="smartJ$Browser.catchKeyTAB(event);">[###QUERY|html###]</textarea>
+				</div>
+				[%%%/IF:QMODE%%%]
+			</td>
+			<td>
+				&nbsp;
+			</td>
+			<td style="min-width:200px;[%%%IF:QFORMAT:==cmd;%%%]cursor:not-allowed;[%%%/IF:QFORMAT%%%]">
+				<div style="[%%%IF:QFORMAT:==cmd;%%%]opacity:0.28;pointer-events:none;[%%%/IF:QFORMAT%%%]">
+				[%%%LOOP:SORTING%%%]
+				<input id="sort-f[###SORTING._-ITERATOR-_|int###]" name="sort[f[###SORTING._-ITERATOR-_|int###]]" type="text" maxlength="255" size="10" class="ux-field filter-field" value="[###SORTING.ID-FIELD|html###]">&nbsp;[###SORTING.HTML-FIELD###]<br>
+				[%%%/LOOP:SORTING%%%]
+				</div>
+			</td>
+			<td>
+				&nbsp;
+			</td>
+			<td valign="top">
+				<button[%%%IF:QFORMAT:==cmd;%%%] disabled[%%%/IF:QFORMAT%%%] class="ux-button ux-button-small ux-button-details ux-button-spacing" style="width:100%;" onClick="handleButtonFind();" title="Find and Display the Record(s) that match the Query (JSON)"><i class="sfi sfi-search"></i>&nbsp;&nbsp;Show&nbsp;Records&nbsp;&nbsp;</button>
+				<br>
+				<button[%%%IF:QFORMAT:!=qry;%%%] disabled[%%%/IF:QFORMAT%%%] id="delete-all-selected-records-btn" class="ux-button ux-button-small ux-button-special ux-button-spacing" style="width:100%;" onClick="handleButtonDelete();" title="Delete ALL the Record(s) that match the current Selection / Query (JSON)"><i class="sfi sfi-bin2"></i>&nbsp;&nbsp;Delete&nbsp;Records&nbsp;&nbsp;</button>
+				<br>
+				<button[%%%IF:QFORMAT:==qry;%%%] disabled[%%%/IF:QFORMAT%%%] class="ux-button ux-button-small ux-button-info ux-button-spacing" style="width:100%;" onClick="handleButtonCmd();" title="Run a command on MongoDB Server (JSON)"><i class="sfi sfi-cog"></i>&nbsp;&nbsp;Run&nbsp;Command&nbsp;&nbsp;</button>
+				<br>
+				<br>
+				<div style="text-align:center;"><span title="Switch between Visual JSON Mode and Raw JSON Mode"><input id="visual-mode-switch" type="checkbox" class="ux-field" onClick="setDisplayMode = jQuery(this).is(':checked') ? 'visual' : 'raw';" [%%%IF:QMODE:==visual;%%%]checked[%%%/IF:QMODE%%%]><label for="visual-mode-switch" style="cursor:help;">Visual&nbsp;JSON&nbsp;Mode</label></span></div>
+				[%%%IF:QMODE:==visual;%%%]
+				<button class="ux-button ux-button-small ux-button-spacing" style="width:100%;" onClick="handleButtonShowJson();" title="Display the Raw Query JSON (from the Visual JSON Query Editor)"><i style="color:#444444;" class="sfi sfi-stack"></i>&nbsp;&nbsp;Display&nbsp;as&nbsp;JSON</button>
+				[%%%ELSE:QMODE%%%]
+				<!-- visual mode not enabled -->
+				[%%%/IF:QMODE%%%]
+
+			</td>
+			<td>&nbsp;</td>
+			<td style="padding-left:20px;">
+				<div id="indexes-info">
+					<b><i>Collection</i>&nbsp;Indexes:</b> &nbsp; <a class="ux-button ux-button-xsmall ux-button-dark" data-smart="open.modal" href="[###URL-ADD-INDEX|html###]" title="Create a New Index for this Collection"><i class="sfi sfi-plus"></i></a>&nbsp;<a class="ux-button ux-button-xsmall ux-button-dark" data-smart="open.modal" href="[###URL-DROP-INDEX|html###]" title="Drop an Index of this Collection"><i class="sfi sfi-minus"></i></a><br>
+					<pre class="json-render-indexes" style="width:100%;" data-json="[###COLLINDEXES|json|html###]"></pre>
+				</div>
+			</td>
+		</tr>
+	</table>
+	<span id="query-error">[###ERROR|html###]</span>
+</div>
+[@@@SUB-TEMPLATE:partials/mongodb-list-query-info.mtpl.inc.htm@@@]
+[%%%IF:IS-EMPTY-COLLECTION:==1;%%%]
+<div id="operation_notice">This collection appears to be empty, contains no records ...</div>
+[%%%ELSE:IS-EMPTY-COLLECTION%%%]
+[%%%IF:RECORDS:@<=0;%%%]
+[%%%IF:IS-QUERY:!=yes;%%%]
+<div id="operation_display" class="icon">MongoDB Manager hint: you can return anytime to this screen by using the `Refresh` button, from the top, above ...</div>
+<div id="operation_important">To Display some records use a `Filter Criteria` and the following buttons: `Find Record` or `Show Records`.</div>
+<div id="operation_hint">To run a Database command, use the `Run Command` button.</div>
+<div id="operation_warn">Using the `Delete Records` button will DELETE `ALL the Matching Records` of the current `Filter Criteria`.<br>IMPORTANT: `ALL the Matching Records` means all database records that match the criteria not only the records currently shown on the page, if there are multiple pages.</div>
+[%%%ELSE:IS-QUERY%%%]
+<div id="operation_notice">The [%%%IF:QFORMAT:==cmd;%%%]comand returned no output[%%%ELSE:QFORMAT%%%]`Filter Criteria` returned no records[%%%/IF:QFORMAT%%%] ...</div>
+[%%%/IF:IS-QUERY%%%]
+[%%%ELSE:RECORDS%%%]
+<style>
+code.wrap-off {
+	white-space: pre;
+}
+</style>
+<script>
+const toggleWrap = ($el, $btn) => {
+	if(!$el) {
+		return;
+	}
+	if($el.attr('id') != 'json-renderer') {
+		return;
+	}
+	const isWrapOff = $el.data('wrap-off');
+	if(!isWrapOff) {
+		$el.addClass('wrap-off').data('wrap-off', true);
+		$btn.removeClass('ux-button-secondary').attr('title', 'Wrap ON/OFF - Display Record: OFF');
+	} else {
+		$el.removeClass('wrap-off').data('wrap-off', false);
+		$btn.addClass('ux-button-secondary').attr('title', 'Wrap ON/OFF - Display Record: ON');
+	}
+	const toggler = $el.find('a.json-toggle');
+	if(toggler.hasClass('collapsed')) {
+		toggler.trigger('click');
+	}
+};
+</script>
+<div id="records-list">
+[%%%LOOP:RECORDS%%%]
+	<div class="record-area" title="#[###RECORDS.-NUM|int###]">
+		[%%%IF:RECORDS.-ID:!=;%%%]
+		<div class="record-id" title="Record ID"><b>ID:</b>&nbsp;[###RECORDS.-ID|html###]</div>
+		[%%%ELSE:RECORDS.-ID%%%]
+		<div class="record-id">&nbsp;</div>
+		[%%%/IF:RECORDS.-ID%%%]
+		<span class="record-num">[###RECORDS.-NUM|int###].</span>
+		[%%%IF:QFORMAT:!=cmd;%%%]
+		<a title="View or Delete Record #[###RECORDS.-NUM|int###]" class="ux-button ux-button-xsmall ux-button-regular" href="[###URL-DELETE-RECORD|html###][###RECORDS._ID|url|html###]" data-smart="open.modal"><i class="sfi sfi-file-text2"></i></a>
+		<a title="Edit Record #[###RECORDS.-NUM|int###]" class="ux-button ux-button-xsmall ux-button-highlight" href="[###URL-EDIT-RECORD|html###][###RECORDS._ID|url|html###]" data-smart="open.modal"><i class="sfi sfi-pencil2"></i></a>
+		[%%%/IF:QFORMAT%%%]
+		<button title="Wrap ON/OFF - Display Record #[###RECORDS.-NUM|int###]" class="ux-button ux-button-xsmall ux-button-secondary" onClick="toggleWrap($(this).parent().find('code'), $(this));"><i class="sfi sfi-infinite"></i></button>
+		<span style="font-weight:bold;"><span class="json-key">UUID</span>&nbsp;:&nbsp;<span class="json-string" title="Record UID">[###RECORDS._ID|html###]</span></span>
+		<br>
+		<code id="json-renderer" class="json-render-area" data-id="[###RECORDS._ID|html###]" data-json="[###RECORDS.-JSON|json|html###]"></code>
+	</div>
+[%%%/LOOP:RECORDS%%%]
+</div>
+[%%%/IF:RECORDS%%%]
+[%%%/IF:IS-EMPTY-COLLECTION%%%]
+[%%%IF:PAGES:>0;%%%][%%%IF:NUM-RECORDS:>1;%%%]
+[@@@SUB-TEMPLATE:partials/mongodb-list-query-info.mtpl.inc.htm@@@]
+[%%%/IF:NUM-RECORDS%%%][%%%/IF:PAGES%%%]
+<br>
+<br>
+<!-- # MongoDB List Collection -->

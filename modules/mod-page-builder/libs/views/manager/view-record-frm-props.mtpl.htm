@@ -1,0 +1,217 @@
+<!-- Pagebuilder / Manage @ View Record / Props :: v.20230129 -->
+<style>
+ul#lang-list {
+	display: inline;
+	list-style: none;
+}
+ul#lang-list li {
+	display: inline;
+}
+ul#lang-list li:after {
+	content: ", ";
+}
+ul#lang-list li:last-child:after {
+	content: "";
+}
+</style>
+<table width="100%" border="0">
+	<tr>
+		<td width="25%">
+			[###BUTTONS###]
+		</td>
+		<td align="right">
+			<small><b>[###CODE-TYPE###]</b></small>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			&nbsp;
+		</td>
+	</tr>
+	<tr>
+		<td width="25%">
+			<b>[###TEXT-PMODE###]:</b>
+		</td>
+		<td>
+			[###FIELD-PMODE###]
+		</td>
+	</tr>
+	<tr>
+		<td width="25%">
+			<b>[###TEXT-NAME###]:</b>
+		</td>
+		<td>
+			[###FIELD-NAME###]
+		</td>
+	</tr>
+	<tr>
+		<td width="25%">
+			<b>[###TEXT-CTRL###]:</b>
+		</td>
+		<td>
+			[###FIELD-CTRL###]
+		</td>
+	</tr>
+	<tr>
+		<td width="25%">
+			<b>[###TEXT-SPECIAL###]:</b>
+		</td>
+		<td>
+			[###FIELD-SPECIAL###]
+		</td>
+	</tr>
+[%%%IF:IS-SEGMENT:!=1;%%%]
+	<tr>
+		<td colspan="2">
+			<hr>
+		</td>
+	</tr>
+	[%%%IF:MODE-PAGETYPE:!=raw;%%%]
+	<tr>
+		<td>
+			<b>[###TEXT-TEMPLATE###]:</b>
+		</td>
+		<td>
+			[###FIELD-TEMPLATE###]
+		</td>
+	</tr>
+	[%%%/IF:MODE-PAGETYPE%%%]
+	<tr>
+		<td>
+			<b>[###TEXT-AUTH###]:</b>
+		</td>
+		<td>
+			[###FIELD-AUTH###]
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<b>[###TEXT-ACTIVE###]:</b>
+		</td>
+		<td>
+			[###FIELD-ACTIVE###]
+		</td>
+	</tr>
+[%%%ELSE:IS-SEGMENT%%%]
+	[%%%IF:MODE-PAGETYPE:!=settings;%%%]
+	<tr>
+		<td colspan="2">
+			<hr>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<b>[###TEXT-AREA###]:</b>
+		</td>
+		<td>
+			[###FIELD-AREA###]
+		</td>
+	</tr>
+	[%%%/IF:MODE-PAGETYPE%%%]
+[%%%/IF:IS-SEGMENT%%%]
+	<tr>
+		<td colspan="2">
+			<hr>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td>
+			<b>[###TEXT-TAGS###]:</b>
+		</td>
+		<td>
+			[###FIELD-TAGS###]
+		</td>
+	</tr>
+[%%%IF:MODE-PAGETYPE:!=settings;%%%]
+	[%%%IF:SHOW-TRANSLATIONS:==1;%%%]
+	<tr valign="top">
+		<td colspan="2">
+			<hr>
+		</td>
+	</tr>
+	<tr>
+		<td width="25%">
+			<b>[###TEXT-TRANS###]:</b>
+		</td>
+		<td>
+			[###FIELD-TRANS###]
+			[%%%IF:IS-TRANSLATABLE:!=1;%%%]
+			[%%%IF:ARR-TRANSLATIONS:@>0;%%%]
+			&nbsp; <img src="[###MODULE-PATH|html###]libs/views/manager/img/syntax-unknown.svg" alt="[###WARN-TRANSLATABLE###]" title="[###WARN-TRANSLATABLE###]" style="cursor:help;">
+			[%%%/IF:ARR-TRANSLATIONS%%%]
+			[%%%/IF:IS-TRANSLATABLE%%%]
+		</td>
+	</tr>
+	<tr valign="top">
+		<td>
+			<b>[###TEXT-TRANSLATIONS###]:</b>
+		</td>
+		<td>
+			[%%%IF:IS-TRANSLATABLE:!=1;%%%]
+				[%%%IF:ARR-TRANSLATIONS:@>0;%%%]
+					[@@@SUB-TEMPLATE:view-record-frm-props-trans.mtpl.inc.htm@@@]
+				[%%%ELSE:ARR-TRANSLATIONS%%%]
+					-
+				[%%%/IF:ARR-TRANSLATIONS%%%]
+			[%%%ELSE:IS-TRANSLATABLE%%%]
+					[@@@SUB-TEMPLATE:view-record-frm-props-trans.mtpl.inc.htm@@@]
+			[%%%/IF:IS-TRANSLATABLE%%%]
+		</td>
+	</tr>
+	[%%%/IF:SHOW-TRANSLATIONS%%%]
+[%%%/IF:MODE-PAGETYPE%%%]
+[%%%IF:MODE:!=form;%%%][%%%IF:NUM-REFS:>0;%%%]
+	<tr>
+		<td colspan="2">
+			<hr>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td>
+			<b>[###TEXT-REFS###]:</b>
+		</td>
+		<td>
+			<div class="s2org-flow" id="related-objects">
+	[%%%IF:ARR-REFS:@>=1;%%%]
+				<ul>
+				  <li>
+		[%%%LOOP:ARR-REFS%%%]
+					<span><a href="[###URL-REF|html###][###ARR-REFS._-VAL-_|url|html###]">[###ARR-REFS._-VAL-_|html###]</a></span>[%%%|N%%%]
+		[%%%/LOOP:ARR-REFS%%%]
+	[%%%/IF:ARR-REFS%%%]
+					<ul>
+						<li>
+							<span style="background:#EE8908; font-weight:bold;">[###RECORD-ID###]</span>
+	[%%%IF:ARR-XREFS:@>=1;%%%]
+							<ul>
+		[%%%LOOP:ARR-XREFS%%%]
+								<li>
+									<span><a href="[###URL-REF|html###][###ARR-XREFS._-VAL-_|url|html###]">[###ARR-XREFS._-VAL-_|html###]</a></span>[%%%|N%%%]
+								</li>[%%%|N%%%]
+		[%%%/LOOP:ARR-XREFS%%%]
+							</ul>
+	[%%%/IF:ARR-XREFS%%%]
+						</li>
+					</ul>
+				  </li>
+	[%%%IF:ARR-REFS:@>=1;%%%]
+				</ul>
+	[%%%/IF:ARR-REFS%%%]
+			<br>
+			</div>
+		</td>
+	</tr>
+[%%%/IF:NUM-REFS%%%][%%%/IF:MODE%%%]
+</table>
+<script>
+jQuery(document).ready(function(){
+	jQuery('#the-tags').tagEdit({
+		items: [###JSON-TAGS|json###],
+		tagMaxChars: 25,
+		tagMaxNum: 20,
+		tagNamePattern: /^[a-z0-9\-]+$/g,
+		readOnly: [%%%IF:MODE:!=form;%%%]true[%%%ELSE:MODE%%%]false[%%%/IF:MODE%%%],
+	});
+});
+</script>
+<!-- #END -->

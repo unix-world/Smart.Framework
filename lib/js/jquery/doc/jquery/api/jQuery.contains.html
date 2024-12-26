@@ -1,0 +1,65 @@
+<script>{
+		"title":
+			"jQuery.contains()",
+		"excerpt":
+			"Check to see if a DOM element is a descendant of another DOM element.",
+		"termSlugs": {
+			"category": [
+				"utilities","version/1.4"
+			]
+		}
+	}</script><article id="jQuery-contains1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.contains( container, contained )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Boolean">Boolean</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Check to see if a DOM element is a descendant of another DOM element.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.4/">1.4</a></span><a id="jQuery-contains-container-contained" href="#jQuery-contains-container-contained"><span class="icon-link"></span>jQuery.contains( container, contained )</a>
+</h4>
+<ul>
+<li>
+<div><strong>container</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Element">Element</a>
+</div>
+<div>The DOM element that may contain the other element.</div>
+</li>
+<li>
+<div><strong>contained</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Element">Element</a>
+</div>
+<div>The DOM element that may be contained by (a descendant of) the other element.</div>
+</li>
+</ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>The <code>$.contains()</code> method returns <code>true</code> if the DOM element provided by the second argument is a descendant of the DOM element provided by the first argument, whether it is a direct child or nested more deeply. Otherwise, it returns <code>false</code>. Only <em>element</em> nodes are supported; if the second argument is a text or comment node, <code>$.contains()</code> will return <code>false</code>.</p>
+    <div class="warning">
+      <p><strong>Note:</strong> The first argument <em>must</em> be a DOM element, not a jQuery object or plain JavaScript object.</p>
+    </div>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Check if an element is a descendant of another.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.contains( document.documentElement, document.body ); <span class="comment">// true</span></code></div></div><div class="container"><div class="line"><code>$.contains( document.body, document.documentElement ); <span class="comment">// false</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

@@ -1,0 +1,118 @@
+<script>{
+		"title":
+			"jQuery.type()",
+		"excerpt":
+			"Determine the internal JavaScript [[Class]] of an object.",
+		"termSlugs": {
+			"category": [
+				"utilities","version/1.4.3"
+			]
+		}
+	}</script><article id="jQuery-type1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.type( obj )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#String">String</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Determine the internal JavaScript [[Class]] of an object.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.4.3/">1.4.3</a></span><a id="jQuery-type-obj" href="#jQuery-type-obj"><span class="icon-link"></span>jQuery.type( obj )</a>
+</h4>
+<ul><li>
+<div><strong>obj</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Anything">Anything</a>
+</div>
+<div>Object to get the internal JavaScript [[Class]] of.</div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>A number of techniques are used to determine the exact return value for an object. The [[Class]] is determined as follows:</p>
+    <ul>
+      <li>If the object is undefined or null, then &quot;undefined&quot; or &quot;null&quot; is returned accordingly.
+        <ul>
+          <li>jQuery.type( undefined ) === &quot;undefined&quot;</li>
+          <li>jQuery.type() === &quot;undefined&quot;</li>
+          <li>jQuery.type( window.notDefined ) === &quot;undefined&quot;</li>
+          <li>jQuery.type( null ) === &quot;null&quot;</li>
+        </ul>
+      </li>
+      <li>If the argument is either a primitive value or an instance of a standard built-in ECMAScript object, the [[Class]] internal property is used to determine the type. (<a href="http://perfectionkills.com/instanceof-considered-harmful-or-how-to-write-a-robust-isarray/">More details about this technique.</a>)
+        <ul>
+          <li>jQuery.type( true ) === &quot;boolean&quot;</li>
+          <li>jQuery.type( new Boolean() ) === &quot;boolean&quot;</li>
+          <li>jQuery.type( 3 ) === &quot;number&quot;</li>
+          <li>jQuery.type( new Number(3) ) === &quot;number&quot;</li>
+          <li>jQuery.type( &quot;test&quot; ) === &quot;string&quot;</li>
+          <li>jQuery.type( new String(&quot;test&quot;) ) === &quot;string&quot;</li>
+          <li>jQuery.type( function(){} ) === &quot;function&quot;</li>
+          <li>jQuery.type( [] ) === &quot;array&quot;</li>
+          <li>jQuery.type( new Array() ) === &quot;array&quot;</li>
+          <li>jQuery.type( new Date() ) === &quot;date&quot;</li>
+          <li>jQuery.type( new Error() ) === &quot;error&quot; // <strong>as of jQuery 1.9</strong>
+</li>
+          <li>jQuery.type( Symbol() ) === &quot;symbol&quot; // <strong>as of jQuery 1.9</strong>
+</li>
+          <li>jQuery.type( Object(Symbol()) ) === &quot;symbol&quot; // <strong>as of jQuery 1.12</strong>
+</li>
+          <li>jQuery.type( /test/ ) === &quot;regexp&quot;</li>
+        </ul>
+      </li>
+      <li>Everything else returns &quot;object&quot; as its type.</li>
+    </ul>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Find out if the parameter is a RegExp.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>jQuery.type demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>Is it a RegExp? <span class="tag">&lt;<span class="title">b</span>&gt;</span><span class="tag">&lt;/<span class="title">b</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;b&quot;</span> ).append( <span class="string">&quot;&quot;</span> + jQuery.type( <span class="regexp">/test/</span> ) );</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div></section>
+</div></article>

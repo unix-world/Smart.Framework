@@ -1,0 +1,58 @@
+<!-- v.20231028 -->
+<script>
+const AppID = '[###APP-ID|js###]';
+const ReleasePackage = '[###RELEASE-PACKAGE|js###]';
+const manageButtonSelUrl = () => {
+	const selUrl = $('#deploy-url-sel').val();
+	const $btn = $('#bttn-url-sel');
+	if(selUrl) {
+		$btn.removeClass('ux-button-highlight').addClass('ux-button-special');
+	} else {
+		$btn.removeClass('ux-button-special').addClass('ux-button-highlight');
+	}
+};
+const runDeployPackage = () => {
+	const sUrl = $('#deploy-url-sel').val();
+	if(!sUrl) {
+		smartJ$Browser.AlertDialog(
+			'<div class="operation_notice">No URL Selected to Deploy this Release Package ...</div>',
+			null,
+			'Notice &nbsp; <i class="sfi sfi-box-remove sfi-xl"></i>',
+			700,
+			200,
+			'alertable',
+			true // title is HTML
+		);
+		return;
+	}
+	const url = smartJ$Utils.url_add_suffix(String(self.location), 'deploy=yes&url=' + smartJ$Utils.escape_url(sUrl));
+	smartJ$Browser.ConfirmDialog(
+		'<div class="operation_important">AppID: `' + smartJ$Utils.escape_html(AppID) + '`</div>' + '<span style="color:#778888"><b>Package: `' + smartJ$Utils.escape_html(ReleasePackage) + '`</b></span>' + '<div class="operation_question">Deploy this package on the selected URL ?</div>' + '<span style="color:#ED2839;"><b>Release&nbsp;URL: `' + smartJ$Utils.escape_html(sUrl) + '`</b></span>',
+		() => { self.location = String(url); },
+		'Confirm Deploy the Release Package &nbsp; <i class="sfi sfi-box-remove sfi-xl"></i>',
+		700,
+		320,
+		'alertable',
+		true // title is HTML
+	);
+};
+</script>
+<br>
+<div><center>
+[###HTML-LIST-SEL###] &nbsp;
+<button id="bttn-url-sel" class="ux-button ux-button-super ux-button-highlight" onClick="runDeployPackage(); return false;" title="Click this button to deploy the selected package to on the selected AppCodeUnpack Server URL"><i class="sfi sfi-box-remove"></i> &nbsp; DEPLOY the Release Package on selected URL</button>
+[%%%IF:ARR-COMPLETED:@>0;%%%]
+<hr>
+<table>
+[%%%LOOP:ARR-COMPLETED%%%]
+<tr>
+	<td width="28" align="left" title="AppCodeUnpack NetArchive"><img src="lib/framework/img/netarch-logo.svg" width="24" height="24"></td>
+	<td width="28" align="left" title="Deploy Archive"><div style="margin-top:-3px;"><i class="sfi sfi-box-remove" style="font-size:22px !important; color:#555555 !important;"></i></div></td>
+	<td width="100" align="center" style="color:#777777"><b>[ Completed ]</b></td>
+	<td width="38" align="left" title="Deploy Completed Successfuly"><img src="lib/framework/img/sign-ok.svg" width="24" height="24"></td>
+	<td align="left"><a title="Click to display the deploy saved log" href="[###CTRL-URL|html###]&url=[###ARR-COMPLETED._-VAL-_|url|html###]"><b>[###ARR-COMPLETED._-VAL-_|html###]</b></a></td>
+</tr>
+[%%%/LOOP:ARR-COMPLETED%%%]
+</table>
+[%%%/IF:ARR-COMPLETED%%%]
+</center></div>

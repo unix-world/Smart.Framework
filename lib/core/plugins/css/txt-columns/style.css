@@ -1,0 +1,99 @@
+/***** Text Columns CSS :: r.8.7 / smart.framework.v.8.7 *****/
+
+/* Text Columns
+	License: BSD
+	(c) 2015-2021 unix-world.org
+*/
+
+.txt-columns-count-auto {
+	text-align: justify;
+	column-width: 15rem;
+	column-gap: 1.5rem;
+	column-rule: 1px solid #CCCCCC;
+	-moz-column-width: 15rem;
+	-moz-column-gap: 1.5rem;
+	-moz-column-rule: 1px solid #CCCCCC;
+	-webkit-column-width: 15rem;
+	-webkit-column-gap: 1.5rem;
+	-webkit-column-rule: 1px solid #CCCCCC;
+}
+
+.txt-columns-count-2 {
+	text-align: justify;
+	column-count: 2;
+	column-gap: 1.5rem;
+	column-rule: 1px solid #CCCCCC;
+	-moz-column-count: 2;
+	-moz-column-gap: 1.5rem;
+	-moz-column-rule: 1px solid #CCCCCC;
+	-webkit-column-count: 2;
+	-webkit-column-gap: 1.5rem;
+	-webkit-column-rule: 1px solid #CCCCCC;
+}
+
+.txt-columns-count-3 {
+	text-align: justify;
+	column-count: 3;
+	column-gap: 1.5rem;
+	column-rule: 1px solid #CCCCCC;
+	-moz-column-count: 3;
+	-moz-column-gap: 1.5rem;
+	-moz-column-rule: 1px solid #CCCCCC;
+	-webkit-column-count: 3;
+	-webkit-column-gap: 1.5rem;
+	-webkit-column-rule: 1px solid #CCCCCC;
+}
+
+.txt-columns-count-4 {
+	text-align: justify;
+	column-count: 4;
+	column-gap: 1.5rem;
+	column-rule: 1px solid #CCCCCC;
+	-moz-column-count: 4;
+	-moz-column-gap: 1.5rem;
+	-moz-column-rule: 1px solid #CCCCCC;
+	-webkit-column-count: 4;
+	-webkit-column-gap: 1.5rem;
+	-webkit-column-rule: 1px solid #CCCCCC;
+}
+
+.txt-columns-count-5 {
+	text-align: justify;
+	column-count: 5;
+	column-gap: 1.5rem;
+	column-rule: 1px solid #CCCCCC;
+	-moz-column-count: 5;
+	-moz-column-gap: 1.5rem;
+	-moz-column-rule: 1px solid #CCCCCC;
+	-webkit-column-count: 5;
+	-webkit-column-gap: 1.5rem;
+	-webkit-column-rule: 1px solid #CCCCCC;
+}
+
+.txt-columns-count-6 {
+	text-align: justify;
+	column-count: 6;
+	column-gap: 1.5rem;
+	column-rule: 1px solid #CCCCCC;
+	-moz-column-count: 6;
+	-moz-column-gap: 1.5rem;
+	-moz-column-rule: 1px solid #CCCCCC;
+	-webkit-column-count: 6;
+	-webkit-column-gap: 1.5rem;
+	-webkit-column-rule: 1px solid #CCCCCC;
+}
+
+.txt-columns-count-7 {
+	text-align: justify;
+	column-count: 7;
+	column-gap: 1.5rem;
+	column-rule: 1px solid #CCCCCC;
+	-moz-column-count: 7;
+	-moz-column-gap: 1.5rem;
+	-moz-column-rule: 1px solid #CCCCCC;
+	-webkit-column-count: 7;
+	-webkit-column-gap: 1.5rem;
+	-webkit-column-rule: 1px solid #CCCCCC;
+}
+
+/* END */

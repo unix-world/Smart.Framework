@@ -1,0 +1,170 @@
+<!-- AuthAdmins Login # v.20241105 -->
+<style>
+body {
+	background-color: #FFFFFF !important;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #ECECEC;
+	height: 1px;
+}
+a#copyright, a#copyright:hover {
+	font-size: 0.625rem !important;
+	font-weight: bold;
+	color: #888888;
+	text-decoration: none;
+	border-bottom: dotted 1px #888888;
+}
+a#special {
+	cursor: pointer !important;
+	text-decoration: none !important;
+	border-bottom: dotted 1px #CCCCCC !important;
+}
+span.help {
+	cursor: help !important;
+}
+span.info {
+	font-size: 28px !important;
+	font-weight: bold !important;
+	line-height: 48px !important;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="modules/mod-auth-admins/views/js/pin-login/jquery.pinlogin.css?[###RELEASE-HASH|html###]" media="all">
+<script src="modules/mod-auth-admins/views/js/pin-login/jquery.pinlogin.js?[###RELEASE-HASH|html###]"></script>
+<script>
+const ovID = 'sf-adm-login-overlay';
+const AuthFA2 = { digits: null };
+const AuthAdminsCheck = () => {
+	const url = '[###LOGIN-URL|js###]';
+	const fa2 = [###USE-2FA|bool###];
+	if((url != undefined) && url) {
+		const _Utils$ = smartJ$Utils;
+		const _Ba$eConv = smartJ$BaseConv;
+		const _BwUtils$ = smartJ$Browser;
+		const params = '&url=' + _Utils$.escape_url(url) + '&time=' + _Utils$.escape_url(Date.now());
+		const chk = '[###LOGIN-SCRIPT|js###]?page=auth-admins.login&action=check' + String(params || '');
+		const rdr = '[###LOGIN-SCRIPT|js###]?page=auth-admins.login&action=redir' + String(params || '');
+		if(!!fa2) {
+			const regex2fatk = RegExp([###REGEX-2FA###]);
+			const tk2fa = String(_Utils$.stringPureVal(AuthFA2.digits || '', true));
+			if(regex2fatk.test(tk2fa)) {
+				_BwUtils$.setCookie('[###COOKIE-N-2FA|js###]', '#' + _Ba$eConv.base_from_hex_convert(_Utils$.bin2hex('#' + tk2fa + '#'), 4*4*2) + '#', 0, '/', '@', 'Strict');
+			}
+		}
+		_BwUtils$.OverlayShow(null, null, null, ovID);
+		_BwUtils$.SubmitFormByAjax(null, chk, 'yes', () => { setTimeout(() => { _BwUtils$.OverlayHide(ovID); }, _BwUtils$.param_NotificationTimeOK); }, () => { setTimeout(() => { _BwUtils$.OverlayHide(ovID); }, _BwUtils$.param_NotificationTimeERR); }, (fid, u, msg) => { if(msg != undefined) { if(msg.status != undefined) { if(msg.status != 401) { setTimeout(() => { self.location = rdr; }, 500); return; } } } setTimeout(() => { _BwUtils$.OverlayClear(ovID); setTimeout(() => { _BwUtils$.OverlayHide(ovID); self.location = self.location; }, 750); }, 700); }, true);
+	}
+};
+</script>
+<div style="padding:8px;">
+	<div><center>
+		<div id="info-area">
+			<div class="ux-grid-row">
+				<div class="ux-grid-col m1 s12"><span style="cursor:not-allowed;" title="This is a PRIVATE COMPUTER AREA and requires SIGN-IN using a valid combination of UserName&nbsp;and&nbsp;Password&nbsp;/&nbsp;Token.`"><img src="lib/framework/img/sign-info.svg" style="opacity:0.7;"></span></div>
+				<div class="ux-grid-col m4 s12"><span class="info" style="color:#778899!important;">[###TXT-PRIV-AREA|html|nbsp###]</span></div>
+				<div class="ux-grid-col m2 s12"><i class="sfi sfi-xxl sfi-lock" style="color:#EFEFEF; cursor:context-menu;" title="Auth Area ID: `[###AREA-ID|html###]`"></i></div>
+				<div class="ux-grid-col m4 s12"><span style="font-size:1rem; font-weight:bold; line-height:48px; color:#DDDDDD;" id="info-alt-text"></span></div>
+				<div class="ux-grid-col m1 s12"><span style="cursor:help;" title="UNAUTHORIZED OR IMPROPER USE OF THIS PRIVATE COMPUTER AREA may result in administrative disciplinary actions, civil charges/criminal penalties, and/or other sanctions by the law ! DO NOT TRY to Sign-In without having an account on this area. Any attempt to enforce this authentication system will be recorded and logged (actions and the IP Address) for security reasons. This area is protected by Smart.Unicorn Authentication System against Bruteforce or DDOS attacks. If try you enforce this area your IP Address will be recorded as evidence and temporary blocked." onClick="smartJ$Browser.AlertDialog('<b>' + smartJ$Utils.escape_html(jQuery(this).attr('title')) + '</b>', null, 'WARNING', null, null, 'alertable');"><img src="lib/framework/img/sign-question.svg" style="opacity:0.7;"></span></div>
+			</div>
+		</div>
+	</center></div>
+	<hr>
+	<div>
+		<div class="ux-grid-row">
+			<div class="ux-grid-col c12 ux-flex-center">
+				<div id="auth-admins-area-login" class="ux-flex-center-container">
+					<div class="ux-center">
+					[%%%IF:ID-USER:!=;%%%]
+						<h6 style="color:#444444; cursor:help;" title="Auth Method: `[###ID-AUTH-MODE|html###]`">Auth UserName:&nbsp;`[###ID-USER|html###]` :: [[###ID-AUTH-DESC|html###]]</h6>
+					[%%%ELSE:ID-USER%%%]<!-- Auth UserName/Method/Type: N/A -->
+						[%%%IF:USE-2FA:==1;%%%]<div style="color:#667788; font-weight:bold; cursor:help;" title="Two-Factor Authentication is ENABLED">2FA Token (TOTP)</div><div id="fa2-input" title="Enter the Two-Factor Authentication Code here (TOTP 2FA Token)"></div>[%%%ELSE:USE-2FA%%%]<!-- no FA2 -->[%%%/IF:USE-2FA%%%]
+					[%%%/IF:ID-USER%%%]
+					<a id="special" title="Click here to Sign-In ..." href="javascript:void(0)" onClick="AuthAdminsCheck();"><span style="color:#7BC043; font-size:2rem;"><b>Sign&dash;In :// [###LOGIN-AREA|html|nbsp###]&nbsp;Area</b></span></a>
+					</div>
+				</div>
+			</div>
+			<div class="ux-grid-col c12 ux-center">
+				<img border="0" width="128" height="128" src="lib/core/img/app/server.svg" alt="" title="Auth.Admins :: Authentication Module for Smart.Framework, SECURED by Smart.Unicorn Authentication System :: [###CIPH-MARK|html###]" style="cursor:help; opacity:[###OPACITY-DEC|dec2###];">
+			</div>
+			<div class="ux-grid-col c12 ux-center" title="Click here to Sign-Out ...">
+				<a id="special" href="[###LOGOUT-URL|html###]"><span style="color:#5E6885; font-size:1.25rem;"><b>Sign&dash;Out :// All&nbsp;NameSpaces</b></span></a>
+			</div>
+		</div>
+	</div>
+	<br>
+	<div><center>[###POWERED-HTML###]</center></div>
+	<div class="ux-center"><a data-smart="open.modal" href="http://www.unix-world.org" target="unix_world_org" id="copyright"><b>&copy;&nbsp;2006-[###CRR-YEAR|html###]&nbsp;unix-world.org</b></a></div>
+</div>
+[%%%IF:ID-USER:!=;%%%]
+<!-- FA2 js: skip -->
+[%%%ELSE:ID-USER%%%]
+[%%%IF:USE-2FA:==1;%%%]
+<script>
+(() => {
+	jQuery('#fa2-input').pinlogin({
+		autofocus: false,
+		hideinput: true,
+		delay: 75,
+		fields: 8,
+		complete: (digits) => {
+			AuthFA2.digits = digits;
+		},
+	});
+})();
+</script>
+[%%%ELSE:USE-2FA%%%]
+<!-- FA2 js: n/a -->
+[%%%/IF:USE-2FA%%%]
+[%%%/IF:ID-USER%%%]
+<script>
+(() => {
+	const privateAreaText = [ // [22 langs] :: EN + 21
+		'Privater Bereich', 						// de
+		'Zonă Privată', 							// ro
+		'Ιδιωτικός χώρος', 							// el
+		'Zone privée', 								// fr
+		'Área privada', 							// es, po
+		'Частная зона', 							// ru, bg
+		'Area privata', 							// it
+		'Prive-gebied', 							// nl
+		'プライベートエリア', 							// ja
+		'私人区域', 									// zh
+		'Aladani agbegbe', 							// yo
+		'Privat område', 							// da, no, sv
+		'منطقة خاصة', 								// ar
+		'אזור פרטי', 									// he,
+		'निजी क्षेत्र', 									// hi, ne
+		'Yksityisalue Asiaton oleskelu kielletty', 	// fi
+		'Einkasvæði', 								// is
+	];
+	let i = Math.floor(Math.random() * (privateAreaText.length));
+	const displayInfoText = () => {
+		if(privateAreaText.length <= 0) {
+			return;
+		}
+		if((i < 0) || (i >= privateAreaText.length)) {
+			i = 0;
+		}
+		const text = String(privateAreaText[i] || '');
+		let relFontsize = 16;
+		if(text) {
+			if(text.length > 16) {
+				relFontsize = 16;
+			} else {
+				relFontsize = 20;
+			}
+			jQuery('#info-alt-text').empty().hide().css({'font-size':relFontsize+'px'}).text(text).fadeIn('slow');
+		}
+		i++;
+	};
+	const delay = 2;
+	const animate = () => {
+		displayInfoText();
+		setTimeout(() => {
+			window.requestAnimationFrame(animate);
+		}, 1000 * delay);
+	};
+	animate();
+})();
+</script>
+<!-- # AuthAdmins Login -->

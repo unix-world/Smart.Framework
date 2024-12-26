@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>jQuery Event Drag and Drop Multi</title>
+	<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script src="../../jquery.event.drag.js"></script>
+	<script src="../../jquery.event.drop.js"></script>
+	<style type="text/css">
+	.drag {
+		position: absolute;
+		border: 1px solid #89B;
+		background: #BCE;
+		height: 58px;
+		width: 58px;
+		cursor: move;
+		top: 110px;
+		line-height: 58px;
+		text-align: center;
+	}
+	.size2 {
+		height: 118px;
+		line-height: 118px;
+	}
+	.size3 {
+		height: 178px;
+		line-height: 178px;
+	}
+	.selected {
+		background-color: #ECB;
+		border-color: #B98;
+	}
+	.drop {
+		float: right;
+		table-layout: fixed;
+	}
+	.drop td {
+		width: 95px;
+		height: 65px;
+		padding: 0;
+		border: 1px dashed #888;
+		background: #EEE;
+		font-size: 10px;
+		line-height: 12px;
+		overflow: hidden;
+		text-align: center;
+	}
+	td.dropped {
+		background-color: #EBC;
+		border-color: #B89;
+	}
+	td.active {
+		background-color: #CEB;
+		border-color: #9B8;
+	}
+	</style>
+</head>
+<body>
+<h1>Multi2 Drop Demo</h1>
+<p>Click to select multiple blue boxes, drag them into the dashed boxes.</p>
+<table class="drop" cellspacing="10">
+	<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+	<tr><td>&nbsp;</td><td>&nbsp;</td><td colspan="2">&nbsp;</td></tr>
+	<tr><td>&nbsp;</td><td rowspan="2">&nbsp;</td><td colspan="2" rowspan="2">&nbsp;</td></tr>
+	<tr><td>&nbsp;</td></tr>
+</table>
+<div class="drag size1" style="left:20px;"></div>
+<div class="drag size2" style="left:100px;"></div>
+<div class="drag size3" style="left:180px;"></div>
+<script>
+$(function() {
+
+	$('.drag')
+		.click(function(){
+			$( this ).toggleClass("selected");
+		})
+		.drag("init",function(){
+			if ( $( this ).is('.selected') )
+				return $('.selected');
+		})
+		.drag("start",function( ev, dd ){
+			$( this ).css('opacity',.75);
+		})
+		.drag(function( ev, dd ){
+			$( this ).css({
+				top: dd.offsetY,
+				left: dd.offsetX
+			});
+		})
+		.drag("end",function( ev, dd ){
+			$( this ).css('opacity','');
+		});
+	$('.drop td')
+		.drop("start",function(){
+			$( this ).addClass("active");
+		})
+		.drop(function( ev, dd ){
+			$( this ).toggleClass("dropped");
+		})
+		.drop("end",function(){
+			$( this ).removeClass("active");
+		});
+	$.drop({ multi: true });
+
+});
+</script>
+</body>
+</html>

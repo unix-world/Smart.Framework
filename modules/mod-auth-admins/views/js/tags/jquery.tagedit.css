@@ -1,0 +1,48 @@
+﻿
+/*
+// jQuery TagEdit v.1.0
+// (c) 2020-2022 unix-world.org
+// inspired from: jsfiddle.net / Javascript TagEdit (License MIT)
+// r.20220918
+*/
+
+.tagEdit {
+	margin-top: 1px;
+	padding: 1px;
+}
+
+.tagEdit li {
+	list-style-type: none;
+	display: inline-block;
+	float: left;
+	background-color: #555555;
+	color: #FFFFFF;
+	font-weight: bold;
+	font-size: 0.8125rem;
+	padding: 5px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	margin-right: 7px;
+	margin-bottom: 7px;
+	white-space: nowrap;
+	cursor: default;
+	border-radius: 3px;
+}
+
+.tagEdit li:hover {
+	background-color: #556677;
+}
+
+.tagEdit li.tagEdit {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='16' viewBox='0 0 12 16'%3E%3Cpath fill-rule='evenodd' d='M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48L7.48 8z'/%3E%3C/svg%3E");
+	background-position: 2px;
+	background-repeat: no-repeat;
+	padding-left: 17px;
+	cursor: pointer;
+}
+
+.tagEdit li.tagEdit:hover {
+	background-color: #FF3300;
+}
+
+/* END */

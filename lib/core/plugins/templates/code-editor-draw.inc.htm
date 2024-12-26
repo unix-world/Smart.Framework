@@ -1,0 +1,10 @@
+<!-- Partial Template: Plugins.DrawEditArea r.20210605 -->
+<div id="TheMenu__[###TXT-AREA-ID|jsvar###]__CodeArea" title="CodeMirror: [###CODE-TYPE|html###]"></div>
+<textarea id="[###TXT-AREA-ID|jsvar###]" name="[###TXT-AREA-VAR-NAME|html###]" style="width:[###WIDTH|html###];height:[###HEIGHT|html###];background:#FFFFFF;color:#000000;border:0px none;" wrap="OFF"[###TXT-AREA-READONLY|html###]>[###TXT-AREA-CONTENT|html|syntaxhtml###]</textarea>
+<script>
+	var SmartCodeMirror__[###TXT-AREA-ID|jsvar###]__Width = '[###WIDTH|js###]';
+	var SmartCodeMirror__[###TXT-AREA-ID|jsvar###]__Height = '[###HEIGHT|js###]';
+	var SmartCodeMirror__[###TXT-AREA-ID|jsvar###]__Instance;
+	setTimeout(() => { SmartCodeMirror__[###TXT-AREA-ID|jsvar###]__Instance = SmartCodeMirror_Initialize('[###TXT-AREA-ID|jsvar|js###]', [###READ-ONLY|bool###], '[###CODE-TYPE|js###]', SmartCodeMirror__[###TXT-AREA-ID|jsvar###]__Width, SmartCodeMirror__[###TXT-AREA-ID|jsvar###]__Height, '[###THEME|js###]', [###SHOW-LINE-NUM|bool###], [###BLINK-CURSOR|int###], 'TheMenu__[###TXT-AREA-ID|jsvar|js###]__CodeArea'); }, 100);
+</script>
+<!-- #END :: Partial Template: Plugins.DrawEditArea -->

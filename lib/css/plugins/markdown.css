@@ -1,0 +1,281 @@
+
+/* -- CSS Start :: Smart.Framework / Plugins / Markdown :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* Smart.Markdown.parser # v.2.2.8-r.20241210 */
+
+/* ----------------------------- */
+
+/* Headings */
+
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+	display: block; /* important for floating images */
+}
+.markdown li h1,
+.markdown li h2,
+.markdown li h3,
+.markdown li h4,
+.markdown li h5,
+.markdown li h6 {
+	display: inline-block;
+}
+
+/* Helpers */
+.markdown hr {
+	border: none 0;
+	border-top: 1px solid #F2F2F2;
+	height: 1px;
+}
+
+/* Links */
+.markdown a,
+.markdown a:link,
+.markdown a:visited {
+	border-bottom: none;
+	text-decoration: underline #DDDDDD;
+	color: #0164C7;
+}
+.markdown a:hover {
+	text-decoration: underline #4D5774;
+	color: #3B4250;
+}
+
+/* Lists */
+.markdown ul {
+/*	list-style-type: disc; */
+	list-style-type: square;
+}
+.markdown ol {
+	list-style-type: decimal;
+}
+
+/* Table */
+.markdown table {
+	max-width: 100%;
+	margin-bottom: 20px;
+	border-spacing: 0px;
+	border-collapse: collapse;
+	table-layout: fixed;
+	border: 0;
+}
+
+.markdown table th {
+	padding: 3px;
+	font-size: 0.9375rem; /* 15px */
+	font-weight: bold;
+}
+.markdown table td {
+	padding: 3px;
+	font-size: 0.9375rem; /* 15px */
+}
+
+.markdown table.full-width-table {
+	width: 100%;
+}
+
+.markdown table.list-table {
+	margin-left: 50px;
+}
+
+.markdown table th.hidden {
+	line-height: 1px !important;
+	display: none;
+}
+
+.markdown table.stripped tr:nth-child(even) td,
+.markdown table tr:nth-child(even) td.stripped {
+	background: #FEFEFE;
+}
+.markdown table.stripped tr:nth-child(odd) td,
+.markdown table tr:nth-child(odd) td.stripped {
+	background: #F9F9F9;
+}
+.markdown table.stripped tr:hover td,
+.markdown table tr:hover td.stripped {
+	background: #F5F5F5;
+}
+.markdown table.stripped th,
+.markdown table th.stripped {
+	background: #F5F5F5;
+}
+.markdown table.stripped tr:hover th,
+.markdown table tr:hover th.stripped {
+	background: #FEFEFE;
+}
+
+.markdown table.bordered tr,
+.markdown table.bordered th,
+.markdown table.bordered td,
+.markdown table tr.bordered,
+.markdown table th.bordered,
+.markdown table td.bordered {
+	border: 1px solid #E4E4E4;
+}
+
+.markdown table.dbordered tr,
+.markdown table.dbordered th,
+.markdown table.dbordered td,
+.markdown table tr.dbordered,
+.markdown table th.dbordered,
+.markdown table td.dbordered {
+	border: 1px dashed #DCDCDC;
+}
+
+.markdown table.pbordered tr,
+.markdown table.pbordered th,
+.markdown table.pbordered td,
+.markdown table tr.pbordered,
+.markdown table th.pbordered,
+.markdown table td.pbordered {
+	border: 1px dotted #CCCCCC;
+}
+
+/* Quote, BlockQuote */
+.markdown blockquote {
+	background: #F9F9F9;
+	border-left: 10px solid #CCCCCC;
+	margin: 20px 10px;
+	padding: 15px 10px;
+	quotes: "\201C" "\201D";
+/*	quotes: "\201C" "\201D" "\2018" "\2019"; */
+}
+.markdown blockquote:before {
+	color: #CCCCCC;
+	content: open-quote;
+	font-size: 4rem;
+	line-height: 0.1rem;
+	margin-right: 0.25rem;
+	vertical-align: -2rem;
+}
+.markdown blockquote p { /* TODO: remove this fix for v2 */
+	display: inline;
+}
+.markdown div.mkdw-line,
+.markdown p.mkdw-line {
+	padding-bottom: 5px;
+	display: block;
+}
+.markdown .flexbox > .mkdw-line {
+	display: flex !important;
+	flex-direction: row;
+	align-items: center;
+	gap: 5px;
+}
+/* -- */
+
+/* Pre, Code */
+.markdown pre {
+	font-size: inherit;
+	border: 1px solid #F7F7F7;
+	background: #FBFBFB;
+	color: #111111;
+	padding: 3px;
+/*	white-space: pre; */
+	white-space: pre-wrap;
+	overflow: auto;
+}
+.markdown pre.mkdw-mono,
+.markdown pre.mkdw-mono * {
+	font-family: 'IBM Plex Mono', mono;
+	font-smooth: always;
+	border: 1px solid #F8F8F8;
+	background: #FCFCFC;
+}
+/*
+.markdown li pre {
+	margin-left: 20px;
+	margin-right: 20px;
+}
+*/
+
+.markdown code.mkdw-code {
+	white-space: pre;
+}
+.markdown code.mkdw-inline-code { /* be consistent with custom style */
+	font-size: inherit;
+	display: inline !important;
+	background: #DDDDEE;
+	color: #111111;
+	padding: 0;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+.markdown q,
+.markdown del,
+.markdown ins,
+.markdown mark,
+.markdown cite,
+.markdown var {
+	font-size: inherit; /* em not rem, need to be relative to parent not to root */
+	display: inline !important;
+	padding: 0;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+.markdown q {
+	background: #444444;
+	color: #F0F0F0;
+}
+.markdown q:before {
+	content: '˝';
+}
+.markdown q:after {
+	content: '˝';
+}
+.markdown del {
+	background: #C2203F;
+	color: #FFFFFF;
+	text-decoration: line-through;
+	text-decoration-color: #D3314F;
+}
+.markdown ins {
+	background: #C2D140;
+	color: #333333;
+	text-decoration: overline;
+	text-decoration-color: #B1C030;
+}
+.markdown var {
+	background: #F4F4F4;
+	color: #444444;
+	font-weight: bold;
+	font-style: normal; /* italic */
+}
+.markdown mark {
+	background: #FFFFC7;
+	color: #333333;
+	font-weight: bold;
+	font-style: normal;
+}
+.markdown cite {
+	background: #E6E2D3;
+	color: #444444;
+	font-weight: bold;
+	font-style: normal;
+}
+
+/* -- */
+
+.markdown dfn {
+	font-size: inherit;
+	background: #E9EDCA;
+	color: #444444;
+	padding: 1px;
+	font-weight: bold;
+	font-style: italic; /* normal */
+}
+
+/* -- */
+
+.markdown img {
+	max-width: 100%;
+/*	margin: 5px; */
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */

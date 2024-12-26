@@ -1,0 +1,22 @@
+<!-- TPL Foot (default) r.20221007 -->
+[%%%IF:SEMAPHORE:&*<load:searchterm-highlight-js>;%%%]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-search-term-highlight.inc.htm!@@@]
+[%%%ELSE:SEMAPHORE%%%]
+<!-- HLSrcTerm: skip -->
+[%%%/IF:SEMAPHORE%%%]
+[%%%IF:SEMAPHORE:&*<load:code-highlight-js>;%%%]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-hljs.inc.htm!@@@]
+[%%%ELSE:SEMAPHORE%%%]
+<!-- HLjs: skip -->
+[%%%/IF:SEMAPHORE%%%]
+[%%%IF:SEMAPHORE:&*<load:math-latex-js>;%%%]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-mathlatex.inc.htm!@@@]
+[%%%ELSE:SEMAPHORE%%%]
+<!-- MathLatex: skip -->
+[%%%/IF:SEMAPHORE%%%]
+[%%%IF:SEMAPHORE:&*<skip:unveil-js>;%%%]
+<!-- Unveil: skip -->
+[%%%ELSE:SEMAPHORE%%%]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-unveil.inc.htm!@@@]
+[%%%/IF:SEMAPHORE%%%]
+<!-- #.# -->

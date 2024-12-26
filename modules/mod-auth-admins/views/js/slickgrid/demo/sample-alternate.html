@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="icon" href="data:,">
+	<title>SlickGrid Example: Alternative display (Addressbook)</title>
+
+	<style>
+	.slick-cell {
+		background: white!important;
+		border-color: transparent!important;
+		line-height: 19px!important;
+	}
+
+	/* alternating offsets */
+	.slick-row .cell-inner {
+		margin-right: 60px;
+	}
+
+	.slick-row[row$="1"] .cell-inner,  .slick-row[row$="3"] .cell-inner,  .slick-row[row$="5"] .cell-inner,
+	.slick-row[row$="7"] .cell-inner, .slick-row[row$="9"] .cell-inner {
+		margin-left: 60px;
+		margin-right: 0;
+	}
+
+	.contact-card-cell {
+		border-color: transparent!important;
+	}
+
+	.cell-inner {
+		height: 80px;
+		margin: 10px;
+		padding: 10px;
+		background: #fafafa;
+		border: 1px solid gray;
+		border-radius: 10px;
+		box-shadow: 1px 1px 5px silver;
+		cursor: text;
+	}
+
+	.cell-inner:hover {
+		background: #f0f0f0;
+	}
+
+	.cell-left {
+		width: 40px;
+		height: 100%;
+		float: left;
+		border-right: 1px dotted gray;
+		background: url("assets/user_identity.gif") no-repeat top center;
+	}
+
+	.cell-main {
+		margin-left: 50px;
+	}
+</style>
+
+	<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.smart.compat.js"></script>
+
+	<script type="text/javascript" src="../../../../../../lib/js/framework/smart-framework.pak.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="../slick.grid.css">
+	<script type="text/javascript" src="../../jquery.event.drag.js"></script>
+	<script type="text/javascript" src="../../jquery.event.drop.js"></script>
+	<script type="text/javascript" src="../slick.grid.js"></script>
+	<script type="text/javascript" src="../../jquery.sparkline.js"></script>
+
+</head>
+<body>
+		<table width="100%">
+		<tr>
+			<td valign="top" width="50%">
+				<div id="myGrid" style="font-size:12px;width:600px;height:500px; border:1px solid #ECECEC;"></div>
+			</td>
+			<td valign="top">
+				<h2>Demonstrates:</h2>
+
+				<ul>
+					<li id="txt-info"></li>
+				</ul>
+			</td>
+		</tr>
+		</table>
+
+		<!-- cell template -->
+<script>
+var tpl = '<div class="cell-inner">\
+	<div class="cell-left"></div>\
+	<div class="cell-main">\
+		<b>[###NAME|html###]</b><br>\
+		[###TITLE|html###]<br>\
+		[###EMAIL|html###]<br>\
+		[###PHONE|html###]\
+	</div>\
+</div>';
+</script>
+<script>
+
+	var asyncDisplay = (Math.random() >= 0.5);
+
+	var grid;
+	var data = [];
+
+	function renderCell(row, cell, value, columnDef, dataContext) {
+		return smartJ$Utils.renderMarkersTpl(tpl, {
+			'NAME': String(dataContext.name),
+			'TITLE': String(dataContext.title),
+			'EMAIL': String(dataContext.email),
+			'PHONE': String(dataContext.phone),
+		});
+	}
+
+	function waitingFormatter(row, cell, value, columnDef, dataContext) {
+		return '<span style="color:#FFFFFF; background:#778899;">... ASYNC rendering vCard ...</span>';
+	}
+
+	function renderAsyncCell(cellNode, row, dataContext, colDef) {
+		var cell = smartJ$Utils.renderMarkersTpl(tpl, {
+			'NAME': String(dataContext.name),
+			'TITLE': String(dataContext.title),
+			'EMAIL': String(dataContext.email),
+			'PHONE': String(dataContext.phone),
+		});
+		$(cellNode).empty().html(cell);
+	}
+
+	var txtInfo = '';
+	var gRow = {};
+
+	if(asyncDisplay === true) {
+		txtInfo = 'Template-based ASYNC rendering using Smart.Framework JS-MarkerTpl while still using SlickGrid`s virtual rendering technology.';
+		gRow = { id:'contact-card', name:'Contacts', width:550, cssClass:'contact-card-cell', formatter:waitingFormatter, rerenderOnResize:true, asyncPostRenderDelay:25, asyncPostRender:renderAsyncCell };
+	} else {
+		txtInfo = 'Template-based rendering using Smart.Framework JS-MarkerTpl while still using SlickGrid`s virtual rendering technology.';
+		gRow = { id:"contact-card", name:"Contacts", width:550, cssClass:"contact-card-cell", formatter:renderCell };
+	} //end if else
+
+	$('#txt-info').empty().text(txtInfo);
+
+	var columns = [ gRow ];
+
+	var options = {
+		rowHeight: 140,
+		editable: false,
+		enableAddRow: false,
+		enableCellNavigation: false,
+		enableColumnReorder: false,
+		enableAsyncPostRender: true, // req. by async example
+	};
+
+	$(function() {
+		for (var i=0; i<10000; i++) {
+			var d = (data[i] = {});
+			d["name"] = "User " + (i+1);
+			d["email"] = "test.user@nospam.org";
+			d["title"] = "Regional sales manager";
+			d["phone"] = "206-000-0000";
+		}
+		grid = new Slick.Grid($("#myGrid"), data, columns, options);
+	});
+
+</script>
+</body>
+</html>

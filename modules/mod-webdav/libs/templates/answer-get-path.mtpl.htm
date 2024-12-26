@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<!-- Smart.Framework::DAV @ UserInfo: [DAV-FsMount] # [###INFO-ROOT|html###] # r.20240116 -->
+<html>
+<head>
+<meta charset="[###CHARSET|html###]">
+<meta http-equiv="Content-Type" content="text/html; charset=[###CHARSET|html###]">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Smart.Framework WebDAV Module">
+<link rel="icon" href="data:,">
+<title>[###INFO-TITLE|html###]</title>
+<link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/core/plugins/fonts/typo/sans/ibm-plex-sans.css">
+<style type="text/css">
+* {
+	font-family: 'IBM Plex Sans', arial, sans-serif;
+	font-smooth: always;
+}
+body {
+	background: #FFFFFF;
+	color: #222222;
+}
+body, div, p, ol, ul, table, form, fieldset, pre, code, blockquote, address, dl {
+	font-size: 14px;
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside;
+}
+h1 {
+	font-size: 32px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+h2 {
+	font-size: 28px;
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+h3 {
+	font-size: 24px;
+	margin-top: 6px;
+	margin-bottom: 6px;
+}
+h4 {
+	font-size: 20px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+h5 {
+	font-size: 18px;
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+h6 {
+	font-size: 16px;
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+#lst table > tbody > tr:nth-child(odd) > td {
+	background: #F5F5F5;
+}
+#lst table > tbody > tr:nth-child(even) > td {
+	background: #FEFEFE;
+}
+#lst table > tbody > tr:hover > td {
+	background: #FFFDD0;
+}
+a, a:link, a:visited {
+	color: #222222;
+	text-decoration: none;
+	border-bottom: 1px #AAAAAA dotted;
+}
+a:hover {
+	color: #222222;
+	text-decoration: none;
+	border-bottom: 1px #AAAAAA solid;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #EEEEEE;
+	height: 1px;
+}
+</style>
+</head>
+<body>
+<div id="top">
+	<h1 style="display:inline-block;">
+[%%%IF:LINK-WELCOME:!=;%%%]
+	<a href="[###LINK-WELCOME|html###]" title="[###TEXT-WELCOME|html###]" style="margin-right:8px;">
+[%%%/IF:LINK-WELCOME%%%]
+		<img height="48" src="[###BASE-URL|html###][###IMG-SVG-LOGO|html###]" align="left">
+[%%%IF:LINK-WELCOME:!=;%%%]
+	</a>
+[%%%ELSE:LINK-WELCOME%%%]
+&nbsp;
+[%%%/IF:LINK-WELCOME%%%]
+	[###INFO-HEADING|html###] &nbsp; </h1><h4 style="display:inline-block;"><span style="color:#FF3300;">{[###INFO-AUTHNAME|html###]}:</span>&nbsp;<span style="color:#778899;">&lt;[###CRR-PATH|html###]&gt;</span></h4>
+</div>
+<br>
+<div id="lst">
+	<table width="100%" border="0"><tbody>
+	<tr>
+		<td style="background:#FFFFFF!important;"><b>Icon</b></td>
+		<td style="background:#FFFFFF!important;"><b>Name</b></td>
+		<td style="background:#FFFFFF!important;"><b>Type</b></td>
+		<td style="background:#FFFFFF!important;"><b>Size</b></td>
+		<td style="background:#FFFFFF!important;"><b>Last modified</b></td>
+	</tr>
+	<tr>
+		<td colspan="5" style="background:#FFFFFF!important;"><hr></td>
+	</tr>
+[%%%IF:IS-ROOT:!=yes;%%%]
+	<tr>
+		<td colspan="5" style="background:#FFFFFF!important;"><b><a href="[###BACK-PATH|html###]" title="Go to Parent Directory: [###BACK-PATH|html###]">..^..</a></b></td>
+	</tr>
+[%%%/IF:IS-ROOT%%%]
+[%%%LOOP:LIST-DIRS%%%]
+	<tr>
+		<td width="32"><img src="[###BASE-URL|html###]modules/mod-webdav/libs/img/ftype-icons/[###LIST-DIRS.ICON|html###]" width="16" height="16"></td>
+		<td style="color:#437700;"><b><a href="[###LIST-DIRS.LINK|html###]" style="color:#437700;">[###LIST-DIRS.NAME|html###]</a></b></td>
+		<td style="color:#437700; text-align:center;">[###LIST-DIRS.TYPE|html###]</td>
+		<td style="color:#778899;"><b>[###LIST-DIRS.SIZE|html###]</b></td>
+		<td style="color:#778899; text-align:right;">[###LIST-DIRS.MODIF|html###]</td>
+	</tr>
+[%%%/LOOP:LIST-DIRS%%%]
+[%%%LOOP:LIST-FILES%%%]
+	<tr>
+		<td width="32"><img src="[###BASE-URL|html###]modules/mod-webdav/libs/img/ftype-icons/[###LIST-FILES.ICON|html###]" width="16" height="16"></td>
+		<td style="color:#003399;"><b><a href="[###LIST-FILES.LINK|html###]" style="color:#003399;">[###LIST-FILES.NAME|html###]</a></b></td>
+		<td style="color:#003399; text-align:center;">[###LIST-FILES.TYPE|html###]</td>
+		<td style="color:#778899;"><b>[###LIST-FILES.SIZE|html###]</b></td>
+		<td style="color:#778899; text-align:right;">[###LIST-FILES.MODIF|html###]</td>
+	</tr>
+[%%%/LOOP:LIST-FILES%%%]
+	</tbody></table>
+</div>
+<hr>
+<div>
+<div style="color:#AAAAAA; text-align:center; font-size:11px;font-weight:bold;">
+	!storage!:&lt;[###CRR-PATH|html###]&gt;:{current.statistics} : Dirs:&nbsp;[###NUM-CRR-DIRS|int###] ; Files:&nbsp;[###NUM-CRR-FILES|int###]
+</div>
+<div style="color:#CCCCCC; text-align:center; font-size:11px;font-weight:bold;">
+[%%%IF:DISPLAY-QUOTA:==yes;%%%]
+	!storage!:&lt;DAV&gt;:{overall.statistics} : Dirs:&nbsp;[###NUM-DIRS|int###] ; Files:&nbsp;[###NUM-FILES|int###] ; UsedSpace:&nbsp;[###QUOTA-USED|html###] ; FreeSpace:&nbsp;[###QUOTA-FREE|html###] ; QuotaSpace:&nbsp;[###QUOTA-SPACE|html###]
+[%%%ELSE:DISPLAY-QUOTA%%%]
+	!storage!:&lt;DAV&gt;:{overall.statistics} : FreeSpace:&nbsp;[###QUOTA-FREE|html###] ; QuotaSpace:&nbsp;[###QUOTA-SPACE|html###]
+[%%%/IF:DISPLAY-QUOTA%%%]
+</div>
+</div>
+<hr>
+<div align="right"><address><span style="color:#778899;"><small>[###INFO-SIGNATURE|html###]</small></span></address></div>
+<br>
+<br>
+[%%%IF:SHOW-POST-FORM:==yes;%%%]
+<div style="position:fixed; top:5px; right:10px; border: 1px solid #CCCCCC; background: #ECECEC; opacity: 0.95; border-radius: 5px; padding: 4px;"> <!-- onmouseover="this.style.opacity=0.95;" onmouseout="this.style.opacity=0.55;" -->
+	<table border="0" cellpadding="0">
+		<tr valign="middle">
+			<td title="[###DIR-NEW-INFO|html###]" style="cursor:help;"><h5 style="display:inline;">New Folder</h5></td>
+			<td>&nbsp;&nbsp;</td>
+			<td>
+				<form method="post" action="">
+					<table width="100%" cellpadding="0">
+						<tr>
+							<td><input type="hidden" name="webdav_action" value="mkd"><input type="hidden" name="webdav_mode" value="bw"><input type="text" name="name" maxlength="100" autocomplete="off"></td>
+							<td align="right"><input type="submit" value="Create Directory"></td>
+						</tr>
+					</table>
+				</form>
+			</td>
+		</tr>
+		<tr valign="middle">
+			<td title="[###MAX-UPLOAD-INFO|html###]" style="cursor:help;"><h5 style="display:inline;">New File</h5></td>
+			<td>&nbsp;&nbsp;</td>
+			<td>
+				<form method="post" action="" enctype="multipart/form-data">
+					<table width="100%" cellpadding="0">
+						<tr>
+							<td><input type="hidden" name="webdav_action" value="upf"><input type="hidden" name="webdav_mode" value="bw"><input type="file" name="file[]" multiple></td>
+							<td align="right"><input type="submit" value="Upload File"></td>
+						</tr>
+					</table>
+				</form>
+			</td>
+		</tr>
+	</table>
+</div>
+[%%%/IF:SHOW-POST-FORM%%%]
+<!-- Smart.Framework::DAV @ Version: [[###INFO-VERSION|html###]] -->
+</body>
+</html>

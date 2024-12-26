@@ -1,0 +1,89 @@
+/* CLEditor v.20191214 */
+
+.cleditorMain {
+	border: 1px solid #CCCCCC;
+	padding: 0 1px 1px;
+	background-color: #FFFFFF;
+}
+.cleditorMain, .cleditorPopup, .cleditorMain * {
+	box-sizing: content-box;
+}
+.cleditorMain iframe {
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+.cleditorMain textarea {
+	overflow-y: scroll;
+	font-size: 13px;
+	resize: none;
+	outline: none;
+	background: #FFFFF5;
+	border: 1px solid #FFFFF0 !important;
+}
+.cleditorToolbar {
+	background: url('images/toolbar.png') repeat;
+}
+.cleditorGroup {
+	float: left;
+	height: 26px;
+}
+.cleditorButton {
+	float: left;
+	width: 24px;
+	height: 24px;
+	margin: 1px 0 1px 0;
+}
+.cleditorDisabled {
+	opacity: 0.3;
+	filter: alpha(opacity=30);
+}
+.cleditorDivider {
+	float: left;
+	width: 1px;
+	height: 23px;
+	margin: 1px 0 1px 0;
+	background: #CCCCCC;
+}
+.cleditorPopup {
+	border: solid 1px #999999;
+	background-color: white;
+	color: #333333;
+	position: absolute;
+	font-size: 13px;
+	cursor: default;
+	z-index: 2147403010; /* sync with full-screen plugin, must be greater then it ; original was 10000 */
+}
+.cleditorList div {
+	padding: 2px 4px 2px 4px;
+}
+.cleditorList p, .cleditorList h1, .cleditorList h2, .cleditorList h3, .cleditorList h4, .cleditorList h5, .cleditorList h6, .cleditorList font {
+	padding: 0;
+	margin: 0;
+	background-color: Transparent;
+}
+.cleditorColor {
+	width: 150px;
+	padding: 1px 0 0 1px;
+}
+.cleditorColor div {
+	float: left;
+	width: 14px;
+	height: 14px;
+	margin: 0 1px 1px 0;
+}
+.cleditorPrompt {
+	background-color: #F2F2F2;
+	padding: 8px;
+	font-size: 13px;
+}
+.cleditorPrompt label {
+	padding-bottom: 8px;
+}
+.cleditorMsg {
+	background-color: #FDFCEE;
+	width: 150px;
+	padding: 4px;
+	font-size: 13px;
+}
+/* END */

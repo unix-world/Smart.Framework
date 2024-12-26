@@ -1,0 +1,28 @@
+# Language File: EN / CORE / Captcha :: r.8.7 / smart.framework.v.8.7
+TRANSLATIONS:
+  @language: EN
+  @area: core
+  @version: 2021-05-26
+  captcha:
+    error: |
+      The Captcha expired ... Try to refresh the page.
+      If the problem persist contact the website administrator !
+    confirm: 'Confirm you are not a Robot'
+    verify: 'Validation Code'
+    failed: 'Captcha Validation Failed'
+    image: 'Captcha Image'
+    click: 'Click to Refresh the Image'
+    enter: 'Enter the code from the image into the validation field.'
+    easy: 'I am not a robot !'
+    tick: 'Tick (check) the nearest checkbox after the timer to confirm you are not a robot.'
+    icons: 'Select the icon that does not belong in the series (is different than the rest of the icons) from the nearest box.'
+    iconsdone: 'An icon has already been selected !'
+    motion: 'Draw a fluent shape over the nearest drawing area similar with the one that you see in the background, starting from the dot. Double click on the drawing area to change the shape.'
+    motionerr: 'Invalid drawing'
+    motionwarn: 'Shape does not match'
+    motiondone: 'Draw completed'
+    helper: 'Accessibility: As alternative you can scan the QR Code and find the validation code that you have to fill in the validation input.'
+    qrcode: 'QRCode is N/A ...'
+    accessibility: 'Accessibility: Click to step forward to the Accessibility Context for Captcha'
+    passed: 'Validation Completed !'
+#END

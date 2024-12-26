@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>HiliteJs - Servers Config and Logs - Demo</title>
+
+  <link rel="stylesheet" href="../prism/fonts.css">
+  <link rel="stylesheet" href="../prism/prism-light.css">
+  <script type="text/javascript" src="../prism/prism.js"></script>
+
+  <script type="text/javascript" src="../../jquery/jquery.js"></script>
+  <script>
+  jQuery(document).ready(() => {
+    jQuery('div pre code').each((i, el) => {
+      $(el).parent().addClass('line-numbers');
+      Prism.highlightElement(el);
+    });
+  });
+  </script>
+</head>
+<body>
+
+<h1>HiliteJs Demo: Servers Config and Logs</h1>
+<hr>
+
+<!-- Apache / Nginx: Access Log -->
+
+<div>
+<h2>Access log (Apache / Nginx)</h2>
+<pre><code class="language-log">127.0.0.1 - - [11/May/2017:13:59:17 -0200] &quot;GET /www/index.php HTTP/1.1&quot; 200 11477 &quot;-&quot; &quot;Mozilla/5.0 (X11; Linux amd64; rv:45.0) Gecko/20100101 Firefox/45.0&quot;
+127.0.0.1 - - [11/May/2017:13:59:19 -0200] &quot;GET /www/index.php?page=one HTTP/1.1&quot; 404 1002 &quot;-&quot; &quot;Mozilla/5.0 (X11; Linux amd64; rv:45.0) Gecko/20100101 Firefox/45.0&quot;
+127.0.0.1 - - [11/May/2017:13:59:21 -0200] &quot;GET /www/index.php?page=two HTTP/1.1&quot; 403 1727 &quot;-&quot; &quot;Mozilla/5.0 (X11; Linux amd64; rv:45.0) Gecko/20100101 Firefox/45.0&quot;
+</code></pre>
+</div>
+
+<!-- Apache: Config -->
+
+<div>
+<h2>Apache Config / .htaccess</h2>
+<pre><code class="lang-apacheconf"># rewrite`s rules for wordpress pretty url
+LoadModule rewrite_module  modules/mod_rewrite.so
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php [NC,L]
+
+ExpiresActive On
+ExpiresByType application/x-javascript  &quot;access plus 1 days&quot;
+
+Order Deny,Allow
+Allow from All
+
+&lt;Location /maps/&gt;
+  RewriteMap map txt:map.txt
+  RewriteMap lower int:tolower
+  RewriteCond %{REQUEST_URI} ^/([^/.]+)\.html$ [NC]
+  RewriteCond ${map:${lower:%1}|NOT_FOUND} !NOT_FOUND
+  RewriteRule .? /index.php?q=${map:${lower:%1}} [NC,L]
+&lt;/Location&gt;
+</code></pre>
+</div>
+
+<!-- Nginx: Config -->
+
+<div>
+<h2>Nginx Config</h2>
+<pre><code class="lang-nginx">
+#user  nobody;
+worker_processes  1;
+
+#error_log  logs/error.log;
+#pid   /run/nginx.pid;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+      include /etc/nginx/mime.types;
+      gzip  on;
+      gzip_http_version 1.1;
+      gzip_comp_level 2;
+      gzip_types text/plain text/html text/css
+                      application/x-javascript text/xml
+                      application/xml application/xml+rss
+                      text/javascript;
+
+server {
+                listen       80;
+                server_name  localhost;
+                access_log  logs/localhost.access.log  main;
+                location / {
+                    root   html;
+                    index  index.html index.htm;
+                }
+        include /etc/nginx/sites-enabled/*;
+        }
+}
+</code></pre>
+</div>
+
+<!-- DNS: Config -->
+
+<div>
+<h2>DNS Zone Config</h2>
+<pre><code class="lang-dns-zone-file">$ORIGIN example.com.    ; designates the start of this zone file in the namespace
+$TTL 1h                 ; default expiration time of all resource records without their own TTL value
+example.com.  IN  SOA   ns.example.com. username.example.com. ( 2007120710 1d 2h 4w 1h )
+example.com.  IN  NS    ns                    ; ns.example.com is a nameserver for example.com
+example.com.  IN  NS    ns.somewhere.example. ; ns.somewhere.example is a backup nameserver for example.com
+example.com.  IN  MX    10 mail.example.com.  ; mail.example.com is the mailserver for example.com
+@             IN  MX    20 mail2.example.com. ; equivalent to above line, &quot;@&quot; represents zone origin
+@             IN  MX    50 mail3              ; equivalent to above line, but using a relative host name
+example.com.  IN  A     192.0.2.1             ; IPv4 address for example.com
+              IN  AAAA  2001:db8:10::1        ; IPv6 address for example.com
+ns            IN  A     192.0.2.2             ; IPv4 address for ns.example.com
+              IN  AAAA  2001:db8:10::2        ; IPv6 address for ns.example.com
+www           IN  CNAME example.com.          ; www.example.com is an alias for example.com
+wwwtest       IN  CNAME www                   ; wwwtest.example.com is another alias for www.example.com
+mail          IN  A     192.0.2.3             ; IPv4 address for mail.example.com
+mail2         IN  A     192.0.2.4             ; IPv4 address for mail2.example.com
+mail3         IN  A     192.0.2.5             ; IPv4 address for mail3.example.com
+</code></pre>
+</div>
+
+<!-- #END -->
+<br>
+<hr>
+<br>
+
+</body>
+</html>

@@ -1,0 +1,177 @@
+
+/*
+// jquery.alertable.css - Minimal alert, confirmation, and prompt alternatives.
+// Developed by Cory LaViska for A Beautiful Site, LLC
+// Licensed under the MIT license: http://opensource.org/licenses/MIT
+
+// r.20231016
+// (c) 2019-2023 unix-world.org
+// License: BSD
+// contains fixes by unixman
+*/
+
+/* Modal */
+.alertable {
+	position: fixed;
+	z-index: 2147482005;
+	top: 7vh;
+	left: 50%;
+	transform: translateX(-50%);
+	min-width: 292px;
+	width: 50vw;
+	max-width: 720px;
+	background: #FFFFFF;
+	border-radius: 3px;
+	padding: 20px;
+	margin: 0 auto;
+	min-height: 192px;
+	height: auto;
+	max-height: 720px;
+	border: 1px solid #EEEEEE;
+}
+
+@media all and (max-width:767px) { /* screens with a width lower than 768 */
+	.alertable {
+		top: 7px !important;
+		width: 80vw !important;
+		max-width: 80px !important;
+		height: 80vh !important;
+		max-height: 80vh !important;
+	}
+}
+
+/* Overlay */
+.alertable-overlay {
+	position: fixed;
+	z-index: 2147482004;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(238, 238, 238, 0.7);
+}
+
+/* Form */
+.alertable-form {
+	width: 100%;
+	height: 100%;
+}
+
+/* Message */
+.alertable-message {
+	padding: 5px;
+	margin-bottom: 20px;
+	white-space: pre-wrap;
+	height: calc(100% - 40px);
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+.alertable-message-html,
+.alertable-message-text {
+	white-space: normal !important;
+}
+.alertable-message-text {
+	font-size: 1.125rem !important;
+	font-weight: bold;
+}
+
+.alertable-message h1 {
+	font-size: 2.125rem;
+}
+.alertable-message h2 {
+	font-size: 1.875rem;
+}
+.alertable-message h3 {
+	font-size: 1.625rem;
+}
+.alertable-message h4 {
+	font-size: 1.375rem;
+}
+.alertable-message h5 {
+	font-size: 1.125rem;
+}
+.alertable-message h6 {
+	font-size: 1rem;
+}
+
+/* Prompt */
+.alertable-prompt {
+	position: absolute; /* for old browsers */
+	bottom: 40px;
+	right: 20px;
+	width: calc(100% - 40px);
+}
+.alertable-prompt > input.alertable-input {
+	width: 100% !important;
+}
+
+.alertable-input {
+	width: 100%;
+	border-radius: 4px;
+	box-shadow: none;
+	border: solid 1px #ccc;
+	font-family: inherit;
+	font-size: inherit;
+	color: inherit;
+	padding: 6px 12px;
+	display: block;
+	box-sizing: border-box;
+	margin-bottom: 10px;
+}
+
+/* Button group */
+.alertable-buttons {
+	position: absolute; /* for old browsers */
+	bottom: 10px;
+	right: 10px;
+	text-align: right;
+}
+
+/* OK button */
+.alertable-ok {
+	border: solid 1px #DDDDDD;
+	background: #FFFFFF;
+	color: #444444;
+}
+
+.alertable-ok:focus,
+.alertable-ok:active {
+	outline: none;
+}
+.alertable-ok::-moz-focus-inner { /* disable mozilla focus selector as dotted border */
+	border: 0 !important;
+}
+
+/* Cancel button */
+.alertable-cancel {
+	border: solid 1px #DFDFDF;
+	background: #FFFFFF;
+	color: #777777;
+}
+
+/* OK and Cancel buttons */
+
+.alertable-ok,
+.alertable-cancel {
+	font-family: inherit;
+	font-size: inherit;
+	border-radius: 3px;
+	padding: 6px 12px;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+.alertable-ok:focus,
+.alertable-ok:active,
+.alertable-cancel:focus,
+.alertable-cancel:active {
+	border: 1px solid #BBBBBB;
+}
+
+.alertable-ok:hover,
+.alertable-cancel:hover {
+	border: 1px solid #888888;
+}
+
+
+/* END */

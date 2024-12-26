@@ -1,0 +1,217 @@
+/*
+SlickGrid Styles :: v1.4.3.2.smart.20231021
+IMPORTANT: In order to preserve the uniform grid appearance, all cell styles need to have padding, margin and border sizes. No built-in (selected, editable, highlight, flashing, invalid, loading, :focus) or user-specified CSS classes should alter those!
+*/
+
+/* unixman custom styles */
+.slickgrid-table * {
+	font-size: 0.875rem;
+}
+.slickgrid-row-selected {
+	background: #FFFFDD;
+	color: #000000;
+}
+.slick-cell-editor-field-textarea {
+	white-space: pre;
+	overflow: auto;
+}
+.slick-cell-editor-field-textarea:read-only {
+	white-space: pre-wrap;
+	overflow: auto;
+}
+/* end custom */
+
+.slick-header.slick-state-default {
+	width: 100%;
+	overflow: hidden;
+	border-left: 0px;
+}
+
+.slick-header-columns {
+	width: 999999px;
+	position: relative;
+	white-space: nowrap;
+	cursor: default;
+	overflow: hidden;
+}
+
+.slick-header-column {
+	background: #FFFFFF;
+	font-weight: bold;
+	color: #555555;
+	border-top: 1px solid #ECECEC !important;
+	border-bottom: 1px solid #ECECEC !important;
+	border-right: 1px solid #ECECEC !important;
+	border-bottom-color: #ECECEC;
+}
+
+.slick-header-column.slick-state-default {
+	position: relative;
+	display: inline-block;
+	height: 16px;
+	line-height: 16px;
+	margin: 0;
+	padding: 4px;
+	border-right: 1px solid #ECECEC;
+	border-left: 0px;
+	border-top: 0px;
+	border-bottom: 0px;
+	float: left;
+	font-weight: bold;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.slick-header-column-sorted {
+	font-style: italic;
+}
+
+.slick-sort-indicator {
+	display: inline-block;
+	width: 8px;
+	height: 5px;
+	margin-left: 4px;
+}
+
+.slick-sort-indicator-desc {
+	background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMTJweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTIgMTYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDQwLjMgKDMzODM5KSAtIGh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaCAtLT4KICAgIDx0aXRsZT50cmlhbmdsZS1kb3duPC90aXRsZT4KICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPgogICAgPGRlZnM+PC9kZWZzPgogICAgPGcgaWQ9Ik9jdGljb25zIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0idHJpYW5nbGUtZG93biIgZmlsbD0iIzAwMDAwMCI+CiAgICAgICAgICAgIDxwb2x5Z29uIGlkPSJTaGFwZSIgcG9pbnRzPSIwIDUgNiAxMSAxMiA1Ij48L3BvbHlnb24+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=') no-repeat center center;
+	background-size: 12px 17px;
+	opacity: 0.5;
+}
+
+.slick-sort-indicator-asc {
+	background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMTJweCIgaGVpZ2h0PSIxNnB4IiB2aWV3Qm94PSIwIDAgMTIgMTYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDQwLjMgKDMzODM5KSAtIGh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaCAtLT4KICAgIDx0aXRsZT50cmlhbmdsZS11cDwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJPY3RpY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9InRyaWFuZ2xlLXVwIiBmaWxsPSIjMDAwMDAwIj4KICAgICAgICAgICAgPHBvbHlnb24gaWQ9IlNoYXBlIiBwb2ludHM9IjEyIDExIDYgNSAwIDExIj48L3BvbHlnb24+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=') no-repeat center center;
+	background-size: 12px 17px;
+	opacity: 0.5;
+}
+
+.slick-resizable-handle {
+	position: absolute;
+	font-size: 0.1px;
+	display: block;
+	cursor: col-resize;
+	width: 4px;
+	right: 0px;
+	top: 0;
+	height: 100%;
+}
+
+.slick-sortable-placeholder {
+	background: #ECECEC;
+}
+
+.grid-canvas {
+	position: relative;
+	outline: 0;
+}
+
+.slick-row.slick-uiwidget-content, .slick-row.slick-state-active {
+	position: absolute;
+	border: 0px;
+}
+
+.slick-state-hover {
+}
+
+.slick-cell {
+	float: left;
+	border: 1px solid transparent;
+	border-right: 1px solid #ECECEC;
+	border-bottom-color: #ECECEC;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	vertical-align: middle;
+	z-index: 1;
+	margin: 0;
+	padding: 0;
+	padding-left: 2px;
+	padding-right: 2px;
+	cursor: default;
+}
+
+.slick-cell.highlighted {
+	background: #DDEEFF;
+	-webkit-transition: all 0.5s;
+	-moz-transition: all 0.5s;
+	transition: all 0.5s;
+}
+
+.slick-cell.flashing {
+	border: 1px solid red !important;
+}
+
+.slick-cell.editable {
+	z-index: 11;
+	overflow: visible;
+	background: white;
+/*	border-color: black;
+	border-style: solid; */
+}
+
+.slick-cell:focus {
+	outline: none;
+}
+
+.slick-reorder-proxy {
+	display: inline-block;
+	background: blue;
+	opacity: 0.15;
+	filter: alpha(opacity=15);
+	cursor: move;
+}
+
+.slick-reorder-guide {
+	display: inline-block;
+	height: 2px;
+	background: blue;
+	opacity: 0.7;
+	filter: alpha(opacity=70);
+}
+
+.slick-selection {
+	z-index: 10;
+	position: absolute;
+	background: #FFFFCC;
+	border: 1px solid #FF9900;
+	opacity: 0.3;
+/*	box-sizing: border-box; */
+}
+
+/* fixes by unixman */
+
+/*
+div.slick-cell {
+	will-change: left, top, contents, scroll-position;
+}
+*/
+
+/* fix left border */
+div.slick-viewport {
+	border-left: 1px solid #ECECEC !important;
+}
+
+div.slick-header {
+	border-left: 1px solid #ECECEC !important;
+}
+/*
+div.slick-cell.c0, div.slick-header-column.c0 {
+	border-left: 1px solid #ECECEC !important;
+}
+*/
+/* end fix */
+
+div.slick-header-column {
+	background-color: #F8F8F8;
+}
+
+[class^="slick"],
+[class^="slick"] div {
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+}
+
+/* END */
+
+

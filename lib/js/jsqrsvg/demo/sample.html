@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style type="text/css">
+svg, img {
+	border: 1px #EFEFEF solid;
+	margin: 20px !important;
+}
+div#qrc * {
+	padding: 0;
+	margin:  0;
+}
+</style>
+<script src="../qrcode.js"></script>
+</head>
+<body>
+<h1>QRCode SVG for Javascript</h1>
+<div id="qrc"></div>
+<script>
+const qrcodes = [
+
+	smartQRCode.getAsSvg('https://demo.unix-world.org', {
+		dim:   256,
+		pad:   16,
+		ecl:  "H",
+		pal: ["#FFFFFF", "#666699"],
+	}),
+
+	smartQRCode.getAsSvg('default usage', {
+		dim: 192,
+		ecl:  'L',
+		dot: false,
+		pal: ["#ED2839", "#FFFFFF"],
+	}),
+
+	smartQRCode.getAsSvg('Good Luck')
+
+];
+
+const el = document.getElementById('qrc');
+for( let c = 0; c < qrcodes.length; c++ ) {
+	el.innerHTML += '<img src="data:image/svg+xml,' + encodeURIComponent(String(qrcodes[c])) + '">'; // dataURI svg
+//	el.innerHTML += String(qrcodes[c]); // svg
+}
+</script>
+<br>
+<div><small>&copy; 2023 unix-world.org</small></div>
+</body>
+</html>

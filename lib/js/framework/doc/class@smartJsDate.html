@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="smartJ$Date static class smartJ$Date { } . CLASS :: Smart DateUtils (ES6, Strict Mode) Date Utils class for Javascript Language: Javascript Located at:">
+<meta name="keywords" content="smartj date, static, class, smart, dateutils, es6, strict, mode, date, utils, for, javascript, language, located, at, lib js framework smart framework pak js, date utils js, package, sf javascript core, name, frozen, yes, version, usage, smartj date method, depends, smartj utils, methods, public, createsafedate, integer, year, month, day, object, return, normalized, as, yyyy, param, the, raw, if, wrong, will, fix, ahead, or, behind, create, a, safe, function, standardizedate, instanceof, that, need, to, be, fixed, normalize, getisodate, boolean, withtime, string, yyyy mm dd, hh ii ss, true, use, provided, without, any, normalization, and, in, addition, get, iso, calculatedaysoffset, sdate1, sdate2, offset, seconds, between, mm, dd, calculate, days, two, dates, calculatemonthsoffset, months, addyears, years, number, of, add">
+<meta name="summary" content="Smart.Framework : Javascript Documentation: smartJ$Date">
+<link rel="icon" href="data:,">
+<title>JS Documentation for: smartJ$Date</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
+
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		width: 100%;
+		text-align: center;
+		float: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3c4663;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20210526 */
+
+.sf__tpl__highlight__marker {
+	background: #CBDA8C !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #CBDA8C !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #CBDA8C !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework : Javascript Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+		<ul class="menu">
+		<li><a href="index.html#Package--SfJavascriptCore-" title="return to Index">return to Index</a></li>
+	</ul>
+	
+</nav>
+<!-- skip logo -->
+<!-- class r.20220331 -->
+<!-- Styles -->
+<!-- styles r.20220906 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located,
+.doc-version {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-frozen,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	top: 75px;
+	right: 175px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #3C4663;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Headings -->
+<h1 title="PHP class: `smartJ$Date` @ JavaScript" id="Class--Summary-">
+	<span class="doc-modifiers">static</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-name">smartJ$Date</span><br>
+	{
+	}&nbsp;.
+</h1>
+<!-- Description -->
+<div class="doc-comments">CLASS :: Smart DateUtils (ES6, Strict Mode)<br>
+Date Utils class for Javascript</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> Javascript<span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/js/framework/smart-framework.pak.js; date_utils.js</span></li>
+		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Core</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> smartJ$Date</span></li>
+		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20220907</span></li>
+		<li><b>Usage:</b> smartJ$Date.method();</li>
+		
+		
+		
+		<li><b>Depends:</b> smartJ$Utils</li>
+		
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">class Methods</h2>
+</div>
+<!-- methods r.20210414 -->
+<div class="doc-container" id="Method--createSafeDate">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>createSafeDate</b></span>&nbsp;=&nbsp;(
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`year` Parameter">year</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`month` Parameter">month</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`day` Parameter">day</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object} Normalized Date Object as: { year: YYYY, month: 1..12, day: 1..31 }<br>
+	
+	
+	
+	@param: {Integer} year The Raw Year: YYYY<br>
+	@param: {Integer} month The Raw Month: 1..12 ; if wrong will fix ahead or behind<br>
+	@param: {Integer} day The Raw Day: 1..31 ; if wrong will fix ahead or behind<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Create a Safe Date Object</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--standardizeDate">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>standardizeDate</b></span>&nbsp;(
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object} Normalized Date Object as: { year: YYYY, month: 1..12, day: 1..31 }<br>
+	
+	
+	
+	@param: {Object} date The instanceof Date() or the Raw Date Object that need to be safe fixed as { year: YYYY, month: 1..12, day: 1..31 }<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Normalize a Date Object</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--getIsoDate">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getIsoDate</b></span>&nbsp;(
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`withTime` Parameter">withTime</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} Normalized Date String as: YYYY-MM-DD or YYYY-MM-DD HH:ii:ss<br>
+	
+	
+	
+	@param: {Object} date The Raw Date Object as { year: YYYY, month: 1..12, day: 1..31 }<br>
+	@param: {Boolean} withTime If TRUE will use the date as provided, without any normalization and will return in addition: HH:ii:ss<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Get a Date Object as ISO</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--calculateDaysOffset">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>calculateDaysOffset</b></span>&nbsp;(
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`sdate1` Parameter">sdate1</span></b></span>, 
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`sdate2` Parameter">sdate2</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Integer} The Date Offset in seconds between sdate1 and sdate2 as: sdate2 - sdate1<br>
+	
+	
+	
+	@param: {Object} sdate1 Normalized Date #1 Object as: { year: YYYY, month: MM, day: DD }<br>
+	@param: {Object} sdate2 Normalized Date #2 Object as: { year: YYYY, month: MM, day: DD }<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Calculate Days Offset between two dates</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--calculateMonthsOffset">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>calculateMonthsOffset</b></span>&nbsp;=&nbsp;(
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`sdate1` Parameter">sdate1</span></b></span>, 
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`sdate2` Parameter">sdate2</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Integer} The Date Offset in seconds between sdate1 and sdate2 as: sdate2 - sdate1<br>
+	
+	
+	
+	@param: {Object} sdate1 Normalized Date #1 Object as: { year: YYYY, month: MM, day: DD }<br>
+	@param: {Object} sdate2 Normalized Date #2 Object as: { year: YYYY, month: MM, day: DD }<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Calculate Months Offset between two dates</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--addYears">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>addYears</b></span>&nbsp;(
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`years` Parameter">years</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object} Normalized Date Object as: { year: YYYY, month: MM, day: DD }<br>
+	
+	
+	
+	@param: {Object} date The Raw Date Object as { year: YYYY, month: 1..12, day: 1..31 }<br>
+	@param: {Integer} years The number of Years to add or substract<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Add Years to a Date Object</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--addMonths">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>addMonths</b></span>&nbsp;(
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`months` Parameter">months</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object} Normalized Date Object as: { year: YYYY, month: MM, day: DD }<br>
+	
+	
+	
+	@param: {Object} date The Raw Date Object as { year: YYYY, month: 1..12, day: 1..31 }<br>
+	@param: {Integer} months The number Months to add or substract<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Add Months to a Date Object</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--addDays">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>addDays</b></span>&nbsp;(
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`days` Parameter">days</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object} Normalized Date Object as: { year: YYYY, month: MM, day: DD }<br>
+	
+	
+	
+	@param: {Object} date The Raw Date Object as { year: YYYY, month: 1..12, day: 1..31 }<br>
+	@param: {Integer} days The number Days to add or substract<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Add Days to a Date Object</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--isLeapYear">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isLeapYear</b></span>&nbsp;(
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`year` Parameter">year</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} TRUE if the Year is Leap or FALSE if is Not Leap<br>
+	
+	
+	
+	@param: {Integer} year The Year to be tested<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Test if the given Year is a Leap Year or not</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--daysInMonth">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>daysInMonth</b></span>&nbsp;(
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`year` Parameter">year</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`month` Parameter">month</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Integer} the Number of Days in the tested month as: 28, 29, 30 or 31<br>
+	
+	
+	
+	@param: {Integer} year The Year to be tested<br>
+	@param: {Integer} month The Month to be tested<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Get the Number Of Days in a specific Month of the given Year</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--formatDate">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>formatDate</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`format` Parameter">format</span></b></span>, 
+	<i>{Date}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>, 
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`settings` Parameter">settings</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: It is similar with jQueryUI formatDate<br>
+	
+	
+			@return: {String} The date in the above format<br>
+	
+	
+	
+	@param: {String} format The desired format of the date<br>
+	@param: {Date} date The date value to format, from Date() object<br>
+	@param: {Object} settings Attributes include: dayNamesShort string[7] - abbreviated names of the days from Sunday (optional) ; dayNames string[7] - names of the days from Sunday (optional) ; monthNamesShort string[12] - abbreviated names of the months (optional) ; monthNames string[12] - names of the months (optional)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Format a date object into a string value.<br>
+The format can be combinations of the following:<br>
+d  - day of month (no leading zero) ;<br>
+dd - day of month (two digit) ;<br>
+o  - day of year (no leading zeros) ;<br>
+oo - day of year (three digit) ;<br>
+D  - day name short ;<br>
+DD - day name long ;<br>
+m  - month of year (no leading zero) ;<br>
+mm - month of year (two digit) ;<br>
+M  - month name short ;<br>
+MM - month name long ;<br>
+y  - year (two digit) ;<br>
+yy - year (four digit) ;<br>
+! - Windows ticks (100ns since 01/01/0001) ;<br>
+&quot;...&quot; - literal text ;<br>
+'' - single quote ;</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--determineDate">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>determineDate</b></span>&nbsp;(
+	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>, 
+	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`defaultDate` Parameter">defaultDate</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Mixed}
+	<div class="doc-method-ret-params">
+			@hint: It is similar with jQueryUI determineDate<br>
+	
+	
+			@return: {Mixed} A Date object or null if fails to validate expression<br>
+	
+	
+	
+	@param: {Mixed} date The Date object or date relative expression to the defaultDate<br>
+	@param: {Mixed} defaultDate *Optional* null (for today) or a Date object / timestamp as default (selected) date to be used for relative expressions<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Determine a date by a Date object or Expression<br>
+Valid date objects or expressions:<br>
+new Date(1937, 1 - 1, 1) 	:: a date in the past, as object ;<br>
+'-1y -1m -1d' 				:: a date in the past as relative expression to the defaultDate ;<br>
+new Date(2037, 12 - 1, 31) 	:: a date in the future as object ;<br>
+'1y 1m 1d' 					:: a date in the future as relative expression to the defaultDate ;</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--prettySecondsToDHMS">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>prettySecondsToDHMS</b></span>&nbsp;(
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`numSec` Parameter">numSec</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The pretty formated time as: '4 Days, 16 Hours, 28 Minutes, 7 Seconds'<br>
+	
+	
+	
+	@param: {Integer} numSec The number of seconds to convert<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Convert the number of seconds (unixtime) into Pretty Format: Days, Hours, Minutes, Seconds</div>
+	
+	
+</div>
+
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20210417 -->
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20210417 -->
+
+<!-- Sample Code -->
+<br>
+<div class="doc-container" id="SAMPLE--Code-">
+	<h2 class="doc-header">Sample code: JavaScript</h2>
+</div>
+<div class="doc-code">
+	<pre><br><code class="hljs syntax javascript"> <span class="hljs-keyword">let</span> d = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+ <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(d, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
+
+ <span class="hljs-keyword">let</span> dz = smartJ$<span class="hljs-built_in">Date</span>.standardizeDate(d);
+ <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(dz, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
+
+ <span class="hljs-keyword">let</span> ds = smartJ$<span class="hljs-built_in">Date</span>.standardizeDate({ <span class="hljs-attr">year</span>: d.getFullYear(), <span class="hljs-attr">month</span>: d.getMonth()+<span class="hljs-number">1</span>, <span class="hljs-attr">day</span>: d.getDate() });
+ <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(ds, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
+
+ <span class="hljs-keyword">let</span> iso = smartJ$<span class="hljs-built_in">Date</span>.getIsoDate(ds);
+ <span class="hljs-built_in">console</span>.log(iso);
+
+ <span class="hljs-keyword">let</span> iso2 = smartJ$<span class="hljs-built_in">Date</span>.getIsoDate(ds, <span class="hljs-literal">true</span>);
+ <span class="hljs-built_in">console</span>.log(iso2);
+
+ <span class="hljs-keyword">let</span> d1 = smartJ$<span class="hljs-built_in">Date</span>.createSafeDate(d.getFullYear(), d.getMonth()+<span class="hljs-number">1</span>, d.getDate());
+ <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(d1, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
+
+ <span class="hljs-keyword">let</span> d2 = smartJ$<span class="hljs-built_in">Date</span>.createSafeDate(d.getFullYear(), (d.getMonth()+<span class="hljs-number">1</span>)+<span class="hljs-number">3</span>, d.getDate());
+ <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(d2, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
+
+ <span class="hljs-keyword">let</span> o = smartJ$<span class="hljs-built_in">Date</span>.calculateDaysOffset(d1, d2);
+ <span class="hljs-built_in">console</span>.log(o);
+
+ <span class="hljs-keyword">let</span> ox = smartJ$<span class="hljs-built_in">Date</span>.calculateDaysOffset(d2, d1);
+ <span class="hljs-built_in">console</span>.log(ox);
+
+ <span class="hljs-keyword">let</span> m = smartJ$<span class="hljs-built_in">Date</span>.calculateMonthsOffset(d1, d2);
+ <span class="hljs-built_in">console</span>.log(m);
+
+ <span class="hljs-keyword">let</span> mx = smartJ$<span class="hljs-built_in">Date</span>.calculateMonthsOffset(d2, d1);
+ <span class="hljs-built_in">console</span>.log(mx);
+
+ <span class="hljs-keyword">let</span> a1 = smartJ$<span class="hljs-built_in">Date</span>.addYears(ds, <span class="hljs-number">1</span>);
+ <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(a1, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
+
+ <span class="hljs-keyword">let</span> a2 = smartJ$<span class="hljs-built_in">Date</span>.addMonths(ds, <span class="hljs-number">12</span>);
+ <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(a2, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
+
+ <span class="hljs-keyword">let</span> a3 = smartJ$<span class="hljs-built_in">Date</span>.addDays(ds, <span class="hljs-number">365</span>);
+ <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(a3, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
+
+ <span class="hljs-keyword">let</span> fd = smartJ$<span class="hljs-built_in">Date</span>.formatDate(<span class="hljs-string">'yy-mm-dd'</span>, d);
+ <span class="hljs-built_in">console</span>.log(fd);
+
+ <span class="hljs-keyword">let</span> dd = smartJ$<span class="hljs-built_in">Date</span>.determineDate(d);
+ <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(dd, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));</code><br></pre>
+</div>
+<!-- Summary List -->
+<br>
+<!-- summary r.20210414 -->
+<script>
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* Javascript Class smartJ$Date # Documentation Index *</option>
+		<optgroup label="Class smartJ$Date">
+			<option value="Class--Summary-">Class definition</option>
+		</optgroup>
+		<optgroup label="Class Methods">
+			<option value="Methods--Summary-">Methods list</option>
+						<option value="Method--createSafeDate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;createSafeDate()</option>
+			
+						<option value="Method--standardizeDate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;standardizeDate()</option>
+			
+						<option value="Method--getIsoDate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getIsoDate()</option>
+			
+						<option value="Method--calculateDaysOffset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;calculateDaysOffset()</option>
+			
+						<option value="Method--calculateMonthsOffset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;calculateMonthsOffset()</option>
+			
+						<option value="Method--addYears"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addYears()</option>
+			
+						<option value="Method--addMonths"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addMonths()</option>
+			
+						<option value="Method--addDays"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addDays()</option>
+			
+						<option value="Method--isLeapYear"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isLeapYear()</option>
+			
+						<option value="Method--daysInMonth"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;daysInMonth()</option>
+			
+						<option value="Method--formatDate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;formatDate()</option>
+			
+						<option value="Method--determineDate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;determineDate()</option>
+			
+						<option value="Method--prettySecondsToDHMS"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;prettySecondsToDHMS()</option>
+			
+			
+		</optgroup>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+			
+		</optgroup>
+				<optgroup label="Class Sample code">
+			<option value="SAMPLE--Code-">Sample code</option>
+		</optgroup>
+		
+	</select>
+</div>
+<!-- summary-selectjs r.20210420 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 17:00:46 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div><center>
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
+</center></div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+[%%%COMMENT%%%]
+// IMPORTANT: use only JavaScript code here, no HTML !
+[%%%/COMMENT%%%]
+//===== QUnit Tests: START :: r.20210526
+
+(() => {
+
+	// Global Settings
+	QUnit.config.uxmAllowRerun = false; // hide re-run
+
+	// Settings
+
+	const charSet 				= '[###CHARSET|js###]';
+	const phpVersion 			= '[###PHP-VERSION|js###]';
+	const smartFrameworkVersion = '[###SF-VERSION|js###]';
+	const appRealm 				= '[###APP-REALM|js###]';
+	const debugMode 			= '[###DEBUG-MODE|js###]';
+	const currentLanguage 		= '[###LANG|js###]';
+	const modulePath 			= '[###MODULE-PATH|js###]';
+	const baseScript  			= '[###SRV-SCRIPT|js###]';
+
+	// @Self Tests
+
+	QUnit.module('@App-Environment', () => {
+		QUnit.test('Server Side Tests: PHP / Framework', (assert) => {
+			let expected;
+			expected = 'charSet: UTF-8';
+			assert.equal('charSet: ' + charSet, expected, expected);
+			expected = 'phpVersion: [###PHP-VERSION|js###]';
+			assert.equal('phpVersion: ' + phpVersion, expected, expected);
+			expected = 'smartFrameworkVersion: [###SF-VERSION|js###]';
+			assert.equal('smartFrameworkVersion: ' + smartFrameworkVersion, expected, expected);
+			expected = 'debugMode: no';
+			assert.equal('debugMode: ' + debugMode, expected, expected);
+			expected = 'appRealm: [###APP-REALM|js###] / [###SRV-SCRIPT|js###]';
+			assert.equal('appRealm: ' + appRealm + ' / ' + baseScript, expected, expected);
+			expected = 'currentLanguage: en';
+			assert.equal('currentLanguage: ' + currentLanguage, expected, expected);
+			expected = 'modulePath: [###MODULE-PATH|js###]';
+			assert.equal('modulePath: ' + modulePath, expected, expected);
+		});
+	});
+
+	// Smart.Framework Tests (incl Smart.Framework.Modules Tests by Area)
+	[@@@SUB-TEMPLATE:!modules/mod-samples/tests/core-tests.js.mtpl!@@@]
+	[@@@SUB-TEMPLATE:!modules/mod-samples/tests/templating-tests.js.mtpl!@@@]
+	[@@@SUB-TEMPLATE:!modules/mod-samples/tests/database-tests.js.mtpl!@@@]
+
+	// Smart.Framework.Modules Tests (optional)
+	[@@@SUB-TEMPLATE:?!modules/mod-highlight-syntax/tests/module-test.js.mtpl!@@@]
+	[@@@SUB-TEMPLATE:?!modules/mod-lang-detect/tests/module-test.js.mtpl!@@@]
+	[@@@SUB-TEMPLATE:?!modules/mod-zzz-tests/tests/module-test.js.mtpl!@@@]
+
+})();
+
+//===== QUnit Tests: #END

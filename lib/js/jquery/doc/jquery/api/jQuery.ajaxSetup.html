@@ -1,0 +1,117 @@
+<script>{
+		"title":
+			"jQuery.ajaxSetup()",
+		"excerpt":
+			"Set default values for future Ajax requests. Its use is not recommended.",
+		"termSlugs": {
+			"category": [
+				"ajax/low-level-interface","version/1.1"
+			]
+		}
+	}</script><article id="jQuery-ajaxSetup1" class="entry method"><h2 class="section-title">
+<span class="name">jQuery.ajaxSetup( options )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Set default values for future Ajax requests. Its use is not recommended.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.1/">1.1</a></span><a id="jQuery-ajaxSetup-options" href="#jQuery-ajaxSetup-options"><span class="icon-link"></span>jQuery.ajaxSetup( options )</a>
+</h4>
+<ul><li>
+<div><strong>options</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a>
+</div>
+<div>A set of key/value pairs that configure the default Ajax request. All options are optional. </div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+    <p>For details on the settings available for <code>$.ajaxSetup()</code>, see <code><a href="/jQuery.ajax/">$.ajax()</a></code>. </p>
+    <p>All subsequent Ajax calls using any function will use the new settings, unless overridden by the individual calls, until the next invocation of <code>$.ajaxSetup()</code>.</p>
+    <p><strong>Note:</strong> The settings specified here will affect <em>all</em> calls to <code>$.ajax</code> or Ajax-based derivatives such as <code>$.get()</code>. This can cause undesirable behavior since other callers (for example, plugins) may be expecting the normal default settings. For that reason we <em>strongly recommend against using this API</em>. Instead, set the options explicitly in the call or define a simple plugin to do so.</p>
+    <p>For example, the following sets a default for the <code>url</code> parameter before pinging the server repeatedly:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.ajaxSetup({</code></div></div><div class="container"><div class="line"><code>  url: <span class="string">&quot;ping.php&quot;</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <p>Now each time an Ajax request is made, the &quot;ping.php&quot; URL will be used automatically:</p>
+    <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.ajax({</code></div></div><div class="container"><div class="line"><code>  <span class="comment">// url not set here; uses ping.php</span></code></div></div><div class="container"><div class="line"><code>  data: { <span class="string">&quot;name&quot;</span>: <span class="string">&quot;Dan&quot;</span> }</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+    <div class="warning">
+      <p>Note: Global callback functions should be set with their respective global Ajax event handler methods&#x2014;<code><a href="/ajaxStart/">.ajaxStart()</a></code>, <code><a href="/ajaxStop/">.ajaxStop()</a></code>, <code><a href="/ajaxComplete/">.ajaxComplete()</a></code>, <code><a href="/ajaxError/">.ajaxError()</a></code>, <code><a href="/ajaxSuccess/">.ajaxSuccess()</a></code>, <code><a href="/ajaxSend/">.ajaxSend()</a></code>&#x2014;rather than within the <code>options</code> object for <code>$.ajaxSetup()</code>.</p>
+    </div>
+  </div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Sets the defaults for Ajax requests to the url &quot;/xmlhttp/&quot;, disables global handlers and uses POST instead of GET. The following Ajax requests then sends some data without having to set anything else.</p>
+<div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$.ajaxSetup({</code></div></div><div class="container"><div class="line"><code>  url: <span class="string">&quot;/xmlhttp/&quot;</span>,</code></div></div><div class="container"><div class="line"><code>  global: <span class="literal">false</span>,</code></div></div><div class="container"><div class="line"><code>  type: <span class="string">&quot;POST&quot;</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code>$.ajax({ data: myData });</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div></section>
+</div></article>

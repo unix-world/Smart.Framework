@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="128" height="128" viewBox="0 0 1024 1024" id="sfr">
+	<defs id="dfs1">
+		<linearGradient x1="0" y1="0" x2="0" y2="1" id="lgrad">
+			<stop id="stop7" style="stop-color:#f8f8f8;stop-opacity:1" offset="0"/>
+			<stop id="stop9" style="stop-color:#cccccc;stop-opacity:1" offset="1"/>
+		</linearGradient>
+		<radialGradient fx="0.5" fy="0.47999999" id="rgrad">
+			<stop id="stop12" style="stop-color:#00f0ff;stop-opacity:1" offset="0"/>
+			<stop id="stop14" style="stop-color:#0070e0;stop-opacity:1" offset="1"/>
+		</radialGradient>
+	</defs>
+	<circle cx="512" cy="512" r="480" id="circle16" style="fill:url(#lgrad)"/>
+	<circle cx="512" cy="512" r="440" id="circle18" style="fill:url(#rgrad)"/>
+	<g id="g20" style="stroke:#dddddd;stroke-width:10;stroke-linecap:round">
+		<g id="t16">
+			<g id="t8">
+				<g id="t4">
+					<g id="t2">
+						<line x1="512" y1="100" x2="512" y2="170" id="line26"/>
+						<line x1="512" y1="924" x2="512" y2="854" id="line28"/>
+						<line x1="512" y1="100" x2="512" y2="130" transform="matrix(0.99518473,0.09801714,-0.09801714,0.99518473,52.650196,-47.719356)" id="line30"/>
+						<line x1="512" y1="924" x2="512" y2="894" transform="matrix(0.99518473,0.09801714,-0.09801714,0.99518473,52.650196,-47.719356)" id="line32"/>
+					</g>
+					<use transform="matrix(0,1,-1,0,1024,0)" id="use34" x="0" y="0" width="1024" height="1024" xlink:href="#t2"/>
+				</g>
+				<use transform="matrix(0.70710678,0.70710678,-0.70710678,0.70710678,512,-212.07734)" id="use36" x="0" y="0" width="1024" height="1024" xlink:href="#t4"/>
+			</g>
+			<use transform="matrix(0.92387953,0.38268343,-0.38268343,0.92387953,234.9076,-156.96024)" id="use38" x="0" y="0" width="1024" height="1024" xlink:href="#t8"/>
+		</g>
+		<use transform="matrix(0.98078528,0.19509032,-0.19509032,0.98078528,109.72418,-90.048308)" id="use40" x="0" y="0" width="1024" height="1024" xlink:href="#t16"/>
+	</g>
+	<g transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,-212.07734,512)" id="g42">
+		<polygon points="512,450 512,512 85,512 " id="polygon44" style="fill:#dddddd"/>
+		<polygon points="939,512 512,512 512,450 " id="polygon46" style="fill:#ee4444"/>
+		<polygon points="512,574 512,512 939,512 " id="polygon48" style="fill:#cc0000"/>
+		<polygon points="512,574 512,512 85,512 " id="polygon50" style="fill:#aaaaaa"/>
+	</g>
+</svg>

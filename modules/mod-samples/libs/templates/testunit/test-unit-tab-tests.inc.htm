@@ -1,0 +1,102 @@
+<!-- Partial Sub-Template: TestUnit.Main.Tests -->
+			<!-- Test Escaping: [###POWERED-INFO|url|js|html###] -->
+			<span style="color: #778899; font-size: 37px; font-weight: bold;">Core Test Suite &nbsp;&nbsp;&nbsp; :: &nbsp;&nbsp;&nbsp; コアテスト·スイート</span>
+			<br>
+			<br>
+			<button class="ux-button ux-button-alt" id="btn_loader_test_qunit"><i class="sfi sfi-hour-glass" style="color:#555555;"></i> &nbsp; All Tests: QUnit</button>
+			<button class="ux-button" id="btn_loader_test_strings" title="Unicode Strings Tests"><i class="sfi sfi-sphere" style="color:#555555;"></i> &nbsp; Test: Unicode Strings</button>
+			<button class="ux-button" id="btn_loader_test_crypto" title="Cryptography Tests"><i class="sfi sfi-make-group" style="color:#555555;"></i> &nbsp; Test: Cryptography</button>
+			<button class="ux-button" id="btn_loader_test_mtpl"><i class="sfi sfi-stack" style="color:#555555;"></i> &nbsp; Test: Marker-TPL</button>
+			<button class="ux-button" id="btn_loader_test_fs"><i class="sfi sfi-folder-open" style="color:#555555;"></i> &nbsp; Test: FileSystem Operations</button>
+			<br>
+			<button class="ux-button" id="btn_loader_test_dba"><i class="sfi sfi-library" style="color:#555555;"></i> &nbsp; Test: Dba DB</button>
+			<button class="ux-button" id="btn_loader_test_pcache"><i class="sfi sfi-magnet" style="color:#555555;"></i> &nbsp; Test: Persistent Cache</button>
+			<button class="ux-button" id="btn_loader_test_mongo"><i class="sfi sfi-leaf" style="color:#555555;"></i> &nbsp; Test: MongoDB Server</button>
+			<button class="ux-button" id="btn_loader_test_pgsql"><i class="sfi sfi-database" style="color:#555555;"></i> &nbsp; Test: PostgreSQL Server</button>
+			<button class="ux-button" id="btn_loader_test_mysql"><i class="sfi sfi-books" style="color:#555555;"></i> &nbsp; Test: MariaDB/MySQL Server</button>
+			<script>
+			let the_url_test_unicode_str = '[###TEST-URL-UNICODE-STR|js###]';
+			jQuery(function() {
+				//--
+				const msgAlert = (msg) => {
+					smartJ$Browser.GrowlNotificationAdd('Errors', smartJ$Utils.escape_html(msg), 'lib/framework/img/sign-warn.svg', 0, true, 'error');
+				};
+				//--
+				$('#btn_loader_test_qunit').click(function() {
+					$('#test_div_by_ajax').html('<span style="color: #003399; font-size: 27px; font-weight: bold;"></span>');
+					smartJ$Browser.PopUpLink('?page=samples.qunit-run-tests', 'qunit-ext-test', null, null, -1, 1);
+				});
+				//--
+				$('#btn_loader_test_strings').click(function() {
+					let the_type_page_test_str = 'html';
+					let the_param_page_test_str = 'testunit.strings-test';
+					let the_img_page_test_str = 'lib/framework/img/loading-spokes.svg';
+					let the_rand_chooser = Math.floor((Math.random() * 100) + 1);
+					if(the_rand_chooser >= 50) {
+						the_type_page_test_str = 'json';
+						the_param_page_test_str = 'testunit.strings-test-json';
+						the_img_page_test_str = 'lib/framework/img/loading-cylon.svg';
+					} //end if
+					$('#test_div_by_ajax').html('<span style="color: #003399; font-size: 27px; font-weight: bold;">Loading the Unicode String Test Suite ...</span>');
+					// the URL below MUST CONTAIN a combination between semantic paths and url variables to get a real testing ; from PHP to Semantic ; from JS to URL var
+					smartJ$Browser.LoadElementContentByAjax('test_div_by_ajax', String(the_img_page_test_str), '[###TESTUNIT_BASE_URL|js###]' + the_param_page_test_str + '/time/[###NO-CACHE-TIME|url|js###]/str_php/[###TEST-URL-UNICODE-STR|url|js###]+./' + '&str_js=' + smartJ$Utils.escape_url(the_url_test_unicode_str) + '+.', 'GET', String(the_type_page_test_str));
+				});
+				//--
+				jQuery('#btn_loader_test_crypto').click(function() {
+					smartJ$Browser.GrowlNotificationRemove();
+					$('#test_div_by_ajax').html('<span style="color: #003399; font-size: 27px; font-weight: bold;">Loading the Crypto Test Suite ...</span><br><img src="lib/framework/img/loading-bars.svg">');
+					smartJ$Browser.AjaxRequestFromURL('[###TESTUNIT_BASE_URL|js###]testunit.crypto-test&time=[###NO-CACHE-TIME###]', 'GET').done(function(msg) { // {{{JQUERY-AJAX}}}
+						$('#test_div_by_ajax').html(msg); // this will also evaluate the js scripts
+					}).fail(function(msg) {
+						msgAlert('ERROR (Test-Unit): Invalid Server Response ! StatusCode: ' + msg.status);
+					});
+				});
+				//--
+				$('#btn_loader_test_mtpl').click(function() {
+					$('#test_div_by_ajax').html('<span style="color: #003399; font-size: 27px; font-weight: bold;"></span>');
+					smartJ$Browser.PopUpLink('?page=samples.templating-test-extended&time=[###NO-CACHE-TIME|url|js###]', 'markertpl-ext-test', null, null, -1, 1);
+				});
+				//--
+				$('#btn_loader_test_fs').click(function() {
+					$('#test_div_by_ajax').html('<span style="color: #003399; font-size: 27px; font-weight: bold;">Loading the FileSystem Test Suite ...</span>');
+					smartJ$Browser.LoadElementContentByAjax('test_div_by_ajax', 'lib/framework/img/loading-cubes.svg', '[###TESTUNIT_BASE_URL|js###]testunit.filesys-test&time=[###NO-CACHE-TIME|url|js###]', 'GET', 'html');
+				});
+				//--
+				$('#btn_loader_test_dba').click(function() {
+					$('#test_div_by_ajax').html('<span style="color: #003399; font-size: 27px; font-weight: bold;">Loading the Dba DB Test Suite ...</span>');
+					smartJ$Browser.LoadElementContentByAjax('test_div_by_ajax', 'lib/framework/img/loading-cubes.svg', '[###TESTUNIT_BASE_URL|js###]testunit.dbadb-test&time=[###NO-CACHE-TIME|url|js###]', 'GET', 'html');
+				});
+				//--
+				$('#btn_loader_test_pcache').click(function() {
+					$('#test_div_by_ajax').html('<span style="color: #003399; font-size: 27px; font-weight: bold;">Loading the Persistent Cache Test Suite ...<br>This test will run ~ 15 seconds as it needs to set and wait (sleep) for some keys to expire ...</span>');
+					smartJ$Browser.LoadElementContentByAjax('test_div_by_ajax', 'lib/framework/img/loading-spin.svg', '[###TESTUNIT_BASE_URL|js###]testunit.pcache-test&time=[###NO-CACHE-TIME|url|js###]', 'GET', 'html');
+				});
+				//--
+				jQuery('#btn_loader_test_mongo').click(function() {
+					$('#test_div_by_ajax').html('<span style="color: #003399; font-size: 27px; font-weight: bold;">Loading the MongoDB Server Test Suite ...</span>');
+					smartJ$Browser.LoadElementContentByAjax('test_div_by_ajax', 'lib/framework/img/loading-spinning-bubbles.svg', '[###TESTUNIT_BASE_URL|js###]testunit.mongodb-server-test&time=[###NO-CACHE-TIME|url|js###]', 'GET', 'html');
+				});
+				//--
+				jQuery('#btn_loader_test_pgsql').click(function() {
+					$('#test_div_by_ajax').html('<span style="color: #003399; font-size: 27px; font-weight: bold;">Loading the PostgreSQL Server Test Suite ...</span>');
+					smartJ$Browser.LoadElementContentByAjax('test_div_by_ajax', 'lib/framework/img/loading-bubbles.svg', '[###TESTUNIT_BASE_URL|js###]testunit.pgsql-server-test&time=[###NO-CACHE-TIME|url|js###]', 'GET', 'html');
+				});
+				//--
+				jQuery('#btn_loader_test_mysql').click(function() {
+					$('#test_div_by_ajax').html('<span style="color: #003399; font-size: 27px; font-weight: bold;">Loading the MariaDB/MySQL Server Test Suite ...</span>');
+					smartJ$Browser.LoadElementContentByAjax('test_div_by_ajax', 'lib/framework/img/loading-bubbles.svg', '[###TESTUNIT_BASE_URL|js###]testunit.mysql-server-test&time=[###NO-CACHE-TIME|url|js###]', 'GET', 'html');
+				});
+				//--
+			});
+			</script>
+			<hr>
+			<div id="test_div_by_ajax">
+				<h1><span style="color:#444444; background:#E9EDCA; padding:5px;">TESTING AREA (tests will be loaded here) :: [###CURRENT-DATE-TIME###] ...</span></h1>
+				<a data-slimbox="slimbox" href="lib/core/img/app/server.svg" title="Image One"><img height="90" src="lib/core/img/app/server.svg" alt="Click to Test Image Gallery" title="Click to Test Image Gallery"></a>
+				<a data-slimbox="slimbox" href="?page=samples.test-image" title="Image Two"><img src="?page=samples.test-image" alt="Click to Test Image Gallery" title="Click to Test Image Gallery"></a>
+				<br>
+			</div>
+			<hr>
+			<br>
+			[###POWERED-INFO###]
+<!-- #END :: Partial Sub-Template: TestUnit.Main.Tests -->

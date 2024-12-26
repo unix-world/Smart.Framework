@@ -1,0 +1,31 @@
+/*
+ * jQuery TipTop v1.0.2
+ * http://gilbitron.github.io/TipTop
+ *
+ * Copyright 2013, Dev7studios
+ * Free to use and abuse under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ *
+ * (c) 2019-2021 unix-world.org
+ * contain fixes by unixman: r.20210415
+ *
+ */
+
+.tiptop {
+	position: absolute;
+	z-index: 9999;
+	max-width: 300px;
+	padding: 15px;
+	font-size: 1rem;
+	color: #FFFFFF;
+	background: #333333;
+	border-radius: 3px;
+}
+.tiptop::before {
+	content: '\025BF';
+	position: absolute;
+	top: -5px;
+	right: 5px;
+}
+
+/* #END */

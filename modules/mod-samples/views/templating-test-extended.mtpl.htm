@@ -1,0 +1,242 @@
+<!-- start Marker-TPL extended syntax template -->
+[%%%COMMENT%%%]
+Template: templating-test-extended.mtpl.htm # v.20210608
+[%%%/COMMENT%%%]<!-- comments are removed -->
+<script>
+/*
+[%%%|SPACE%%%]@SPACE
+[%%%|T%%%]@TAB
+[%%%|R%%%]@NEW-LINE(CR+LF)
+[%%%|N%%%]@NEW-LINE(LF)
+# virtual marker [%%%|SB-L%%%]###FAKE-MARKER###[%%%|SB-R%%%]
+*/
+</script>
+<h1 style="display:inline-block;">[###TITLE###]</h1>
+<div>
+	<a href="?page=samples.templating-test-extended" class="ux-button ux-button-small ux-button-info"><i class="sfi sfi-loop2"></i> &nbsp; Reload TPL Extended Render Test</a>
+	&nbsp;&nbsp;
+	<a href="?page=samples.templating-test-extended&op=viewsource" target="tpl_m_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-primary"><i class="sfi sfi-embed"></i> &nbsp; View TPL Source</a>
+	&nbsp;&nbsp;
+	<a href="?page=samples.templating-test-extended&op=viewpartialsource" target="tpl_m_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-secondary"><i class="sfi sfi-embed2"></i> &nbsp; View Sub-TPL Source</a>
+</div>
+<div id="qunit-test-result">...</div>
+<div id="tpl-test">
+<!-- Test for Marker-TPL -->
+<!-- Test BOOL ([###TEST-NUM|html###]) 							:  [###TEST-NUM|bool###] -->
+<!-- Test INTEGER ([###TEST-NUM|html###]) 						:  [###TEST-NUM|int###] -->
+<!-- Test NUMERIC ([###TEST-NUM|html###]) 						:  [###TEST-NUM|num###] -->
+<!-- Test HTML-ID ([###TEST-STR|html###]) 						: '[###TEST-STR|htmid###]' -->
+<!-- Test JS-VAR ([###TEST-STR|html###]) 						: '[###TEST-STR|jsvar###]' -->
+<!-- Test JSON ([###TEST-STR|html###]) 							: '[###TEST-STR|json###]' -->
+<!-- Test URL ([###TEST-URL|html###][###TEST-STR|html###]) 		: '[###TEST-URL|html###][###TEST-STR|url|html###]' -->
+<!-- Test JS ([###TEST-STR|html###]) 							: '[###TEST-STR|js###]' -->
+<!-- Test SLUG ([###TEST-UNISTR|html###]) 						: '[###TEST-UNISTR|slug###]' -->
+<!-- Test LOWER ([###TEST-UNISTR|html###]) 						: '[###TEST-UNISTR|lower|html###]' -->
+<!-- Test UPPER ([###TEST-UNISTR|html###]) 						: '[###TEST-UNISTR|upper|html###]' -->
+<!-- Test UCFIRST ([###TEST-UNISTR|html###]) 					: '[###TEST-UNISTR|ucfirst|html###]' -->
+<!-- Test UCWORDS ([###TEST-UNISTR|html###]) 					: '[###TEST-UNISTR|ucwords|html###]' -->
+<!-- Test TRIM ([###TEST-STRTOTRIM|html###]) 					: '[###TEST-STRTOTRIM|trim|html###]' -->
+<!-- Test SUBSTR10 ([###TEST-UNISTR|html###]) 					: '[###TEST-UNISTR|substr10|html###]' -->
+<!-- Test SUBTXT13 w. space after 10 ([###TEST-UNISTR|html###]) : '[###TEST-UNISTR|subtxt13|html###]' -->
+<!-- Test NL2BR ([###TEST-TXT|html###]) 						: '[###TEST-TXT|html|nl2br###]' -->
+<!-- Test CSS ([###TEST-UNISTR|html###]) 						: '[###TEST-UNISTR|css|html###]' -->
+<!-- Test B64 ([###TEST-UNISTR|b64###]) 						: '[###TEST-UNISTR|b64|html###]' -->
+<hr>
+<div>
+	[%%%IF:TEXTIFSTR:!=1234567890 . コアテスト·スイート . / \ abcdefghijklmniopqrstuvwxyz : ; <###END###> ;(1)%%%]
+	<span style="color:#FF5500; font-weight:bold; font-size:32px;">RENDER-ERROR: IF/TEXTIFSTR != [###TEXTIFSTR|html###]</span><br>
+	[%%%ELSE:TEXTIFSTR(1)%%%]
+	<!-- IF/TEXTIFSTR: `[###TEXTIFSTR|html###]` :: OK -->
+	[%%%/IF:TEXTIFSTR(1)%%%]
+	<b>Switch Eval for Status = [###STATUS###]</b>
+	<div>
+		[%%%IF:STATUS:==###TEST-COMPARE###;%%%]
+			<span style="font-weight:bold; font-style:italic; color:#666699; cursor:help;" title="STATUS=[###STATUS|html###] ; TEST-COMPARE=[###TEST-COMPARE|html###]">is equal with TEST-COMPARE [a]</span>
+		[%%%ELSE:STATUS%%%]
+			<span style="font-weight:bold; font-style:italic; text-decoration: line-through; color:#666699; cursor:help;" title="STATUS=[###STATUS|html###] ; TEST-COMPARE=[###TEST-COMPARE|html###]">is NOT equal with TEST-COMPARE [a]</span>
+		[%%%/IF:STATUS%%%]
+	</div>
+	<div>
+		[%%%IF:STATUS:?a|b|c;%%%]
+			<span style="color:#003399">IN [A | B | C]</span>
+		[%%%ELSE:STATUS%%%]
+			<span style="color:#778899">NOT IN [ A | B | C ]</span>
+		[%%%/IF:STATUS%%%]
+	</div>
+	<b>Inverted Switch Eval for Status = [###STATUS###]</b>
+	<div>
+		[%%%IF:STATUS:!?a|b|c;%%%]
+			<span style="color:#778899">NOT IN [ A | B | C ]</span>
+		[%%%ELSE:STATUS%%%]
+			<span style="color:#003399">IN [A | B | C]</span>
+		[%%%/IF:STATUS%%%]
+	</div>
+</div>
+<hr>
+[%%%IF:TEST1:<=3;%%%]
+	[%%%IF:TEST2:==3;(1)%%%]
+		[%%%IF:TEST3:==3;%%%]
+			This is displayed when TEST2 is = 3<br>
+		[%%%/IF:TEST3%%%]
+	[%%%ELSE:TEST2(1)%%%]
+		This is displayed when TEST2 is != 3 (ELSE)<br>
+	[%%%/IF:TEST2(1)%%%]
+[%%%ELSE:TEST1%%%]
+	<span style="color:#FF5500">ERROR: a condition failed (TEST1 &lt;= 3)</span>
+[%%%/IF:TEST1%%%]
+[%%%IF:TEST2:==3;(2)%%%]
+	This also appears when TEST2 is 3<br>
+[%%%/IF:TEST2(2)%%%]
+[%%%IF:TEST3:>=###TEST1###;%%%]
+	TEST3 is greater or equal than TEST1
+[%%%ELSE:TEST3%%%]
+	<span style="color:#FF5500">ERROR: a condition failed (TEST3 &gt;= TEST1)</span>
+[%%%/IF:TEST3%%%]
+<hr>
+[%%%IF:DATA:@>0;(1)%%%]
+<!-- Count of DATA is > 0 -->
+[%%%ELSE:DATA(1)%%%]
+<!-- Count of DATA is <= 0 -->
+[%%%/IF:DATA(1)%%%]
+[%%%IF:DATA:@<100000;(2)%%%]
+<!-- Count of DATA is < 100000 -->
+[%%%ELSE:DATA(2)%%%]
+<!-- Count of DATA is >= 100000 -->
+[%%%/IF:DATA(2)%%%]
+<table width="550" cellpadding="4">
+[%%%LOOP:DATA(1)%%%]
+[%%%IF:TEST2:==3;%%%]
+	[%%%IF:DATA._-ITERATOR-_:<=0;(1)%%%]
+		<tr style="background:#003399;color:#FFFFFF;">
+			<td colspan="5" style="cursor:help;" title="Iterator = [###DATA._-ITERATOR-_|html###] ; Index = [###DATA.-_INDEX_-|html###] ; MaxCount = [###DATA._-MAXCOUNT-_|html###] ; Total = [###DATA.-_MAXSIZE_-|html###]"><b>[###DATA._-VAL-_|html###]</b></td>
+		</tr>
+	[%%%ELSE:DATA._-ITERATOR-_(1)%%%]
+		[%%%IF:DATA._-ITERATOR-_:%2;(2)%%%]
+		<tr style="background:#ECECEC;">
+		[%%%ELSE:DATA._-ITERATOR-_(2)%%%]
+		<tr style="background:#FFCC00;">
+		[%%%/IF:DATA._-ITERATOR-_(2)%%%]
+			<td style="cursor:help;" title="Iterator = [###DATA._-ITERATOR-_|html###] ; Index = [###DATA.-_INDEX_-|html###]">[###DATA.ID|html###]</td>
+			<td>[###DATA.SLUG|html###]</td>
+			<td>[###DATA.NAME|html###]</td>
+			[%%%IF:DATA.IS_VOWEL:==1;%%%]
+				[%%%IF:DATA.SLUG:==###TEST-COMPARE###;%%%]
+				<td>First*** Vowel: [[###DATA.IS_VOWEL|bool|html###]]</td>
+				[%%%ELSE:DATA.SLUG%%%]
+				<td>Vowel: [[###DATA._-VAL-_.IS_VOWEL|bool|html###]]</td>
+				[%%%/IF:DATA.SLUG%%%]
+			[%%%ELSE:DATA.IS_VOWEL%%%]
+				<td>Consonant: [[###DATA.IS_VOWEL|bool|html###]]</td>
+			[%%%/IF:DATA.IS_VOWEL%%%]
+			<td>[%%%LOOP:DATA.ARR%%%]<span style="cursor:help;" title="Level2-Iterator = [###DATA.ARR._-ITERATOR-_|html###] ; Level2-Index = [###DATA.ARR.-_INDEX_-|html###] ; Level2-MaxCount = [###DATA.ARR._-MAXCOUNT-_|html###] ; Level2-Total = [###DATA.ARR.-_MAXSIZE_-|html###]">[###DATA.ARR._-VAL-_|html###]; </span>[%%%/LOOP:DATA.ARR%%%]</td>
+		</tr>
+		[%%%IF:DATA.ID:!%2;%%%]
+		<!-- Data ID is !% 2 -->
+		[%%%/IF:DATA.ID%%%]
+	[%%%/IF:DATA._-ITERATOR-_(1)%%%]
+[%%%ELSE:TEST2%%%]
+	[%%%IF:DATA._-ITERATOR-_:<=0;(3)%%%]
+	<tr><td style="background:#778899;color:#FFFFFF;"><b>Test 2 is not 3, not showing real data ...</b></td></tr>
+	[%%%/IF:DATA._-ITERATOR-_(3)%%%]
+[%%%/IF:TEST2%%%]
+[%%%IF:DATA._-ITERATOR-_:==###DATA._-MAXCOUNT-_###;(4)%%%]
+	<!-- Nested IF by LOOP Test @ Last Row from Loop: Iterator=[###DATA._-ITERATOR-_|html###] ; MaxCount=[###DATA._-MAXCOUNT-_|html###] -->
+[%%%/IF:DATA._-ITERATOR-_(4)%%%]
+[%%%/LOOP:DATA(1)%%%]
+</table>
+<hr>
+<table width="550" cellpadding="4">
+[%%%LOOP:DAT2%%%]
+	[%%%IF:DAT2._-KEY-_:!=key1;%%%]
+		[%%%IF:DAT2._-ITERATOR-_:!%2;%%%]
+		<tr style="background:#DDEEFF;">
+		[%%%ELSE:DAT2._-ITERATOR-_%%%]
+		<tr style="background:#FFFFFF;">
+		[%%%/IF:DAT2._-ITERATOR-_%%%]
+		<td style="cursor:help;" title="Iterator = [###DAT2._-ITERATOR-_|html###] ; Index = [###DAT2.-_INDEX_-|html###]">[###DAT2._-KEY-_|html###]</td>
+		<td>[###DAT2._-VAL-_|html###]</td>
+	</tr>
+	[%%%ELSE:DAT2._-KEY-_%%%]
+	<tr style="background:#FFFFCC;">
+		<td style="cursor:help;" title="Iterator = [###DAT2._-ITERATOR-_|html###] ; Index = [###DAT2.-_INDEX_-|html###] ; MaxCount = [###DAT2._-MAXCOUNT-_|html###] ; Total = [###DAT2.-_MAXSIZE_-|html###]">[###DAT2._-KEY-_|html###]</td>
+		<td style="cursor:help;">[%%%LOOP:DAT2._-VAL-_%%%]<span title="Level2-Iterator = [###DAT2._-VAL-_._-ITERATOR-_|html###] ; Level2-Index = [###DAT2._-VAL-_.-_INDEX_-|html###] ; Level2-MaxCount = [###DAT2._-VAL-_._-MAXCOUNT-_|html###] ; Level2-Total = [###DAT2._-VAL-_.-_MAXSIZE_-|html###]" style="[%%%IF:DAT2._-VAL-_.ID:==val1;%%%]font-weight:bold;[%%%ELSE:DAT2._-VAL-_.ID%%%][%%%/IF:DAT2._-VAL-_.ID%%%]">[###DAT2._-VAL-_._-KEY-_|html###] =&gt; [###DAT2._-VAL-_._-VAL-_|html###]; </span>[%%%/LOOP:DAT2._-VAL-_%%%]</td>
+	</tr>
+	[%%%/IF:DAT2._-KEY-_%%%]
+[%%%/LOOP:DAT2%%%]
+</table>
+<hr>
+<br>
+<div style="font-weight:bold; font-size:16px; background:#ECECEC;"> PHP Test for Marker escaping :: VALID Escaping Sequences for a Marker (below):<br>[###MARKER|html###]</div>
+[@@@SUB-TEMPLATE:partials/templating-test-extended.inc.htm@@@]
+<br>
+<div style="font-weight:bold; font-size:16px; background:#ECECEC;"> JS Test for Marker escaping :: VALID Escaping Sequences for a Marker (below):<br>[###MARKER|html###]</div>
+</div>
+<script>
+var the_marker = '[###MARKER|js###]';
+var the_special = '[###SPECIALS|js###]';
+var the_textstr = '[###TEXTSTR|js###]';
+var the_number = [###NUMBER|num###];
+var the_unistr = '[###TEST-UNISTR|js###]';
+var the_cssstr = '[###TEST_CSSSTR|js###]';
+var the_strtotrim = '[###TEST-STRTOTRIM|js###]';
+var the_emptystr = '[###TEST-EMPTY|js###]';
+var tpl_src = '[@@@SUB-TEMPLATE:partials/templating-test-extended.inc.htm|js-tpl-encode@@@]';
+</script>
+<script>
+(function(){
+	//--
+	tpl = smartJ$Utils.renderMarkersTpl(
+		String(tpl_src),
+		{
+			'MARKER': the_marker,
+			'SPECIALS': the_special,
+			'TEXTSTR' : the_textstr,
+			'NUMBER': the_number,
+			'MARK-AREA': 'js',
+			'TEST-UNISTR': the_unistr,
+			'TEST_CSSSTR': the_cssstr,
+			'TEST-STRTOTRIM': the_strtotrim,
+			'TEST-EMPTY': the_emptystr
+		},
+		true
+	);
+	//console.log('JS-TPL Renderer [' + the_marker + ']:\n' + tpl);
+	jQuery('#tpl-test').append(tpl); // apend it to body
+	//--
+	var the_tpl_php = jQuery('#test-mtpl-area-php').text();
+	//console.log('PHP-TPL Renderer [' + the_marker + ']:\n' + the_tpl_php);
+	var errors = 0;
+	if(the_tpl_php == '') {
+		errors++;
+		console.error('WARNING: PHP-TPL: Cannot get value !');
+	} //end if
+	var the_tpl_js = jQuery('#test-mtpl-area-js').text();
+	if(the_tpl_js == '') {
+		errors++;
+		console.error('WARNING: JS-TPL: Cannot get value !');
+	} //end if
+	if(the_tpl_php != the_tpl_js) {
+		errors++;
+		console.error('WARNING: JS-TPL Renderer differs from PHP-TPL Renderer (1) !');
+	} //end if
+	if(smartJ$Utils.stringTrim(the_tpl_php) != smartJ$Utils.stringTrim(jQuery('<div/>').html(tpl).text())) {
+		errors++;
+		console.log('WARNING: HTML Normalized TPL from JS' + smartJ$Utils.stringTrim(jQuery('<div/>').html(tpl).text()));
+		console.error('WARNING: JS-TPL Renderer differs from PHP-TPL Renderer (2) !');
+	} //end if
+	//--
+	if(!errors) {
+		jQuery('#qunit-test-result').addClass('operation_success').text('Test OK: JS/PHP Render comparison for Marker-TPL.');
+	} else {
+		jQuery('#qunit-test-result').addClass('operation_error').text('Test FAILED: JS/PHP Render comparison for Marker-TPL !!! ... see the javasceipt console for more details ...');
+	} //end if
+	//--
+})();
+</script>
+<br>
+<hr>
+[@@@SUB-TEMPLATE:partials/templating-test-extended-level1.inc.htm@@@]
+<hr>
+<h1>#END Test</h1>
+<br>
+<!-- end Marker-TPL extended syntax template -->

@@ -1,0 +1,123 @@
+
+#####
+### Smart.Framework .htaccess sample for Apache 2.2 / 2.4
+### r.8.7 / smart.framework.v.8.7 @ 20240201
+### (c) 2015-2024 unix-world.org
+#####
+
+### Restrict by IP
+#order deny,allow
+#deny from all
+#allow from 127.0.0.1
+###
+
+### PHP recommended ini settings for Smart.Framework (sync the below memory_limit with value in etc/init.php ; the value below in memory_limit must be set if expect larger POSTS than default php.ini max memory which are handled before loading the etc/init.php to set memory ...)
+php_value default_mimetype				text/html
+php_value variables_order				GPCS
+php_value request_order					GP
+php_flag always_populate_raw_post_data	Off
+php_value max_input_vars				1500
+php_value max_input_nesting_level		5
+php_value max_input_time				60
+	#php_value output_buffering			0
+php_value output_buffering				4096
+php_value memory_limit 					256M
+php_value post_max_size					108M
+php_value upload_max_filesize			102M
+php_flag session.auto_start				Off
+php_value session.use_trans_sid			0
+php_flag mail.add_x_header				Off
+php_flag zend.enable_gc					On
+php_flag zend.multibyte					Off
+###
+
+### Cross Origin Access for some resources (uncomment this for use with multiple sub-domains for cross domain requests)
+#<FilesMatch "\.(woff2|woff|ttf|svg|png|gif|jpg|jpe|jpeg|webp|webm|ogv|ogg|mp4)$">
+#	Header set Access-Control-Allow-Origin "*"
+#</FilesMatch>
+###
+
+### CSP: iFrames
+# Header set Content-Security-Policy "frame-ancestors 'self' 'localhost' '*.localhost';"
+###
+
+### To avoid infinite loops with cyclic rewrite redirects it is recommended to set in apache config a reasonable value for LimitInternalRecursion (ex: `LimitInternalRecursion 10`)
+
+### Rewrite :: For the most basic rewrite version, just uncomment the lines below that start with a single #
+#<IfModule mod_rewrite.c>
+
+	###
+#	RewriteEngine 		On
+	###
+
+	### If a 503 document have to be set, the full request path must be provided as prefix to the document
+	### Maintenance 503 (Mod Rewrite)
+	##ErrorDocument 503 "<h1>Under Maintenance</h1>"
+	###ErrorDocument 503 /maintenance.html
+	###ErrorDocument 503 /index.php?page=samples.503
+	##RewriteCond %{REMOTE_ADDR} !=127.0.0.1
+	##RewriteCond %{ENV:REDIRECT_STATUS} !=503
+	##RewriteRule .* - [R=503,L]
+	###
+
+	### Redirect to https
+	##RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+	##RewriteRule ^.*$ https://%{SERVER_NAME}%{REQUEST_URI} [L,R]
+	###
+
+	### Security Fixes
+#	RewriteRule ^\.htaccess$ - [F,L]
+#	RewriteRule ^\#db/ - [F,L]
+#	RewriteRule ^_scripts/ - [F,L]
+#	RewriteRule ^_sql/ - [F,L]
+#	RewriteRule ^etc/cacert\.pem$ - [F,L]
+#	RewriteRule ^etc/(.*)\.php$ - [F,L]
+#	RewriteRule ^lib/(.*)\.php$ - [F,L]
+#	RewriteRule ^modules/(.*)\.php$ - [F,L]
+#	RewriteRule ^tmp/ - [F,L]
+#	RewriteRule ^wpub/(.*)\.php$ - [F,L]
+#	RewriteRule ^wpub/\.htaccess$ - [F,L]
+#	RewriteRule ^wpub/\#wpub$ - [F,L]
+	###
+
+	### sample: smart-framework/module.controller(.seo-text).ext [ compatible with Smart::url_make_semantic() + Rewrite ]
+	##RewriteCond 		%{QUERY_STRING} !^\/
+#	RewriteCond 		%{REQUEST_FILENAME} !-f
+#	RewriteCond 		%{REQUEST_FILENAME} !-d
+#	RewriteRule 		^([a-z0-9_\-\.]+)\.[a-z0-9\-]{1,9}$ 									index.php?page=$1 [QSA,L]
+### or a more general rule
+##	RewriteRule 		^(.*)\.(html|stml|json|xml|rss|csv|txt|png|gif|jpg|pdf)$ 				index.php?page=$1 [QSA,L]
+	###
+
+	### sample: alternate URLs to use in combination with sub-domains (This is only for very very advanced use of URL Rewrites ... !!!)
+	##RewriteCond 		%{HTTP_HOST} ^([0-9a-z\-]*)\.
+	##### module.smart-framework/controller
+	##RewriteRule 		^(.*)?/?$ 						index.php?page=$1.%1 [QSA,L]
+	##### module.smart-framework/controller
+	##RewriteRule 		^(.*)?/?$ 						index.php?page=%1.$1 [QSA,L]
+	##### controller.smart-framework/module(.seo-text)(.ext)
+	##RewriteRule 		^(.*)\.(html|stml|json|xml|rss|csv|txt|png|gif|jpg|pdf)$ 				index.php?page=$1.%1 [QSA,L]
+	##### module.smart-framework/controller(.ext)
+	##RewriteRule 		^(.*)\.(html|stml|json|xml|rss|csv|txt|png|gif|jpg|pdf)$ 				index.php?page=%1.$1 [QSA,L]
+	###
+
+	### sample: custom 404 error page mapped via smart framework custom 404 internal handler ; it must point to some non-existing page controller ; this can be enabled only if all the above rules must solve the request and if none match then is 404, otherwise
+	#RewriteCond 		%{REQUEST_FILENAME} !-f
+	#RewriteCond 		%{REQUEST_FILENAME} !-d
+	#RewriteRule 		^(.*)$ 							index.php?page=404.not-found&req=$1 [QSA,L]
+	###
+
+#</IfModule>
+##<IfModule !mod_rewrite.c>
+##	ErrorDocument 404 	"Path not found ... Mod Rewrite is missing ..."
+##</IfModule>
+
+### If can not map 404 through internal smart framework's custom 404 handler (only when using apache rewrite) then any of the below lines can be uncommented
+### the full request path must be provided as prefix to the document
+##ErrorDocument 404 /404.html
+##ErrorDocument 404 /index.php?page=module.404
+###
+
+#####
+### END
+#####

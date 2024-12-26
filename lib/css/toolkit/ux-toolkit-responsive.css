@@ -1,0 +1,447 @@
+/***** Smart UX CSS Toolkit @ Responsive :: r.8.7 / smart.framework.v.8.7 *****/
+
+/*
+License: BSD
+	extended by unixman (stable.20241223), (c) 2015-present unix-world.org
+	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
+	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
+*/
+
+@media all and (max-width:767px) { /* screens with a width lower than 768 */
+
+	/* All buttons Responsive and Forms */
+
+	.ux-button,
+	.ux-button-responsive,
+	.ux-form {
+		width: calc(98% - 10px) !important;
+		min-width: calc(98% - 10px) !important;
+		margin: 5px 0 5px 0 !important;
+	}
+
+	.ux-button-spacing {
+		margin: 5px 0 5px 0 !important;
+	}
+
+	/*
+	.ux-button, .ux-button *,
+	.ux-button-responsive, .ux-button-responsive * {
+		font-size: 0.9rem !important;
+	}
+	*/
+
+
+	.ux-flex-center .ux-flex-center-container {
+		width: 100% !important;
+	}
+
+
+	.ux-form {
+		width: 100% !important;
+		font-size: 0.9rem !important;
+	}
+
+	.ux-button-group {
+		margin-bottom: 15px !important;
+	}
+	.ux-button-group .ux-button {
+		margin-bottom: -6px !important;
+		border-radius: 0 !important;
+	}
+	.ux-button-group .ux-button:first-child {
+		border-radius: 0 !important;
+		border-top-left-radius: 3px !important;
+		border-top-right-radius: 3px !important;
+	}
+	.ux-button-group .ux-button:last-child {
+		border-radius: 0 !important;
+		border-bottom-left-radius: 3px !important;
+		border-bottom-right-radius: 3px !important;
+	}
+
+	/* Reflow Tables */
+
+	.ux-reflow-table {
+		min-width: calc(98% - 10px) !important;
+		width: calc(98% - 10px) !important;
+	}
+
+	.ux-reflow-table td,
+	.ux-reflow-table th,
+	.ux-reflow-table tbody th,
+	.ux-reflow-table tbody td,
+	.ux-reflow-table thead th,
+	.ux-reflow-table thead td,
+	.ux-reflow-table tfoot th,
+	.ux-reflow-table tfoot td {
+		display: block !important;
+		margin: 0 !important;
+		border: 0 !important;
+		min-width: calc(98% - 25px) !important;
+	}
+
+	.ux-reflow-table tr,
+	.ux-reflow-table tbody tr,
+	.ux-reflow-table thead tr,
+	.ux-reflow-table tfoot tr {
+		display: block !important;
+		border-bottom: 1px dotted #AAAAAA !important;
+	}
+
+	/* All Form Elements Responsive */
+
+	.ux-form button[type="submit"] {
+		margin: 5px 0 0;
+	}
+
+	.ux-form input:not([type]),
+	.ux-form input[type="text"],
+	.ux-form input[type="password"],
+	.ux-form input[type="email"],
+	.ux-form input[type="url"],
+	.ux-form input[type="date"],
+	.ux-form input[type="month"],
+	.ux-form input[type="time"],
+	.ux-form input[type="datetime"],
+	.ux-form input[type="datetime-local"],
+	.ux-form input[type="week"],
+	.ux-form input[type="number"],
+	.ux-form input[type="search"],
+	.ux-form input[type="tel"],
+	.ux-form input[type="color"],
+	.ux-form label,
+	.ux-form textarea,
+	.ux-form select,
+	.ux-field {
+		margin: 5px 0 5px 0 !important;
+		display: block;
+		width: calc(98% - 10px) !important;
+		min-width: calc(98% - 10px) !important;
+	}
+
+	.ux-group input:not([type]),
+	.ux-group input[type="text"],
+	.ux-group input[type="password"],
+	.ux-group input[type="email"],
+	.ux-group input[type="url"],
+	.ux-group input[type="date"],
+	.ux-group input[type="month"],
+	.ux-group input[type="time"],
+	.ux-group input[type="datetime"],
+	.ux-group input[type="datetime-local"],
+	.ux-group input[type="week"],
+	.ux-group input[type="number"],
+	.ux-group input[type="search"],
+	.ux-group input[type="tel"],
+	.ux-group input[type="color"],
+	.ux-group label,
+	.ux-group textarea,
+	.ux-group select,
+	.ux-group .ux-field {
+		margin: 5px 0 5px 0 !important;
+		width: calc(98% - 10px) !important;
+		min-width: calc(98% - 10px) !important;
+	}
+
+	.ux-form-aligned .ux-control-group label {
+		margin-bottom: 0.3rem;
+		text-align: left;
+		display: block;
+		width: calc(98% - 10px);
+	}
+
+	.ux-form-aligned .ux-controls {
+		margin: 15px 0 0 0;
+	}
+
+	.ux-form .ux-help-inline,
+	.ux-form-message-inline,
+	.ux-form-message {
+		display: block;
+		font-size: 0.75rem;
+		padding: 0.2rem 0 0.8rem;
+	}
+
+	/* DropDown (by Unixman) */
+
+	div.ux-dropdown,
+	div.ux-dropdown span.ux-dropbutton,
+	div.ux-dropdown span.ux-droparea {
+		width: calc(98% - 10px) !important;
+		min-width: calc(98% - 10px) !important;
+		font-size: 0.9rem !important;
+	}
+	div.ux-dropdown span.ux-droparea {
+		line-height: 1.5;
+	}
+	div.ux-dropdown {
+		margin: 5px 0 5px 0 !important;
+	}
+	div.ux-dropdown ul {
+		width: calc(98% - 20px) !important;
+		max-width: calc(98% - 20px) !important;
+		left: 5px;
+	}
+
+	/* Steps Bar (by Unixman) */
+
+	.ux-stepsbar a {
+		width: 100%;
+	}
+	.ux-stepsbar a:first-child {
+		padding-left: 60px;
+		border-radius: 0 0 0 0;
+	}
+	.ux-stepsbar a:first-child::before {
+		left: 30px;
+	}
+
+}
+
+@media (hover: none), all and (max-width:767px) { /* touchscreens or screens with a width lower than 768 */
+
+	/* Responsive Simple Navs (by Unixman) */
+
+	nav.ux-navy label {
+		cursor: crosshair !important;
+	}
+
+	nav.ux-navy > ul {
+		padding: 0 !important;
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+		padding-top: 1rem !important;
+		padding-bottom: 1rem !important;
+	}
+	nav.ux-navy > ul li {
+		float: none !important;
+		display: block !important;
+		width: 100% !important;
+		padding: 0 !important;
+		margin: 0 !important;
+		margin-bottom: 0.625rem !important;
+	}
+
+	nav.ux-navy > ul li.a-right {
+		float: none !important;
+	}
+	nav.ux-navy > ul li.w-space {
+		display: none !important;
+	}
+
+	nav.ux-navy > ul li a,
+	nav.ux-navy > ul li span {
+		margin: 0 !important;
+		padding-left: 1.25rem !important;
+		padding-right: 1.25rem !important;
+		text-align: left !important;
+		width: 100% !important;
+	}
+	nav.ux-navy > ul li span.img img {
+		margin-left: calc(100vw - 88px) !important;
+		margin-top: -7px !important;
+	}
+	nav.ux-navy > ul li dfn {
+		display: inline-block !important;
+	}
+	nav.ux-navy > ul li .icon {
+		margin-right: 0 !important;
+	}
+
+	nav.ux-navy > ul li a {
+		display: none !important;
+	}
+	nav.ux-navy input:checked ~ ul li a {
+		display: inline-block !important;
+	}
+
+	/* Responsive NavBar Menu (by Unixman) */
+
+	nav.ux-navbar span.detail-s {
+		display: inline;
+	}
+	nav.ux-navbar span.detail-l {
+		display: none;
+	}
+	nav.ux-navbar div#logo span:not(.display) {
+		display: none;
+	}
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0;
+		padding-left: 10px;
+		width: calc(100% - 70px);
+		text-align: left;
+		float: left;
+	}
+	nav.ux-navbar label#alt-logo {
+		display: block;
+		padding: 0;
+		padding-left: 20px;
+		padding-right: 10px;
+		float: none;
+		clear: both;
+	}
+	nav.ux-navbar {
+		margin: 0;
+	}
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
+		display: block;
+		background-color: #3f51b5;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+		border: none;
+	}
+	nav.ux-navbar label.toggle::after {
+		content: '\00a0\00a0⧎'; /* ▸ */
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1d3093;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar li.parent {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul {
+		position: relative;
+		top: 0px;
+		left: 0px;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1d3093;
+	}
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2e40a4;
+	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2e40a4;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
+	nav.ux-navbar ul li:hover > ul {
+		display: none;
+	}
+	nav.ux-navbar ul ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: static;
+	}
+	nav.ux-navbar ul ul ul li * {
+		background-color: #1d3093 !important;
+	}
+	/*
+	nav.ux-navbar ul li {
+		display: block;
+		width: 94%;
+	}
+	*/
+
+	nav.ux-navbar.navbar-green label.toggle {
+		background-color: #6a9d4e;
+	}
+	nav.ux-navbar.navbar-green label.toggle:hover {
+		background-color: #487b2c;
+	}
+	nav.ux-navbar.navbar-green a:hover {
+		background-color: #487b2c;
+	}
+	nav.ux-navbar.navbar-green ul ul ul a {
+		background-color: #598c3d;
+	}
+	nav.ux-navbar.navbar-green ul li ul li .toggle,
+	nav.ux-navbar.navbar-green ul ul a {
+		background-color: #598c3d;
+	}
+	nav.ux-navbar.navbar-green ul ul ul li * {
+		background-color: #487b2c !important;
+	}
+
+	nav.ux-navbar.navbar-black label.toggle {
+		background-color: #3b4250;
+	}
+	nav.ux-navbar.navbar-black label.toggle:hover {
+		background-color: #192030;
+	}
+	nav.ux-navbar.navbar-black a:hover {
+		background-color: #192030;
+	}
+	nav.ux-navbar.navbar-black ul ul ul a {
+		background-color: #2a3140;
+	}
+	nav.ux-navbar.navbar-black ul li ul li .toggle,
+	nav.ux-navbar.navbar-black ul ul a {
+		background-color: #2a3140;
+	}
+	nav.ux-navbar.navbar-black ul ul ul li * {
+		background-color: #192030 !important;
+	}
+
+	/* Menu Bars (by Unixman) */
+
+	.ux-menubar-bar .ux-menubar-bar-item,
+	.ux-menubar-bar .ux-menubar-dropdown-hover {
+		float: none;
+		width: 100% !important;
+		text-align: left;
+	}
+	.ux-menubar-dropdown-content {
+		width: calc(98% - 50px) !important;
+	}
+
+	/* Menus, Horizontal */
+
+	.ux-menu-horizontal {
+		white-space: normal !important;
+	}
+
+}
+
+
+/* smartphones, touchscreens
+@media (hover: none) and (pointer: coarse) {} */
+
+/* stylus-based screens
+@media (hover: none) and (pointer: fine) {} */
+
+/* Nintendo Wii controller, Microsoft Kinect
+@media (hover: hover) and (pointer: coarse) {} */
+
+/* mouse, touch pad
+@media (hover: hover) and (pointer: fine) {} */
+
+
+/***** END *****/

@@ -1,0 +1,25 @@
+{
+  "monthly": [
+    {
+      "id": 1,
+      "name": "Event 1",
+      "startdate": "2019-03-16",
+      "enddate": "2019-03-16",
+      "starttime": "8:00",
+      "endtime": "15:00",
+      "color": "#FFB128",
+      "class": "txtDark",
+      "url": ""
+    },
+    {
+      "id": 2,
+      "name": "Event 2",
+      "startdate": "2019-01-13",
+      "enddate": "2019-01-30",
+      "starttime": "12:00",
+      "endtime": "2:00",
+      "color": "#003399",
+      "url": ""
+    }
+  ]
+}

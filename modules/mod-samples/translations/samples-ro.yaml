@@ -1,0 +1,9 @@
+# Language File: RO / Mod-Samples / Test
+TRANSLATIONS:
+  @language: RO
+  @area: mod-samples
+  @version: 2020-01-21
+  samples:
+    hello-world: 'Hey World'
+    this-is: 'acest framework este'
+#END

@@ -1,0 +1,231 @@
+<!-- v.20231120 -->
+<style>
+.slick-cell {
+	padding-left: 4px !important;
+	padding-right: 4px !important;
+}
+.slick-cell-editor-field {
+	padding: 2px !important;
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+	font-size: 0.8125rem !important;
+	cursor: text !important;
+}
+.slick-cell-editor-field-textarea:read-only {
+	white-space: break-spaces !important;
+}
+.slick-cell-editor-field-select {
+	height: 100% !important;
+}
+.smartGrid_AlignCenter {
+	text-align: center;
+}
+.smartGrid_AlignRight {
+	text-align: right;
+}
+.smartGrid_Highlight {
+	color: #44619D;
+	font-weight: bold;
+}
+.smartGrid_Important {
+	font-weight: bold;
+}
+.smartGrid_ColId {
+	color: #444444;
+}
+.smartGrid_ColCrrId {
+	color: #ED2839;
+}
+.smartGrid_ColEmail {
+	color: #555588;
+}
+.smartGrid_ColName {
+	color: #222222;
+}
+.smartGrid_ColDate {
+	color: #444444;
+	font-size: 0.8125rem !important;
+}
+a#nolink {
+	cursor: pointer !important;
+	text-decoration: none !important;
+	border-bottom: none !important;
+}
+</style>
+<script>
+const itemURL = '[###ACTIONS-URL|js###]';
+const IdOfGrid = 'AdminsListGrid';
+const TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', itemURL + 'list', 'auth_admins_list_tbl', 'id', 'ASC', '', 'filtering');
+</script>
+<div style="margin-bottom:24px;">
+	<div class="ux-grid-row">
+		<div class="ux-grid-col m8 s12">
+			<a id="nolink" href="[###CURRENT-SCRIPT|html###]"><i class="sfi sfi-users sfi-2x" style="color:#5E6885;"></i></a> &nbsp; <span style="color:#444444; font-size:2rem; font-weight:bold;">Auth.Admins Management&nbsp;:: <span id="infoTotalRows" style="white-space:pre;"># / # @</span></span>
+		</div>
+		<div class="ux-grid-col m4 s12">
+			<div class="ux-right" style="margin-top:10px;">
+[@@@SUB-TEMPLATE:acc-namespaces.mtpl.inc.htm@@@]
+			</div>
+		</div>
+	</div>
+</div>
+[%%%IF:IS-RESTRICTED:==yes;%%%]
+<h3>Restricted Accounts List: `[###RESTRICTED-ID|html###]`</h3>
+[%%%ELSE:IS-RESTRICTED%%%]
+<form id="filtering" name="filtering" class="ux-form" onSubmit="return false;">
+	<input type="text" id="filter-id" name="id" placeholder="ID" value="" class="ux-field ux-field-xl">
+	<button type="button" class="ux-button ux-button-details" onClick="TheGrid.loadGridData(0);">Filter &nbsp; <i class="sfi sfi-search"></i></button>
+	<button type="button" class="ux-button ux-button-secondary" onClick="TheGrid.resetGrid(); TheGrid.loadGridData(0);">Reset &nbsp; <i class="sfi sfi-history"></i></button>
+	<button type="button" class="ux-button ux-button-primary" style="margin-left:50px;" onClick="smartJ$Browser.PopUpLink('[###ACTIONS-URL|js|html###]new-form', 'auth_admins_list_mod'); return false;"> Add New Account &nbsp; <i class="sfi sfi-user-plus"></i></button>
+</form>
+[%%%/IF:IS-RESTRICTED%%%]
+<br>
+<div id="AdminsListNavPager"></div>
+<form class="ux-form"><div id="AdminsListGrid" class="slickgrid-table" style="font-size:10px; width:100%; min-width:800px; height:10px;"></div></form>
+<script>
+jQuery(() => {
+
+	// Column Formatters
+
+	const asFormatter_Meta = (cellNode, row, dataContext, colDef) => {
+		const s_adm = '[###IS-SUPERADM|js###]';
+		const crr_id = '[###CRR-ID|js###]';
+		const acc_id = dataContext['id'];
+		const email = dataContext['email'];
+		const fname = dataContext['name_f'];
+		const lname = dataContext['name_l'];
+		const active = dataContext['active'];
+		let txtSt = 'Inactive';
+		let btnCls = 'info';
+		let icnCls = 'user-minus';
+		if(active == 1) {
+			txtSt = 'Active';
+			btnCls = 'regular';
+			icnCls = 'user-check';
+		}
+		let htmlOnClickAction = 'smartJ$Browser.AlertDialog(\'' + smartJ$Utils.escape_js('<div class="operation_info">You have not enough privileges.<div>This operation requires extra privileges that you currently do not own: `SuperAdmin`.</div></div>') + '\', null, \'Display Account: `' + smartJ$Utils.escape_js(acc_id) + '`\'); ';
+		if((s_adm == 'yes') || (crr_id === acc_id)) {
+			htmlOnClickAction = 'smartJ$Browser.PopUpLink(\'' + smartJ$Utils.escape_js(itemURL + 'edit-form' +'&id=' + smartJ$Utils.escape_url(acc_id) + '&viewonly=yes') +'\', \'auth_admins_list_mod\'); ';
+		}
+		const theHtml = '<button class="ux-button ux-button-' + smartJ$Utils.escape_html(btnCls) + ' ux-button-xsmall" onClick="' + htmlOnClickAction + 'return false;" title="Display / Modify / Delete [' + smartJ$Utils.escape_html(txtSt) + '] Account - Click to Open"><i class="sfi sfi-' + smartJ$Utils.escape_html(icnCls) + '"></i></button>';
+		jQuery(cellNode).empty().html(theHtml);
+	};
+
+	const formatter_Meta = (row, cell, value, columnDef, dataContext) => {
+		return '<i class="sfi sfi-spinner10" style="color:#EEEEEE; cursor:progress;" title="...wait..."></i>';
+	};
+
+	const formatter_Keys = (row, cell, value, columnDef, dataContext) => {
+		if(value > 0) {
+			return '<i class="sfi sfi-fa-umbrella" style="color:#778899; cursor:help;" title="Key Size: ' + smartJ$Utils.escape_html(value) + '"></i>';
+		} else {
+			return '<i class="sfi sfi-cancel-circle" style="color:#EEEEEE; cursor:help;" title="No Key"></i>';
+		}
+		return '';
+	};
+
+	const formatter_Id = (row, cell, value, columnDef, dataContext) => {
+		const crr_id = '[###CRR-ID|js###]';
+		const acc_id = String(value);
+		let cssClass = 'smartGrid_ColId';
+		if(crr_id === acc_id) {
+			cssClass = 'smartGrid_ColCrrId';
+		}
+		return '<span class="' + smartJ$Utils.escape_html(cssClass) + '">' + smartJ$Utils.escape_html(value) + '</span>';
+	}
+
+	const formatter_Active = (row, cell, value, columnDef, dataContext) => {
+		const txtDblClick = ' (Double-Click to Change)';
+		if(value == 1) {
+			return '<i class="sfi sfi-checkbox-checked" style="color:#6D8813; cursor:pointer;" title="Account is ENABLED' + smartJ$Utils.escape_html(txtDblClick) + '"></i>';
+		} else {
+			return '<i class="sfi sfi-checkbox-unchecked" style="color:#2A9DF4; cursor:pointer;" title="Account is DISABLED' + smartJ$Utils.escape_html(txtDblClick) + '"></i>';
+		}
+	};
+
+	const formatter_DateTime = (row, cell, value, columnDef, dataContext) => {
+		value = parseInt(value);
+		if(value > 0) {
+			const d = new Date(value * 1000);
+			value = d.getFullYear() + '-' + ('00' + (d.getMonth() + 1)).slice(-2) + '-' + ('00' + d.getDate()).slice(-2) + ' ' + ('00' + d.getHours()).slice(-2) + ':' + ('00' + d.getMinutes()).slice(-2) + ':' + ('00' + d.getSeconds()).slice(-2);
+		} else {
+			value = '-';
+		}
+		return smartJ$Utils.escape_html(value);
+	};
+
+	const formatter_Privileges = (row, cell, value, columnDef, dataContext) => {
+		return '<span style="color:#448FCE; font-size:0.8125rem; font-weight:bold;">' + smartJ$Utils.escape_html(value) + '</span>';
+	};
+
+	// Column Updaters
+
+	const updateCellData = (url_segment_update) => {
+		smartJ$Browser.SubmitFormByAjax('', '[###ACTIONS-URL|js###]edit-cell' + url_segment_update, 'yes', 'TheGrid.loadGridData(TheGrid.getOffset());', 'TheGrid.loadGridData(TheGrid.getOffset());');
+	};
+
+	// Grid Data Defs
+
+	const columns = [
+		{id:'meta', name:'', toolTip:'Display / Modify / Delete', sortable:false, width:60, maxWidth:60, cssClass:'smartGrid_AlignCenter', formatter:formatter_Meta, asyncPostRender:asFormatter_Meta},
+		{id:'keys-length', field:'keys-length', name:'P-Key', toolTip:'Private Key', sortable:false, width:60, maxWidth:60, cssClass:'smartGrid_AlignCenter', formatter:formatter_Keys},
+		{id:'id', field:'id', name:'UserName / ID', sortable:true, width:75, cssClass:'smartGrid_Important', editor:TextCellSelector, formatter:formatter_Id},
+		{id:'active', field:'active', name:'Active', toolTip:'Active Status', sortable:true, sortNumeric:true, width:70, maxWidth:70, cssClass:'smartGrid_AlignCenter', formatter:formatter_Active, editor:CheckboxCellEditor},
+		{id:'email', field:'email', name:'Email', toolTip:'Email Address', sortable:true, width:100, cssClass:'smartGrid_ColEmail smartGrid_Important', editor:TextCellSelector},
+		{id:'name_f', field:'name_f', name:'First Name', toolTip:'Given Name', sortable:true, width:70, cssClass:'smartGrid_ColName', editor:TextCellSelector},
+		{id:'name_l', field:'name_l', name:'Last Name', toolTip:'Family Name', sortable:true, width:70, cssClass:'smartGrid_ColName', editor:TextCellSelector},
+		{id:'modif', field:'modif', name:'Modified', toolTip:'Last Modified', sortable:true, sortNumeric:true, width:50, maxWidth:150, cssClass:'smartGrid_ColDate smartGrid_AlignCenter', formatter:formatter_DateTime},
+		{id:'priv', field:'priv', name:'Privileges', toolTip:'List of Account Privileges', sortable:false, width:125, editor:LongTextCellSelector, formatter:formatter_Privileges},
+	];
+
+	// Grid Options
+
+	const options = {
+		forceFitColumns: false,
+		enableAddRow: false,
+		enableCellNavigation: true,
+		enableColumnReorder: false,
+		enableAsyncPostRender: true,
+		asyncPostRenderDelay: 15,
+		rowHeight: 27,
+		editable: true,
+		autoEdit: false,
+		asyncEditorLoading: false,
+	};
+
+	// Grid sizing
+
+	let winW = jQuery(window).width();
+	let winH = jQuery(window).height();
+	jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - 25), 'height': parseInt(winH - 160) });
+	jQuery(window).resize(function() {
+		winW = jQuery(window).width();
+		winH = jQuery(window).height();
+		jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - 25), 'height': parseInt(winH - 160) });
+		TheGrid.grid.resizeCanvas();
+		TheGrid.grid.autosizeColumns();
+	});
+
+	// Grid Runtime
+
+	TheGrid.initNavPager('AdminsListNavPager');
+	TheGrid.initGrid(columns, options);
+	TheGrid.grid.onCellChange = (row, cell, dataContext, columnDef) => {
+		switch(columnDef.field) {
+			case 'active':
+				updateCellData('&column=' + smartJ$Utils.escape_url(columnDef.field) + '&value=' + smartJ$Utils.escape_url(dataContext[columnDef.field]) + '&id=' + smartJ$Utils.escape_url(dataContext['id']));
+				break;
+			default: // invalid
+				console.warn('Auth.Admins Table: the Column [' + columnDef.field + '] is not editable');
+		}
+	};
+	TheGrid.grid.resizeCanvas();
+	TheGrid.grid.autosizeColumns();
+	TheGrid.loadGridData(0);
+
+	// #
+
+});
+//--
+</script>
+<!-- #END :: View -->

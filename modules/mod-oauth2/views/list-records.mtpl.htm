@@ -1,0 +1,239 @@
+<!-- View: list-records v.20231120 -->
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-uix.inc.htm!@@@]
+[@@@SUB-TEMPLATE:partials/styles.mtpl.htm@@@]
+<style>
+.slick-cell {
+	padding-left: 4px !important;
+	padding-right: 4px !important;
+}
+.slick-cell-editor-field {
+	padding: 2px !important;
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+	font-size: 0.8125rem !important;
+	cursor: text !important;
+}
+.slick-cell-editor-field-textarea:read-only {
+	white-space: break-spaces !important;
+}
+.slick-cell-editor-field-select {
+	height: 100% !important;
+}
+.smartGrid_AlignCenter {
+	text-align: center;
+}
+.smartGrid_AlignRight {
+	text-align: right;
+}
+.smartGrid_Highlight {
+	color: #44619D;
+	font-weight: bold;
+}
+.smartGrid_Important {
+	font-weight: bold;
+}
+.smartGrid_Scope {
+	font-size: 0.8125rem !important;
+}
+.smartGrid_ID {
+	font-size: 0.875rem !important;
+}
+.smartGrid_Desc {
+	color: #778899;
+	font-size: 0.75rem !important;
+}
+.smartGrid_ColDate {
+	color: #444444;
+	font-size: 0.8125rem !important;
+}
+.smartGrid_ColTime {
+	color: #448FCE;
+}
+.smartGrid_ColExpTime {
+	color: #ED2839;
+}
+</style>
+<div style="margin-bottom:10px;">
+	<div class="ux-grid-row">
+		<div class="ux-grid-col m8 s12">
+			<a id="nolink" href="[###CURRENT-SCRIPT|html###]" class=""><img width="64" height="64" src="modules/mod-oauth2/views/img/logo-oauth.svg" style="vertical-align:middle; margin-right:10px;"></a> &nbsp; <span style="color:#444444; font-size:2rem; font-weight:bold;">OAuth2 Client Management&nbsp;:: <span id="infoTotalRows" style="white-space:pre;"># / # @</span></span>
+		</div>
+		<div class="ux-grid-col m4 s12">
+			<div class="ux-right" style="margin-top:10px;">
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/views/acc-namespaces.mtpl.inc.htm!@@@]
+			</div>
+		</div>
+	</div>
+</div>
+<form id="filtering" name="filtering" class="ux-form" onSubmit="return false;">
+	<input type="text" id="filter-id" name="id" placeholder="ID" value="" class="ux-field ux-field-xl">
+	<button type="button" class="ux-button ux-button-details" onClick="TheGrid.loadGridData(0);">Filter &nbsp; <i class="sfi sfi-search"></i></button>
+	<button type="button" class="ux-button ux-button-secondary" onClick="TheGrid.resetGrid(); TheGrid.loadGridData(0);">Reset &nbsp; <i class="sfi sfi-history"></i></button>
+	<button type="button" class="ux-button ux-button-primary" style="margin-left:50px;" onClick="smartJ$Browser.PopUpLink('[###ACTIONS-URL|js|html###]new-form', 'oauth2_list_mod'); return false;"> Register New OAuth2 API &nbsp; <i class="sfi sfi-plus"></i></button>
+</form>
+<br>
+<script type="text/javascript">
+	const itemURL = '[###ACTIONS-URL|js###]';
+	const IdOfGrid = 'OAuth2ListGrid';
+	const TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', itemURL+'list', 'oauth2_list_tbl', 'id', 'ASC', '', 'filtering');
+</script>
+<div id="OAuth2ListNavPager"></div>
+<form class="ux-form"><div id="OAuth2ListGrid" class="slickgrid-table" style="font-size:10px; width:100%; min-width:1024px; height:10px;"></div></form>
+<script type="text/javascript">
+jQuery(() => {
+
+	// Column Formatters
+
+	const asFormatter_Meta = (cellNode, row, dataContext, colDef) => {
+		const the_id = smartJ$Utils.stringPureVal(dataContext['id']);
+		const active = smartJ$Utils.format_number_int(smartJ$Utils.stringPureVal(dataContext['active']));
+		const isErr  = smartJ$Utils.format_number_int(smartJ$Utils.stringPureVal(dataContext['errs']));
+		let cssClass = 'ux-button-special';
+		if(isErr > 0) {
+			if(active != 1) {
+				cssClass = 'ux-button-highlight';
+			}
+		} else {
+			if(active != 1) {
+				cssClass = 'ux-button-info';
+			} else {
+				cssClass = 'ux-button-regular';
+			}
+		}
+		jQuery(cellNode).empty().html('<button class="ux-button ' + smartJ$Utils.escape_html(cssClass) + ' ux-button-xsmall" onClick="smartJ$Browser.PopUpLink(\'' + smartJ$Utils.escape_js(itemURL + 'view-data' +'&id=' + smartJ$Utils.escape_url(the_id)) +'\', \'oauth2_list_mod\'); return false;" title="Click to Display / Refresh / Delete' + ((isErr > 0) ? ' [ ERR: ' + smartJ$Utils.escape_html(isErr) + ' ]' : '') + '"><i class="sfi sfi-cog"></i></button>');
+	};
+
+	const formatter_Meta = (row, cell, value, columnDef, dataContext) => {
+		return '<i class="sfi sfi-spinner10" style="color:#EEEEEE; cursor:progress;" title="...wait..."></i>';
+	};
+
+	const formatter_Active = (row, cell, value, columnDef, dataContext) => {
+		const txtDblClick = ' (Double-Click to Change)';
+		if(value == 1) {
+			return '<i class="sfi sfi-checkbox-checked" style="color:#6D8813; cursor:pointer;" title="Status is ACTIVE' + smartJ$Utils.escape_html(txtDblClick) + '"></i>';
+		} else {
+			return '<i class="sfi sfi-checkbox-unchecked" style="color:#2A9DF4; cursor:pointer;" title="Status is INACTIVE' + smartJ$Utils.escape_html(txtDblClick) + '"></i>';
+		}
+	};
+
+	const formatter_refreshToken = (row, cell, value, columnDef, dataContext) => {
+		let html;
+		if(value.length) {
+			html = '<i class="sfi sfi-fa-cogs" style="color:#444444; cursor:help;" title="The API provides a Refresh Token"></i>';
+		} else {
+			html = '<i class="sfi sfi-cogs" style="color:#DEDEDE; cursor:help;" title="The API does NOT support a Refresh Token"></i>';
+		}
+		return String(html);
+	};
+
+	const formatter_idToken = (row, cell, value, columnDef, dataContext) => {
+		let html;
+		if(value.length) {
+			html = '<i class="sfi sfi-user-tie" style="color:#444444; cursor:help;" title="The API provides an Open-Id JWT"></i>';
+		} else {
+			html = '<i class="sfi sfi-blocked" style="color:#DEDEDE; cursor:help;" title="The API does NOT support an Open-Id JWT"></i>';
+		}
+		return String(html);
+	};
+
+	const formatter_ExpSeconds = (row, cell, value, columnDef, dataContext) => {
+		const crr_time = [###CRR-TIME|int###];
+		const exp_sec = smartJ$Utils.format_number_int(smartJ$Utils.stringPureVal(dataContext['access_expire_seconds']));
+		const lmdodif = smartJ$Utils.format_number_int(smartJ$Utils.stringPureVal(dataContext['modified']));
+		let isExpired = false;
+		if(exp_sec > 0) {
+			if(crr_time > (lmdodif + exp_sec)) {
+				isExpired = true;
+			}
+		}
+		let cssClass = 'smartGrid_ColTime';
+		let extraTxt = '';
+		if(!!isExpired) {
+			cssClass = 'smartGrid_ColExpTime';
+			extraTxt = '[Expired]';
+		}
+		return '<span class="' + smartJ$Utils.escape_html(cssClass) + '">' + (extraTxt ? smartJ$Utils.escape_html(extraTxt + ' ') : '') + smartJ$Utils.escape_html(value) + '</span>';
+	};
+
+	const formatter_DateTime = (row, cell, value, columnDef, dataContext) => {
+		value = smartJ$Utils.format_number_int(value, false);
+		if(value > 0) {
+			const d = new Date(value * 1000);
+			value = d.getFullYear() + '-' + ('00' + (d.getMonth() + 1)).slice(-2) + '-' + ('00' + d.getDate()).slice(-2) + ' ' + ('00' + d.getHours()).slice(-2) + ':' + ('00' + d.getMinutes()).slice(-2) + ':' + ('00' + d.getSeconds()).slice(-2);
+		} else {
+			value = '-';
+		}
+		return smartJ$Utils.escape_html(value);
+	};
+
+	// Column Updaters
+
+	const updateCellData = (url_segment_update) => {
+		smartJ$Browser.SubmitFormByAjax('', '[###ACTIONS-URL|js|html###]edit-cell' + url_segment_update, 'yes', 'TheGrid.loadGridData(TheGrid.getOffset());', 'TheGrid.loadGridData(TheGrid.getOffset());');
+	};
+
+	// Grid Data Defs
+
+	const columns = [
+		{id:'meta', name:'', toolTip:'Display / Refresh / Delete', sortable:false, width:60, maxWidth:60, cssClass:'smartGrid_AlignCenter', formatter:formatter_Meta, asyncPostRender:asFormatter_Meta},
+		{id:'id', field:'id', name:'ID', toolTip:'Unique ID', sortable:true, width:185, cssClass:'smartGrid_Highlight smartGrid_ID', editor:TextCellSelector},
+		{id:'active', field:'active', name:'Active', toolTip:'Active Status', sortable:true, sortNumeric:true, width:70, maxWidth:70, cssClass:'smartGrid_AlignCenter', formatter:formatter_Active, editor:YesNoSelectCellEditor},
+		{id:'scope', field:'scope', name:'Scope', toolTip:'OAuth2 Scopes', sortable:false, width:125, maxWidth:200, cssClass:'smartGrid_Important smartGrid_Scope', editor:LongTextCellSelector},
+		{id:'description', field:'description', name:'Description', sortable:false, width:150, maxWidth:200, cssClass:'smartGrid_Important smartGrid_Desc', editor:LongTextCellEditor},
+		{id:'refresh_token', field:'refresh_token', name:'Ref-Tk.', toolTip:'Refresh-Token', sortable:false, width:70, maxWidth:70, cssClass:'smartGrid_AlignCenter', formatter:formatter_refreshToken},
+		{id:'id_token', field:'id_token', name:'Id-JWT', toolTip:'Open-Id JWT', sortable:false, width:70, maxWidth:70, cssClass:'smartGrid_AlignCenter', formatter:formatter_idToken},
+		{id:'access_expire_seconds', field:'access_expire_seconds', name:'Expire-Seconds', toolTip:'Expire After Seconds since Last-Update', sortable:true, width:150, maxWidth:150, cssClass:'smartGrid_AlignRight smartGrid_Important', formatter:formatter_ExpSeconds},
+		{id:'access_expire_time', field:'access_expire_time', name:'Expire-Time', toolTip:'Expire DateTime', sortable:true, sortNumeric:true, width:150, maxWidth:150, cssClass:'smartGrid_Important smartGrid_ColDate smartGrid_AlignCenter', formatter:formatter_DateTime},
+		{id:'modified', field:'modified', name:'Last-Update', toolTip:'Last Updated', sortable:true, sortNumeric:true, width:150, maxWidth:150, cssClass:'smartGrid_ColDate smartGrid_AlignCenter', formatter:formatter_DateTime},
+	];
+
+	// Grid Options
+
+	const options = {
+		forceFitColumns: false,
+		enableAddRow: false,
+		enableCellNavigation: true,
+		enableColumnReorder: false,
+		enableAsyncPostRender: true,
+		asyncPostRenderDelay: 15,
+		rowHeight: 27,
+		editable: true,
+		autoEdit: false,
+		asyncEditorLoading: false,
+	};
+
+	// Grid sizing
+
+	let winW = jQuery(window).width();
+	let winH = jQuery(window).height();
+	jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - 25), 'height': parseInt(winH - 160) });
+	jQuery(window).resize(function() {
+		winW = jQuery(window).width();
+		winH = jQuery(window).height();
+		jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - 25), 'height': parseInt(winH - 160) });
+		TheGrid.grid.resizeCanvas();
+		TheGrid.grid.autosizeColumns();
+	});
+
+	// Runtime
+
+	TheGrid.initNavPager('OAuth2ListNavPager');
+	TheGrid.initGrid(columns, options);
+	TheGrid.grid.onCellChange = function(row, cell, dataContext, columnDef) {
+		switch(columnDef.field) {
+			case 'active':
+			case 'description':
+				updateCellData('&column=' + smartJ$Utils.escape_url(columnDef.field) + '&value=' + smartJ$Utils.escape_url(dataContext[columnDef.field]) + '&id=' + smartJ$Utils.escape_url(dataContext['id']));
+				break;
+			default: // invalid
+				console.log('OAuth2.Management Table Table: the Column [' + columnDef.field + '] is not editable');
+		}
+	}
+	TheGrid.grid.resizeCanvas();
+	TheGrid.grid.autosizeColumns();
+	TheGrid.loadGridData(0);
+
+});
+//--
+</script>
+<!-- #END :: View -->

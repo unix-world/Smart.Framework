@@ -1,0 +1,405 @@
+<script>{
+		"title":
+			".prop()",
+		"excerpt":
+			"Get the value of a property for the first element in the set of matched elements or set one or more properties for every matched element.",
+		"termSlugs": {
+			"category": [
+				"attributes","manipulation/general-attributes","version/1.6"
+			]
+		}
+	}</script>Get the value of a property for the first element in the set of matched elements or set one or more properties for every matched element.<div class="toc">
+<h4><span>Contents:</span></h4>
+<ul class="toc-list">
+<li>
+<a href="#prop1">.prop( propertyName )</a><ul><li><a href="#prop-propertyName">.prop( propertyName )</a></li></ul>
+</li>
+<li>
+<a href="#prop2">.prop( propertyName, value )</a><ul>
+<li><a href="#prop-propertyName-value">.prop( propertyName, value )</a></li>
+<li><a href="#prop-properties">.prop( properties )</a></li>
+<li><a href="#prop-propertyName-function">.prop( propertyName, function )</a></li>
+</ul>
+</li>
+</ul>
+</div><article id="prop1" class="entry method"><h2 class="section-title">
+<span class="name">.prop( propertyName )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#Anything">Anything</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Get the value of a property for the first element in the set of matched elements.</p>
+<ul class="signatures"><li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.6/">1.6</a></span><a id="prop-propertyName" href="#prop-propertyName"><span class="icon-link"></span>.prop( propertyName )</a>
+</h4>
+<ul><li>
+<div><strong>propertyName</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>The name of the property to get.</div>
+</li></ul>
+</li></ul>
+<div class="longdesc" id="entry-longdesc">
+      <p>The <code>.prop()</code> method gets the property value for only the <em>first</em> element in the matched set. It returns <code>undefined</code> for the value of a property that has not been set, or if the matched set has no elements. To get the value for each element individually, use a looping construct such as jQuery&apos;s <code>.each()</code> or <code>.map()</code> method.</p>
+      <div class="warning">
+        <p><strong>Note:</strong> Attempting to change the <code>type</code> property (or attribute) of an <code>input</code> element created via HTML or already in an HTML document will result in an error being thrown by Internet Explorer 6, 7, or 8.</p>
+      </div>
+      <h4>Attributes vs. Properties</h4>
+      <p>The difference between <em>attributes</em> and <em>properties</em> can be important in specific situations. <strong>Before jQuery 1.6</strong>, the <code><a href="/attr/">.attr()</a></code> method sometimes took property values into account when retrieving some attributes, which could cause inconsistent behavior. <strong>As of jQuery 1.6</strong>, the <code>.prop()</code> method provides a way to explicitly retrieve property values, while <code>.attr()</code> retrieves attributes.</p>
+      <p>For example, <code>selectedIndex</code>, <code>tagName</code>, <code>nodeName</code>, <code>nodeType</code>, <code>ownerDocument</code>, <code>defaultChecked</code>, and <code>defaultSelected</code> should be retrieved and set with the <code>.prop()</code> method. Prior to jQuery 1.6, these properties were retrievable with the <code>.attr()</code> method, but this was not within the scope of <code>attr</code>. These do not have corresponding attributes and are only properties.</p>
+      <p>Concerning boolean attributes, consider a DOM element defined by the HTML markup <code>&lt;input type=&quot;checkbox&quot; checked=&quot;checked&quot; /&gt;</code>, and assume it is in a JavaScript variable named <code>elem</code>:</p>
+      <table>
+        <tr>
+          <th>
+            <code>elem.checked</code>
+          </th>
+          <td>
+<code>true</code> (Boolean) Will change with checkbox state</td>
+        </tr>
+        <tr>
+          <th>
+            <code>$( elem ).prop( &quot;checked&quot; )</code>
+          </th>
+          <td>
+<code>true</code> (Boolean) Will change with checkbox state</td>
+        </tr>
+        <tr>
+          <th>
+            <code>elem.getAttribute( &quot;checked&quot; )</code>
+          </th>
+          <td>
+<code>&quot;checked&quot;</code> (String) Initial state of the checkbox; does not change</td>
+        </tr>
+        <tr>
+          <th>
+            <code>$( elem ).attr( &quot;checked&quot; )</code>
+            <em>(1.6)</em>
+          </th>
+          <td>
+<code>&quot;checked&quot;</code> (String) Initial state of the checkbox; does not change</td>
+        </tr>
+        <tr>
+          <th>
+            <code>$( elem ).attr( &quot;checked&quot; )</code>
+            <em>(1.6.1+)</em>
+          </th>
+          <td>
+<code>&quot;checked&quot;</code> (String) Will change with checkbox state</td>
+        </tr>
+        <tr>
+          <th>
+            <code>$( elem ).attr( &quot;checked&quot; )</code>
+            <em>(pre-1.6)</em>
+          </th>
+          <td>
+<code>true</code> (Boolean) Changed with checkbox state</td>
+        </tr>
+      </table>
+      <br>
+      <p>According to the <a href="https://www.w3.org/TR/html401/interact/forms.html#h-17.4">W3C forms specification</a>, the <code>checked</code> attribute is a <em><a href="https://www.w3.org/TR/html4/intro/sgmltut.html#h-3.3.4.2">boolean attribute</a></em>, which means the corresponding property is <strong>true</strong> if the attribute is present at all&#x2014;even if, for example, the attribute has no value or is set to empty string value or even &quot;false&quot;. This is true of all boolean attributes.</p>
+      <p>Nevertheless, the most important concept to remember about the <code>checked</code> attribute is that it does not correspond to the <code>checked</code> property. The attribute actually corresponds to the <code>defaultChecked</code> property and should be used only to set the <em>initial</em> value of the checkbox. The <code>checked</code> attribute value does not change with the state of the checkbox, while the <code>checked</code> property does. Therefore, the cross-browser-compatible way to determine if a checkbox is checked is to use the property:</p>
+      <ul>
+        <li>
+          <code>if ( elem.checked )</code>
+        </li>
+        <li>
+          <code>if ( $( elem ).prop( &quot;checked&quot; ) )</code>
+        </li>
+        <li>
+          <code>if ( $( elem ).is( &quot;:checked&quot; ) )</code>
+        </li>
+      </ul>
+      <p>The same is true for other dynamic attributes, such as <code>selected</code> and <code>value</code>.</p>
+    </div>
+<h3>Additional Notes:</h3>
+<div class="longdesc"><ul><li>
+			In Internet Explorer prior to version 9, using <code><a href="/prop/">.prop()</a></code> to set a DOM element property to anything other than a simple primitive value (number, string, or boolean) can cause memory leaks if the property is not removed (using <a href="/removeProp/"><code>.removeProp()</code></a>) before the DOM element is removed from the document. To safely set values on DOM objects without memory leaks, use <a href="/data/"><code>.data()</code></a>.
+		</li></ul></div>
+<section class="entry-examples" id="entry-examples"><header><h2>Example:</h2></header><div class="entry-example" id="example-0">
+<p>Display the checked property and attribute of a checkbox as it changes.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+						<div class="line n32">32</div>
+					
+						<div class="line n33">33</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>prop demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css"></span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">p</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">20</span>px <span class="number">0</span> <span class="number">0</span>;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">b</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">color</span>:<span class="value"> blue;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">style</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">input</span> <span class="attribute">id</span>=<span class="value">&quot;check1&quot;</span> <span class="attribute">type</span>=<span class="value">&quot;checkbox&quot;</span> <span class="attribute">checked</span>=<span class="value">&quot;checked&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">label</span> <span class="attribute">for</span>=<span class="value">&quot;check1&quot;</span>&gt;</span>Check me<span class="tag">&lt;/<span class="title">label</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">p</span>&gt;</span><span class="tag">&lt;/<span class="title">p</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;input&quot;</span> ).change(<span class="keyword">function</span>() {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">var</span> $input = $( <span class="keyword">this</span> );</code></div></div><div class="container"><div class="line"><code>  $( <span class="string">&quot;p&quot;</span> ).html(</code></div></div><div class="container"><div class="line"><code>    <span class="string">&quot;.attr( \&quot;checked\&quot; ): &lt;b&gt;&quot;</span> + $input.attr( <span class="string">&quot;checked&quot;</span> ) + <span class="string">&quot;&lt;/b&gt;&lt;br&gt;&quot;</span> +</code></div></div><div class="container"><div class="line"><code>    <span class="string">&quot;.prop( \&quot;checked\&quot; ): &lt;b&gt;&quot;</span> + $input.prop( <span class="string">&quot;checked&quot;</span> ) + <span class="string">&quot;&lt;/b&gt;&lt;br&gt;&quot;</span> +</code></div></div><div class="container"><div class="line"><code>    <span class="string">&quot;.is( \&quot;:checked\&quot; ): &lt;b&gt;&quot;</span> + $input.is( <span class="string">&quot;:checked&quot;</span> ) + <span class="string">&quot;&lt;/b&gt;&quot;</span> );</code></div></div><div class="container"><div class="line"><code>}).change();</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div></section>
+</div></article><article id="prop2" class="entry method"><h2 class="section-title">
+<span class="name">.prop( propertyName, value )</span><span class="returns">Returns: <a href="http://api.jquery.com/Types/#jQuery">jQuery</a></span>
+</h2>
+<div class="entry-wrapper">
+<p class="desc"><strong>Description: </strong>Set one or more properties for the set of matched elements.</p>
+<ul class="signatures">
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.6/">1.6</a></span><a id="prop-propertyName-value" href="#prop-propertyName-value"><span class="icon-link"></span>.prop( propertyName, value )</a>
+</h4>
+<ul>
+<li>
+<div><strong>propertyName</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>The name of the property to set.</div>
+</li>
+<li>
+<div><strong>value</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Anything">Anything</a>
+</div>
+<div>A value to set for the property.</div>
+</li>
+</ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.6/">1.6</a></span><a id="prop-properties" href="#prop-properties"><span class="icon-link"></span>.prop( properties )</a>
+</h4>
+<ul><li>
+<div><strong>properties</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#PlainObject">PlainObject</a>
+</div>
+<div>An object of property-value pairs to set.</div>
+</li></ul>
+</li>
+<li class="signature">
+<h4 class="name">
+<span class="version-details">version added: <a href="/category/version/1.6/">1.6</a></span><a id="prop-propertyName-function" href="#prop-propertyName-function"><span class="icon-link"></span>.prop( propertyName, function )</a>
+</h4>
+<ul>
+<li>
+<div><strong>propertyName</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#String">String</a>
+</div>
+<div>The name of the property to set.</div>
+</li>
+<li>
+<div><strong>function</strong></div>
+<div>Type: <a href="http://api.jquery.com/Types/#Function">Function</a>( <a href="http://api.jquery.com/Types/#Integer">Integer</a> index, <a href="http://api.jquery.com/Types/#Anything">Anything</a> oldPropertyValue )
+			=&gt;
+			<a href="http://api.jquery.com/Types/#Anything">Anything</a>
+</div>
+<div>A function returning the value to set. Receives the index position of the element in the set and the old property value as arguments. Within the function, the keyword <code>this</code> refers to the current element.</div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="longdesc" id="entry-longdesc-1">
+      <p>The <code>.prop()</code> method is a convenient way to set the value of properties&#x2014;especially when setting multiple properties, using values returned by a function, or setting values on multiple elements at once. It should be used when setting <code>selectedIndex</code>, <code>tagName</code>, <code>nodeName</code>, <code>nodeType</code>, <code>ownerDocument</code>, <code>defaultChecked</code>, or <code>defaultSelected</code>. Since jQuery 1.6, these properties can no longer be set with the <code>.attr()</code> method. They do not have corresponding attributes and are only properties.</p>
+      <p>Properties generally affect the dynamic state of a DOM element without changing the serialized HTML attribute. Examples include the <code>value</code> property of input elements, the <code>disabled</code> property of inputs and buttons, or the <code>checked</code> property of a checkbox. The <code>.prop()</code> method should be used to set disabled and checked instead of the <code><a href="/attr/">.attr()</a></code> method. The <code><a href="/val/">.val()</a></code> method should be used for getting and setting value.</p>
+      <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;input&quot;</span> ).prop( <span class="string">&quot;disabled&quot;</span>, <span class="literal">false</span> );</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;input&quot;</span> ).prop( <span class="string">&quot;checked&quot;</span>, <span class="literal">true</span> );</code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;input&quot;</span> ).val( <span class="string">&quot;someValue&quot;</span> );</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+      <p><strong>Important:</strong> the <code><a href="/removeProp/">.removeProp()</a></code> method should not be used to set these properties to false. Once a native property is removed, it cannot be added again. See <code><a href="/removeProp/">.removeProp()</a></code> for more information.</p>
+      <h4 id="computed-prop-values">Computed property values</h4>
+      <p>By using a function to set properties, you can compute the value based on other properties of the element. For example, to toggle all checkboxes based off their individual values:</p>
+      <div class="syntaxhighlighter javascript">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code>$( <span class="string">&quot;input[type=&apos;checkbox&apos;]&quot;</span> ).prop( <span class="string">&quot;checked&quot;</span>, <span class="keyword">function</span>( i, val ) {</code></div></div><div class="container"><div class="line"><code>  <span class="keyword">return</span> !val;</code></div></div><div class="container"><div class="line"><code>});</code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+      <p><strong>Note: </strong>If nothing is returned in the setter function (ie. <code>function( index, prop ){})</code>, or if <code>undefined</code> is returned, the current value is not changed. This is useful for selectively setting values only when certain criteria are met.</p>
+    </div>
+<h3>Additional Notes:</h3>
+<div class="longdesc"><ul><li>
+			In Internet Explorer prior to version 9, using <code><a href="/prop/">.prop()</a></code> to set a DOM element property to anything other than a simple primitive value (number, string, or boolean) can cause memory leaks if the property is not removed (using <a href="/removeProp/"><code>.removeProp()</code></a>) before the DOM element is removed from the document. To safely set values on DOM objects without memory leaks, use <a href="/data/"><code>.data()</code></a>.
+		</li></ul></div>
+<section class="entry-examples" id="entry-examples-1"><header><h2>Example:</h2></header><div class="entry-example" id="example-1-0">
+<p>Disable all checkboxes on the page.</p>
+<div class="syntaxhighlighter xml">
+	<table>
+		<tbody>
+			<tr>
+				
+				<td class="gutter">
+					
+						<div class="line n1">1</div>
+					
+						<div class="line n2">2</div>
+					
+						<div class="line n3">3</div>
+					
+						<div class="line n4">4</div>
+					
+						<div class="line n5">5</div>
+					
+						<div class="line n6">6</div>
+					
+						<div class="line n7">7</div>
+					
+						<div class="line n8">8</div>
+					
+						<div class="line n9">9</div>
+					
+						<div class="line n10">10</div>
+					
+						<div class="line n11">11</div>
+					
+						<div class="line n12">12</div>
+					
+						<div class="line n13">13</div>
+					
+						<div class="line n14">14</div>
+					
+						<div class="line n15">15</div>
+					
+						<div class="line n16">16</div>
+					
+						<div class="line n17">17</div>
+					
+						<div class="line n18">18</div>
+					
+						<div class="line n19">19</div>
+					
+						<div class="line n20">20</div>
+					
+						<div class="line n21">21</div>
+					
+						<div class="line n22">22</div>
+					
+						<div class="line n23">23</div>
+					
+						<div class="line n24">24</div>
+					
+						<div class="line n25">25</div>
+					
+						<div class="line n26">26</div>
+					
+						<div class="line n27">27</div>
+					
+						<div class="line n28">28</div>
+					
+						<div class="line n29">29</div>
+					
+						<div class="line n30">30</div>
+					
+						<div class="line n31">31</div>
+					
+				</td>
+				
+				<td class="code">
+					<pre><div class="container"><div class="line"><code><span class="doctype">&lt;!doctype html&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">html</span> <span class="attribute">lang</span>=<span class="value">&quot;en&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">&quot;utf-8&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">title</span>&gt;</span>prop demo<span class="tag">&lt;/<span class="title">title</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css"></span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">img</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">10</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">div</span> <span class="rules">{</span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">color</span>:<span class="value"> red;</span></span></code></div></div><div class="container"><div class="line"><code>    <span class="rule"><span class="attribute">font-size</span>:<span class="value"> <span class="number">24</span>px;</span></span></code></div></div><div class="container"><div class="line"><code>  <span class="rule">}</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;/<span class="title">style</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">&quot;https://code.jquery.com/jquery-1.10.2.js&quot;</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">head</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">&quot;checkbox&quot;</span> <span class="attribute">checked</span>=<span class="value">&quot;checked&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">&quot;checkbox&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">&quot;checkbox&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>  <span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">&quot;checkbox&quot;</span> <span class="attribute">checked</span>=<span class="value">&quot;checked&quot;</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">&quot;input[type=&apos;checkbox&apos;]&quot;</span> ).prop({</code></div></div><div class="container"><div class="line"><code>  disabled: <span class="literal">true</span></code></div></div><div class="container"><div class="line"><code>});</code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code> </code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">body</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></div></div></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<h4>Demo:</h4>
+<div class="demo code-demo"></div>
+</div></section>
+</div></article>

@@ -1,0 +1,73 @@
+# [@[#[!SF.DEV-ONLY!]#]@] ; do not remove this line, it is for safety to dissalow this file to be send in a release package
+# appcodepack.yaml s.20240216.1345 ; sample: MINIFY ; (c) 2013-present unix-world.org
+APP-RELEASE:
+	# the app ID
+	smart-framework.local:
+		# the app deploy strategy: `strip` or `minify` ; using `strip` have no dependency (will use only internal PHP classes, but it is recommended to be used with at least nodejs or jsXX set for the js code lint / syntax check after stripping) ; when using minify is better to use separate lint / syntax check like jsXX if possible ...
+		deploy-strategy: strip
+		# the app deploy urls ; use http:// on your own risk ; for safety try to use https:// ; the appcodeunpack.php can be (re)generated from the task manager ; first time must be uploaded manually on the production server together with a copy of etc/appcodepack/appcodeunpack-init.php which must be edited accordingly, espccially on allowed IP addresses and the private key which must match the private keys of the apps managed ! ; after first time it can be updated each time the package is deployed - if (re)generated will be sent in the same request as package deploy ...
+		deploy-urls:
+			- https://127.0.0.1/sites/RELEASE/test-unpack/appcodeunpack.php
+			- http://localhost/sites/RELEASE/test-unpack/appcodeunpack.php
+		# the app deploy secret ; used to calculate the AppID-Hash for Deploy ; must be between 40 and 128 characters ; can contain only ASCII characters, except spaces ; default is: `set-here-a-private-key-that-must-not-be-disclosed`
+		deploy-secret: "Set-here-1-private-key-that-must-not-be-disclosed!"
+		# the app deploy auth username ; default is: `super.admin`
+		deploy-auth-user: super.admin
+		# the app unpack auth password ; default is: `The1pass!` ; use AppCode Deploy Password Encryption Utility to generate this pass ; If the deploy-secret changes, this pass have to be regenerated ...
+		deploy-auth-pass: bf448.v3!Iywa5MYV9c08U3zoHH3QkyjpW6515s8cTqjEj4;..tJkRbKDtyNZgGdZyLun4sokJjfK_PVZsHJcI4fZ6TVOr6Cj7LsofLdRwubwcqspf1ThuRtjOC7rTDylpT0r8_ywIJ5xzthHrxpauwIPDd1WEGyebfGwynpi7wC_lKQozxWz0PcZGKgPEmKC-RcDh99
+		# list of folders to include or exclude
+		folders:
+			- _sql ; =sql
+			- _sql/postgresql ; !skip
+			- etc
+			- etc/appcodepack ; !skip
+			- lib
+			- modules/app
+			- modules/mod-auth-admins
+			- modules/mod-webdav
+			- modules/mod-samples
+			- modules/mod-tpl
+			- modules/mod-tpl-twist
+			- modules/mod-tpl-twig
+		# list of files to include or exclude
+		files:
+			- LICENSE ; !skip
+			- _sql/sf-dev-only.nopack ; !skip
+			- etc/license_bsd.txt ; =etc/license-bsd.txt
+			- modules/index.html
+			- .htaccess
+			- index.php
+			- admin.php
+			- task.php
+			- README.md ; = read.md
+			- modules/mod-app-release/appcodeunpack/samples/maintenance-503.html ; =maintenance.html
+			- modules/mod-app-release/appcodeunpack/samples/appcode-upgrade.php ; =appcode-upgrade.php
+	smart-framework.test:
+		deploy-strategy: minify
+		deploy-urls:
+			- https://127.0.0.1/sites/RELEASE/test-unpack/appcodeunpack.php
+		deploy-secret: "Set-here-1-private-key-that-must-not-be-disclosed!"
+		deploy-auth-user: super.admin
+		deploy-auth-pass: bf448.v3!Iywa5MYV9c08U3zoHH3QkyjpW6515s8cTqjEj4;..tJkRbKDtyNZgGdZyLun4sokJjfK_PVZsHJcI4fZ6TVOr6Cj7LsofLdRwubwcqspf1ThuRtjOC7rTDylpT0r8_ywIJ5xzthHrxpauwIPDd1WEGyebfGwynpi7wC_lKQozxWz0PcZGKgPEmKC-RcDh99
+		folders:
+			- etc
+			- lib
+			- modules
+		files:
+			- .htaccess
+			- index.php
+			- admin.php
+			- task.php
+		tasks:
+			pre-release:
+				- QUnit Tests ; admin.php?page=samples.qunit-run-tests
+				- "Task Sample #1 ; task.php?page=samples.task-sample-1 ; !modal"
+			post-release:
+				- "Test #Markdown ; admin.php?page=samples.testunit&op=test.markdown"
+				- "Task Sample #2 ; task.php?page=samples.task-sample-2 ; !modal"
+			maintenance:
+				- Test Download ; admin.php?page=samples.test-download
+				- "Task Sample #3 ; task.php?page=samples.task-sample-3 ; !modal"
+				- Unix-World.org HTTP ; http://unix-world.org
+				- Unix-World.org HTTPS ; https://unix-world.org
+# END

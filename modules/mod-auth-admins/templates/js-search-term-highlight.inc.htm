@@ -1,0 +1,21 @@
+<!-- Highlight SearchTerm :: r.20231018 -->
+<style>
+.searchterm_highlight {
+	background-color: #FFFFDD !important;
+	color: #222222 !important;
+	padding: 0 !important;
+	padding-left: 4px !important;
+	padding-right: 4px !important;
+	border-radius: 3px !important;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/jquery.highlight.css?[###RELEASE-HASH|url|html###]" media="none" onload="if(media!='all'){media='all';}">
+<script defer src="lib/js/jquery/jquery.highlight.js?[###RELEASE-HASH|url|html###]"></script>
+<script>
+jQuery(() => {
+	if((typeof(searchTerm) != 'undefined') && (searchTerm != null) && (searchTerm != '')) {
+		jQuery('.search-highlight').removeHighlight('searchterm_highlight').highlight(String(searchTerm), 'searchterm_highlight');
+	} //end if
+});
+</script>
+<!-- # -->

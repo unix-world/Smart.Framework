@@ -1,0 +1,162 @@
+<!-- v.20231028 -->
+[@@@SUB-TEMPLATE:partials/app-release-styles.inc.htm@@@]
+<script>
+const AppID = '[###APP-ID|js###]';
+const overlayID = 'app-release-task-OVERLAY';
+[%%%IF:APP-ID:!=;%%%]
+const runTask = () => {
+	const selIdTask = $('#task-run-sel').val();
+	const selTxtTask = $('#task-run-sel option:selected').text();
+	const modalPopId = 'AppCodePackOps';
+	let selTask = selIdTask;
+	if(selTask) {
+		let urlSuffix = '';
+		if(selTask === 'code-netxunpack') {
+			selTask = 'code-netunpack';
+			urlSuffix = '&cleanup=yes';
+		}
+		if((selTask.indexOf('#external#') === 0) || (selTask.indexOf('#external-modal#') === 0)) {
+			let arrselTask = selTask.split(' ; ');
+			arrselTask[0] = smartJ$Utils.stringPureVal(arrselTask[0], true);
+			arrselTask[1] = smartJ$Utils.stringPureVal(arrselTask[1], true);
+			if(arrselTask[1] != '') {
+				if(arrselTask[0] !== '#external#') {
+					smartJ$Browser.PopUpLink(String(arrselTask[1]), modalPopId, $(window).width() * 0.96, $(window).height() * 0.92, 0, 1);
+				} else {
+					self.location = String(arrselTask[1]);
+				}
+			}
+		} else if((selTask === 'release-info') || (selTask === 'code-deploy')) {
+			self.location = smartJ$Utils.url_add_suffix('[###MOD-SELF-URL|js###]' + smartJ$Utils.escape_url(selTask), '&appid=' + smartJ$Utils.escape_url(AppID)) + urlSuffix;
+		} else if(selTask === 'code-netpack') {
+			smartJ$Browser.ConfirmDialog(
+				'<div class="operation_important">You are about to run this task: `' + smartJ$Utils.escape_html(selTxtTask) + '`</div><div class="operation_question">Enter a Package Release Info</div><input type="text" maxlength="255" id="prompt-alertable-field" placeholder="Package Comment" class="ux-field" style="width:100%;"><h5>Press OK to Create the Release Package ...</h5>',
+				() => {
+					smartJ$Browser.OverlayShow(null, null, null, overlayID, true);
+					setTimeout(() => {
+						const comment = smartJ$Utils.stringPureVal($('#prompt-alertable-field').val(), true);
+						if((comment.length < 10) || (comment.length > 255)) {
+							smartJ$Browser.OverlayHide(overlayID);
+							smartJ$Browser.GrowlNotificationAdd('No Package Comment', 'The Package Comment is Mandatory and must be between 10 and 255 characters.', 'lib/framework/img/sign-warn.svg', 15000, false, 'pink');
+						} else {
+							self.location = smartJ$Utils.url_add_suffix('[###MOD-SELF-URL|js###]' + smartJ$Utils.escape_url(selTask), '&appid=' + smartJ$Utils.escape_url(AppID) + '&comment=' + smartJ$Utils.escape_url(comment ? String(comment) : '')) + urlSuffix;
+						}
+					}, 250);
+				},
+				'Confirm: Create Release Package &nbsp; <i class="sfi sfi-box-add sfi-xl"></i>',
+				700,
+				355,
+				'alertable',
+				true // title is HTML
+			);
+		} else {
+			smartJ$Browser.ConfirmDialog(
+				'<div class="operation_important">You are about to run this task: `' + smartJ$Utils.escape_html(selTxtTask) + '`</div><h5>Press OK to Run the selected Task ...</h5>',
+				() => {
+					smartJ$Browser.OverlayShow(null, null, null, overlayID, true);
+					if(selTask === 'code-cleanup') {
+						setTimeout(() => {
+							smartJ$Browser.OverlayHide(overlayID);
+							smartJ$Browser.PopUpLink(smartJ$Utils.url_add_suffix('[###MOD-SELF-URL|js###]' + smartJ$Utils.escape_url(selTask), '&appid=' + smartJ$Utils.escape_url(AppID)), modalPopId, $(window).width() * 0.96, $(window).height() * 0.92, 0, 1);
+						}, 250);
+					} else {
+						self.location = smartJ$Utils.url_add_suffix('[###MOD-SELF-URL|js###]' + smartJ$Utils.escape_url(selTask), '&appid=' + smartJ$Utils.escape_url(AppID)) + urlSuffix;
+					} //end if else
+				},
+				'Confirm: Run Task &nbsp; <i class="sfi sfi-cogs sfi-xl"></i>',
+				700,
+				250,
+				'alertable',
+				true // title is HTML
+			);
+		}
+	} else {
+		smartJ$Browser.AlertDialog(
+			'<div class="operation_notice">No Task Selected ...</div>',
+			null,
+			'Notice &nbsp; <i class="sfi sfi-wrench sfi-xl"></i>',
+			null,
+			200,
+			'alertable',
+			true // title is HTML
+		);
+	}
+};
+const manageButtonSelTask = () => {
+	const selTask = $('#task-run-sel').val();
+	const $btn = $('#bttn-task-run');
+	if(selTask) {
+		$btn.removeClass('ux-button-secondary').addClass('ux-button-special');
+	} else {
+		$btn.removeClass('ux-button-special').addClass('ux-button-secondary');
+	}
+};
+[%%%ELSE:APP-ID%%%]
+const selectApp = () => {
+	const selApp = $('#sel-app').val();
+	if(selApp) {
+		smartJ$Browser.OverlayShow(null, null, null, overlayID);
+		setTimeout(() => { self.location = smartJ$Utils.url_add_suffix('[###MOD-SELF-URL|js###]' + '[###CTRL-SELF-NAME|js###]', '&appid=' + smartJ$Utils.escape_url(selApp)); }, 250);
+	} else {
+		smartJ$Browser.AlertDialog(
+			'<div class="operation_info">No Application Selected ...</div>',
+			null,
+			'Notice &nbsp; <i class="sfi sfi-wrench sfi-xl"></i>',
+			null,
+			200,
+			'alertable',
+			true // title is HTML
+		);
+	}
+};
+const manageButtonSelApp = () => {
+	const selApp = $('#sel-app').val();
+	if(selApp) {
+		$('#bttn-sel-app').removeClass('ux-button-dark').addClass('ux-button-primary');
+	} else {
+		$('#bttn-sel-app').removeClass('ux-button-primary').addClass('ux-button-dark');
+	}
+};
+[%%%/IF:APP-ID%%%]
+</script>
+[@@@SUB-TEMPLATE:partials/app-release-top.inc.htm@@@]
+<hr>
+[%%%IF:APP-ID:!=;%%%]
+[@@@SUB-TEMPLATE:partials/app-release-info.inc.htm@@@]
+<div class="sTaskTitle">
+<center>
+	<h2>Select a TASK to RUN from the list below</h2>
+</center>
+</div>
+<hr>
+[%%%ELSE:APP-ID%%%]
+<center>
+<a class="ux-button" href="[###MOD-SELF-URL|html###][###CTRL-SELF-NAME|html###]&action=pass-utility"><i class="sfi sfi-key iconGrey"></i> &nbsp; Password Encryption Utility for AppCodeUnPack Manager</a>
+</center>
+<hr>
+[%%%/IF:APP-ID%%%]
+<div class="selectTaskArea">
+<center>
+	[###HTML-LIST-SEL###] &nbsp;
+	[%%%IF:APP-ID:!=;%%%]
+	<button id="bttn-task-run" class="ux-button ux-button-super ux-button-secondary" onClick="runTask(); return false;" title="Click this button to run the selected task from the near list"><i class="sfi sfi-fa-cogs"></i> &nbsp; Run the Selected TASK</button>
+	[%%%ELSE:APP-ID%%%]
+	<button id="bttn-sel-app" class="ux-button ux-button-super ux-button-dark" onClick="selectApp(); return false;" title="Click this button to switch to the select app from the near list"><i class="sfi sfi-lab"></i> &nbsp; Select Application</button>
+	[%%%/IF:APP-ID%%%]
+</center>
+</div>
+<hr>
+[%%%IF:LAST-PACKAGE:!=;%%%]
+<div class="operation_notice"><center><i>Latest Release Package</i>: `[%%%IF:LAST-PKG-DWN-URL:!=;%%%]<a class="underlink" href="[###LAST-PKG-DWN-URL|html###]">[%%%/IF:LAST-PKG-DWN-URL%%%][###LAST-PACKAGE|html###][%%%IF:LAST-PKG-DWN-URL:!=;%%%]</a>[%%%/IF:LAST-PKG-DWN-URL%%%]` &nbsp;<i class="sfi sfi-box-add sfi-2x" style="color:#555555 !important;"></i></center></div>
+[%%%/IF:LAST-PACKAGE%%%]
+[%%%IF:APP-UNPACK-STD:!=;%%%]
+<div class="operation_notice"><center><i>AppCodeUnPack Manager Standalone Script</i>: `[%%%IF:APP-UNPACK-DWN-URL:!=;%%%]<a class="underlink" href="[###APP-UNPACK-DWN-URL|html###]">[%%%/IF:APP-UNPACK-DWN-URL%%%][###APP-UNPACK-STD|html###][%%%IF:APP-UNPACK-DWN-URL:!=;%%%]</a>[%%%/IF:APP-UNPACK-DWN-URL%%%]` &nbsp;<i class="sfi sfi-codepen sfi-2x" style="color:#555555 !important;"></i></center></div>
+[%%%/IF:APP-UNPACK-STD%%%]
+<br>
+<center>[###HTML-POWERED-INFO###]</center>
+<br>
+<hr>
+<div class="alignRight">
+	<small class="colorCopyright">&copy; 2013-[###YEAR|html###] unix-world.org</small>
+</div>
+<br>

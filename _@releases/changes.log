@@ -1,0 +1,825 @@
+
+# CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
+## This apply only for for Milestone Releases
+
+December 25, 2024
+	* Refactoring of some modules
+
+December 23, 2024
+	* Make Escape CSS (PHP / Js) to be compatible with Twig and SmartGo
+	* JS Framework Extend, Core: stringCharTrim()
+	* JS Framework Extend, Browser Utils: DateSmartField(), DateSmartsFields()
+	* CSS UX Toolkit extend with: ux-date-field and ux-date-field-xs as visual support for: Browser Utils: DateSmartField(), DateSmartsFields()
+
+December 21, 2024
+	* minor fixes, stable release
+	* implement explicit mode for MariaDB mode as UTF8.MB4 and revert old compatibility MySQL mode to UTF8 to support both: older and newer server versions
+
+December 18, 2024
+	* optimization for PHP 8.1+ : use array_is_list() in Smart::array_type_test()
+	* stable, release to support PHP 7.4 ... PHP 8.4
+
+December 16, 2024
+	* PHP 8.4 compatibility fixes ; it is now PHP 8.4 stable
+	* Docs updated
+
+November 23, 2024
+	* Fixes and optimizations
+	* PHP 8.4 compatibility fixes
+	* removed E_STRICT and E_USER_ERROR since they are no more supported in PHP 8.4 and later versions
+
+February 16, 2024
+	* BugFix ?page[%24eq]=1
+
+January 19, 2024
+	* BugFix Release: fixing several minor bugs
+
+January 18, 2024
+	* HTTP Cli fixes
+	* Implement OAuth2 Mailer Password (retrieve token via HTTP/S)
+	* Refactoring Auth Admins Models to allow use custom models other than default SQLite
+	* drop support for Auth Admins Simple ; now Auth Admins Smart is STABLE, use this one !
+	* stable support for opaque login tokens (STK)
+	* PHP Crypto: Threefish, Threefish+Twofish+Blowfish
+
+November 17, 2023
+	* SWT Tokens: expire time is mandatory: 1..3600*24 seconds (24 h max)
+	* Captcha security: refactoring and optimizations
+	* BugFix: Js Hmac SHA3
+	* Dhkx E/D refactoring
+	* JS Crypto Refactoring: implement smartJ$CipherCrypto (Twofish ; Blowfish) ; JS: remove: smartJ$CryptoBlowfish
+	* PHP Crypto Refactoring: implement Twofish, Twofish+Blowfish
+
+October 21, 2023
+	* JS SlickGrid + Slick Cell Editors refactoring to be full ES6 compliant
+	* CSS Styles fixes for Mod Auth Admins Login/Logout Pages, Auth Admins List Page :: full responsive
+	* some message optimizations in Smart Auth Admins class
+
+October 20, 2023
+	* security enhancements: rework of some authentication areas
+	* implement separate auth logging to Smart Auth system ; the logging accounts SQLite DB is read-only except if edited by an admin ; all the logging information moved to external SQLite DBs in logs, with suffix YYYY-MM-DD thus not need rotation, will auto-rotate daily
+	* implement better algorithm for DDOS protection ; allow 5 failed login attempts in 5 minutes for the same IP ; after 15 tries from the same IP it is blocked with a captcha that need to be solved or wait until the end of that day ...
+
+October 18, 2023
+	* bug fix: TPL Debug (was broken)
+	* Fix SmartHashCrypto::checksum : add much more security using 128 bit SHA384 which is extremely more secure ; SHA384 has resistances to length extension attack but SHA512 doesn't have
+	* implement new method: getClassNameWithoutNamespacePrefix()
+	* IPv6 work ; now is 100% compatible ; Smart IP various methods to work OK with IPv6
+	* default configs: admins default user name is `superadmin` ; enabled passwords complexity by default
+	* Major refactoring of Lib Auth, implemented SWT Tokens
+	* Major refactoring of Mod Auth Admins with STK Tokens and Two-Factor Authentication (2FA TOTP)
+	* Security Enhance Smart Auth encrypt/decrypt priv key
+	* Lib Smart: Fixes and Optimizations ; Add Custom Charset Option to Base Encode/Decode ; new methods: b64_to_b64s ; b64s_to_b64
+	* Lib Auth Refactoring: Safe Privileges List
+	* Fix: rename SmartUtils create_protect_dir() to create_protected_dir()
+	* Mail Utils :: fix CSSRF cookie name ; make Cookie value to be more secure
+	* Lib FileSystem refactoring, allow protected paths as parameter for many methods
+	* Lib Markdown, minor fixes ; use urldecode() instead of rawurldecode()
+	* Lib Robot optimizations ; Add Method Signatures ; switch to SWT instead of Basic Auth
+	* refactoring of class AuthProviderHttpBasic as AuthProviderHttp + support for more security and Auth Bearer / Tokens
+	* WebDAV, minor code fixes
+	* Add Extra Filter to Mongo Abstract getCount
+	* Fix captcha cookie name to use md5
+	* fix htaccess message in create protected folder
+	* Captcha Refactoring: security enhancements + optimizations
+	* Upgrade jQuery to 3.7.1 + uxm fixes
+	* Optimize and Clean jquery alertable ; get rid of default form embedded and fix using different methods just for prompt
+	* Smart Data Tables, extend with options, STABLE ; Update DataTables from 1.10.19 to 1.10.21
+	* Add Js Utils Left/Right Trim ; Optimize Js String Trim ; add tests for all 3
+	* Smart Framework JS: add b64_to_b64s() and b64s_to_b64()
+
+March 24, 2023
+	* Fix DBA to work also on Windows ; Fix Absolute path validations to work also on Windows
+	* Disable SQLite PCache on Windows ; Fix DBA to work also on Windows
+	* Fix RealPath + Make Safe also on Windows
+
+January 29, 2023
+	* PageBuilder fix: manage refs also for setting segments
+	* new CSS: 2Sense OrgChart ; use this for PageBuilder
+
+January 23, 2023
+	* Js Major Refactoring (admin UI js/css moved to modules/mod-auth-admins/views/js and modules/mod-wflow-components/views/jquery)
+	* Keep in lib/js just few, essential jQuery scripts
+
+January 01, 2023
+	* Unicode Optimizations and Fixes for PHP 8.1 / 8.2
+	* Extended Charset detection in MailUtils
+
+December 31, 2022
+	* Fixes for issue '+' (in string) with wrong UTF-7 detected encoding (Unicode) for PHP 8.1 / 8.2
+
+December 28, 2022
+	* CSS Refactoring
+
+December 25, 2022
+	* Plugins Refactoring
+
+December 24, 2022
+	* Internal Optimizations
+	* STABLE RELEASE
+
+December 23, 2022
+	* Add SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH
+	* Internal optimizations and Fixes
+
+December 20, 2022
+	* SmartUtils::comment_php_code 							-> Smart::commentOutPhpCode
+	* SmartFrameworkRegistry::ifDebug 						-> SmartEnvironment::ifDebug
+	* SmartFrameworkRegistry::ifInternalDebug 				-> SmartEnvironment::ifInternalDebug
+	* SmartFrameworkRegistry::setDebugMsg 					-> SmartEnvironment::setDebugMsg
+	* SmartFrameworkRegistry::getDebugMsgs 					-> SmartEnvironment::getDebugMsgs
+	* SmartFrameworkRegistry::ifProdEnv 					-> ! SmartEnvironment::ifDevMode
+	* SmartAbstractAppController->IfProdEnv 				-> ! SmartAbstractAppController->IfDevMode
+	* SmartFrameworkRegistry::isAdminArea 					-> SmartEnvironment::isAdminArea
+	* SmartFrameworkRegistry::isTaskArea 					-> SmartEnvironment::isTaskArea
+
+December 19, 2022
+	* SmartFileSysUtils::check_if_safe_path 				-> checkIfSafePath
+	* SmartFileSysUtils::check_if_safe_file_or_dir_name		-> checkIfSafeFileOrDirName
+	* SmartFileSysUtils::raise_error_if_unsafe_path 		-> raiseErrorIfUnsafePath
+	* SmartFileSysUtils::max_upload_size 					-> maxUploadFileSize
+	* SmartFileSysUtils::add_dir_last_slash 				-> addPathTrailingSlash
+	* SmartFileSysUtils::get_dir_from_path 					-> extractPathDir
+	* SmartFileSysUtils::get_file_name_from_path 			-> extractPathFileName
+	* SmartFileSysUtils::get_noext_file_name_from_path 		-> extractPathFileNoExtName
+	* SmartFileSysUtils::get_file_extension_from_path 		-> extractPathFileExtension
+	* SmartFileSysUtils::prefixed_uuid10_dir 				-> prefixedUuid10B36Path
+	* SmartFileSysUtils::prefixed_sha1_path 				-> prefixedUuid40B16Path
+	* SmartFileSysUtils::mime_eval 							-> getMimeType | getArrMimeType
+	* SmartFileSysUtils::version_stdmtime 					# DEPRECATED, REMOVED
+	* SmartFileSysUtils::version_add 						-> fnameVersionAdd
+	* SmartFileSysUtils::version_remove 					-> fnameVersionClear
+	* SmartFileSysUtils::version_get 						-> fnameVersionGet
+	* SmartFileSysUtils::version_check 						-> fnameVersionCheck
+
+December 17, 2022
+	* Add MongoDB get/set Error Mode
+	* Fixes for MongoDB Tests and AbstractMongoGenericCollection try/catch in fatalErr mode
+
+December 15, 2022
+	* removed support for PHP 7.3 ; requires PHP 7.4 / 8.0 / 8.1 / 8.2
+	* Fix silenced @trigger_error() to trigger_error() for compatibility with Other Environments
+	* internal classes circular dependencies fix (Smart, SmartUnicode)
+
+December 08, 2022
+	* Security: Js Browser Utils PopUp: if different domain don't use bind to parent window or redirect handler to avoid possible XSS injections
+
+December 05, 2022
+	* Change Smart::striptags to Smart::stripTags + change yes/no params to bool
+	* Remove deprecated Passwords v1 support (deprecated since more than 12 months ; it is unsafe ; migrate all passwords to v2)
+
+November 18, 2022
+	* PageBuilder Data: EXTRA field
+	* Fixes and optimizations
+
+November 05, 2022
+	* SmartBrowser JS: fallback HTTP Status code in ajax
+
+October 20, 2022
+	* add String Ends With CS/CI to Smart JS Utils
+	* add MimeTypes: RDF and Atom near RSS
+	* fix math latex css styles
+	* fix SmartHTML log level for custom SMART_HTML_CLEANER_USE_VALIDATOR
+	* fix growl position
+
+October 14, 2022
+	* app.css -> app.pak.css refactoring
+	* add font-display and text-rendering CSS properties to all CSS containing fonts
+
+October 10, 2022
+	* Templates Refactoring
+	* Fixes and Optimizations
+	* Captcha fixes
+
+October 02, 2022
+	* Fix jsRate: to work with multiple instances, malformed SVG ; add extra smart-jRate
+	* Page Builder work: SVG changes, internal optimizations, fix Tags Filter Hint
+	* Extend UX-Toolkit with Navy-Menu
+
+September 28, 2022
+	* Refactoring Registry for pre-register $_SERVEr filtered variables
+	* implement SMART_FRAMEWORK_SRVPROXY_SERVER_IP and SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN to be used when SMART_FRAMEWORK_SRVPROXY_ENABLED = true
+	* small improvements, optimizations and fixes
+
+September 16, 2022
+	* Refactoring CSS file name for jQuery Pager + UI Fixes for: Mod Auth Admins, Mod DB Admin
+	* Markdown extend: add support for ??cite term?? as CITE
+
+September 15, 2022
+	* Move Mod DB Admin from Smart.Framework.Modules to Smart.Framework
+	* Fix: Add a constant to prevent default access to mod db admin
+	* Toastr: Enhance color theme
+	* Fix Rating Stars Js
+	* VTimeline: Enhance color theme
+	* other CSS fixes
+
+September 13, 2022
+	* JsSmartBrowser add a default PopUpName
+	* Update MongoDB min supported version (also for PHP ext), that can handle upserts and fts facet aggregation
+	* Styles CSS: Add LI padding botton as a fix for mobile elements too close ; Fix UX NavBar LI Padding, set to zero
+	* UX Toolkit CSS Optimizations ; Fix Sfi Icons CSS ; Load SFI Icons after Ux Toolkit ; CSS Styles Fixes (many)
+	* Markdown: Add Support for Image Attribute Style to SFI Icons
+	* PageBuilder refactoring a method from private to public, move from Manager to Utils
+	* PageBuilder: change constant name SMART_PAGEBUILDER_VALIDATE_HTML with SMART_PAGEBUILDER_HTML_VALIDATOR
+	* PageBuilder: replace the deprecated <font></font> tag with <span></span>
+
+September 10, 2022
+	* Add PostType to SmartHttpClient to be able to set other content type than application/x-www-form-urlencoded with POST
+	* Refactoring app.css in 2 parts: ux.css and app.css which will split requests in 2 separate threads rather than one
+
+September 08, 2022
+	* Fix UX buttons and notifications colors to not be very close with buttons
+	* Add extra css classes to notifications
+	* Extend BrowserJS Countdown with pretty format
+	* Markdown: parse attributes also for article and flexbox (except class for flexbox)
+	* Mod Page Builder Modernize Styles
+	* Fix PageBuilder Abstract Controller: do not trim DATA type value ; Add raw escaping sequence for value/field in loadValue()
+	* Move SlimSelect Js from Mod Documentor to framework
+	* Markdown fix nested div/flexbox section/article
+	* Extend Page Component with extra fields: ex: schema
+	* Math Latex Formula Parser Javascript
+	* Markdown: implement span, data
+	* fix main reset CSS: ul / ol
+
+August 31, 2022
+	* optimizations
+
+August 16, 2022
+	* bugfix: markdown parser was not closing table tag when last line was the aligning line
+	* bugfix: html parser fix code was loosing code after last tag if not all code was enclosed in tags
+
+August 10, 2022
+	* markdown renderer new features: suport most of the elements inside list LI ; support button with icon ; support ( and ) inside css defs as !!_ and _!!
+
+August 04, 2022
+	* Fix index name UNIQ in mongo pcache adapter
+	* Extend Lib MongoDB with 2 new methods: isFtsSearchPhrase, prepareFtsSearchKeywords
+
+August 02, 2022
+	* Add support for encrypted password in configs / sendmail for SmartMailerUtils::send_email
+	* Add support for mail decode to parse the 'reply-to' address if any for email messages
+
+July 30, 2022
+	* HighlightJs (Prism): add view code (blob)
+	* Internal fixes: JS and PHP files
+	* Mark as PHP 8.0 STABLE (previous was marked as PHP 7.4 STABLE)
+	* Mark as PHP 8.1 STABLE
+	* Mark as PHP 8.2 ready
+	* Prepare to drop support for PHP 7.3 (at the end of this year, 2022)
+
+July 08, 2022
+	* Replace deprecated utf8_encode() and utf8_decode() with their MBString Equivalents
+	* Fix Deprecated MBString HTML-ENTITIES
+
+June 03, 2022
+	* Implement HTTP Status 410 (Gone)
+
+April 06, 2022
+	* renamed SmartFrameworkRuntime::outputHttpHeadersNoCache to SmartFrameworkRuntime::outputHttpHeadersCacheControl
+
+May 31, 2022
+	* SmartBrowser: do internal log of connection errors even of no debug
+	* Fixes for MongoDB 5+
+
+May 09, 2022
+	* Fix PHP8 Warning for Utils: read uploaded file
+
+March 30, 2022
+	* fixes and optimizations
+
+February 21, 2022 :: Version 8.7 rev.20220221
+	* minor fixes
+
+February 14, 2022 :: Version 8.7 rev.20220214
+	* markdown v2 rendering improvements and bug fixes
+
+February 10, 2022 :: Version 8.7 rev.20220210
+	* move lib FTP client to smart modules
+	* add support for detecting client IP / Proxy and server protocol port behind a reverse proxy (ex: haproxy)
+	* lib utils optimizations
+	* minor bug fixes in the new Markdown Parser (v2) ; marked now as STABLE
+	* stable feature: PageBuilder, enable and use HTML Syntax Validation for HTML and Markdown syntax objects
+
+February 07, 2022 :: Version 8.7 rev.20220207
+	* Completely rewritten of SmartMarkdownToHTML class ; implement Markdown v.2 Extended (from draft specifications) ; The old class only supports Markdown v1 and have been moved to modules and renamed as SmartPMarkdownToHTML
+	* Rework of init settings for better supporting server side proxy / reverse proxy (ex: HAProxy)
+
+January 26, 2022 :: Version 8.7 rev.20220126
+	* Optimize and extend OS detection logic
+	* Fix: explicit avoid to read the HTTP Body on HEAD method
+
+January 07, 2022 :: Version 8.7 rev.20220107
+	* PHP8 Fixes
+
+December 28, 2021 :: Version 8.7 rev.20211228
+	* Add CSS Tabs to UX Toolkit
+
+December 16, 2021 :: Version 8.7 rev.20211216
+	* Fix: better escaping for SQL LIKE syntax type: SQLite, PostgreSQL and MySQLi
+	* Add in SQlite a method to return the LIKE escaper: likes_escaper() to use with "SELECT * FROM tbl1 WHERE LIKE '%'".$expr."%' ESCAPE '".$db->likes_escaper()."'"
+	* Fix PageBuilder SQLite LIKES
+
+December 10, 2021 :: Version 8.7 rev.20211210
+	* PHP 8+ compatibility fixes + optimizations
+
+November 26, 2021 :: Version 8.7 rev.20211127
+	* PHP 8.1 compatibility fixes for: Smart, PostgreSQL lib, PunnyCode Lib, smart error handler
+
+November 26, 2021 :: Version 8.7 rev.20211126
+	* PHP 8.1 compatibility for MySQLi and PostgreSQL libs
+	* fixed root namespace access in lib gd image
+	* fixed some comments in etc/init.php
+
+November 20, 2021 :: Version 8.7 rev.20211120
+	* fix lib postgresql check schema test for isset $arr[0] to avoid warnings on PHP 8+
+	* add comments for postgresql and mysqli databases: encoding / collation / character type
+
+August 06, 2021 :: Version 8.7 rev.20210805
+	* Templating (PHP): Add SHA1 hashing ; make available the .-_MAXSIZE_- and .-_INDEX_- also in IF inside LOOP
+	* Markdown: Fix: force to preserve code comments style as: /* comment */ also outside code
+
+June 30, 2021 :: Version 8.7 rev.20210630
+	* Fix broken auth initialization for auth admins
+
+June 17, 2021 :: Version 8.7 rev.20210617
+	* many improvements, optimizations and security fixes for the markdown rendering as html, includding better regex escaping
+	* fix SmartCodeMirror to indent with tabs just on selected syntax types
+	* add Bootstrap 5 Icon Fonts to lib/core/plugins/fonts/icons
+	* some PHP8 fixes for some warnings regarding the access of array keys that were not existing
+	* add mongodb escape FTS and escape Regex
+	* Fix prism PHP parsing og HEREDOC with backslash + single quote inside
+	* Add some missing html entities for strip tags in lib Smart
+	* new class: SmartDomUtils (in Lib XML)
+	* Fix Smart Strip Tags to use case insensitive for replacement of entities
+	* Fix HTTP Cli and Smart Robot to stop accessing too long or invalid URLs
+
+June 12, 2021 :: Version 8.7 rev.20210612
+	* refactoring auth admins module, after login can select namespace to avoid expose namespaces to non-auth users
+	* major refactoring of default, admin and task templates
+	* fix markdown redundant render of some urls
+	* re-generate documentation: PHP and JS
+
+June 10, 2021 :: Version 8.7 rev.20210610
+	* replaced highlight.js with prism.js
+	* rework of prism css themes to achieve a better color balance
+	* moved highlight.js to modules, mod highlight + upgraded to the latest v.9.x (highlight js base code of v.10 and v.11 are too big in size, ... replaced with prism ...)
+	* removed SmartViewHtmlHelpers::html_jsload_highlightsyntax()
+
+May 27, 2021 :: Version 8.7 rev.20210527
+	* icons captcha optimizations, add support for trigger
+	* improved cleanup algorithm for custom session and persistent cache for all: sqlite, dba, mongo, redis
+	* improved debug info for all DB libs (drivers): sqlite, dba, mongo, redis, pgsql, mysqli
+	* minor fixes to mod app release
+	* minor fix to mod samples
+
+May 26, 2021 :: Version 8.7 rev.20210526
+	* v.8 release (version numbering is now different ; 8.7 shows that runs on both PHP 8 and PHP 7 with primary target on PHP 8 and continue to support PHP 7 ...) ; next version will be perhaps 9.8 when PHP 9 will be released and will support PHP 8 or event 9.8.7 if will supports all PHP 9, 8 and 7 :-)
+	* minor fixes and optimizations ; QUnit tests javascript migrated to ES6
+
+May 25, 2021 :: Version 7.2.1 rev.20210525
+	* many improvements to the appcode release module
+	* this is the last v.7 release ; next release will be v.8
+
+May 23, 2021 :: Version 7.2.1 rev.20210523
+	* renamed init constant SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME as SMART_FRAMEWORK_UUID_COOKIE_NAME
+	* renamed the resy of init constants starting with SMART_FRAMEWORK_UNIQUE_ID_COOKIE_* as SMART_FRAMEWORK_COOKIES_DEFAULT_*
+	* removed unused constants SMART_FRAMEWORK_UPLOAD_* as they were a garbage from v.5 only ...
+	* added a method: SmartFrameworkRuntime::IsVisitorEntropyIDCookieAvaliable() and replaced the detection by constant in all places ...
+	* captcha mode session will warn if no UUID cookie is available since the session needs the UUID cookie to run !
+	* optimize and fix Smart check_int_number_overflow_max and check_dec_number_overflow_max
+	* improve the fail by ip timeout algorithm for unicorn authentication - admins.auth module ; raised to 10 the min limit
+
+May 22, 2021 :: Version 7.2.1 rev.20210522
+	* mod app release, STABLE
+	* bump to version 8
+
+May 14, 2021 :: Version 7.2.1 rev.20210514
+	* added TPL post-render placeholders
+	* added ASCII Art Captcha as alternative to SVG Captcha
+
+May 11, 2021 :: Version 7.2.1 rev.20210511
+	* major refactoring
+	* replaced define() with const wherever possible to speedup the code
+	* methods refactoring to avoid circular dependencies between the framework libs:
+		SmartUtils::Create_Download_Link() 			-> 	SmartFrameworkRuntime::Create_Download_Link()
+		SmartFrameworkRuntime::getAppReleaseHash() 	-> 	SmartUtils::get_app_release_hash()
+		SmartFrameworkRuntime::ifInternalDebug() 	-> 	SmartFrameworkRegistry::ifInternalDebug()
+		SmartFrameworkRuntime::ifDebug() 			-> 	SmartFrameworkRegistry::ifDebug()
+		SmartFrameworkRuntime::ifProdEnv() 			-> 	SmartFrameworkRegistry::ifProdEnv()
+		SmartFrameworkRuntime::isAdminArea() 		-> 	SmartFrameworkRegistry::isAdminArea()
+		SmartFrameworkRuntime::isTaskArea() 		-> 	SmartFrameworkRegistry::isTaskArea()
+		SmartFrameworkSecurity::Filter_*() 			-> 	SmartFrameworkSecurity::Filter*() // removed underscore from names
+	* implemented standalone app
+	* refactoring the appcodepack/unpack as a new module: mod app release
+
+April 21, 2021 :: Version 7.2.1 rev.20210421
+	* bug fixes and optimizations
+
+April 20, 2021 :: Version 7.2.1 rev.20210420
+	* Smart.Captcha bug fix: it was never entering the stage 2 by internal algorithm but only 1 or 3
+	* add entropy for Smart.Captcha
+	* garbage cleaning inside code: php, js, html, ..., comments
+	* fix datepicker to allow re-select the same date
+
+April 19, 2021 :: Version 7.2.1 rev.20210419
+	* Optimizations for the new Javascript ES6, incl. SmartGrid and UIUtils
+	* MAJOR RELEASE (see below backward incompatible changes for Smart.Framework Javascript which was migrated from ES5 to ES6)
+
+April 18, 2021 :: Version 7.2.1 rev.20210418
+	* smart framework Javascript migrated to ES6 (classes ans some functions have been renamed ... for compatibility mode with old projects look at the mod-xtra-vanilla/views/js/smart-framework.fix.js and load this after loading the lib/js/framework/smart-framework.pak.js, most of the features should still work, they have been aliased ...)
+	* update compatibility with new class names from smart framework Javascript ES6 in all modules
+	* controller Initialize() now support also HTTP Status codes
+	* Smart.Capcha has been rewritten to version 2, now by default will try to detect with a single click (I'm not a robot) and only then if not successful will fallback to draw a shape ; added accesibility descriptions
+	* translations for captcha (en / ro) have been slighly changes and new keys have been added
+	* documentation updated
+
+April 03, 2021 :: Version 7.2.1 rev.20210403
+	* fix some form submit return false
+
+April 02, 2021 :: Version 7.2.1 rev.20210402
+	* Fix signature for HTTP Status and Error Messages
+	* Fix HTTP Message Error and Status Templates ; The Message error should not contain any loadable sub-resource to avoid infinite cycles with 404 if sub-resource is also not found
+	* Return HTTP 202 for servicestatus
+	* notifications.css - Separe Notifications Icons from the rest: notifications-icons.css
+	* Extend TPL Include Syntax with: |tpl-uri-encode / |tpl-b64-encode
+	* Refactoring of Smart Error Handler + Error Last Message HTML TRUE/FALSE + Escapings
+	* Various Works arround better IP detection (Client and Proxy)
+	* Refactoring: App Bootstrap, Smart Error Handler, Lib Runtime
+
+March 31, 2021 :: Version 7.2.1 rev.20210331
+	* refactoring and optimizations for the framework libs
+	* refactored the error handler and register_shutdown_function in error handler
+
+March 30, 2021 :: Version 7.2.1 rev.20210330
+	* Added alternative js growl (toastr)
+	* Rework for Growl and Toastr + optimizations
+	* refactoring and optimizations for PHP code
+	* updated documentation for PHP / JS
+
+March 27, 2021 :: Version 7.2.1 rev.20210327
+	* HighlightJs ViewHelpers - new features
+	* mime type better detection
+
+March 25, 2021 :: Version 7.2.1 rev.20210325
+	* PHP: Marker-TPL supports 12 sub-levels instead of 3
+
+March 22, 2021 :: Version 7.2.1 rev.20210322
+	* PHP: Smart Markdown parser security improvements and optimizations ; can integrate with Smart Html Cleanup
+	* PHP: Smart Html Cleanup now supports also tidy not only DomDocument ; many fixes
+	* Javascript: Bug Fixes to Core to detect if a number is finite
+	* Javascript: fixes for cookie set / delete
+
+March 16, 2021 :: Version 7.2.1 rev.20210316
+	* stable on PHP 8, pass all tests
+	* Markdown new features: alternate image (webp) and support for jQuery.unveil
+	* jQuery.unveil will unveil also hidden images (ex: some carousel images may be hidden)
+
+March 14, 2021 :: Version 7.2.1 rev.20210314
+	* new feature: HTML Performance Metrics Profiler (Javascript)
+
+March 12, 2021 :: Version 7.2.1 rev.20210312
+	* fix deprecated <div> align=center in favor of <center> tag for includded HTML
+	* jQuery unveil js can now handle also srcset on picture/source but also img img[src] and picture[source[srcset]]
+
+March 10, 2021 :: Version 7.2.1 rev.20210310
+	* req. PHP 7.3 or later (removed support for PHP 7.2 because of setcookie option missing SameSite)
+
+March 07, 2021 :: Version 7.2.1 rev.20210307
+	* PHP8 Compatible
+	* Removed support for NetteLatte Templating
+
+January 07, 2021 :: Version 7.2.1 rev.20210107
+	* PageBuilder Optimizations and New Features
+	* SmartCodeMirror show trailing spaces and option to display wrap lines off/on
+
+January 05, 2021 :: Version 7.2.1 rev.20210105
+	* New Feature for ux-navbar (span.detail-s, span.detail-l) for CSS Toolkit
+
+December 07, 2020 :: Version 7.2.1 rev.20201207
+	* Fixes and Optimizations
+	* Lib ImGd New Features
+	* Documentation Updates
+
+August 19, 2020 :: Version 7.2.1 rev.20200819
+	* Improve Extract Keywords Algorithm
+	* Fix Cleanup Numbers in Keyword, Title and Description extraction algorithms
+	* Smart Abstract Controller: new feature: PageViewGetVar()
+	* SmartFramework Abstract Controller: new feature: PageViewGetErrorMessage
+	* Fix Default Param for CookieSet in Controllers
+	* PageBuilder: Implement RENDER @fields
+	* PageBuilder Feature: allow to redefine Custom Render vars for Sub-Segments + create sub-render childs
+	* PageBuilder new features: Clone Objects
+	* PageBuilder media improvement: uploaded pictures can keep original name (optional)
+	* PageBuilder plugin feature: can handle both - CallerData and Data
+	* PageBuilder new feature: Marker Vars IF/ELSE
+	* Add FileName to the SmartJS_BrowserUtils.VirtualImageUploadHandler
+	* Markdown rendering: Add Parser TypeCast Prefix for Extra Attributes to make them functional in nested syntax
+	* Fix Markdown Render Code CSS
+	* CSS: Vertical TimeLine fixes
+
+July 21, 2020 :: Version 7.2.1 rev.20200721
+	* Core Router: Detect Tilda if Path Access is enabled
+	* Smart: add Smart::str_replace_first() and Smart::str_replace_last() ; enable Strong Type Params for methods
+	* Lib MongoDB: Count Fix with empty query + new features: UUID clustered if config shows a mongo cluster ; Update Replace record
+	* MarkerTPL: fix some unattended regressions in syntax processing: IF / LOOP
+	* PageBuilder: add WebDAV Files manager
+
+July 17, 2020 :: Version 7.2.1 rev.20200717
+	* MarkerTPL (PHP and Javascript): new escaping: |idtxt
+
+July 15, 2020 :: Version 7.2.1 rev.20200715
+	* Mime Decode Fixes (all non-explicit text/html parts which are not attachments fallback to text/plain mode)
+	* Mime Decode Support for message/delivery-status
+
+July 08, 2020 :: Version 7.2.1 rev.20200708
+	* MailGet IMAP4 / POP3: new features: STARTTLS
+	* MailGet POP3: new feature: CRAM-MD5
+	* MailSend SMTP: new features: add support for CRAM-MD5 and XOAUTH2 authentication modes
+	* MailUtils and Configs: allow selection of SMTP authentication mode
+
+July 07, 2020 :: Version 7.2.1 rev.20200707
+	* MailGet IMAP4: new features: CRAM-MD5 and XOAUTH2 authentication support
+	* MailGet IMAP4 / POP3 fixes
+
+June 30, 2020 :: Version 7.2.1 rev.20200630
+	* PageBuilder: new feature: Tags
+
+June 19, 2020 :: Version 7.2.1 rev.20200619
+	* Implement New Feature for Controllers ; If Initialize() returns FALSE, this a mandatory error code is expected
+	* Add Optional Absolute URL Prefixes in Captcha Form and ViewHelpers (HighlightJs, HtmlEditor, CodeEditor)
+	* Fix: use absolute URL Prefixes in Debug Profiler templates
+
+June 12, 2020 :: Version 7.2.1 rev.20200612
+	* PageBuilder: new feature / frontend: Can Check if Page/Segment exists also by controller name
+
+June 05, 2020 :: Version 7.2.1 rev.20200605
+	* PHP 7.2+ Optimizations
+	* Set MySQL Library to use utf8mb4 instead of utf8 by default on all connections
+
+June 04, 2020 :: Version 5.7.2 rev.20200604
+	* Fix Json Encode to use JSON_INVALID_UTF8_SUBSTITUTE flag
+	* require PHP 7.2+
+
+May 19, 2020 :: Version 5.7.2 rev.20200519
+	* FS Get Storage / Search Files - improvements, scan also in linked dirs with cyclic infinite loop check
+	* All SVGs fixed and validate against SVG 1.1 DTD
+
+May 15, 2020 :: Version 5.7.2 rev.20200515
+	* New Features for PageBuilder
+	* New functionaluty to test if DEV or PROD environment
+	* Several small fixes and optimizations
+	* Update all documentation
+
+May 13, 2020 :: Version 5.7.2 rev.20200513
+	* New Features for PageBuilder
+	* Bug Fixes for PageBuilder
+	* Several fixes for LibYAML parser and composer
+
+May 11, 2020 :: Version 5.7.2 rev.20200511
+	* Fix bug in MongoDB PCache, if connection fails once will disable the PCache MongoDB as backend for the current session to avoid display website errors
+
+May 05, 2020 :: Version 5.7.2 rev.20200507
+	* Minor fix in DBA QUnit test
+	* Upgrade jQuery to 3.5.1
+	* Fix back upstream fix introduced in jQuery 3.5.0 as this will be back introduced in jQuery 4.0 and later (all scripts tested and stable) [ {} -> Object.create( null ) ]
+	* AppCodePack - add support for multiple deployment URLs
+
+May 05, 2020 :: Version 5.7.2 rev.20200505
+	* Added Base62 Sequential UUIDs: Smart::uuid_13_seq() ; Smart::uuid_35_seq()
+	* Added Base62 Sequential UUIDs for cluster: Smart::uuid_15_seq() ; Smart::uuid_37_seq()
+	* Added Base36 Sequential UUID: Smart::uuid_32_seq()
+	* Added Base36 Sequential UUIDs for cluster: Smart::uuid_12_seq() ; Smart::uuid_34_seq()
+
+May 02, 2020 :: Version 5.7.2 rev.20200502
+	* Upgrade jQuery to 3.5.0
+	* Fix all broken javascripts that depend on jQuery and were affected by the major breaking changes in jQuery 3.5.0: xhtml tags converted to html tags ; object hasOwnProperty over {}
+
+April 23, 2020 :: Version 5.7.2 rev.20200423
+	* HTTP Client Class support chunked transfer for HTTP 1.1
+
+April 15, 2020 :: Version 5.7.2 rev.20200415
+	* Rework and fixes for Mail Send / Get / Decode
+
+March 27, 2020 :: Version 5.7.2 rev.20200327
+	* Add support to safe detect client IP address (allow set which trusted header to use for detect real IP) if running behind a proxy such as varnish or haproxy
+
+February 17, 2020 :: Version 5.7.2 rev.20200217
+	* Improve MongoDB update/upsert to support associative array to combine more operations
+
+January 21, 2020 :: Version 5.7.2
+	* optimizations (req. PHP 7.2 or later)
+
+December 18, 2019 :: Version 5.2.7 rev.191218
+	* SmartArchiverLZS (PHP) and SmartJS_Archiver_LZS (Js) moved to modules
+
+December 17, 2019 :: Version 5.2.7 rev.191217
+	* Barcodes moved to mod-barcodes
+	* Captcha completely rewritten to support plugins (default uses SVG captcha) ; captcha image + fonts moved to mod-captcha
+	* HTTP(s) Client support file uploads
+	* Add support for AppcodePack to send package by upload to AppcodeUnpack
+
+December 11, 2019 :: Version 5.2.7 rev.191211
+	* Add MongoDB Custom Session Handler
+	* Add MongoDB Custom Persistent Cache
+	* Add new custom class to Toolkit CSS for buttons
+
+December 05, 2019 :: Version 5.2.7 rev.191205
+	* PHP 7.4 ready
+	* removed deprecated SmartUtils::load_cached_file_content() ; use Persistent Cache instead
+	* Add DBA Client
+	* Add DBA Custom Session Handler
+	* Add DBA Custom Persistent Cache
+	* Add SQLite Custom Session Handler
+	* Add SQLite Custom Persistent Cache
+	* Redis: Change Object Constructor (order of parameters and all parameters are optional) to Simplify usage with default params from config
+	* Error Handler: now uses a safe and absolute path to the tmp/log to be available also for handlers registered with register_shutdown_function() that can no more access relative bugs ; the PHP Bug #31570 (not fixed since a very long time)
+
+November 26, 2019 :: Version 5.2.7 rev.191126
+	* New documentation for PHP and Javascript
+	* Renamed lib/js/framework/smart-framework.js to lib/js/framework/smart-framework.pak.js
+	* Generated Js Package as lib/js/jscharts/charts.pak.js from lib/js/jscharts/src/*.js
+	* Generated Js Packages as lib/js/jshighlight/syntax{%}.pak.js from lib/js/jshighlight/syntax/{%}
+	* Change SmartComponents::get_filetype_highlightsyntax() to SmartViewHtmlHelpers::get_highlightsyntax_by_filetype()
+	* Change SmartComponents::js_code_highlightsyntax() to SmartViewHtmlHelpers::html_jsload_highlightsyntax()
+
+November 19, 2019 :: Version 5.2.7 rev.191119
+	* DB Driver Fixes: Preserve NULL values on Read* for: SQlite3, MySQLi and PgSQL
+
+November 16, 2019 :: Version 5.2.7 rev.191116
+	* Security Fix: Safe Set CA File in several Client Libs
+	* Markers-TPL: add support for escape or no syntax parsing of includded sub-templates
+		# General Purposes
+			- |syntax
+		# HTML Context
+			- |syntaxhtml
+			- |html
+		# JavaScript Context
+			- |js
+			- |js-tpl-encode
+	* Js Refactoring:
+		# SmartJS_BrowserUtils
+			* SmartJS_BrowserUtils_* -> SmartJS_BrowserUtils.param_*
+			* SmartJS_ModalBox_* -> SmartJS_ModalBox.param_*
+
+November 09, 2019 :: Version 5.2.7
+	* Migrate Markers-TPL from v3 to v5 (stable)
+		# MarkersTemplating VARIABLES syntax breaking changes
+			- [#### =>	[###
+			- ####] =>	###]
+		# MarkersTemplating SUB-TEMPLATE syntax breaking changes
+			- [@@@@ =>	[@@@
+			- @@@@] =>	@@@]
+		# MarkersTemplating LOOP, COMMENTS, SPECIALS syntax breaking changes
+			- [%%%% =>	[%%%
+			- %%%%] =>	%%%]
+		# MarkersTemplating IF syntax breaking changes
+			- [%%%% =>	[%%%
+			- %%%%] =>	%%%]
+			- '~~'	=>	'&~'
+			- '~*'	=>	'&*'
+			- '@='	=>	'?'
+			- '@!'	=>	'!?'
+			- '@+'	=>	'@>'
+			- '@-'	=>	'@<'
+		# MarkersTemplating IF syntax new features (operators)
+			- '@=='
+			- '@!='
+			- '@<='
+			- '@>='
+	* Refactoring: Smart::url_make_semantic() -> SmartUtils::create_semantic_url()
+	* Speed Optimization for Smart::array_type_test()
+	* Allow CamelCase URL Parameters
+	* Add SafeHeader to check against \r\n in header() values :: security
+
+October 22, 2019 :: Version 3.7.8 # rev.2019.10.22
+	* fixes and optimizations
+	* a bit of code refactoring
+	* new classes in lib/core/plugins
+	* compliant with PHP 5.6 / 7.0 / 7.1 / 7.2 / 7.3 / 7.4
+
+February 07, 2019 :: Version 3.7.8 # rev.2019.02.07
+	* changed the license to dual-licensing (see LICENSE)
+
+January 03, 2019 :: Version 3.7.8
+	* new feature: QUnit Test Module
+	* new feature: Admins Auth Module with Simple or Multi-Account Authentication for admin.php area
+	* removed some deprecated functions
+	* moved lib MySQL / MariaDB from Smart.Framework.Modules to Smart.Framework
+	* bug fixes and optimizations
+	* fix compatibility with PHP 7.3 for all code
+	* added SmartJS_DateUtils to lib/js/framework
+
+October 10, 2018 :: Version 3.7.7
+	* optimizations for controllers, translators
+	* some bug fixes
+	* improved support for simplify settings for cookie domains to take easy in development
+	* other code optimizations in many areas
+	* improved debug and profiler to support better premature exits in controllers
+	* includes a sample for advanced 404 customization
+	* added lib mysqli to base from modules
+
+March 09, 2018 :: Version 3.7.5
+	* optimizations for DB drivers
+	* new feature: MongoDB library that works with PHP 5.6 / 7.0 / 7.1 / 7.2 and MongoDB servers 2.4 / 2.6 / 3.0 / 3.2 / 3.4 / 3.6
+	* new feature: built-in DAV server (as module) that features: WebDAV / CalDAV / CardDAV
+	* fixes and improvements (libHTTPCli, libUtils, LibFileSys*, ...)
+
+Sep 27, 2017 :: Version 3.5.7
+	* middleware optimizations
+	* feature: controller raw headers
+	* fixes in the Javascript code (ex: String() instead of .toString())
+	* fixes in the PHP code
+	* rework and rename of some functions (see documentation)
+
+May 12, 2017 :: Version 3.5.1
+	* a complete new refactoring of UX Toolkit and some UI / JS Components
+	* moved jQueryUI as separate module in Smart.Framework.modules
+	* moved MediaGallery in Smart.Framework.modules -> smart-extra-libs
+
+Apr, 11, 2017 :: Version 3.1.2
+	* a bug fix release
+
+Apr, 10, 2017 :: Version 3.1.1
+	* Release / Stable
+	* refactoring for SmartComponents
+	* Marker Templating improvements
+
+Aug, 12, 2016 :: Version 2.3.5
+	* renamed SmartUnicode::utf8_fix_charset() to SmartUnicode::fix_charset()
+
+Feb, 19, 2016 :: Version 2.3
+	* Release / Stable (switch to SVN ; keep GIT just for public ...)
+
+Feb, 05, 2016 :: Version 2.2
+	* INFO: this is a bug-fix release for the version 2.1 branch, you are encouraged to use this version as soon as possbile
+	* new features:
+		* the core of the application rely now on more secure data filtering to safe strip all the lower (unsafe) characters from the input: GET / POST
+		* 2 new functions added: SmartUnicode::utf8_to_iso() and SmartUnicode::utf8_fix_charset()
+		* added a HTML Cleanup feature: (new SmartHtmlParser('<html>...your code goes here ...</html>'))->get_clean_html();
+	* fixes:
+		* it fixes a large number of REGEX incompatibilities from the past, while the regex expressions were using the \u (unicode) flag, it behave (strangely) different under several PHP versions but also varying by the version of the PCRE library that PHP was relying on
+		* thus, all the REGEX expressions were reviewed / rewritten from the scratch to assure independent regex expression that does not depend on the \u flag
+		* more, there were fixed several character set conversion issues ... (for working with other characters sets than UTF-8)
+		* YAML library is now unicode independent and 17% faster parsing
+		* Markdown library contain several fixes to improve the patter syntax in a more flexible way ...
+	* security:
+		* the PostgreSQL / SQLite database drivers are now using automate fix for UTF-8 charset using SmartUnicode::utf8_fix_charset() embedded in the Escaping functions to make it 100% safe ...
+		* the Redis persistent cache is now using an automate fix for UTF-8 charset using SmartUnicode::utf8_fix_charset() embedded when saving a key value
+
+Jan 19, 2016 :: Version 2.1
+	* this version is backward incompatible as it had rewritten in many parts for optimizations .. gains 10% - 20% speedup in execution and requests/second !!!
+	* some functions dissapeared (they were redundant), some classes were renamed, modules namespaces changed !
+	* security has been completely rewritten into this new version to target new security standards *******
+	* it is compatible with PHP 5.4.20+, PHP 5.5.15+, PHP 5.6.10+, PHP 7.0.1+
+	* since PHP 5.4 (still supported but EOL) you should use this version just with projects that target PHP 5.5 / PHP 5.6 and PHP 7
+	* see the documentation on how class changed since this version ... with a small effort you will be able to migrate your projects
+
+#####
+
+Dec 15, 2015 :: Version 1.5
+	* backward incompatible changes:
+		* in the PgSQL and SQLite drivers, the functions read_adata() and read_asdata() have been rotated each other,
+			thus the new read_adata() since version 1.5 is now behaving like the old read_asdata() in versions prior to 1.5 ;
+			and the new read_asdata() since version 1.5 is now behaving like the old read_adata() in versions prior to 1.5;
+			- the new read_adata() since version 1.5: Read Associative Multiple Rows :: returns array(0 => array('column1', 'column2', ... 'column-n'), 1 => array('column1', 'column2', ... 'column-n'), ..., m => array('column1', 'column2', ... 'column-n'))
+			- the new read_asdata() since version 1.5: Read Associative Single (one) Rows :: Throws Error if more records are returned by SQL :: returns a single row as array('column1', 'column2', ... 'column-n')
+			(this come as a result from many users of these framework to make this function names more easy to remember)
+			thus, this will remain finally as it is now since version 1.5
+		* function Smart::log_error renamed as Smart::log_notice(), will just log a message as a notice (E_USER_NOTICE)
+		* function Smart::warn_error() refactored as Smart::raise_error() (will log error messages as E_USER_ERROR and will raise a FATAL Error + HTTP 500 code)
+	* new features:
+		* added a new function Smart::log_warning() which will log messages as E_USER_WARNING
+		* added detection for headers_sent() to avoid missbehave when PHP.ini output_buffering is zero !
+	* optimizations:
+		* more than 700 lines of code changed, to speed-up or optimize some areas
+		* database drivers: PgSQL, SQLite and Redis are now re-using the connections for the same server:port@db#user
+		* a more responsive and safe error log handler
+		* review most of the error messages to split in 3 clear user land message log for: NOTICES / WARNINGS / (FATAL) ERRORS
+		* Redis client class have an option to ignore connection errors.
+			This is because in high-load environments / clustering) there are 1 / 100000 chances that one connection will fail.
+			Thus in such conditions is better to ignore Redis and serve the content un-cached ... instead to serve a fatal error to visitore.
+
+Nov 30, 2015 :: Version 1.3
+	* backward incompatible changes:
+		* renamed the class: SmartPgsqlObjDb to SmartPgsqlExtDb
+	* new features:
+		* added a new constant in etc/init.php to control if allow semantic URLs or not
+		* added a new optional constant in etc/init.php to filter the GET/POST variables to UTF-8 :: define('SMART_FRAMEWORK_SECURITY_FILTER_INPUT', '/[^\\t\\r\\n[:print:]]/u');
+		* added 2 new core functions: Smart::warn_error() that will raise the HTTP 500 code ; Smart::log_info() to offer a log just for info messages
+	* optimizations:
+		* code optimizations in many classes, execution time is better with ~10%
+		* index / admin middlewares optimizations
+		* improved error and exception handler (better catch of errors and exception messages)
+	* security:
+		* GET/POST improved input filters (default to UTF-8)
+		* dissalow the Download Handler if not set an explicit method in a controller
+	* documentation:
+		* the documentation is available here: http://demo.unix-world.org/smart-framework.docs/
+
+June 5, 2015 :: Version 1.2
+
+March 07, 2015 :: Version 1.1
+
+March 17, 2009 :: Version 0.1
+
+# END #

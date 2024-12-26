@@ -1,0 +1,23 @@
+<!-- Partial Template: Plugins.InitEditArea r.20210605 -->
+<!-- CodeMirror Editor (Language: [###LANG|html###]) -->
+<link rel="stylesheet" type="text/css" href="[###CODEED-PREFIX-URL|html###]lib/js/jseditcode/codemirror/lib/codemirror.css">
+<link rel="stylesheet" type="text/css" href="[###CODEED-PREFIX-URL|html###]lib/js/jseditcode/codemirror/lib/codemirror-custom.css">
+<link rel="stylesheet" type="text/css" href="[###CODEED-PREFIX-URL|html###]lib/js/jseditcode/codemirror/theme/uxm.css">
+<link rel="stylesheet" type="text/css" href="[###CODEED-PREFIX-URL|html###]lib/js/jseditcode/codemirror/theme/uxw.css">
+<link rel="stylesheet" type="text/css" href="[###CODEED-PREFIX-URL|html###]lib/js/jseditcode/codemirror/theme/oceanic-next.css">
+<link rel="stylesheet" type="text/css" href="[###CODEED-PREFIX-URL|html###]lib/js/jseditcode/codemirror/theme/zenburn.css">
+[%%%IF:CODEED-THEMES:@>0;%%%]
+[%%%LOOP:CODEED-THEMES%%%]
+<link rel="stylesheet" type="text/css" href="[###CODEED-PREFIX-URL|html###]lib/js/jseditcode/codemirror/theme/[###CODEED-THEMES._-VAL-_|url|html###].css">
+[%%%/LOOP:CODEED-THEMES%%%]
+[%%%/IF:CODEED-THEMES%%%]
+<script src="[###CODEED-PREFIX-URL|html###]lib/js/jseditcode/codemirror/lib/codemirror.js"></script>
+<!-- CodeMirror Editor / Addons -->
+<link rel="stylesheet" type="text/css" href="[###CODEED-PREFIX-URL|html###]lib/js/jseditcode/codemirror/addons.pak.css">
+<script src="[###CODEED-PREFIX-URL|html###]lib/js/jseditcode/codemirror/addons.pak.js"></script>
+<!-- CodeMirror Editor / Parsers -->
+<script src="[###CODEED-PREFIX-URL|html###]lib/js/jseditcode/codemirror/modes.pak.js"></script>
+<!-- CodeMirror Editor (smart) -->
+<link rel="stylesheet" type="text/css" href="[###CODEED-PREFIX-URL|html###]lib/js/jseditcode/smartcodemirror/smart-codemirror.css">
+<script src="[###CODEED-PREFIX-URL|html###]lib/js/jseditcode/smartcodemirror/smart-codemirror.js"></script>
+<!-- #END :: Partial Template: Plugins.InitEditArea -->

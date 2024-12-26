@@ -1,0 +1,27 @@
+<!-- Partial Template: Plugins.UIPickerDate r.20220114 -->
+<span id="date-area-[###THE-ID|htmid|html###]" title="[###TEXT-SELECT|html###] [[###ALT-DATE-FORMAT|html###]]">
+<input type="hidden" id="[###THE-ID|htmid|html###]" name="[###THE-VAR|html###]" value="[###THE-VALUE|html###]">
+<input type="text" id="date-entry-[###THE-ID|htmid|html###]" name="dtfmt__[###THE-VAR|html###]" maxlength="13" value="" readonly="readonly" class="ux-field datetime_Field_DatePicker" style="[###STYLE-SIZE|html###]" autocomplete="off">
+</span>
+<script>
+jQuery(() => {
+	if(typeof(smartJ$UI) != 'undefined') {
+		(() => {
+			try {
+				smartJ$UI.DatePickerInit('[###THE-ID|htmid|js###]', '[###ALT-DATE-FORMAT|js###]', '[###THE-VALUE|js###]', [###FDOW|int###], [###DATE-MIN###], [###DATE-MAX###], 2, '[###EVAL-JS|js###]');
+				jQuery('#date-entry-[###THE-ID|htmid|js###]').on('click', (e) => {
+					setTimeout(() => { try { smartJ$UI.DatePickerDisplay('[###THE-ID|htmid|js###]'); } catch(err){} }, 100);
+				}).on('dblclick doubletap', (e) => {
+					jQuery('#[###THE-ID|htmid|js###]').val('');
+					jQuery(e.currentTarget).val('');
+				});
+			} catch(err) {
+				console.error('UI DatePicker ERR: ' + err);
+			}
+		})();
+	} else {
+		console.warn('UI:Js:DatePicker: No DatePicker widget is available ...');
+	}
+});
+</script>
+<!-- #END :: Partial Template: Plugins.UIPickerDate -->

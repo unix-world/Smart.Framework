@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>jQuery Tabs</title>
+<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+
+<script src="../../../../../../lib/js/framework/src/core_utils.js"></script>
+<script src="../../../../../../lib/js/framework/src/crypt_utils.js"></script>
+
+<link rel="stylesheet" href="../jquery.tabs.css" type="text/css">
+<script src="../jquery.tabs.js"></script>
+</head>
+<body>
+<div id="tabs_draw">
+	<div id="tabs_nav">
+		<ul>
+			<li><a href="#tabs_1">Tab 1</a></li>
+			<li><a href="#tabs_2">Tab 2</a></li>
+			<li><a href="test-tab.inc.html">Tab 3</a></li>
+			<li><a href="NONEXISTING.inc.html">Tab 4 (Broken Link)</a></li>
+		</ul>
+	</div>
+	<div id="tabs_1">
+		<h1>This is TAB #1</h1>
+		<br>
+		Content goes here ...
+	</div>
+	<div id="tabs_2">
+		<h2>This is the content of TAB #2</h2>
+		<br>
+		...
+	</div>
+</div>
+<script>
+SmartSimpleTabs.initTabs('tabs_draw', 1, false);
+</script>
+</body>
+</html>

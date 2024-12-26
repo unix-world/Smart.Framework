@@ -1,0 +1,36 @@
+
+=========================================================================
+
+Software Project: Smart.Framework
+Public URL: https://github.com/unix-world/Smart.Framework
+Copyright (c) 2006-present, unix-world.org
+Author: Radu Ovidiu Ilies
+All rights reserved.
+License (dual, any of): BSD or GPLv3
+
+Smart.Framework is dual-licensed, as open source, under any of BSD license or GPLv3 license
+(you choose which license to use depending on your use case)
+* BSD license: LICENSE-BSD # https://opensource.org/licenses/BSD-3-Clause
+OR
+* GPLv3 license: LICENSE-GPLv3 # https://opensource.org/licenses/GPL-3.0
+
+Why a dual license ?
+First of all, you have many options.
+Second, some modules from the extra project Smart.Framework.Modules requires explicit GPLv3 license to be used.
+The BSD licensed parts can be used with GPLv3 licensed parts under a GPLv3 license but the viceversa because of extra restrictions required by the GPLv3 license.
+Anyway, all the code in the Smart.Framework standalone project can be used with any of BSD or GPLv3 licenses with no restrictions.
+The above explanations refer just if you need to use some modules from the external project Smart.Framework.Modules which may not be BSD licensed but they are explicit GPLv3 licensed.
+
+=========================================================================
+
+Choosing your license for Smart.Framework:
+* It is mandatory to keep this file: LICENSE, but you also have to keep one of the: LICENSE-BSD or LICENSE-GPLv3
+* if you choose the BSD License for using Smart.Framework keep the file LICENSE-BSD and remove the file LICENSE-GPLv3
+* if you choose the GPLv3 License for using Smart.Framework keep the file LICENSE-GPLv3 and remove the file LICENSE-BSD
+
+IMPORTANT:
+* this software project (Smart.Framework) is open source and contains portions of code released under many different compatible open source licenses such as: MIT, BSD, ...
+* if you are using portions of code from this project you have to keep any of the files LICENSE-BSD or LICENSE-GPLv3 but also the specific licenses available with the code (some directories contains extra license files that you must keep)
+* you have to preserve all the copyright notices for all the source code and must not alter the license files
+
+=========================================================================

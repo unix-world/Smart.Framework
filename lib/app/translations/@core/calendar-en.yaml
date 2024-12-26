@@ -1,0 +1,26 @@
+# Language File: EN / CORE / Calendar :: r.8.7 / smart.framework.v.8.7
+TRANSLATIONS:
+  @language: EN
+  @area: core
+  @version: 2021-05-26
+  calendar:
+    m_01: 'January'
+    m_02: 'February'
+    m_03: 'March'
+    m_04: 'April'
+    m_05: 'May'
+    m_06: 'June'
+    m_07: 'July'
+    m_08: 'August'
+    m_09: 'September'
+    m_10: 'October'
+    m_11: 'November'
+    m_12: 'December'
+    w_1: 'Sunday'
+    w_2: 'Monday'
+    w_3: 'Tuesday'
+    w_4: 'Wednesday'
+    w_5: 'Thursday'
+    w_6: 'Friday'
+    w_7: 'Saturday'
+#END
