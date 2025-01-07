@@ -30,7 +30,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 abstract class AbstractAuthAdmins {
 
 	// ->
-	// v.20240118
+	// v.20250103
 
 	public const MAX_TOKENS_PER_ACCOUNT = 25;
 
@@ -161,7 +161,9 @@ abstract class AbstractAuthAdmins {
 			return '';
 		} //end if
 		//--
-		return (string) \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateBarcodeUrl((string)$key, (string)$id);
+		$issuer = (string) \SmartUtils::get_server_current_basedomain_name();
+		//--
+		return (string) \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateBarcodeUrl((string)$key, (string)$id, (string)$issuer);
 		//--
 	} //END FUNCTION
 

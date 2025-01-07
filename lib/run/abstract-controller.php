@@ -123,7 +123,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20241123
+ * @version 	v.20241228
  * @package 	development:Application
  *
  */
@@ -1727,7 +1727,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	/**
 	 * The Controller Runtime - This function is required to be re-defined in all controllers
 	 *
-	 * @return 	MIXED					:: *OPTIONAL* The HTTP Status Code: by default it does not return or it must returns 200 which is optional ; other supported HTTP Status Codes are: 202/203/204/208 (OK with notice/warning/error messages - used only for REST/APIs), 301 (Permanent Redirect), 302 (Temporary Redirect), 400 (Bad Request), 401 (Authentication Required), 403 (Forbidden), 404 (Not Found), 405 (Method Not Allowed), 410 (Gone), 422 (Unprocessable Content) / (Unprocessable Entity), 429 (Too many Requests), 500 (Internal Error), 501 (Not Implemented), 502 (Bad Gateway), 503 (Service Unavailable), 504 (Gateway Timeout) ; 204 (No Content) and 304 (Not Modified) are reserved ; if the HTTP status code is in the range of 4xx - 5xx, an extra notification message can be set as: ##EXAMPLE: $this->PageViewSetCfg('error', 'Access to this page is restricted'); return 403; ## - to have also a detailed error message to be shown near the HTTP status code) ; It also can return VOID or TRUE as HTTP Status 200 or return FALSE as HTTP Status 500
+	 * @return 	MIXED					:: *OPTIONAL* The HTTP Status Code: by default it does not return or it must returns 200 which is optional ; other supported HTTP Status Codes are: 201/202/203/204/208, 301/302, 400/401/402/403/404/405/406/408/409/410/415/422/423/424/429, 500/501/502/503/504/507 ; 304 (Not Modified) is reserved, cannt be used here ; if the HTTP status code is in the range of 4xx - 5xx, an extra notification message can be set as: ##EXAMPLE: $this->PageViewSetErrorStatus(400, 'Some parameters are missing'); return; / ##EXAMPLE: $this->PageViewSetCfg('error', 'Access to this page is restricted'); return 403; ## - to have also a detailed error message to be shown near the HTTP status code) ; It also can return VOID or TRUE as HTTP Status 200 or return FALSE as HTTP Status 500
 	 */
 	abstract public function Run(); //END FUNCTION
 	//=====

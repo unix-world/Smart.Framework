@@ -30,7 +30,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Auth 2FA TOTP
  * This class provides 2Factor Authentication TOTP Time Based Token
  *
- * compatible with FreeOTP by RedHat ; support various combinations ; default is: algo SHA384 / 8 digits / 30 seconds (or 30 seconds, pref.)
+ * compatible with FreeOTP by RedHat ; support various combinations ; default is: algo SHA512 / 8 digits / 30 seconds (or 30 seconds, pref.)
  * compatible with GoogleAuthenticator ; algo SHA1 / 8 digits (or 6 digits, pref.) / 60 seconds (or 30 seconds, pref.)
  *
  * (c) 2023 unix-world.org
@@ -39,7 +39,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @ignore
  *
  * @depends     PHP classes: Smart, SmartHashCrypto, SmartQR2DBarcode
- * @version 	v.20240102
+ * @version 	v.20250103
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -58,7 +58,7 @@ final class Auth2FTotp {
 	// returns a base32 encoded key (special algorithm, different than smart, does not have strings compression)
 	public static function GenerateSecret(int $bits=256) : string {
 		//--
-		// RFC 4226 section 4 Requirement 6 requires a minimum key length of 128 bits = 16 bytes [key len is 26 bytes (32 bit hex)] ; recommended is at least 160 bits = 20 bytes ; however, the best supported key is 256 bits = 32 bytes (default, for SHA384) ; 384 bits = 48 bytes ; 512 bits = 64 bytes ; [key len is 103 bytes (64 bit hex)]
+		// RFC 4226 section 4 Requirement 6 requires a minimum key length of 128 bits = 16 bytes [key len is 26 bytes (32 bit hex)] ; recommended is at least 160 bits = 20 bytes ; however, the best supported key is 256 bits = 32 bytes (default, for SHA512) ; 384 bits = 48 bytes ; 512 bits = 64 bytes ; [key len is 103 bytes (64 bit hex)]
 		// $bits can be (multiple of 8, between 16 and 64): 16, 24, 32, 40, 48, 56, 64 (default)
 		// returns a string between 26 and 103 characters long
 		//--
@@ -88,11 +88,16 @@ final class Auth2FTotp {
 
 
 	//==============================================================
-	public static function GenerateBarcodeUrl(string $secret, string $user, string $algo='sha384', int $length=8, int $tint=30) : string {
+	public static function GenerateBarcodeUrl(string $secret, string $user, string $issuer='', string $algo='sha512', int $length=8, int $tint=30) : string {
 		//--
 		// https://github.com/google/google-authenticator/wiki/Key-Uri-Format
 		//--
-		return (string) self::URL_OTPAUTH.\Smart::escape_url((string)(\defined('\\SMART_SOFTWARE_NAMESPACE') ? \SMART_SOFTWARE_NAMESPACE : 'Smart.Auth2FTotp')).':'.\Smart::escape_url((string)$user).'?secret='.\Smart::escape_url((string)$secret).'&algorithm='.\Smart::escape_url((string)\strtoupper((string)$algo)).'&digits='.(int)$length.'&period='.(int)$tint.'&issuer=SmartTwoFactorAuthTOTP'.'&'; //lock=false';
+		$issuer = (string) \trim((string)$issuer);
+		if((string)$issuer == '') {
+			$issuer = 'SmartTwoFactorAuthTOTP';
+		} //end if
+		//--
+		return (string) self::URL_OTPAUTH.\Smart::escape_url((string)(\defined('\\SMART_SOFTWARE_NAMESPACE') ? \SMART_SOFTWARE_NAMESPACE : 'Smart.Auth2FTotp')).':'.\Smart::escape_url((string)$user).'?secret='.\Smart::escape_url((string)$secret).'&algorithm='.\Smart::escape_url((string)\strtoupper((string)$algo)).'&digits='.(int)$length.'&period='.(int)$tint.'&issuer='.\Smart::escape_url((string)$issuer).'&'; //lock=false';
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -118,7 +123,7 @@ final class Auth2FTotp {
 
 	//==============================================================
 	// returns a number as string (digits) ; the input key will be decoded from base32 (special algorithm, different than smart, does not have strings compression)
-	public static function GenerateToken(string $key, string $algo='sha384', int $length=8, int $tint=30, int $adjsec=0) : string {
+	public static function GenerateToken(string $key, string $algo='sha512', int $length=8, int $tint=30, int $adjsec=0) : string {
 		//--
 		$key = (string) \trim((string)$key);
 		if((string)$key == '') {
@@ -322,7 +327,7 @@ final class Auth2FTotp {
 $key = 'sm57jvghyoer7pw6w3jkx5ay7q'; // test key, generated above
 
 // # generate tokens based on a previous generated key, below
-$totp = (string) \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateToken((string)$key, 'sha384', 8, 60); die('Token: '.$totp);
+$totp = (string) \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateToken((string)$key, 'sha512', 8, 60); die('Token: '.$totp);
 
 */
 

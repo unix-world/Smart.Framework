@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartHashCrypto, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_UUID_COOKIE_NAME, SMART_FRAMEWORK_UUID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
- * @version		v.20241123
+ * @version		v.20241228
  * @package 	Application
  *
  */
@@ -41,9 +41,9 @@ final class SmartFrameworkRuntime {
 
 	private static $NoCacheHeadersSent 		= false;
 
-	private static $HttpStatusCodesOK  		= [ 200, 202, 203, 204, 208, 304 ]; 									// list of framework available HTTP OK Status Codes (sync with middlewares)
-	private static $HttpStatusCodesRDR 		= [ 301, 302 ]; 														// list of framework available HTTP Redirect Status Codes (sync with middlewares)
-	private static $HttpStatusCodesERR 		= [ 400, 401, 403, 404, 405, 410, 422, 429, 500, 501, 502, 503, 504 ]; 	// list of framework available HTTP Error Status Codes (sync with middlewares)
+	private static $HttpStatusCodesOK  		= [ 200, 201, 202, 203, 204, 208, 304 ]; 																						// list of framework available HTTP OK Status Codes (sync with middlewares)
+	private static $HttpStatusCodesRDR 		= [ 301, 302 ]; 																												// list of framework available HTTP Redirect Status Codes (sync with middlewares)
+	private static $HttpStatusCodesERR 		= [ 400, 401, 402, 403, 404, 405, 406, 408, 409, 410, 415, 422, 423, 424, 429, 500, 501, 502, 503, 504, 507 ]; 	// list of framework available HTTP Error Status Codes (sync with middlewares)
 
 	private static $ServerProcessed 		= false; // after all server variables are processed this will be set to true to avoid re-process server variables which can be a security or performance issue if re-process is called by mistake !
 	private static $RequestProcessed 		= false; // after all request variables are processed this will be set to true to avoid re-process request variables which can be a security or performance issue if re-process is called by mistake !
@@ -62,6 +62,9 @@ final class SmartFrameworkRuntime {
 			case 200:
 				$status_code_msg = 'OK';
 				break;
+			case 201:
+				$status_code_msg = 'Created';
+				break;
 			case 202:
 				$status_code_msg = 'Accepted';
 				break;
@@ -76,10 +79,10 @@ final class SmartFrameworkRuntime {
 				break;
 			//--
 			case 301:
-				$status_code_msg = 'Moved Permanently (Permanent Redirect)';
+				$status_code_msg = 'Moved Permanently'; // (Permanent Redirect)
 				break;
 			case 302:
-				$status_code_msg = 'Found (Temporary Redirect)';
+				$status_code_msg = 'Found'; // (Temporary Redirect) ; Moved Temporarily
 				break;
 			//--
 			case 304:
@@ -92,6 +95,9 @@ final class SmartFrameworkRuntime {
 			case 401:
 				$status_code_msg = 'Unauthorized';
 				break;
+			case 402:
+				$status_code_msg = 'Subscription Required'; // 402 Payment Required
+				break;
 			case 403:
 				$status_code_msg = 'Forbidden';
 				break;
@@ -101,11 +107,29 @@ final class SmartFrameworkRuntime {
 			case 405:
 				$status_code_msg = 'Method Not Allowed';
 				break;
+			case 406:
+				$status_code_msg = 'Not Acceptable';
+				break;
+			case 408:
+				$status_code_msg = 'Request Timeout';
+				break;
+			case 409:
+				$status_code_msg = 'Conflict'; // example: conflicts occur if a request to create collection /a/b/c/d/ is made, and /a/b/c/ does not exist
+				break;
 			case 410:
-				$status_code_msg = 'Gone';
+				$status_code_msg = 'Gone'; // a more permanent 404 like status, ex: if a page was available just for a period of time
+				break;
+			case 415:
+				$status_code_msg = 'Unsupported Media Type';
 				break;
 			case 422:
 				$status_code_msg = 'Unprocessable Content'; // Unprocessable Entity
+				break;
+			case 423:
+				$status_code_msg = 'Locked';
+				break;
+			case 424:
+				$status_code_msg = 'Dependency Failed'; // 424 Failed Dependency ; the request failed because it depended on another request
 				break;
 			case 429:
 				$status_code_msg = 'Too Many Requests';
@@ -125,6 +149,9 @@ final class SmartFrameworkRuntime {
 				break;
 			case 504:
 				$status_code_msg = 'Gateway Timeout';
+				break;
+			case 507:
+				$status_code_msg = 'Insufficient Storage';
 				break;
 			default:
 				$status_code_msg = '(Other: See the HTTP Status Codes @ rfc7231)';
@@ -147,6 +174,21 @@ final class SmartFrameworkRuntime {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 200 ...');
 		} //end if else
 		die((string)SmartComponents::http_status_message((string)($y_title ?? '200 '.self::GetStatusMessageByStatusCode(200)), (string)$y_msg, (string)$y_htmlmsg, '200'));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise201Status(?string $y_msg, ?string $y_title='', ?string $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersCacheControl();
+			http_response_code(201);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 201 ...');
+		} //end if else
+		die((string)SmartComponents::http_status_message((string)($y_title ?? '201 '.self::GetStatusMessageByStatusCode(201)), (string)$y_msg, (string)$y_htmlmsg, '201'));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -307,6 +349,21 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
+	public static function Raise402Error(?string $y_msg, ?string $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersCacheControl();
+			http_response_code(402);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 402 ...');
+		} //end if else
+		die((string)SmartComponents::http_message_402_subscriptionrequired((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
 	public static function Raise403Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
@@ -352,6 +409,51 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
+	public static function Raise406Error(?string $y_msg, ?string $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersCacheControl();
+			http_response_code(406);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 406 ...');
+		} //end if else
+		die((string)SmartComponents::http_message_406_notacceptable((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise408Error(?string $y_msg, ?string $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersCacheControl();
+			http_response_code(408);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 408 ...');
+		} //end if else
+		die((string)SmartComponents::http_message_408_requesttimeout((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise409Error(?string $y_msg, ?string $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersCacheControl();
+			http_response_code(409);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 409 ...');
+		} //end if else
+		die((string)SmartComponents::http_message_409_conflict((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
 	public static function Raise410Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
@@ -367,6 +469,21 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
+	public static function Raise415Error(?string $y_msg, ?string $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersCacheControl();
+			http_response_code(415);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 415 ...');
+		} //end if else
+		die((string)SmartComponents::http_message_415_unsupportedmediatype((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
 	public static function Raise422Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
@@ -376,6 +493,36 @@ final class SmartFrameworkRuntime {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 422 ...');
 		} //end if else
 		die((string)SmartComponents::http_message_422_unprocessablecontent((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise423Error(?string $y_msg, ?string $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersCacheControl();
+			http_response_code(423);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 423 ...');
+		} //end if else
+		die((string)SmartComponents::http_message_423_locked((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise424Error(?string $y_msg, ?string $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersCacheControl();
+			http_response_code(424);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 424 ...');
+		} //end if else
+		die((string)SmartComponents::http_message_424_dependencyfailed((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -466,6 +613,21 @@ final class SmartFrameworkRuntime {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 504 ...');
 		} //end if else
 		die((string)SmartComponents::http_message_504_gatewaytimeout((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise507Error(?string $y_msg, ?string $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersCacheControl();
+			http_response_code(507);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 507 ...');
+		} //end if else
+		die((string)SmartComponents::http_message_507_insufficientstorage((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -610,6 +772,16 @@ final class SmartFrameworkRuntime {
 	public static function getHttpStatusCodesERR() {
 		//--
 		return (array) self::$HttpStatusCodesERR;
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	// the the array list with ALL(OK,ERROR) HTTP Status Codes (only codes that smart framework middlewares will handle)
+	public static function getHttpStatusCodesOKandERR() {
+		//--
+		return (array) array_merge(self::getHttpStatusCodesOK(), self::getHttpStatusCodesERR());
 		//--
 	} //END FUNCTION
 	//======================================================================

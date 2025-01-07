@@ -41,7 +41,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20240119
+ * @version 	v.20250105
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -133,9 +133,6 @@ final class SmartAuthAdminsHandler
 		//--
 		$init_1st_time_db = false;
 		$init_db = null;
-		$init_fa2_key = '';
-		$init_fa2_url = '';
-		$init_fa2_qrcode = '';
 		//--
 		$theDbExists = true; // assume it exists to avoid accidental re-init !
 		try {
@@ -147,23 +144,17 @@ final class SmartAuthAdminsHandler
 			return;
 		} //end try catch
 		if($theDbExists !== true) {
-			$init_db = (array) self::initDb((bool)$disable_2fa);
+			$init_db = (string) self::initDb((bool)$disable_2fa);
 		} //end if
 		//--
-		if(\is_array($init_db)) {
+		if($init_db !== null) {
 			//--
-			if((string)($init_db[0] ?? null) != '') { // 1st elem is the error
-				\SmartFrameworkRuntime::Raise503Error((string)($init_db[0] ?? null));
+			if((string)$init_db != '') { // 1st elem is the error
+				\SmartFrameworkRuntime::Raise503Error((string)$init_db);
 				die((string)self::getClassName().':INIT-FAILED');
 			} //end if
 			//--
 			$init_1st_time_db = true; // just on success, this is the 1st time ; init IP address is checked inside initDb()
-			//--
-			if($disable_2fa !== true) {
-				$init_fa2_key 		= (string) \trim((string)($init_db[1] ?? null)); // 2nd elem is 2fa key
-				$init_fa2_url 		= (string) \trim((string)($init_db[2] ?? null)); // 3rd elem is 2fa url
-				$init_fa2_qrcode 	= (string) \trim((string)($init_db[3] ?? null)); // 3rd elem is 2fa qrcode (svg)
-			} //end if
 			//--
 		} //end if
 		//--
@@ -175,7 +166,8 @@ final class SmartAuthAdminsHandler
 		//--
 
 		//--
-		$use_2fa = (bool) ! $disable_2fa; // init
+		$use_2fa 	 = (bool) ! $disable_2fa; // init
+		$require_2fa = (bool) \SmartEnvironment::is2FARequired(); // init
 		//--
 
 		//-- get Auth Credentials
@@ -704,11 +696,14 @@ final class SmartAuthAdminsHandler
 					} //end if
 				} //end if
 				//-- 2FA break point
-				$is_2fa_valid = (bool) self::isAuth2FAValid(
-					(string) ($account_data['id'] ?? null),
-					(bool)   $use_2fa,
-					(string) $modelAdmins->get2FAPinToken((string)$modelAdmins->decrypt2FAKey((string)($account_data['fa2'] ?? null), (string)($account_data['id'] ?? null)))
-				);
+				$is_2fa_valid = true;
+				if(($use_2fa === true) AND (($require_2fa === true) || ((string)($account_data['fa2'] ?? null) != ''))) { // optional use 2FA, only if enabled for this account
+					$is_2fa_valid = (bool) self::isAuth2FAValid(
+						(string) ($account_data['id'] ?? null),
+						(bool)   $use_2fa,
+						(string) $modelAdmins->get2FAPinToken((string)$modelAdmins->decrypt2FAKey((string)($account_data['fa2'] ?? null), (string)($account_data['id'] ?? null)))
+					);
+				} //end if
 				//-- #end# 2FA break point
 				if(
 					($is_ip_valid === true) // IP is valid
@@ -736,7 +731,7 @@ final class SmartAuthAdminsHandler
 						if($auth_user_arr_priv !== ['*']) { // if not wildcard privileges in the token, use only the valid ones from the token
 							$account_data['priv'] = (string) \Smart::array_to_list((array)\array_values(
 								(array) \array_intersect( // {{{SYNC-AUTH-TOKEN-PRIVS-INTERSECT}}}
-									(array) \Smart::list_to_array((string)$account_data['priv'], true),
+									(array) \Smart::list_to_array((string)$account_data['priv']),
 									(array) $auth_user_arr_priv
 								)
 							)); // {{{SYNC-SWT-IMPLEMENT-PRIVILEGES}}}
@@ -860,14 +855,10 @@ final class SmartAuthAdminsHandler
 				AND
 				($init_1st_time_db === true)
 				AND
-				((string)\trim((string)$init_fa2_key) != '')
-				AND
-				((string)\trim((string)$init_fa2_url) != '')
+				($disable_2fa !== true)
 			) {
 				$extra_html .= '<br><hr>';
-				$extra_html .= '<div style="color:#FF3300;"><b>Before refreshing this page save or scan the FA2 code to be able to Sign-In using Two Factor Authentication.</b></div>';
-				$extra_html .= '<h5>2FA Setup QRCode to use with <i>FreeOTP App</i> or similar:</h5><div title="'.\Smart::escape_html((string)$init_fa2_url).'">'.$init_fa2_qrcode.'</div>'."\n";
-				$extra_html .= '<h6 style="color:#778899">2FA Setup Token (Algorithm=SHA384 ; Digits=8 ; Seconds=30):<br><span style="color:#ECECEC">`'.\Smart::escape_html((string)$init_fa2_key).'`</span></h6>'."\n";
+				$extra_html .= '<div style="color:#FF3300;"><b>After the first login you can to enable the Two Factor Authentication for your account.</b></div>'."\n";
 			} //end if
 			//--
 			$msg_extra_init_type = 'CHECK';
@@ -944,53 +935,39 @@ final class SmartAuthAdminsHandler
 
 
 	//================================================================
-	private static function initDb(bool $disable_2fa) : array {
+	private static function initDb(bool $disable_2fa) : string {
 		//--
 		self::$is_init_db = true;
 		//--
 		if(!\defined('\\APP_AUTH_ADMIN_INIT_IP_ADDRESS')) {
-			return [
-				'Set in config the `APP_AUTH_ADMIN_INIT_IP_ADDRESS` constant !'."\n".'The `APP_AUTH_ADMIN_INIT_IP_ADDRESS` constant is required to initialize this Authentication plugin ...',
-			];
+			return 'Set in config the `APP_AUTH_ADMIN_INIT_IP_ADDRESS` constant !'."\n".'The `APP_AUTH_ADMIN_INIT_IP_ADDRESS` constant is required to initialize this Authentication plugin ...';
 		} //end if
 		$init_ip_addr = (string) \Smart::ip_addr_compress((string)\APP_AUTH_ADMIN_INIT_IP_ADDRESS);
 		if((string)\trim((string)$init_ip_addr) == '') {
-			return [
-				'The config value of `APP_AUTH_ADMIN_INIT_IP_ADDRESS` constant is wrong !'."\n".'The current value for `APP_AUTH_ADMIN_INIT_IP_ADDRESS` constant is: `'.\APP_AUTH_ADMIN_INIT_IP_ADDRESS.'` ...',
-			];
+			return 'The config value of `APP_AUTH_ADMIN_INIT_IP_ADDRESS` constant is wrong !'."\n".'The current value for `APP_AUTH_ADMIN_INIT_IP_ADDRESS` constant is: `'.\APP_AUTH_ADMIN_INIT_IP_ADDRESS.'` ...';
 		} //end if
 		if((string)$init_ip_addr != (string)\SmartUtils::get_ip_client()) {
-			return [
-				'The config value of `APP_AUTH_ADMIN_INIT_IP_ADDRESS` constant is restricting you to access the initialization of this area !'."\n".'Your IP Address is: `'.\SmartUtils::get_ip_client().'` ...',
-			];
+			return 'The config value of `APP_AUTH_ADMIN_INIT_IP_ADDRESS` constant is restricting you to access the initialization of this area !'."\n".'Your IP Address is: `'.\SmartUtils::get_ip_client().'` ...';
 		} //end if
 		//--
 		if(!\defined('\\APP_AUTH_ADMIN_USERNAME')) {
-			return [
-				'Set in config: `APP_AUTH_ADMIN_USERNAME` !'."\n".'You must set the `APP_AUTH_ADMIN_USERNAME` constant in config before installation. Manually REFRESH this page after by pressing F5 ...',
-			];
+			return 'Set in config: `APP_AUTH_ADMIN_USERNAME` !'."\n".'You must set the `APP_AUTH_ADMIN_USERNAME` constant in config before installation. Manually REFRESH this page after by pressing F5 ...';
 		} //end if
 		if(\SmartAuth::validate_auth_username(
 			(string) \APP_AUTH_ADMIN_USERNAME,
 			true // check for reasonable length, as 5 chars
 		) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
-			return [
-				'Invalid value set in config for: `APP_AUTH_ADMIN_USERNAME` !'."\n".'The `APP_AUTH_ADMIN_USERNAME` set in config must be valid and at least 5 characters long ! Manually REFRESH this page after by pressing F5 ...',
-			];
+			return 'Invalid value set in config for: `APP_AUTH_ADMIN_USERNAME` !'."\n".'The `APP_AUTH_ADMIN_USERNAME` set in config must be valid and at least 5 characters long ! Manually REFRESH this page after by pressing F5 ...';
 		} //end if
 		//--
 		if(!\defined('\\APP_AUTH_ADMIN_PASSWORD')) {
-			return [
-				'Set in config: `APP_AUTH_ADMIN_PASSWORD` !'."\n".'You must set the `APP_AUTH_ADMIN_PASSWORD` constant into config before installation. Manually REFRESH this page after by pressing F5 ...',
-			];
+			return 'Set in config: `APP_AUTH_ADMIN_PASSWORD` !'."\n".'You must set the `APP_AUTH_ADMIN_PASSWORD` constant into config before installation. Manually REFRESH this page after by pressing F5 ...';
 		} //end if
 		if(\SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
 			(string) \APP_AUTH_ADMIN_PASSWORD,
 			(bool) ((\defined('\\APP_AUTH_ADMIN_COMPLEX_PASSWORDS') && (\APP_AUTH_ADMIN_COMPLEX_PASSWORDS === true)) ? true : false) // check for complexity just on login ! ... for the rest do not check because if this constant changes ... cannot re-update everything !
 		) !== true) {
-			return [
-				'Invalid value set in config for: `APP_AUTH_ADMIN_PASSWORD` ... need to be changed !'."\n".'THE PASSWORD IS TOO SHORT OR DOES NOT MEET THE REQUIRED COMPLEXITY CRITERIA.'."\n".'Must be min 8 chars and max 72 chars.'."\n".'Must contain at least 1 character A-Z, 1 character a-z, one digit 0-9, one special character such as: ! @ # $ % ^ & * ( ) _ - + = [ { } ] / | . , ; ? ...'."\n".'Manually REFRESH this page after by pressing F5 ...',
-			];
+			return 'Invalid value set in config for: `APP_AUTH_ADMIN_PASSWORD` ... need to be changed !'."\n".'THE PASSWORD IS TOO SHORT OR DOES NOT MEET THE REQUIRED COMPLEXITY CRITERIA.'."\n".'Must be min 8 chars and max 72 chars.'."\n".'Must contain at least 1 character A-Z, 1 character a-z, one digit 0-9, one special character such as: ! @ # $ % ^ & * ( ) _ - + = [ { } ] / | . , ; ? ...'."\n".'Manually REFRESH this page after by pressing F5 ...';
 		} //end if
 		//--
 		$idb = null;
@@ -999,16 +976,14 @@ final class SmartAuthAdminsHandler
 			$idb = new \SmartModelAuthAdmins(); // will create + initialize DB if not found
 		} catch(\Exception $e) {
 			$idb = null;
-			return [
-				'AUTH DB Failed to Initialize: `'.$e->getMessage().'`', // fatal error, can't continue
-			];
+			return 'AUTH DB Failed to Initialize: `'.$e->getMessage().'`'; // fatal error, can't continue
 		} //end try catch
 		//--
 		$init_username = (string) \APP_AUTH_ADMIN_USERNAME;
 		$init_password = (string) \APP_AUTH_ADMIN_PASSWORD;
 		//--
 		$init_privileges = (string) \SmartAuth::DEFAULT_PRIVILEGES; // {{{SYNC-AUTH-DEFAULT-ADM-SUPER-PRIVS}}}
-		$init_privileges = \Smart::list_to_array((string)$init_privileges, true);
+		$init_privileges = \Smart::list_to_array((string)$init_privileges);
 		$init_privileges = \Smart::array_to_list((array)$init_privileges);
 		//--
 		$wr = (int) $idb->insertAccount(
@@ -1025,9 +1000,7 @@ final class SmartAuthAdminsHandler
 		);
 		//--
 		if((int)$wr !== 1) {
-			return [
-				'AUTH DB Failed to Create the account for: `'.$init_username.'` [ERR='.(int)$wr.']',
-			];
+			return 'AUTH DB Failed to Create the account for: `'.$init_username.'` [ERR='.(int)$wr.']';
 		} //end if
 		//--
 		$select_user = (array) $idb->getById((string)$init_username);
@@ -1037,26 +1010,10 @@ final class SmartAuthAdminsHandler
 			OR
 			((string)($select_user['id'] ?? null) != (string)\APP_AUTH_ADMIN_USERNAME)
 		) {
-			return [
-				'AUTH DB Failed to Find the account for: `'.$init_username.'`',
-			];
+			return 'AUTH DB Failed to Find the account for: `'.$init_username.'`';
 		} //end if
 		//--
-		$user_2fakey = '';
-		$user_2faurl = '';
-		$user_2faqrcode = '';
-		if($disable_2fa !== true) {
-			$user_2fakey = (string) $idb->decrypt2FAKey((string)$select_user['fa2'], (string)$select_user['id']); // {{{SYNC-ADM-AUTH-2FA-MANAGEMENT}}}
-			$user_2faurl = (string) $idb->get2FAUrl((string)$user_2fakey, (string)$select_user['id']);
-			$user_2faqrcode = (string) $idb->get2FASvgBarCode((string)$user_2fakey, (string)$select_user['id']);
-		} //end if
-		//--
-		return [
-			'', 						// ERR or empty
-			(string) $user_2fakey, 		// FA2 Key
-			(string) $user_2faurl, 		// FA2 URL
-			(string) $user_2faqrcode, 	// FA2 Barcode (SVG)
-		];
+		return '';
 		//--
 	} //END FUNCTION
 	//================================================================

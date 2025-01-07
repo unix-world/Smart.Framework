@@ -48,7 +48,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartEnvironment, SmartUnicode, SmartFileSysUtils ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS, SMART_SOFTWARE_MKTPL_DEBUG_LEN (optional)
- * @version 	v.20231228
+ * @version 	v.20241228
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -1568,7 +1568,9 @@ final class SmartMarkersTemplating {
 					} elseif((string)$escexpr == '|html') {
 						$val = (string) Smart::escape_html((string)$val); // Escape HTML
 					} elseif((string)$escexpr == '|xml') {
-						$val = (string) Smart::escape_xml((string)$val); // Escape XML
+						$val = (string) Smart::escape_xml((string)$val, false); // Escape XML
+					} elseif((string)$escexpr == '|exml') {
+						$val = (string) Smart::escape_xml((string)$val, true); // Escape XML + extra entities: TAB, LF, CR, ...
 					} elseif((string)$escexpr == '|css') {
 						$val = (string) Smart::escape_css((string)$val); // Escape CSS
 					} elseif((string)$escexpr == '|nl2br') {

@@ -46,7 +46,7 @@ define('SMART_APP_TEMPLATES_DIR', 'etc/templates/'); // App Templates Dir
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20240928
+ * @version		20250105
  * @package 	Application
  *
  */
@@ -296,7 +296,7 @@ abstract class SmartAbstractAppMiddleware {
 							if(ob_get_level()) {
 								ob_end_flush(); // fix to avoid get out of memory with big files
 							} //end if
-							@readfile((string)$filepath); // output without reading all in memory
+							readfile((string)$filepath); // output without reading all in memory
 							//--
 						} else {
 							//--
@@ -493,7 +493,7 @@ abstract class SmartAbstractAppMiddleware {
 		} //end if
 		//-- {{{SYNC-RESOURCES}}}
 		if(function_exists('memory_get_peak_usage')) {
-			$res_memory = (int) @memory_get_peak_usage(false);
+			$res_memory = (int) memory_get_peak_usage(false);
 		} else {
 			$res_memory = -1; // unknown
 		} //end if else

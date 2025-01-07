@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * DEPENDS classes: 	Smart, SmartAuth, SmartEnvironment, SmartUtils, \SmartModExtLib\AuthAdmins\AuthProviderHttp
  * DEPENDS constants: 	SMART_FRAMEWORK_SECURITY_KEY
  *
- * @version 	v.20241108
+ * @version 	v.20250103
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -689,6 +689,7 @@ abstract class AbstractAuthHandler {
 	final protected static function renderAuthLoginPage(bool $disable_2fa, string $auth_user_name, string $auth_mode, string $auth_desc_mode, string $html_inc_code_poweredby_area='') : string {
 		//--
 		$use_2fa = (bool) ! $disable_2fa;
+		$require_2fa = (bool) \SmartEnvironment::is2FARequired();
 		//--
 		$auth_user_name = (string) \trim((string)$auth_user_name);
 		$auth_mode = (string) \trim((string)$auth_mode);
@@ -753,6 +754,7 @@ abstract class AbstractAuthHandler {
 					[
 						'RELEASE-HASH' 	=> (string) \SmartUtils::get_app_release_hash(),
 						'USE-2FA' 		=> (string) (($use_2fa === true) ? '1' : '0'),
+						'REQUIRED-2FA' 	=> (string) (($require_2fa === true) ? '1' : '0'),
 						'REGEX-2FA' 	=> (string) self::AUTH_2FA_REGEX_TOKEN,
 						'COOKIE-N-2FA' 	=> (string) self::AUTH_2FA_COOKIE_NAME,
 						'LOGIN-SCRIPT' 	=> (string) ((\SmartEnvironment::isTaskArea() === true) ? 'task.php' : 'admin.php'),

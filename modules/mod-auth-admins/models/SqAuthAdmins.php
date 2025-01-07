@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 abstract class SqAuthAdmins extends \SmartModDataModel\AuthAdmins\AbstractAuthAdmins {
 
 	// ->
-	// v.20240118
+	// v.20250103
 
 	private $db;
 	private $dbFile;
@@ -209,8 +209,8 @@ abstract class SqAuthAdmins extends \SmartModDataModel\AuthAdmins\AbstractAuthAd
 		if((int)\strlen((string)$data['pass']) !== (int)\SmartHashCrypto::PASSWORD_HASH_LENGTH) {
 			return -13; // invalid password, it have to be a fixed length as defined
 		} //end if
-		//-- {{{SYNC-MOD-AUTH-EMAIL-VALIDATION}}}
-		if((\strlen((string)$data['email']) < 6) OR (\strlen((string)$data['email']) > 96) OR (!\preg_match((string)\SmartValidator::regex_stringvalidation_expression('email'), (string)$data['email']))) {
+		//-- {{{SYNC-MOD-AUTH-EMAIL-VALIDATION}}} ; {{{SYNC-SMART-EMAIL-LENGTH}}}
+		if((\strlen((string)$data['email']) < 7) OR (\strlen((string)$data['email']) > 72) OR (!\preg_match((string)\SmartValidator::regex_stringvalidation_expression('email'), (string)$data['email']))) {
 			$data['email'] = null; // NULL, as the email is invalid
 		} //end if
 		//--
@@ -261,7 +261,7 @@ abstract class SqAuthAdmins extends \SmartModDataModel\AuthAdmins\AbstractAuthAd
 						'restrict' 	=> (string) $data['restrict'],
 						'created' 	=> (int)    \time(),
 						'active' 	=> (int)    $active,
-						'fa2' 		=> (string) $this->encrypt2FAKey((string)\SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateSecret(), (string)$data['id']),
+						'fa2' 		=> (string) '',
 						'ip_addr' 	=> (string) \SmartUtils::get_ip_client(),
 					],
 					'insert'
@@ -274,6 +274,33 @@ abstract class SqAuthAdmins extends \SmartModDataModel\AuthAdmins\AbstractAuthAd
 		$this->db->write_data('COMMIT');
 		//--
 		$this->db->write_data('VACUUM');
+		//--
+		return (int) $out;
+		//--
+	} //END FUNCTION
+
+
+	final public function enableAccount2FA(string $id, string $fa2_secret) : int {
+		//--
+		if((string)$id == '') {
+			return -10; // invalid username length
+		} //end if
+		//--
+		$fa2_secret = (string) \trim((string)$fa2_secret); // \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateSecret()
+		if((string)$fa2_secret == '') {
+			return -11;
+		} //end if
+		//--
+		$wr = (array) $this->db->write_data(
+			'UPDATE `admins` SET `fa2` = ? WHERE ((`id` = ?) AND (`fa2` = ?))',
+			[
+				(string) $this->encrypt2FAKey((string)$fa2_secret, (string)$id),
+				(string) $id,
+				'',
+			]
+		);
+		$out = (int) ($wr[1] ?? null);
+		$wr = null;
 		//--
 		return (int) $out;
 		//--
@@ -331,8 +358,8 @@ abstract class SqAuthAdmins extends \SmartModDataModel\AuthAdmins\AbstractAuthAd
 		$data['priv'] = ($data['priv'] ?? null); // mixed: array or string
 		$data['upd-keys'] = (string) ($data['upd-keys'] ?? null);
 		$data['keys'] = (string) \trim((string)($data['keys'] ?? null));
-		//-- {{{SYNC-MOD-AUTH-EMAIL-VALIDATION}}}
-		if((\strlen((string)$data['email']) < 6) OR (\strlen((string)$data['email']) > 96) OR (!\preg_match((string)\SmartValidator::regex_stringvalidation_expression('email'), (string)$data['email']))) {
+		//-- {{{SYNC-MOD-AUTH-EMAIL-VALIDATION}}} ; {{{SYNC-SMART-EMAIL-LENGTH}}}
+		if((\strlen((string)$data['email']) < 7) OR (\strlen((string)$data['email']) > 72) OR (!\preg_match((string)\SmartValidator::regex_stringvalidation_expression('email'), (string)$data['email']))) {
 			$data['email'] = null; // NULL, as the email is invalid
 		} //end if
 		//--
@@ -1040,7 +1067,7 @@ $ipadr = (string) $this->db->escape_str((string)\SmartUtils::get_ip_client());
 $passlen = (int) \SmartHashCrypto::PASSWORD_HASH_LENGTH;
 //-- {{{SYNC-ADMINS-ACCOUNT-DATA-STRUCTURE}}}
 $schema = <<<SQL
--- #START: tables schema: _smartframework_metadata / admins @ 20231021
+-- #START: tables schema: _smartframework_metadata / admins @ 20250103
 INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('version@auth-admins', '{$version}');
 INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('init-ip@auth-admins', '{$ipadr}');
 CREATE TABLE 'admins' (
@@ -1048,7 +1075,7 @@ CREATE TABLE 'admins' (
 	`pass` character varying({$passlen}) NOT NULL,
 	`active` smallint DEFAULT 0 NOT NULL,
 	`quota` bigint DEFAULT 0 NOT NULL,
-	`email` character varying(96) DEFAULT NULL NULL,
+	`email` character varying(72) DEFAULT NULL NULL,
 	`title` character varying(16) DEFAULT '' NOT NULL,
 	`name_f` character varying(64) DEFAULT '' NOT NULL,
 	`name_l` character varying(64) DEFAULT '' NOT NULL,

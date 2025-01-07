@@ -80,7 +80,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20241223
+ * @version     v.20250105
  * @package     @Core
  *
  */
@@ -982,16 +982,27 @@ final class Smart {
 	 * This is a shortcut to the htmlspecialchars() for XML mode, to avoid use long options each time and provide a standard into Smart.Framework
 	 *
 	 * @param 	STRING 		$y_string			:: The string to be escaped
+	 * @param 	BOOL 		$y_extra_escapings 	:: If set to TRUE will replace special characters such as TAB, LF and CR with the corresponding entities
 	 *
 	 * @return 	STRING							:: The escaped string using htmlspecialchars() XML standards with Unicode-Safe control
 	 */
-	public static function escape_xml(?string $y_string) : string {
-		//-- v.20231228
+	public static function escape_xml(?string $y_string, bool $y_extra_escapings) : string {
+		//-- v.20241228
 		if((string)$y_string == '') {
 			return '';
 		} //end if
 		//--
-		return (string) htmlspecialchars((string)$y_string, ENT_XML1 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true); // use charset from INIT (to prevent XSS attacks) ; the 4th parameter double_encode is set to TRUE as default
+		$y_string = (string) htmlspecialchars((string)$y_string, ENT_XML1 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true); // use charset from INIT (to prevent XSS attacks) ; the 4th parameter double_encode is set to TRUE as default
+		//--
+		if($y_extra_escapings === true) {
+			$y_string = (string) strtr((string)$y_string, [ // golang compliant
+				"\r" => '&#xD;', // '&#13;',
+				"\n" => '&#xA;', // '&#10;',
+				"\t" => '&#x9;', // '&#09;',
+			]);
+		} //end if
+		//--
+		return (string) $y_string;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1025,11 +1036,15 @@ final class Smart {
 		//--
 		for($i=0; $i<SmartUnicode::str_len((string)$y_string); $i++) {
 			$c = (string) SmartUnicode::sub_str((string)$y_string, $i, 1);
-			$code = (int) ord($c);
-			if((((int)$code >= 65) && ((int)$code <= 90)) || (((int)$code >= 97) && ((int)$code <= 122)) || (((int)$code >= 48) && ((int)$code <= 57))) {
-				$out .= (string) $c; // a-zA-Z0-9
+			$code = (int) SmartUnicode::ord($c);
+			if((string)$c == SmartUnicode::chr((int)$code)) {
+				if((((int)$code >= 65) && ((int)$code <= 90)) || (((int)$code >= 97) && ((int)$code <= 122)) || (((int)$code >= 48) && ((int)$code <= 57))) {
+					$out .= (string) $c; // a-zA-Z0-9
+				} else {
+					$out .= (string) sprintf("\\%04X", (int)$code); // UTF-8
+				} //end if else
 			} else {
-				$out .= (string) sprintf("\\%04X", (int)$code); // UTF-8
+				self::log_notice(__METHOD__.' # Skip Invalid Character Code Point: `'.$code.'`');
 			} //end if else
 		} //end for
 		//--
@@ -1051,11 +1066,8 @@ final class Smart {
 		//-- v.20200605
 		// Prepare a string to pass in JavaScript Single or Double Quotes
 		// By The Situation:
-		// * Using inside tags as <a onClick="self.location = \''.Smart::escape_js($str).'\';"></a>
-		// * Using with unsafe strings (come from GET / POST / DB / Untrusted): <script>var my = \''.Smart::escape_js($str).'\';</script>
-		// * Using with safe strings (come from language files): <script>var my = \''.Smart::escape_js($str).'\';</script>
-		// WARNING: strings may contain HTML Tags ... which if apply Smart::escape_html() may break them.
-		// str_replace(["\\", "\n", "\t", "\r", "\b", "\f", "'"], ['\\\\', '\\n', '\\t', '\\r', '', '', '\\\''], (string)$str); // ['\\\\', '', ' ', '', '', '', '\\\'']
+		// * Using inside tags as '<a onClick="self.location = \''.Smart::escape_js($str).'\';"></a>'
+		// * Using inside tags as '<script>self.location = \''.Smart::escape_js($str).'\';></script>
 		//--
 		if((string)$str == '') {
 			return '';
@@ -2319,7 +2331,8 @@ final class Smart {
 	 */
 	public static function normalize_spaces(?string $y_txt) : string {
 		//-- {{{SYNC-NORMALIZE-SPACES}}}
-		return (string) str_replace(["\r\n", "\r", "\n", "\t", "\v", "\0", "\f", "\b", "\a"], ' ', (string)$y_txt);
+	//	return (string) str_replace(["\r\n", "\r", "\n", "\t", "\v", "\0", "\f", "\b", "\a"], ' ', (string)$y_txt);
+		return (string) str_replace(["\r\n", "\r", "\n", "\t", "\v", chr(0), "\f", chr(8), chr(7)], ' ', (string)$y_txt); // bug fix: \b \0 \a will not work in PHP as in other languages (ex: Golang) ...
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -3135,7 +3148,7 @@ final class Smart {
 	 * Convert a List String to Array
 	 *
 	 * @param STRING 	$y_list			:: The List String to be converted: '<elem1>, <elem2>, ..., <elemN>'
-	 * @param BOOLEAN 	$y_trim 		:: *Optional* default is TRUE ; If set to FALSE will not trim the values in the list
+	 * @param BOOLEAN 	$y_trim 		:: *Optional* default is TRUE ; If set to FALSE will not trim the values in the list, in some cases preserve spaces is required
 	 *
 	 * @return ARRAY 					:: The Array: Array(elem1, elem2, ..., elemN)
 	 */
@@ -3150,11 +3163,12 @@ final class Smart {
 		$arr = (array) explode(',', (string)$y_list);
 		$new_arr = array();
 		for($i=0; $i<self::array_size($arr); $i++) {
+			$arr[$i] = (string) trim((string)$arr[$i]); // must trim outside <> entries because was exploded by ',' and list can be also ', '
 			$arr[$i] = (string) str_replace(['<', '>'], ['', ''], (string)$arr[$i]);
 			if($y_trim !== false) {
-				$arr[$i] = (string) trim((string)$arr[$i]);
+				$arr[$i] = (string) trim((string)$arr[$i]); // trim <> inside values only if explicit required (otherwise preserve inside spaces)
 			} //end if
-			if((string)$arr[$i] != '') {
+			if((string)trim((string)$arr[$i]) != '') {
 				if(!in_array((string)$arr[$i], $new_arr)) {
 					$new_arr[] = (string) $arr[$i];
 				} //end if

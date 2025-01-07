@@ -84,7 +84,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFrameworkSecurity, SmartFileSysUtils, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS ; optional-constant: SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20240115
+ * @version 	v.20241228
  * @package 	@Core:Network
  *
  */
@@ -196,6 +196,13 @@ final class SmartHttpClient {
 	 */
 	public $skip100continue;
 
+	/**
+	 * If set to TRUE will allow just SSL / TLS Strict Secure Mode with all (default) verifications. Enabling this will work just with valid certificates (not self-signed).
+	 * @var BOOLEAN
+	 * @default false
+	 */
+	public $securemode;
+
 	//--
 
 	/**
@@ -210,6 +217,7 @@ final class SmartHttpClient {
 
 	//============================================== privates
 	//-- returns
+	private $txtsecurestrictmode; 							// Registers the Secure Strict Mode Control Message
 	private $pre_status; 									// HTTP 1.1 Pre-Status, for 101 Continue
 	private $pre_header; 									// HTTP 1.1 Pre-Header, for 101 Continue
 	private $redirect_url; 									// The Redirect URL, if any
@@ -282,6 +290,10 @@ final class SmartHttpClient {
 		//--
 		$this->skipcontentif401 = true;
 		$this->skip100continue = false;
+		//--
+
+		//-- security
+		$this->securemode = false; // by default be relaxed
 		//--
 
 		//-- debugging
@@ -397,6 +409,7 @@ final class SmartHttpClient {
 	//==============================================
 	private function reset() {
 		//-- returns
+		$this->txtsecurestrictmode = '';
 		$this->pre_status = '';
 		$this->pre_header = '';
 		$this->redirect_url = '';
@@ -490,6 +503,7 @@ final class SmartHttpClient {
 			'protocol' 			=> (string) $this->protocol,
 			'method' 			=> (string) $this->method,
 			'url' 				=> (string) $url,
+			'strict-secure' 	=> (string) $this->txtsecurestrictmode,
 			'ssl'				=> (string) $ssl_version,
 			'ssl-ca' 			=> (string) ($this->cafile ? $this->cafile : (defined('SMART_FRAMEWORK_SSL_CA_FILE') ? SMART_FRAMEWORK_SSL_CA_FILE : '')),
 			'auth-user' 		=> (string) $user,
@@ -920,11 +934,18 @@ final class SmartHttpClient {
 			} //end if
 			//--
 			@stream_context_set_option($stream_context, 'ssl', 'ciphers', 				(string)SMART_FRAMEWORK_SSL_CIPHERS); // allow only high ciphers
-			@stream_context_set_option($stream_context, 'ssl', 'verify_host', 			(bool)SMART_FRAMEWORK_SSL_VFY_HOST); // allways must be set to true !
-			@stream_context_set_option($stream_context, 'ssl', 'verify_peer', 			(bool)SMART_FRAMEWORK_SSL_VFY_PEER); // this may fail with some CAs
-			@stream_context_set_option($stream_context, 'ssl', 'verify_peer_name', 		(bool)SMART_FRAMEWORK_SSL_VFY_PEER_NAME); // allow also wildcard names *
-			@stream_context_set_option($stream_context, 'ssl', 'allow_self_signed', 	(bool)SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED); // must allow self-signed certificates but verified above
+			if($this->securemode === true) { // if true, all the below values must be as default
+				$this->txtsecurestrictmode = 'HTTPS:StrictSecureMode:ON:Use:Defaults';
+			} else {
+				$this->txtsecurestrictmode = 'HTTPS:StrictSecureMode:OFF:Use:Config';
+				@stream_context_set_option($stream_context, 'ssl', 'verify_host', 			(bool)SMART_FRAMEWORK_SSL_VFY_HOST); // allways must be set to true !
+				@stream_context_set_option($stream_context, 'ssl', 'verify_peer', 			(bool)SMART_FRAMEWORK_SSL_VFY_PEER); // this may fail with some CAs
+				@stream_context_set_option($stream_context, 'ssl', 'verify_peer_name', 		(bool)SMART_FRAMEWORK_SSL_VFY_PEER_NAME); // allow also wildcard names *
+				@stream_context_set_option($stream_context, 'ssl', 'allow_self_signed', 	(bool)SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED); // must allow self-signed certificates but verified above
+			} //end if
 			@stream_context_set_option($stream_context, 'ssl', 'disable_compression', 	(bool)SMART_FRAMEWORK_SSL_DISABLE_COMPRESS); // help mitigate the CRIME attack vector
+			//--
+			$this->log .= '[INF] Secure Strict Mode: '.$this->txtsecurestrictmode."\n";
 			//--
 		} //end if else
 		//--
@@ -1430,7 +1451,7 @@ final class SmartHttpClient {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartHashCrypto, SmartFrameworkSecurity
- * @version 	v.20240118
+ * @version 	v.20241228
  * @package 	@Core:Network
  *
  */

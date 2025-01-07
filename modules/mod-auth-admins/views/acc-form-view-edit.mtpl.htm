@@ -1,4 +1,4 @@
-<!-- v.20231119 -->
+<!-- v.20250103 -->
 [@@@SUB-TEMPLATE:acc-styles-form.mtpl.inc.htm@@@]
 <center><div><table><tr><td>
 	<form id="edit_form" name="edit_form" class="ux-form ux-form-aligned" onSubmit="return false;">
@@ -10,15 +10,15 @@
 		</div>
 		<div class="ux-control-group">
 			<label>Email</label>
-			<input name="frm[email]" class="ux-input-1-2" placeholder="Email" type="email" value="[###EMAIL|html###]"[%%%IF:VIEW-ONLY:==yes;%%%] readonly[%%%/IF:VIEW-ONLY%%%]>
+			<input type="email" maxlength="72" name="frm[email]" class="ux-input-1-2" placeholder="Email" value="[###EMAIL|html###]"[%%%IF:VIEW-ONLY:==yes;%%%] readonly[%%%/IF:VIEW-ONLY%%%]>
 		</div>
 		<div class="ux-control-group" title="Given Name">
 			<label>First Name</label>
-			<input name="frm[name_f]" class="ux-input-1-2" placeholder="Given Name" type="text" value="[###FIRST-NAME|html###]" required[%%%IF:VIEW-ONLY:==yes;%%%] readonly[%%%/IF:VIEW-ONLY%%%]>
+			<input type="text" maxlength="64" name="frm[name_f]" class="ux-input-1-2" placeholder="Given Name" value="[###FIRST-NAME|html###]" required[%%%IF:VIEW-ONLY:==yes;%%%] readonly[%%%/IF:VIEW-ONLY%%%]>
 		</div>
 		<div class="ux-control-group" title="Family Name">
 			<label>Last Name</label>
-			<input name="frm[name_l]" class="ux-input-1-2" placeholder="Family Name" type="text" value="[###LAST-NAME|html###]" required[%%%IF:VIEW-ONLY:==yes;%%%] readonly[%%%/IF:VIEW-ONLY%%%]>
+			<input type="text" maxlength="64" name="frm[name_l]" class="ux-input-1-2" placeholder="Family Name" value="[###LAST-NAME|html###]" required[%%%IF:VIEW-ONLY:==yes;%%%] readonly[%%%/IF:VIEW-ONLY%%%]>
 		</div>
 		[%%%IF:VIEW-ONLY:==yes;%%%]
 		<div class="ux-control-group">
@@ -28,8 +28,8 @@
 		[%%%IF:ENABLED-2FA:==1;%%%]
 		[%%%IF:SELF-FA2:==yes;%%%]
 		<div class="ux-control-group" style="min-height:152px;">
-			<label>2FA Key[%%%IF:2FA-TEST-TK:!=;%%%]<br><br><span style="cursor:help; color:#DDDDDD;" title="Test Token: [###2FA-TEST-TK|html###] ; Date: [###2FA-TEST-DATE|html###] ; Key: [###2FA-KEY|html###]"><i class="sfi sfi-clock sfi-xl"></i></span>[%%%/IF:2FA-TEST-TK%%%]</label>
-			<div style="display:inline-block; font-size:0.875rem;">[%%%IF:2FA-BARCODE:!=;%%%]<span id="2fa-logo" style="cursor:cell; color:#DDDDDD;" title="Click to reveal the QRCode" onclick="jQuery('#2fa-logo').hide(); jQuery('#2fa-qr').show();"><i class="sfi sfi-qrcode sfi-5x"></i></span><img id="2fa-qr" style="display:none; cursor:cell;" src="data:image/svg+xml,[###2FA-BARCODE|url###]" title="[###2FA-URL|html###]" onclick="jQuery('#2fa-logo').show(); jQuery('#2fa-qr').hide();">[%%%/IF:2FA-BARCODE%%%]</div>
+			<label>2FA Key[%%%IF:2FA-KEY:!=;%%%][%%%IF:2FA-TEST-TK:!=;%%%]<br><br><span style="cursor:help; color:#DDDDDD;" title="Test Token: [###2FA-TEST-TK|html###] ; Date: [###2FA-TEST-DATE|html###] ; Key: [###2FA-KEY|html###]"><i class="sfi sfi-clock sfi-xl"></i></span>[%%%/IF:2FA-TEST-TK%%%][%%%/IF:2FA-KEY%%%]</label>
+			<div style="display:inline-block; font-size:0.875rem;">[%%%IF:2FA-KEY:!=;%%%][%%%IF:2FA-BARCODE:!=;%%%]<span id="2fa-logo" style="cursor:cell; color:#DDDDDD;" title="Click to reveal the QRCode" onclick="jQuery('#2fa-logo').hide(); jQuery('#2fa-qr').show();"><i class="sfi sfi-qrcode sfi-5x"></i></span><img id="2fa-qr" style="display:none; cursor:cell;" src="data:image/svg+xml,[###2FA-BARCODE|url###]" title="[###2FA-URL|html###]" onclick="jQuery('#2fa-logo').show(); jQuery('#2fa-qr').hide();">[%%%/IF:2FA-BARCODE%%%][%%%ELSE:2FA-KEY%%%]<button class="ux-button ux-button-regular" onClick="self.location = '[###ACTIONS-URL|js|html###]enable-2fa-form&id=[###ID|js|html###]'; return false;"><i class="sfi sfi-qrcode"></i> &nbsp; Enable Two-Factor Authentication</button>[%%%/IF:2FA-KEY%%%]</div>
 		</div>
 		[%%%/IF:SELF-FA2%%%]
 		[%%%/IF:ENABLED-2FA%%%]

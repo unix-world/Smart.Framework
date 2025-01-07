@@ -41,7 +41,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[A][T]@v.8.7');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20240928
+ * @version		20250105
  * @package 	Application
  *
  */
@@ -197,7 +197,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 		//--
 		$reserved_controller_names = []; // these are reserved extensions and cannot be used as controller names because they need to be used also with friendly URLs as the 2nd param if module is missing from URL page param
 		if(defined('SMART_FRAMEWORK_RESERVED_CONTROLLER_NAMES')) {
-			$reserved_controller_names = (array) Smart::list_to_array((string)SMART_FRAMEWORK_RESERVED_CONTROLLER_NAMES, true);
+			$reserved_controller_names = (array) Smart::list_to_array((string)SMART_FRAMEWORK_RESERVED_CONTROLLER_NAMES);
 		} //end if
 		//--
 		$err404 = '';
@@ -435,6 +435,10 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 		//--
 		switch((int)$appStatusCode) {
 			//-- server errors
+			case 507:
+				SmartFrameworkRuntime::Raise507Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				return;
+				break;
 			case 504:
 				SmartFrameworkRuntime::Raise504Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
@@ -460,12 +464,36 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 				SmartFrameworkRuntime::Raise429Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
+			case 424:
+				SmartFrameworkRuntime::Raise424Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				return;
+				break;
+			case 423:
+				SmartFrameworkRuntime::Raise423Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				return;
+				break;
 			case 422:
 				SmartFrameworkRuntime::Raise422Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
+			case 415:
+				SmartFrameworkRuntime::Raise415Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				return;
+				break;
 			case 410:
 				SmartFrameworkRuntime::Raise410Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				return;
+				break;
+			case 409:
+				SmartFrameworkRuntime::Raise409Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				return;
+				break;
+			case 408:
+				SmartFrameworkRuntime::Raise408Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				return;
+				break;
+			case 406:
+				SmartFrameworkRuntime::Raise406Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
 			case 405:
@@ -478,6 +506,10 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 				break;
 			case 403:
 				SmartFrameworkRuntime::Raise403Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				return;
+				break;
+			case 402:
+				SmartFrameworkRuntime::Raise402Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
 			case 401:
@@ -507,6 +539,11 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 					Smart::log_warning('Headers Already Sent in controller ['.$page.'] before HTTP-STATUS='.(int)$appStatusCode);
 				} //end if else
 				break;
+			//-- No Content 204 status, for APIs
+			case 204:
+				SmartFrameworkRuntime::Raise204NoContentStatus(); // here should be no output !
+				return;
+				break;
 			//-- extended 2xx statuses: NOTICE / WARNING / ERROR that can be used for REST / API
 			case 208: // ERROR
 				if(!headers_sent()) {
@@ -529,10 +566,12 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 					Smart::log_warning('Headers Already Sent in controller ['.$page.'] before HTTP-STATUS='.(int)$appStatusCode);
 				} //end if else
 				break;
-			//-- No Content 204 status, for APIs
-			case 204:
-				SmartFrameworkRuntime::Raise204NoContentStatus(); // here should be no output !
-				return;
+			case 201: // INFO
+				if(!headers_sent()) {
+					http_response_code(201); // Created, for APIs (this should be used only as an alternate SUCCESS code instead of 200 for NOTICES)
+				} else {
+					Smart::log_warning('Headers Already Sent in controller ['.$page.'] before HTTP-STATUS='.(int)$appStatusCode);
+				} //end if else
 				break;
 			//-- DEFAULT: OK
 			case 200:

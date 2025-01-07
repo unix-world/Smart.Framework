@@ -36,7 +36,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access      PUBLIC
  * @depends     optional-constants: SMART_FRAMEWORK_DEBUG_MODE, SMART_FRAMEWORK_INTERNAL_DEBUG, SMART_FRAMEWORK_ENV, SMART_FRAMEWORK_ADMIN_AREA, SMART_FRAMEWORK_RUNTIME_MODE
- * @version     v.20240118
+ * @version     v.20250103
  * @package     @Core
  *
  */
@@ -139,6 +139,50 @@ final class SmartEnvironment { //  This class have to be able to run before load
 			return (bool) ((int)$is_2fa_enabled == 1); // 1: only for adm/tsk area
 		} else {
 			return (bool) ((int)$is_2fa_enabled == 3); // 3: only for idx area
+		} //end if else
+		//--
+		return false;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Returns TRUE if 2FA is Required
+	 * Will test for the current area only
+	 *
+	 * @return 	BOOL						:: TRUE if required ; FALSE if not
+	 */
+	public static function is2FARequired() : bool {
+		//--
+		if(self::is2FAEnabled() !== true) {
+			return false;
+		} //end if
+		//--
+		$is_2fa_required = 0;
+		if(defined('SMART_SOFTWARE_AUTH_REQUIRED_2FA')) {
+			$is_2fa_required = (int) intval(SMART_SOFTWARE_AUTH_REQUIRED_2FA);
+		} //end if
+		//--
+		if((int)$is_2fa_required < 0) {
+			$is_2fa_required = 0;
+		} elseif((int)$is_2fa_required > 3) {
+			$is_2fa_required = 3;
+		} //end if
+		//--
+		if((int)$is_2fa_required == 0) { // 0: no area
+			return false;
+		} //end if
+		//--
+		if((int)$is_2fa_required == 2) { // 2: all areas
+			return true;
+		} //end if
+		//--
+		if((self::isAdminArea() === true) || (self::isTaskArea() === true)) {
+			return (bool) ((int)$is_2fa_required == 1); // 1: only for adm/tsk area
+		} else {
+			return (bool) ((int)$is_2fa_required == 3); // 3: only for idx area
 		} //end if else
 		//--
 		return false;

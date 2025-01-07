@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartEnvironment, SmartCipherCrypto
- * @version 	v.20240119
+ * @version 	v.20250107
  * @package 	@Core:Authentication
  *
  */
@@ -62,6 +62,10 @@ final class SmartAuth {
 
 	public const DEFAULT_PRIVILEGES 	= '<super-admin>,<admin>'; // {{{SYNC-AUTH-DEFAULT-ADM-SUPER-PRIVS}}}
 	public const REGEX_VALID_PRIV_KEY 	= '/^([a-z]{1}[a-z0-9\-\:]{0,20}[a-z0-9]{1})$/'; // valid name for one privilege key from list of privileges ; a valid privilege key can have 2..22 characters and can contain only: `a-z`, `0-9`, `:` and `-` ; must start with `a-z` only ; must not end with `:` or `-`
+
+	public const REGEX_SAFE_AUTH_EMAIL_ADDRESS 	= '/^[_a-z0-9\-\.]{1,41}@[a-z0-9\-\.]{3,30}$/'; // Safe Auth Email regex ; internet email@(subdomain.)domain.name ; max 72 ; practical
+	public const REGEX_SAFE_AUTH_USER_NAME 		= '/^[_a-z0-9\-\.@]{5,72}$/';  					// Safe Auth Username Regex ; cover boths above
+
 
 	public const PASSWORD_BHASH_LENGTH 	= 60; 		// the length of PASSWORD_BCRYPT / cost=8 ; {{{SYNC-PASS-HASH-AUTH-LEN}}}
 	public const PASSWORD_BHASH_PREFIX 	= '$2y$08$'; // the prefix of PASSWORD_BCRYPT / cost=8 ; {{{SYNC-PASS-HASH-AUTH-PFX}}} ; PHP 5.3.7 and above uses $2y$
@@ -953,7 +957,7 @@ final class SmartAuth {
 	//================================================================
 	/**
 	 * Validate a safe auth SWT (Smart Web Token)
-	 * This token can be used for Bearer Authentication
+	 * This token can be used for Bearer Authentication, inside Smart.Framework
 	 * The password is stored as a hash and cannot be reversed
 	 *
 	 * If this method returns an error (message), validation of the SWT Token has failed
@@ -966,6 +970,8 @@ final class SmartAuth {
 	 * NOTICE:
 	 * - the Privileges list provided by this method (as the list of privileges available in the token) needs to be INTERSECTED (array intersect, to avoid privilege escalations) with the account's privileges to result the list of account allowed privileges !
 	 * - and empty Privileges list should not be allowed !
+	 *
+	 * This is a hidden functionality that is not intended to be used directly ...
 	 *
 	 * @access 		private
 	 * @internal
@@ -1301,12 +1307,12 @@ final class SmartAuth {
 	//================================================================
 	/**
 	 * Create a safe auth SWT (Smart Web Token)
-	 * This token can be used for Bearer Authentication
+	 * This token can be used for Bearer Authentication, inside Smart.Framework
 	 * The password is stored as a hash and cannot be reversed
 	 *
 	 * If the SWT Token failed to be created because the provided parameters are invalid, an error message and an empty json / token is returned
 	 *
-	 * This is a hidden functionality that is not intended to be used directly but via Short Tokens only ...
+	 * This is a hidden functionality that is not intended to be used directly ...
 	 *
 	 * @access 		private
 	 * @internal
@@ -1501,6 +1507,294 @@ final class SmartAuth {
 		$swt['json']  = (string) $json;
 		$swt['token'] = (string) self::SWT_VERSION_PREFIX.';'.$b64s.';'.$cksign.';'.self::SWT_VERSION_SUFFIX;
 		return (array) $swt;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Create a safe auth JWT (JSON Web Token)
+	 * This token can be used for ApiKey Authentication with External SmartGo Web API
+	 * No password or password hash is stored inside, JWT uses a different mechanism, and this will operate in an external environment which is not aware of user/pass combinations
+	 *
+	 * If the JWT Token failed to be created because the provided parameters are invalid, an error message and an empty json / token is returned
+	 *
+	 * It only supports non-vulnerable JWT algorithms.
+	 * Security: HS512 and HS256 are vulnerable to length attack and are not appropriate to use as signature, they are safe only for hashing purposes.
+	 * Instead HS512 and HS256 use SHA-3 equivalents which are safe: H3S512 and H3S256.
+	 * The H3S224 and HS224 are too weak, don't use except if used with encrypted JWT mode.
+	 *
+	 * This is a hidden functionality that is not intended to be used directly ...
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param 	STRING 	$algo 					:: JWT Algo: 'Ed25519' ; 'H3S512' ; 'H3S384' ; 'HS384' ; 'H3S256' ; 'H3S224' ; 'HS224'
+	 * @param 	STRING 	$user 					:: The auth user name, as email
+	 * @param 	STRING 	$area 					:: The authentication area
+	 * @param 	STRING 	$issuer 				:: The issuer, usually as host:port ; must match what is the other server expecting ...
+	 * @param 	INT		$expire 				:: The expiration time in minutes from now ; 1..525600
+	 * @param 	ARRAY 	$privs 					:: Privileges List   [ priv1,  priv2, ... ]  (cannot be empty ! must have at least one entry to be validated)
+	 * @param 	ARRAY 	$privs_arr 				:: Restrictions List [ restr1, restr2, ... ] (cannot be empty ! must have at least one entry to be validated)
+	 * @param 	INT 	$encrypt 				:: DEFAULT 0 = plain ; 1 = BlowFish-448:CBC ; 2 = TwoFish-256:CBC ; 3 = ThreeFish-1024:CBC algo ; all other values are invalid ; for encryption will use the private app key
+	 *
+	 * @return 	ARRAY							:: array of strings as: [ 'error' => 'error if any or empty', 'token' => '...' ]
+	 */
+	public static function jwt_token_create(string $algo, string $user, string $area, string $issuer, int $expire, array $privs, array $restr, int $encrypt=0) : array {
+		//--
+		$jwt = [
+			'error' 		=> '?', // error or empty
+			'type' 			=> 'JWT',
+			'algo' 			=> '',
+			'serial' 		=> '',
+			'area' 			=> '',
+			'user' 			=> '',
+			'expires' 		=> 0,
+			'issuer' 		=> '',
+			'privs' 		=> '',
+			'restr' 		=> '',
+			'token' 		=> '',  // the jwt token (b64u) | encrypted jwt token (b64s)
+			'encoding' 		=> '',
+			'encryption' 	=> '',
+		];
+		//--
+		switch((int)$encrypt) {
+			case 3:
+				$jwt['encoding']   = 'Base64s';
+				$jwt['encryption'] = '3Fish.1024:CBC';
+				break;
+			case 2:
+				$jwt['encoding']   = 'Base64s';
+				$jwt['encryption'] = '2Fish.256:CBC';
+				break;
+			case 1:
+				$jwt['encoding']   = 'Base64s';
+				$jwt['encryption'] = 'BFish.448:CBC';
+				break;
+			case 0:
+				$jwt['encoding']   = 'Base64u';
+				$jwt['encryption'] = 'Plain';
+				break;
+			default:
+				$jwt['error'] = 'Invalid Encryption Mode: '.$encrypt;
+				return (array) $jwt;
+		} //end switch
+		//--
+		if(!defined('SMART_FRAMEWORK_SECURITY_KEY')) {
+			$jwt['error'] = 'Security Key is Undefined';
+			return (array) $jwt;
+		} //end if
+		if((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) == '') {
+			$jwt['error'] = 'Security Key is Empty';
+			return (array) $jwt;
+		} //end if
+		//--
+		$algo = (string) trim((string)$algo);
+		$hmacAlgo = '';
+		$edAlgo = '';
+		$dKeyLen = 64; // {{{SYNC-JWT-HS-KEY-LEN}}}
+		switch((string)$algo) {
+			//-- general purpose
+			case 'HS224':  // sha224
+				$hmacAlgo = 'sha224';
+				break;
+			case 'H3S224': // sha3-224
+				$hmacAlgo = 'sha3-224';
+				break;
+			case 'H3S256': // sha3-256
+				$hmacAlgo = 'sha3-256';
+				break;
+			//-- safe, accepted by SmartGo
+			case 'HS384':  // sha384
+				$hmacAlgo = 'sha384';
+				break;
+			case 'H3S384': // sha3-384
+				$hmacAlgo = 'sha3-384';
+				break;
+			case 'H3S512': // sha3-512
+				$hmacAlgo = 'sha3-512';
+				break;
+			case 'Ed25519': // Ed25519
+				$edAlgo = 'ed25519';
+				$dKeyLen = 32;
+				break;
+			default:
+				$jwt['error'] = 'Invalid algo: `'.$algo.'`';
+				return (array) $jwt;
+		} //end switch
+		$hmacAlgo = (string) strtolower((string)trim((string)$hmacAlgo));
+		$edAlgo   = (string) strtolower((string)trim((string)$edAlgo));
+		if(((string)$hmacAlgo == '') && ((string)$edAlgo == '')) {
+			$jwt['error'] = 'Both: HMac and Ed Algos are Empty';
+			return (array) $jwt;
+		} //end if
+		//--
+		$user = (string) trim((string)$user);
+		if((string)$user == '') {
+			$jwt['error'] = 'UserName is Empty';
+			return (array) $jwt;
+		} //end if
+		if(((int)strlen((string)$user) < 5) || ((int)strlen((string)$user) > 72) || ((bool)preg_match((string)self::REGEX_SAFE_AUTH_USER_NAME, (string)$user) !== true)) {
+			$jwt['error'] = 'UserName is Invalid';
+			return (array) $jwt;
+		} //end if
+		//--
+		$issuer = (string) trim((string)$issuer);
+		if((string)$issuer == '') {
+			$jwt['error'] = 'Issuer is Empty';
+			return (array) $jwt;
+		} //end if
+		if(((int)strlen((string)$issuer) < 7) || ((int)strlen((string)$issuer) > 69)) {
+			$jwt['error'] = 'Issuer is Invalid';
+			return (array) $jwt;
+		} //end if
+		//--
+		$area = (string) strtoupper((string)trim((string)$area));
+		if((string)$area == '') {
+			$jwt['error'] = 'Area is Empty';
+			return (array) $jwt;
+		} //end if
+		if(((int)strlen((string)$area) < 3) || ((int)strlen((string)$area) > 18) || ((bool)preg_match('/^[A-Z0-9\-]{3,18}$/', (string)$area) !== true)) { // {{{SYNC-AUTH-EXT-AREA-CHECK}}}
+			$jwt['error'] = 'Area is Invalid';
+			return (array) $jwt;
+		} //end if
+		if((string)$area == '[DEFAULT]') { // disallow, this is reserved for SmartGo
+			$jwt['error'] = 'The [DEFAULT] Area is Disallowed';
+			return (array) $jwt;
+		} //end if
+		//--
+		$expire = (int) $expire; // minutes ; must be between 1..525600 minutes
+		if((int)$expire < 1) {
+			$jwt['error'] = 'Expire Minutes must be at least 1';
+			return (array) $jwt;
+		} //end if
+		if((int)$expire > 525600) {
+			$jwt['error'] = 'Expire Minutes must be no more than 525600';
+			return (array) $jwt;
+		} //end if
+		//--
+		$privs = (array) self::safe_arr_privileges_or_restrictions((array)$privs, true);
+		$privs = (string) Smart::array_to_list((array)$privs);
+		$privs = (string) str_replace(' ', '', (string)$privs);
+		if((int)strlen((string)$privs) > 50) {
+			$jwt['error'] = 'Privileges are OverSized';
+			return (array) $jwt;
+		} //end if
+		//--
+		$restr = (array) self::safe_arr_privileges_or_restrictions((array)$restr, true);
+		$restr = (string) Smart::array_to_list((array)$restr);
+		$restr = (string) str_replace(' ', '', (string)$restr);
+		if((int)strlen((string)$privs) > 50) {
+			$jwt['error'] = 'Restrictions are OverSized';
+			return (array) $jwt;
+		} //end if
+		//--
+		$usrKey = (string) SMART_FRAMEWORK_SECURITY_KEY.chr(0).SmartHashCrypto::crc32b((string)$user."\f".SMART_FRAMEWORK_SECURITY_KEY, false); // make a personalized secret key for the user
+		//--
+		$safeKey = (string) SmartHashCrypto::pbkdf2DerivedB92Key((string)$usrKey, $user.'#'.$issuer, (int)$dKeyLen, (int)SmartHashCrypto::DERIVE_CENTITER_TK, 'sha3-512'); // b92
+		if((int)strlen((string)$safeKey) != (int)$dKeyLen) {
+			$jwt['error'] = 'Invalid Derived Key Length';
+			return (array) $jwt;
+		} //end if
+		//--
+		$issuedAt  = (int) time();
+		$expiresAt = (int) ((int)$issuedAt + (int)((int)$expire * 60));
+		//--
+		$serial = (string) Smart::uuid_10_seq();
+		//--
+		$audience = [
+			(string) 'A:'.$area, // area
+			(string) 'P:'.$privs, // privileges
+			(string) 'R:'.$restr, // restrictions
+		];
+		//--
+		$checksum = (string) Smart::b64s_enc((string)chr(0).$user.chr(8).$serial.chr(7).$expiresAt."\v".$issuedAt."\f".$issuer.chr(0).implode("\u{FFFD}", (array)$audience).chr(8).SMART_FRAMEWORK_SECURITY_KEY.chr(0));
+		//--
+		$subject = (string) SmartHashCrypto::crc32b((string)$checksum, true).'-'.SmartHashCrypto::crc32b((string)strrev((string)$checksum), true);
+		//--
+		$hdr = [
+			'typ' => 'JWT',
+			'alg' => (string) $algo,
+		];
+		//--
+		$dat = [
+			'usr' => (string) $user, // username or userid
+			'iss' => (string) $issuer, // host:port
+			'sub' => (string) $subject, // CRC32B36-CRC32B36(rev)
+			'aud' => (array)  $audience,
+			'exp' => (int)    $expiresAt,
+			'iat' => (int)    $issuedAt,
+			'jti' => (string) $serial,
+		];
+		//--
+		$hdr = (string) Smart::json_encode((array)$hdr, false, true, false);
+		$hdr = (string) Smart::b64s_enc((string)$hdr, false);
+		//--
+		$dat = (string) Smart::json_encode((array)$dat, false, true, false);
+		$dat = (string) Smart::b64s_enc((string)$dat, false);
+		//--
+		$token = (string) $hdr.'.'.$dat;
+		//--
+		$sign = '';
+		if((string)$edAlgo == 'ed25519') {
+			$edSignature = (array) SmartHashCrypto::ed25519_sign((string)$token, (string)$safeKey);
+			if((string)($edSignature['error'] ?? null) != '') {
+				$jwt['error'] = 'The algo: `'.$edAlgo.'` Failed: # '.$edSignature['error'];
+				return (array) $jwt;
+			} //end if
+			$sign = (string) trim((string)($edSignature['signature'] ?? null)); // b64
+		} else {
+			$sign = (string) trim((string)SmartHashCrypto::hmac((string)$hmacAlgo, (string)$safeKey, (string)$token, true)); // b64
+		} //end if else
+		if((string)$sign == '') {
+			$jwt['error'] = 'Invalid JWT Signature: Empty';
+			return (array) $jwt;
+		} //end if
+		$sign = (string) Smart::b64_to_b64s((string)$sign, false);
+		//--
+		$token .= '.'.$sign;
+		//--
+		if(((int)strlen((string)$token) < 128) || ((int)strlen((string)$token) > 768)) {
+			$jwt['error'] = 'Invalid Token Length';
+			return (array) $jwt;
+		} //end if
+		//--
+		if((int)$encrypt > 0) {
+			//--
+			switch((int)$encrypt) {
+				case 1: // BF
+					$token = (string) SmartCipherCrypto::bf_encrypt((string)strrev((string)$token), (string)SMART_FRAMEWORK_SECURITY_KEY);
+					break;
+				case 2: // 2F
+					$token = (string) SmartCipherCrypto::tf_encrypt((string)strrev((string)$token), (string)SMART_FRAMEWORK_SECURITY_KEY);
+					break;
+				case 3: // 3F
+				default:
+					$token = (string) SmartCipherCrypto::t3f_encrypt((string)strrev((string)$token), (string)SMART_FRAMEWORK_SECURITY_KEY);
+			} //end switch
+			//--
+			if(((int)strlen((string)$token) < 128) || ((int)strlen((string)$token) > 1536)) {
+				$jwt['error'] = 'Invalid Encrypted Token Length';
+				return (array) $jwt;
+			} //end if
+			//--
+		} //end if
+		//--
+		$jwt['error'] 	= ''; // clear
+		$jwt['algo'] 	= (string) $algo;
+		$jwt['serial'] 	= (string) $serial;
+		$jwt['area'] 	= (string) $area;
+		$jwt['user'] 	= (string) $user;
+		$jwt['expires'] = (int)    $expiresAt;
+		$jwt['issuer'] 	= (string) $issuer;
+		$jwt['privs'] 	= (string) $privs;
+		$jwt['restr'] 	= (string) $restr;
+		$jwt['token'] 	= (string) $token;
+		//--
+		// $encrypt
+		//--
+		return (array) $jwt;
 		//--
 	} //END FUNCTION
 	//================================================================

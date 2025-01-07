@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20241123
+ * @version 	v.20241228
  * @package 	Application:ViewComponents
  *
  */
@@ -177,6 +177,10 @@ final class SmartComponents {
 			case 'result':
 				$msg_html = (string) self::operation_result((string)$msg_html, '100%');
 				break;
+			case '201':
+			case 'info':
+				$msg_html = (string) self::operation_result((string)$msg_html, '100%');
+				break;
 			case '202':
 			case 'important':
 			default:
@@ -270,6 +274,27 @@ final class SmartComponents {
 
 
 	//================================================================
+	// 402 Subscription Required (Payment Required) :: The access to this page is or has been restricted because it needs a subscription (payment) and/or subscription have expired
+	public static function http_message_402_subscriptionrequired(?string $y_message, ?string $y_html_message='') : string {
+		//--
+		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
+			//--
+			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'402.php')) {
+				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'402.php');
+				if(function_exists('custom_http_message_402_subscriptionrequired')) {
+					return (string) custom_http_message_402_subscriptionrequired((string)$y_message, (string)$y_html_message);
+				} //end if
+			} //end if
+			//--
+		} //end if
+		//--
+		return (string) self::http_error_message('402 Subscription Required', (string)$y_message, (string)$y_html_message);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
 	// 403 Forbidden :: The request was a valid request, but the server is refusing to respond to it. Unlike a 401 Unauthorized response, authenticating will make no difference.
 	public static function http_message_403_forbidden(?string $y_message, ?string $y_html_message='') : string {
 		//--
@@ -333,6 +358,69 @@ final class SmartComponents {
 
 
 	//================================================================
+	// 406 Not Acceptable :: The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.
+	public static function http_message_406_notacceptable(?string $y_message, ?string $y_html_message='') : string {
+		//--
+		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
+			//--
+			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'406.php')) {
+				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'406.php');
+				if(function_exists('custom_http_message_406_notacceptable')) {
+					return (string) custom_http_message_406_notacceptable((string)$y_message, (string)$y_html_message);
+				} //end if
+			} //end if
+			//--
+		} //end if
+		//--
+		return (string) self::http_error_message('406 Not Acceptable', (string)$y_message, (string)$y_html_message);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// 408 Request Timeout :: The server timed out waiting for the request.
+	public static function http_message_408_requesttimeout(?string $y_message, ?string $y_html_message='') : string {
+		//--
+		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
+			//--
+			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'408.php')) {
+				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'408.php');
+				if(function_exists('custom_http_message_408_requesttimeout')) {
+					return (string) custom_http_message_408_requesttimeout((string)$y_message, (string)$y_html_message);
+				} //end if
+			} //end if
+			//--
+		} //end if
+		//--
+		return (string) self::http_error_message('408 Request Timeout', (string)$y_message, (string)$y_html_message);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// 409 Conflict :: Indicates that the request could not be processed because of conflict in the current state of the resource.
+	public static function http_message_409_conflict(?string $y_message, ?string $y_html_message='') : string {
+		//--
+		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
+			//--
+			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'409.php')) {
+				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'409.php');
+				if(function_exists('custom_http_message_409_conflict')) {
+					return (string) custom_http_message_409_conflict((string)$y_message, (string)$y_html_message);
+				} //end if
+			} //end if
+			//--
+		} //end if
+		//--
+		return (string) self::http_error_message('409 Conflict', (string)$y_message, (string)$y_html_message);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
 	// 410 Gone :: A 410 is more permanent than a 404; it means that the page is gone. To be used for limited-time / promotional services.
 	public static function http_message_410_gone(?string $y_message, ?string $y_html_message='') : string {
 		//--
@@ -354,6 +442,27 @@ final class SmartComponents {
 
 
 	//================================================================
+	// 415 Unsupported Media Type :: The request entity has a media type which the server or resource does not support. For example, the client uploads an image as image/svg+xml, but the server requires that images use a different format.
+	public static function http_message_415_unsupportedmediatype(?string $y_message, ?string $y_html_message='') : string {
+		//--
+		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
+			//--
+			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'415.php')) {
+				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'415.php');
+				if(function_exists('custom_http_message_415_unsupportedmediatype')) {
+					return (string) custom_http_message_415_unsupportedmediatype((string)$y_message, (string)$y_html_message);
+				} //end if
+			} //end if
+			//--
+		} //end if
+		//--
+		return (string) self::http_error_message('415 Unsupported Media Type', (string)$y_message, (string)$y_html_message);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
 	// 422 Unprocessable Content (Unprocessable Entity) :: The user has sent a payload that is not valid.
 	public static function http_message_422_unprocessablecontent(?string $y_message, ?string $y_html_message='') : string {
 		//--
@@ -369,6 +478,48 @@ final class SmartComponents {
 		} //end if
 		//--
 		return (string) self::http_error_message('422 Unprocessable Content', (string)$y_message, (string)$y_html_message);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// 423 Locked :: The resource that is being accessed is locked.
+	public static function http_message_423_locked(?string $y_message, ?string $y_html_message='') : string {
+		//--
+		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
+			//--
+			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'423.php')) {
+				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'423.php');
+				if(function_exists('custom_http_message_423_locked')) {
+					return (string) custom_http_message_423_locked((string)$y_message, (string)$y_html_message);
+				} //end if
+			} //end if
+			//--
+		} //end if
+		//--
+		return (string) self::http_error_message('423 Locked', (string)$y_message, (string)$y_html_message);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// 424 Dependency Failed :: The request failed because it depended on another request and that request failed (e.g., a PROPPATCH).
+	public static function http_message_424_dependencyfailed(?string $y_message, ?string $y_html_message='') : string {
+		//--
+		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
+			//--
+			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'424.php')) {
+				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'424.php');
+				if(function_exists('custom_http_message_424_dependencyfailed')) {
+					return (string) custom_http_message_424_dependencyfailed((string)$y_message, (string)$y_html_message);
+				} //end if
+			} //end if
+			//--
+		} //end if
+		//--
+		return (string) self::http_error_message('424 Dependency Failed', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -495,6 +646,27 @@ final class SmartComponents {
 		} //end if
 		//--
 		return (string) self::http_error_message('504 Gateway Timeout', (string)$y_message, (string)$y_html_message);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// 507 Insufficient Storage :: The server is unable to store the representation needed to complete the request.
+	public static function http_message_507_insufficientstorage(?string $y_message, ?string $y_html_message='') : string {
+		//--
+		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
+			//--
+			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'507.php')) {
+				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'507.php');
+				if(function_exists('custom_http_message_507_insufficientstorage')) {
+					return (string) custom_http_message_507_insufficientstorage((string)$y_message, (string)$y_html_message);
+				} //end if
+			} //end if
+			//--
+		} //end if
+		//--
+		return (string) self::http_error_message('507 Insufficient Storage', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================

@@ -160,7 +160,7 @@ if(mb_substitute_character() !== 63) {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP MBString, PHP XML ; constants: SMART_FRAMEWORK_CHARSET, SMART_FRAMEWORK_SECURITY_FILTER_INPUT
- * @version     v.20230101
+ * @version     v.20241226
  * @package     @Core
  *
  */
@@ -531,6 +531,38 @@ final class SmartUnicode {
 	private const CONVERSION_FALLBACK_IMPLICIT_CHARSETS = [
 		'UTF-7' => 'ISO-8859-1', // fix for PHP 8.1 and later ; UTF-7 is a very special charset ; from PHP 8.1, converting 'A + B' from 'UTF-7' to 'UTF-8' gives 'A  B' instead of 'A + B' like expected and like in PHP 5.6, 7.x, 8.0
 	];
+
+
+	//================================================================
+	/**
+	 * Unicode Safe ord()		:: Return the Unicode code point value of the given character
+	 *
+	 * @param STRING 	$chr 	:: The Unicode character
+	 *
+	 * @return INTEGER			:: The Unicode code point
+	 */
+	public static function ord(string $chr) : int {
+		//--
+		return mb_ord((string)$chr);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Unicode Safe chr()		:: Return character by Unicode code point value
+	 *
+	 * @param STRING 	$code 	:: The Unicode code point
+	 *
+	 * @return STRING			:: The Unicode character
+	 */
+	public static function chr(int $code, ?string $encoding=null) : string {
+		//--
+		return (string) mb_chr((int)$code, $encoding);
+		//--
+	} //END FUNCTION
+	//================================================================
 
 
 	//================================================================

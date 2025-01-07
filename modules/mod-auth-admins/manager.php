@@ -22,11 +22,11 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20240119
+	// v.20250103
 
 	// TODO:
 	// 	* Edit: support to bind to a specific IP address list, for extra security
-	//	* Regenerate the 2FA Key :: add button like change pass
+	//	* Recovery for 2FA Key
 	//	* https://github.com/freeotp/freeotp.github.io # javascript
 	//	* https://github.com/freeotp/freeotp.github.io/blob/master/lib/qrcode.js
 
@@ -629,6 +629,166 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				break;
 
+			//------- 2FA enable
+
+			case 'enable-2fa-form': // Enable 2FA Form
+				//--
+				$this->PageViewSetCfg('template-file', 'template-modal.htm');
+				//--
+				$title = 'Auth.Admins Accounts - Enable 2FA for Account';
+				//--
+				$id = $this->RequestVarGet('id', '', 'string');
+				if((string)trim((string)$id) == '') {
+					//--
+					$this->PageViewSetVars([
+						'title' => $title,
+						'main' => SmartComponents::operation_warn('Empty Account selected for 2FA Enable')
+					]);
+					return;
+					//--
+				} //end if
+				//--
+				if(
+					(SmartAuth::test_login_privilege('super-admin') !== true) // not superadmin
+					AND // and
+					((string)$id != (string)SmartAuth::get_auth_id()) // not the current logged in user
+				) { // PRIVILEGES
+					//--
+					$this->PageViewSetVars([
+						'title' => (string) $title,
+						'main' 	=> (string) SmartComponents::operation_error('You are not authorized to use this area !')
+					]);
+					return;
+					//--
+				} //end if
+				//--
+				$model = null;
+				try {
+					$model = new SmartModelAuthAdmins(); // open connection
+				} catch(Exception $e) {
+					$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
+					return 500;
+				} //end try catch
+				$select_user = (array) $model->getById((string)$id);
+				$fa2_code   = (string) \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateSecret();
+				$fa2_url    = (string) $model->get2FAUrl((string)$fa2_code, (string)($select_user['id'] ?? null));
+				$fa2_qrcode = (string) $model->get2FASvgBarCode((string)$fa2_code, (string)($select_user['id'] ?? null));
+				$model = null; // close connection
+				//--
+				if(Smart::array_size($select_user) <= 0) { // Check if exist id in admins table
+					$this->PageViewSetVars([
+						'title' => $title,
+						'main' => SmartComponents::operation_error('Invalid Account Selected for 2FA Enable ...')
+					]);
+					return;
+				} //end if
+				if((string)($select_user['fa2'] ?? null) != '') {
+					$this->PageViewSetVars([
+						'title' => $title,
+						'main' => SmartComponents::operation_error('The Selected Account Selected already have Enabled 2FA ...')
+					]);
+					return;
+				} //end if
+				//--
+				$this->PageViewSetVars([
+					'title' => (string) $title,
+					'main' => (string) SmartMarkersTemplating::render_file_template(
+						(string) $this->ControllerGetParam('module-view-path').'acc-enable-2fa.mtpl.htm',
+						[
+							'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=',
+							'ID' 				=> (string) ($select_user['id'] ?? null),
+							'2FA-CHK' 			=> (string) SmartHashCrypto::checksum((string)$fa2_code, (string)($select_user['id'] ?? null)),
+							'2FA-CODE' 			=> (string) $fa2_code,
+							'2FA-URL' 			=> (string) $fa2_url,
+							'2FA-BARCODE' 		=> (string) $fa2_qrcode,
+						]
+					)
+				]);
+				//--
+				break;
+
+			case 'enable-2fa-confirm':
+				//--
+				$this->PageViewSetCfg('rawpage', true);
+				//--
+				$status = 'WARNING';
+				$message = 'No Operation ...';
+				//--
+				$frm 			= (array)  $this->RequestVarGet('frm', array(), 'array');
+				$frm['id'] 		= (string) trim((string)($frm['id'] ?? null));
+				$frm['chk'] 	= (string) trim((string)($frm['chk'] ?? null));
+				$frm['key'] 	= (string) trim((string)($frm['key'] ?? null));
+				//--
+				$message = '';
+				if(
+					(SmartAuth::test_login_privilege('super-admin') !== true) // not superadmin
+					AND // and
+					((string)$frm['id'] != (string)SmartAuth::get_auth_id()) // not the current logged in user
+				) { // PRIVILEGES
+					$message = 'You are not authorized to use this area !';
+				} elseif((string)trim((string)$frm['id']) == '') {
+					$message = 'INVALID ID (empty)';
+				} elseif((int)strlen((string)$frm['key']) != 52) {
+					$message = 'INVALID 2FA KEY (empty)';
+				} elseif(SmartHashCrypto::checksum((string)$frm['key'], (string)$frm['id']) != (string)$frm['chk']) {
+					$message = 'INVALID 2FA KEY (checksum)';
+				} //end if else
+				//--
+				$wr = 0;
+				$status = 'INVALID';
+				//--
+				if((string)$message == '') {
+					$model = null;
+					try {
+						$model = new SmartModelAuthAdmins(); // open connection
+					} catch(Exception $e) {
+						$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
+						return 500;
+					} //end try catch
+					$wr = (int) $model->enableAccount2FA(
+						(string) $frm['id'],
+						(string) $frm['key']
+					);
+					$model = null; // close connection
+				} //end if
+				//--
+				if(((int)$wr == 1) AND ((string)$message == '')) {
+					$status = 'OK';
+					$message = 'Account: [<b>'.Smart::escape_html((string)$frm['id']).'</b>] 2FA Enabled !';
+				} else {
+					$status = 'ERROR';
+					if((string)$message == '') {
+						$message = 'Failed to enable 2FA for Account: [<b>'.Smart::escape_html((string)$frm['id']).'</b>] / Error: '.Smart::escape_html((string)$wr);
+					} //end if
+				} //end if else
+				//--
+				if((string)$status == 'OK') {
+					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=close-modal'; // redirect URL (just on success)
+				} else {
+					$redirect = '';
+				} //end if else
+				//--
+				$jsevcode = '';
+				if((string)$frm['id'] == (string)SmartAuth::get_auth_id()) { // if 2FA enabled for current account must handle different
+					$redirect = '';
+					$jsevcode = 'setTimeout(() => { smartJ$Browser.RefreshParent(); smartJ$Browser.CloseDelayedModalPopUp(); }, 3750);';
+				} //end if
+				//--
+				$this->PageViewSetVar(
+					'main',
+					(string) SmartViewHtmlHelpers::js_ajax_replyto_html_form(
+						(string) $status,
+						'Account Enable 2FA',
+						(string) $message,
+						(string) $redirect,
+						'',
+						'',
+						(string) $jsevcode
+					)
+				);
+				//--
+				break;
+
 			//------- account: view / edit
 
 			case 'edit-form': // Edit form for User Edit (OUTPUTS: HTML)
@@ -701,11 +861,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						$user_pkeys = (string) $model->decryptPrivKey((string)($select_user['keys'] ?? null)); // {{{SYNC-ADM-AUTH-KEYS}}}
 					} //end if
 					if(SmartEnvironment::is2FAEnabled() === true) {
-						$user_2fakey = (string) $model->decrypt2FAKey((string)($select_user['fa2'] ?? null), (string)($select_user['id'] ?? null)); // {{{SYNC-ADM-AUTH-2FA-MANAGEMENT}}}
-						$user_2faurl = (string) $model->get2FAUrl((string)$user_2fakey, (string)($select_user['id'] ?? null));
-						$user_2faqrcode = (string) $model->get2FASvgBarCode((string)$user_2fakey, (string)($select_user['id'] ?? null));
-						if(SmartEnvironment::ifDevMode()) {
-							$user_2fatktest = (string) $model->get2FAPinToken((string)$user_2fakey);
+						if((string)($select_user['fa2'] ?? null) != '') {
+							$user_2fakey = (string) $model->decrypt2FAKey((string)($select_user['fa2'] ?? null), (string)($select_user['id'] ?? null)); // {{{SYNC-ADM-AUTH-2FA-MANAGEMENT}}}
+							$user_2faurl = (string) $model->get2FAUrl((string)$user_2fakey, (string)($select_user['id'] ?? null));
+							$user_2faqrcode = (string) $model->get2FASvgBarCode((string)$user_2fakey, (string)($select_user['id'] ?? null));
+							if(SmartEnvironment::ifDevMode()) {
+								$user_2fatktest = (string) $model->get2FAPinToken((string)$user_2fakey);
+							} //end if
 						} //end if
 					} //end if
 					if(SmartEnvironment::isATKEnabled() === true) {
@@ -830,8 +992,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					} elseif(((int)SmartUnicode::str_len((string)$frm['name_l']) < 1) OR ((int)SmartUnicode::str_len((string)$frm['name_l']) > 64)) {
 						$message = 'Invalid Last Name Length: must be between 1 and 64 characters';
 					} elseif((string)$frm['email'] != '') {
-						if(((int)strlen((string)$frm['email']) < 6) OR ((int)strlen((string)$frm['email']) > 96)) {
-							$message = 'Invalid Email Length: must be between 6 and 96 characters';
+						if(((int)strlen((string)$frm['email']) < 7) OR ((int)strlen((string)$frm['email']) > 72)) { // {{{SYNC-SMART-EMAIL-LENGTH}}}
+							$message = 'Invalid Email Length: must be between 7 and 72 characters';
 						} elseif(!preg_match((string)SmartValidator::regex_stringvalidation_expression('email'), (string)$frm['email'])) {
 							$message = 'Invalid Email Format: must use the standard format a-b.c_d@dom.ext';
 						} //end if else
@@ -1177,8 +1339,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				} elseif(((int)SmartUnicode::str_len((string)$frm['name_l']) < 1) OR ((int)SmartUnicode::str_len((string)$frm['name_l']) > 64)) {
 					$message = 'Invalid Last Name Length: must be between 1 and 64 characters';
 				} elseif((string)$frm['email'] != '') {
-					if(((int)strlen((string)$frm['email']) < 6) OR ((int)strlen((string)$frm['email']) > 96)) {
-						$message = 'Invalid Email Length: must be between 6 and 96 characters';
+					if(((int)strlen((string)$frm['email']) < 7) OR ((int)strlen((string)$frm['email']) > 72)) { // {{{SYNC-SMART-EMAIL-LENGTH}}}
+						$message = 'Invalid Email Length: must be between 7 and 72 characters';
 					} elseif(!preg_match((string)SmartValidator::regex_stringvalidation_expression('email'), (string)$frm['email'])) {
 						$message = 'Invalid Email Format: must use the standard format a-b.c_d@dom.ext';
 					} //end if else
@@ -1277,7 +1439,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				} //end try catch
 				$data['totalRows'] = $model->countByFilter((string)$id, (bool)$strict_type);
 				$data['rowsList'] = $model->getListByFilter(
-					(array)  ['id', 'active', 'email', 'name_f', 'name_l', 'modif', 'priv', ['keys' => 'length']],
+					(array)  ['id', 'active', 'email', 'name_f', 'name_l', 'modif', 'priv', ['keys' => 'length'], ['fa2' => 'length']],
 					(int)    $data['itemsPerPage'],
 					(int)    $ofs,
 					(string) $sortby,

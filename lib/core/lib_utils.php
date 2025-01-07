@@ -37,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry, SmartValidator, SmartParser ; optional-constants: SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20241225
+ * @version 	v.20250105
  * @package 	Application:Utils
  *
  */
@@ -921,10 +921,28 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function conform_serialized_js_object_form(?string $json, string $dataKey) : array {
+	public static function conform_serialized_js_object_form(?string $jsonStr, string $dataKey) : array {
+		//-- r.20241226.2358
+		// normalize serialized form data from jQuery.serializeArray(), created by smartJ$Browser.SerializeFormAsObject()
 		//--
-		$json = Smart::json_decode((string)$json);
-		if(!is_array($json)) {
+		$regexValidKey = '/[a-zA-Z0-9\-]{1,64}/';
+		//--
+		$jsonStr = (string) trim((string)$jsonStr);
+		if((string)$jsonStr == '') {
+			return [];
+		} //end if
+		if((int)strlen((string)$jsonStr) > 65535) {
+			return [];
+		} //end if
+		//--
+		$json = Smart::json_decode((string)$jsonStr);
+		if((int)Smart::array_size($json) <= 0) {
+			return [];
+		} //end if
+		if((int)Smart::array_size($json) > 16384) {
+			return [];
+		} //end if
+		if((int)Smart::array_type_test($json) != 2) { // expects associative array (key/val)
 			return [];
 		} //end if
 		//--
@@ -932,14 +950,14 @@ final class SmartUtils {
 		if((string)$dataKey == '') {
 			return [];
 		} //end if
-		if(((string)$dataKey == '') || (!preg_match('/[a-zA-Z0-9]+/', (string)$dataKey))) {
+		if(((string)$dataKey == '') || (!preg_match((string)$regexValidKey, (string)$dataKey))) {
 			return [];
 		} //end if
 		//--
 		$arr = [];
 		foreach($json as $key => $val) {
 			//--
-			if(((string)$key == '') || (!preg_match('/[a-zA-Z0-9]+/', (string)$key))) {
+			if(((string)$key == '') || (!preg_match((string)$regexValidKey, (string)$key))) {
 				return [];
 			} //end if
 			//--
@@ -959,7 +977,7 @@ final class SmartUtils {
 				return [];
 			} //end if
 			$levels = (int) intval((string)$levels);
-			if((int)$levels < 0) { // can be zero if there is no nested data
+			if((int)$levels < 0) { // can be zero if there is no nested data, but no lower than zero
 				return [];
 			} //end if
 			//--
@@ -968,7 +986,7 @@ final class SmartUtils {
 				return [];
 			} //end if
 			$keys = (int) intval((string)$keys);
-			if((int)$keys <= 0) { // cannot be zero
+			if((int)$keys <= 0) { // cannot be zero or lower
 				return [];
 			} //end if
 			//--
@@ -977,7 +995,7 @@ final class SmartUtils {
 				return [];
 			} //end if
 			$size = (int) intval((string)$size);
-			if((int)$size <= 0) { // cannot be zero
+			if((int)$size <= 0) { // cannot be zero or lower
 				return [];
 			} //end if
 			//--
@@ -992,15 +1010,34 @@ final class SmartUtils {
 				return [];
 			} //end if
 			//--
+			$lData = 0;
 			$data = [];
 			$items = [];
 			foreach($val[(string)$dataKey] as $kk => $vv) {
 				if(is_array($vv)) {
-					$items[(string)$kk] = (array) $vv;
-				} else if(Smart::is_nscalar($vv)) {
+					if((int)Smart::array_type_test($vv) == 2) { // associative array
+						if((int)Smart::array_size($vv) > 512) {
+							return [];
+						} //end if
+						$data[(string)$kk] = (array) $vv;
+						$lData += count((array)$vv);
+					} else if((int)Smart::array_type_test($vv) == 1) { // non-associative array (list)
+						$items[(string)$kk] = (array) $vv;
+					} //end if else
+				} else if(Smart::is_nscalar($vv)) { // scalar (string)
+					if((int)strlen((string)$vv) > 8192) {
+						return [];
+					} //end if
 					$data[(string)$kk] = (string) $vv;
+					$lData++;
 				} //end if
 			} //end foreach
+			if((int)Smart::array_size($items) > 512) {
+				return [];
+			} //end if
+			if((int)Smart::array_size($data) > 512) {
+				return [];
+			} //end if
 			//--
 			$arr[(string)$key] = (array) $data;
 			//--
@@ -1010,7 +1047,7 @@ final class SmartUtils {
 				if((int)$total != (int)$keys) {
 					return [];
 				} //end if
-				$diff = (int) ((int)$size - (int)Smart::array_size($data));
+				$diff = (int) ((int)$size - (int)$lData);
 				$delta = $diff / (int)Smart::array_size($items);
 				if(!is_int($delta)) { // check: the diff size divided to number of items must be an integer, that ~ means each item have the same size
 					return [];
@@ -2445,7 +2482,7 @@ final class SmartUtils {
 		$custom = (bool) (defined('SMART_FRAMEWORK_SRVPROXY_ENABLED') AND (SMART_FRAMEWORK_SRVPROXY_ENABLED === true));
 		//--
 		if(!$err) {
-			$tmp_arr_hdrs = (array) Smart::list_to_array((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, true);
+			$tmp_arr_hdrs = (array) Smart::list_to_array((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP);
 			$use_remote_addr = false;
 			if(in_array('REMOTE_ADDR', (array)$tmp_arr_hdrs)) {
 				if($custom === true) {
@@ -2661,7 +2698,7 @@ final class SmartUtils {
 					if(is_array(SMART_FRAMEWORK_IDENT_ROBOTS)) {
 						$robots = (array) SMART_FRAMEWORK_IDENT_ROBOTS;
 					} else {
-						$robots = (array) Smart::list_to_array((string)SMART_FRAMEWORK_IDENT_ROBOTS, false);
+						$robots = (array) Smart::list_to_array((string)SMART_FRAMEWORK_IDENT_ROBOTS, false); // do not trim inside values
 					} //end if else
 					$imax = (int) Smart::array_size($robots);
 					for($i=0; $i<$imax; $i++) {

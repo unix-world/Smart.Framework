@@ -3,7 +3,7 @@
 // bootstrap/autoload Smart.Framework base classes for Vendor/Composer
 // license: BSD
 // (c) 2022-present unix-world.org
-// r.20241221.2328
+// r.20250105.2358
 
 // ####### DO NOT MODIFY THIS FILE. IT WILL BE REWRITTEN ON ANY UPDATE OF vendor/unixman/smart-framework-base
 // how to install: `php composer.phar require unixman/smart-framework-base @dev`
@@ -122,7 +122,7 @@ if((int)ini_get('pcre.jit') > 0) {
 
 
 const SMART_FRAMEWORK_NETSERVER_ID = 1; // Load Balancing: Unique ID, integer+ (min=0 ; max=1295) ; this is used for the main purpose to be able to generate very unique UUIDS in a cluster of apps ; every server in the cluster running the same app must have a different ID
-const SMART_FRAMEWORK_SECURITY_KEY = 'private-key#0987654321'; // *** YOU HAVE TO CHANGE IT *** ; This is the Security Key that will be used to generate secure hashes
+const SMART_FRAMEWORK_SECURITY_KEY = 'Private-Key#0987654321'; // *** YOU HAVE TO CHANGE IT *** ; This is the Security Key that will be used to generate secure hashes
 const SMART_SOFTWARE_NAMESPACE = 'smart-framework.vendor'; // APP Namespace ID :: [ _ a-z 0-9 - . ], length 10..25 :: This should be used as a unique ID identifier for the application (aka application unique ID)
 const SMART_FRAMEWORK_ENV = 'prod'; // APP Environment: can be set to 'dev' or 'prod' ; id set to 'prod' (production environment) will not log E_USER_NOTICE and E_DEPRECATED and will not display in-page error details but just log them ; for development mode set this to 'dev'
 const SMART_SOFTWARE_SQLDB_FATAL_ERR = true; // If set to false will throw \EXCEPTION which can be catched instead of raise a fatal error on all SQL DB adapters such as PostgreSQL / SQLite / MySQL (NOSQL adapters, ex: MongoDB or Redis can be set per instance and are not affected by this setting) ; WARNING: disabling SQL Fatal Errors is not safe, especially when using SQL transactions ... ; DO NOT modify this parameter unless you know what you are doing !!!

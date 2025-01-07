@@ -17,7 +17,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 //======================================================
-// Smart-Framework v.8.7 # r.20241225
+// Smart-Framework v.8.7 # r.20250107
 //======================================================
 // Preferred:     PHP 8.2.x / PHP 8.3.x
 // Stable with:   PHP 7.4.33 (min) up to PHP 8.4.x (max)

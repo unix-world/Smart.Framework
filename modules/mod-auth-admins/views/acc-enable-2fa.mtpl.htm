@@ -1,0 +1,35 @@
+<!-- v.20250103 -->
+[@@@SUB-TEMPLATE:acc-styles-form.mtpl.inc.htm@@@]
+<script>
+const handleFormAcc2FA = () => {
+	const accId = '[###ID|js###]';
+	smartJ$Browser.ConfirmDialog(
+		'<h5>Are you sure to <span style="color:#FF3300;">ENABLE 2FA</span> for the selected account ?</h5><h6 style="color:#778899;"><i>Account&nbsp;ID</i>: `<span style="color:#FF5500;">' + smartJ$Utils.escape_html(accId) + '</span>`</h6><br><h5>Please confirm !<br><i>After enabling 2FA the TOTP Code is mandatory for login ...</i></h5>',
+		() => {
+			smartJ$Browser.SubmitFormByAjax('fa2_confirm_form', '[###ACTIONS-URL|js|html###]enable-2fa-confirm', 'yes');
+		},
+		'Enable 2FA for selected Account',
+		null,
+		null,
+		'alertable'
+	);
+};
+</script>
+<center><div><table><tr><td>
+	<form id="fa2_confirm_form" name="fa2_confirm_form" class="ux-form ux-form-aligned" onSubmit="return false;">
+		<legend><h1>Enable 2FA for Account</h1></legend><br>
+		<div class="operation_info" style="display:inline-block; max-width:600px!important;">Important:<div>You are about to enable Two-Factor Authentication for the selected account.<br><br>Make a safe backup of the below 2FA key, for recovery:<br>`<span style="color:#685A8B;">[###2FA-CODE|html###]</span>`.<br><br>Also, scan the below 2FA Setup QRCode with <span style="color:#ED2839;">FreeOTP App</span> or similar 2FA <span style="color:#ED2839;">Authenticator apps</span>.<br><br><div style="text-align:center;"><img src="data:image/svg+xml,[###2FA-BARCODE|url###]" title="[###2FA-URL|html###]"></div></div></div>
+		<br><br>
+		<div class="ux-control-group">
+			<label><i class="sfi sfi-user"></i>&nbsp;UserName&nbsp;/&nbsp;ID</label>
+			<input type="hidden" name="frm[id]" value="[###ID|html###]">
+			<input type="hidden" name="frm[chk]" value="[###2FA-CHK|html###]">
+			<input type="hidden" name="frm[key]" value="[###2FA-CODE|html###]">
+			<h6 id="user-id" style="display:inline;">[###ID|html###]</h6>
+		</div>
+		<div class="ux-controls">
+			<button type="button" class="ux-button ux-button-spacing" onClick="self.location = '[###ACTIONS-URL|js|html###]edit-form&id=[###ID|js|html###]&viewonly=yes'; return false;"> Cancel &nbsp; <i style="color:#555555;" class="sfi sfi-spinner11"></i></button>
+			<button type="button" class="ux-button ux-button-highlight ux-button-spacing" onClick="handleFormAcc2FA(); return false;"> Enable 2FA for selected Account &nbsp; <i class="sfi sfi-qrcode"></i></button>
+		</div>
+	</form>
+</td></tr></table></div></center>

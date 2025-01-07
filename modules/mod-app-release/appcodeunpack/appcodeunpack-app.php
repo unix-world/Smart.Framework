@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20241220 s.20241220.0958
+// [AppCodeUnpack / APP] v.20250105 s.20250105.1521
 // (c) 2008-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -94,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) : voi
 final class AppCodeUnpack {
 
 	// ::
-	// v.20241220
+	// v.20250105
 
-	private const APPCODEUNPACK_VERSION = 's.20241220.0958';
+	private const APPCODEUNPACK_VERSION = 's.20250105.1521';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
@@ -1045,10 +1045,7 @@ final class AppCodeUnpack {
 			) === true)
 		) {
 			//-- OK, logged in
-			$privileges = (array) Smart::list_to_array(
-				(string) \SmartAuth::DEFAULT_PRIVILEGES, // {{{SYNC-SMART-DEFAULT-PRIVILEGES}}}
-				true
-			);
+			$privileges = (array) Smart::list_to_array((string)\SmartAuth::DEFAULT_PRIVILEGES); // {{{SYNC-SMART-DEFAULT-PRIVILEGES}}}
 			$priv_keys = '';
 			if(\defined('\\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY')) {
 				if((string)\trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY) != '') {

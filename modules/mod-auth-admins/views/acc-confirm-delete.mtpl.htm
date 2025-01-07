@@ -4,7 +4,7 @@
 const handleFormDelAcc = () => {
 	const accId = '[###ID|js###]';
 	smartJ$Browser.ConfirmDialog(
-		'<h5>Are you sure, <span style="color:#FF3300;">DELETE</span> this account ?</h5><h6 style="color:#778899;"><i>Account&nbsp;ID</i>: `<span style="color:#FF5500;">' + smartJ$Utils.escape_html(accId) + '</span>`</h6><br><h5>Please confirm !<br><i>This operation cannot be undone ...</i></h5>',
+		'<h5>Are you sure, <span style="color:#FF3300;">DELETE</span> the selected account ?</h5><h6 style="color:#778899;"><i>Account&nbsp;ID</i>: `<span style="color:#FF5500;">' + smartJ$Utils.escape_html(accId) + '</span>`</h6><br><h5>Please confirm !<br><i>This operation cannot be undone ...</i></h5>',
 		() => {
 			smartJ$Browser.SubmitFormByAjax('delete_confirm_form', '[###ACTIONS-URL|js|html###]delete-confirm-acc', 'yes');
 		},

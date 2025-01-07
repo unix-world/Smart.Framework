@@ -1,5 +1,5 @@
-<!-- v.20231023 -->
-<select title="Available Namespaces" id="areas-list" size="1" class="ux-field" style="min-width:200px !important;" onChange="((list) => { if(typeof(list) == undefined) { return; } const url = list.val(); if(url != undefined) { self.location = String(url); } })(jQuery(this));">
+<!-- v.20241228 -->
+<select title="Available Namespaces" id="areas-list" size="1" class="ux-field" style="min-width:200px !important; background:#FFFFFF !important; color:#444444 !important; padding-left:8px; padding-right:8px;" onChange="((list) => { if(typeof(list) == undefined) { return; } const url = list.val(); if(url != undefined) { self.location = String(url); } })(jQuery(this));">
 	<option value=""> --- Select a NameSpace --- </option>
 [%%%LOOP:AREAS%%%]
 	<option value="[###AREAS._-VAL-_|html###]">[###AREAS._-KEY-_|html###]</option>[%%%|N%%%]

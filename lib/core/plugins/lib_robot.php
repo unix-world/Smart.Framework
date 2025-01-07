@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: SmartUnicode, Smart, SmartDetectImages, SmartUtils, SmartEnvironment, SmartFrameworkSecurity, SmartFrameworkRegistry
- * @version 	v.20240119
+ * @version 	v.20250105
  * @package 	Application:Plugins:Network:HTTP
  *
  */
@@ -461,7 +461,7 @@ final class SmartRobot {
 								(string) SmartAuth::get_auth_passhash(),  // password hash
 								(int)    ((int)$y_timeout + 1), // add one second to be sure is never zero
 								(array)  [ (string)SmartUtils::get_server_current_ip() ], // server's own IP Address only, in this List ; currently just one
-								(array)  [], // wildcard ; or can be: // Smart::list_to_array((string)SmartAuth::get_user_privileges(), true) // list of allowed privs ; include all that this user have ; must be explicit since version 1.3
+								(array)  [], // wildcard ; or can be: // Smart::list_to_array((string)SmartAuth::get_user_privileges()) // list of allowed privs ; include all that this user have ; must be explicit since version 1.3
 							);
 							//--
 							$auth_name = '';

@@ -1,4 +1,4 @@
-<!-- v.20231120 -->
+<!-- v.20250103 -->
 <style>
 .slick-cell {
 	padding-left: 4px !important;
@@ -117,9 +117,18 @@ jQuery(() => {
 
 	const formatter_Keys = (row, cell, value, columnDef, dataContext) => {
 		if(value > 0) {
-			return '<i class="sfi sfi-fa-umbrella" style="color:#778899; cursor:help;" title="Key Size: ' + smartJ$Utils.escape_html(value) + '"></i>';
+			return '<i class="sfi sfi-fa-umbrella" style="color:#778899; cursor:help;" title="Private Key Available"></i>';
 		} else {
-			return '<i class="sfi sfi-cancel-circle" style="color:#EEEEEE; cursor:help;" title="No Key"></i>';
+			return '<i class="sfi sfi-cancel-circle" style="color:#EEEEEE; cursor:help;" title="Private Key is N/A"></i>';
+		}
+		return '';
+	};
+
+	const formatter_FA2 = (row, cell, value, columnDef, dataContext) => {
+		if(value > 0) {
+			return '<i class="sfi sfi-qrcode" style="color:#778899; cursor:help;" title="2FA Enabled"></i>';
+		} else {
+			return '<i class="sfi sfi-blocked" style="color:#EEEEEE; cursor:help;" title="2FA Disabled"></i>';
 		}
 		return '';
 	};
@@ -169,6 +178,7 @@ jQuery(() => {
 	const columns = [
 		{id:'meta', name:'', toolTip:'Display / Modify / Delete', sortable:false, width:60, maxWidth:60, cssClass:'smartGrid_AlignCenter', formatter:formatter_Meta, asyncPostRender:asFormatter_Meta},
 		{id:'keys-length', field:'keys-length', name:'P-Key', toolTip:'Private Key', sortable:false, width:60, maxWidth:60, cssClass:'smartGrid_AlignCenter', formatter:formatter_Keys},
+		{id:'fa2-length', field:'fa2-length', name:'2FA', toolTip:'Two Factor Authentication', sortable:false, width:60, maxWidth:60, cssClass:'smartGrid_AlignCenter', formatter:formatter_FA2},
 		{id:'id', field:'id', name:'UserName / ID', sortable:true, width:75, cssClass:'smartGrid_Important', editor:TextCellSelector, formatter:formatter_Id},
 		{id:'active', field:'active', name:'Active', toolTip:'Active Status', sortable:true, sortNumeric:true, width:70, maxWidth:70, cssClass:'smartGrid_AlignCenter', formatter:formatter_Active, editor:CheckboxCellEditor},
 		{id:'email', field:'email', name:'Email', toolTip:'Email Address', sortable:true, width:100, cssClass:'smartGrid_ColEmail smartGrid_Important', editor:TextCellSelector},

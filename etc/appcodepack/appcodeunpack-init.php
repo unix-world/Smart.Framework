@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / INIT] v.20241220 s.20241220.0958
+// [AppCodeUnpack / INIT] v.20250105 s.20250105.2358
 // (c) 2013-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -35,7 +35,7 @@ const SMART_FRAMEWORK_TIMEZONE =  						'UTC'; 										// The timezone for PHP
 //--------------------------------------- TASK RUNTIME ALLOWED IP LIST
 const SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS = 		'<127.0.0.1>,<::1>'; 						// APP Task service area allowed IPs ; can not be empty ; Tasks area is like Admin area but with some unrestricted features ; it is intended to be used mostly for development tasks ... ; the task.php can be excluded from a release or simply set below: const SMART_SOFTWARE_TASK_DISABLED = true;
 //--------------------------------------- SECURITY
-const SMART_FRAMEWORK_SECURITY_KEY =  					'private-key#0987654321'; 					// *** YOU HAVE TO CHANGE IT *** Sync this with the etc/init.php of the app that will be released ; This is the Security Key that will be used to generate secure hashes
+const SMART_FRAMEWORK_SECURITY_KEY =  					'Private-Key#0987654321'; 					// *** YOU HAVE TO CHANGE IT *** Sync this with the etc/init.php of the app that will be released ; This is the Security Key that will be used to generate secure hashes
 //---------------------------------------
 //============================================================
 

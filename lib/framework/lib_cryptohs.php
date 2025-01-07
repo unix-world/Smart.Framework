@@ -45,7 +45,7 @@ if((!function_exists('hash_algos')) OR (!function_exists('hash_hmac_algos'))) {
  *
  * @access      PUBLIC
  * @depends     PHP hash_algos() / hash() ; classes: Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE
- * @version     v.20231204
+ * @version     v.20250107
  * @package     @Core:Crypto
  *
  */
@@ -61,6 +61,7 @@ final class SmartHashCrypto {
 	public const DERIVE_MIN_KLEN = 3; // this can be a valid auth id, of which min size is 3
 	public const DERIVE_MAX_KLEN = 4096;
 	public const DERIVE_PREKEY_LEN = 80;
+	public const DERIVE_CENTITER_TK = 88;
 	public const DERIVE_CENTITER_EK = 87;
 	public const DERIVE_CENTITER_EV = 78;
 	public const DERIVE_CENTITER_PW = 77;
@@ -877,6 +878,103 @@ final class SmartHashCrypto {
 		} //end if else
 		//--
 		return (string) $sum;
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	public static function ed25519_sign(string $message, ?string $secret) : array {
+		//--
+		$data = [
+			'error' 		=> '?',
+			'provider' 		=> 'LibSodium',
+			'algo' 			=> 'Ed25519',
+			'private-key' 	=> '',
+			'public-key' 	=> '',
+			'signature' 	=> '',
+			'encoding' 		=> 'Base64'
+		];
+		//--
+		if(!function_exists('sodium_crypto_sign_seed_keypair')) {
+			$data['error'] = 'PHP Sodium Extension is missing';
+			return (array) $data;
+		} //end if
+		//--
+		if((string)$message == '') {
+			$data['error'] = 'Message is Empty';
+			return (array) $data;
+		} //end if
+		//--
+		$keyPair = '';
+		if($secret === null) {
+			try {
+				$keyPair = (string) sodium_crypto_sign_keypair();
+			} catch(Exception $e) {
+				$data['error'] = 'Random KeyPair Generation Failed: # '.$e->getMessage();
+				return (array) $data;
+			} //end try catch
+		} else if((int)strlen((string)$secret) == 32) {
+			try {
+				$keyPair = (string) sodium_crypto_sign_seed_keypair((string)$secret);
+			} catch(Exception $e) {
+				$data['error'] = 'Secret Based KeyPair Generation Failed: # '.$e->getMessage();
+				return (array) $data;
+			} //end try catch
+		} else {
+			$data['error'] = 'Secret must be exact 32 bytes';
+			return (array) $data;
+		} //end if
+		if((string)$keyPair == '') {
+			$data['error'] = 'Key Pair generation Failed: Empty';
+			return (array) $data;
+		} //end if
+		//--
+		$privateKey = '';
+		try {
+			$privateKey = (string) sodium_crypto_sign_secretkey((string)$keyPair);
+		} catch(Exception $e) {
+			$data['error'] = 'Private Key Generation Failed: # '.$e->getMessage();
+			return (array) $data;
+		} //end try catch
+		if((string)$privateKey == '') {
+			$data['error'] = 'Private Key generation Failed: Empty';
+			return (array) $data;
+		} //end if
+		//--
+		$publicKey = '';
+		try {
+			$publicKey  = (string) sodium_crypto_sign_publickey_from_secretkey((string)$privateKey);
+		} catch(Exception $ex) {
+			try {
+				$publicKey = (string) sodium_crypto_sign_publickey((string)$keyPair);
+			} catch(Exception $e) {
+				$data['error'] = 'Public Key Generation Failed: # '.$e->getMessage();
+				return (array) $data;
+			} //end try catch
+		} //end try catch
+		if((string)$publicKey == '') {
+			$data['error'] = 'Public Key generation Failed: Empty';
+			return (array) $data;
+		} //end if
+		//--
+		$signature = '';
+		try {
+			$signature = (string) sodium_crypto_sign_detached((string)$message, (string)$privateKey);
+		} catch(Exception $e) {
+			$data['error'] = 'Signature Generation Failed: # '.$e->getMessage();
+			return (array) $data;
+		} //end try catch
+		if((string)$signature == '') {
+			$data['error'] = 'Signature generation Failed: Empty';
+			return (array) $data;
+		} //end if
+		//--
+		$data['error'] 			= ''; // clear
+		$data['private-key'] 	= (string) base64_encode((string)$privateKey);
+		$data['public-key'] 	= (string) base64_encode((string)$publicKey);
+		$data['signature'] 		= (string) base64_encode((string)$signature);
+		return (array) $data;
 		//--
 	} //END FUNCTION
 	//==============================================================

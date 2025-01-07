@@ -2,7 +2,23 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
-December 25, 2024
+January 07, 2025
+	* fix JS Framework message on status zero
+	* privleges and restrictions parsing fixes
+	* add JWT generator for Lib Auth, external auth with SmartGo
+	* add Ed25519 in lib Crypto ; JWT support for Ed25519
+
+December 28, 2024
+	* add HTTP Cli Strict Secure Mode as option
+	* add runtime new method to get just OK+ERR status codes
+	* add optional XML extra escapings + TPL |exml
+	* make XML escaper to be golang compliant
+	* implement more HTTP Status codes
+
+December 26, 2024
+	* added SmartUtils::conform_serialized_js_object_form()
+	* Support Associative Arrays + Fixes: Js (SerializeFormAsObject) ; PHP (conform_serialized_js_object_form) ; Sync with GoLang
+	* fix CSS escaping for PHP using MB ord
 	* Refactoring of some modules
 
 December 23, 2024

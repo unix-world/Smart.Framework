@@ -1,4 +1,4 @@
-<!-- AuthAdmins Login # v.20241105 -->
+<!-- AuthAdmins Login # v.20250103 -->
 <style>
 body {
 	background-color: #FFFFFF !important;
@@ -77,7 +77,7 @@ const AuthAdminsCheck = () => {
 					[%%%IF:ID-USER:!=;%%%]
 						<h6 style="color:#444444; cursor:help;" title="Auth Method: `[###ID-AUTH-MODE|html###]`">Auth UserName:&nbsp;`[###ID-USER|html###]` :: [[###ID-AUTH-DESC|html###]]</h6>
 					[%%%ELSE:ID-USER%%%]<!-- Auth UserName/Method/Type: N/A -->
-						[%%%IF:USE-2FA:==1;%%%]<div style="color:#667788; font-weight:bold; cursor:help;" title="Two-Factor Authentication is ENABLED">2FA Token (TOTP)</div><div id="fa2-input" title="Enter the Two-Factor Authentication Code here (TOTP 2FA Token)"></div>[%%%ELSE:USE-2FA%%%]<!-- no FA2 -->[%%%/IF:USE-2FA%%%]
+						[%%%IF:USE-2FA:==1;%%%]<div style="color:#667788; font-weight:bold; cursor:help;" title="Two-Factor Authentication is [%%%IF:REQUIRED-2FA:==1;%%%]REQUIRED[%%%ELSE:REQUIRED-2FA%%%]ENABLED[%%%/IF:REQUIRED-2FA%%%]">2FA Token (TOTP) &nbsp;<i class="sfi sfi-[%%%IF:REQUIRED-2FA:==1;%%%]clock2[%%%ELSE:REQUIRED-2FA%%%]clock[%%%/IF:REQUIRED-2FA%%%]" style="color:#EDEDED;"></i></div><div id="fa2-input" title="Enter the Two-Factor Authentication Code here (TOTP 2FA Token)"></div>[%%%ELSE:USE-2FA%%%]<!-- no FA2 -->[%%%/IF:USE-2FA%%%]
 					[%%%/IF:ID-USER%%%]
 					<a id="special" title="Click here to Sign-In ..." href="javascript:void(0)" onClick="AuthAdminsCheck();"><span style="color:#7BC043; font-size:2rem;"><b>Sign&dash;In :// [###LOGIN-AREA|html|nbsp###]&nbsp;Area</b></span></a>
 					</div>

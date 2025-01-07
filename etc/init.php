@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [Smart.Framework / INIT] v.20241123
+// [Smart.Framework / INIT] v.20250105
 // (c) 2006-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -29,7 +29,7 @@ const SMART_FRAMEWORK_TIMEZONE =  						'UTC'; 										// The timezone for PHP
 //--------------------------------------- TASK RUNTIME ALLOWED IP LIST
 const SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS = 		'<127.0.0.1>'; 										// APP Task service area allowed IPs ; ex: '<127.0.0.1>,<::1>' ; can not be empty ; Tasks area is like Admin area but with some unrestricted features ; it is intended to be used mostly for development tasks ... ; the task.php can be excluded from a release or simply set below: const SMART_SOFTWARE_TASK_DISABLED = true;
 //--------------------------------------- SECURITY
-const SMART_FRAMEWORK_SECURITY_KEY =  					'private-key#0987654321'; 					// *** YOU HAVE TO CHANGE IT *** ; Must be at least 16 characters ; This is the Security Key that will be used to generate secure hashes
+const SMART_FRAMEWORK_SECURITY_KEY =  					'Private-Key#0987654321'; 					// *** YOU HAVE TO CHANGE IT *** ; Must be at least 16 characters ; This is the Security Key that will be used to generate secure hashes
 //const SMART_FRAMEWORK_SECURITY_CRYPTO = 	 			'openssl/aes256/CBC'; 						// *Optional: the crypto algo for general purpose encryption to be used ; default is hash/sha3-384 ; other modes: hash/sha3-512, hash/sha3-256, hash/sha3-224, hash/sha384, hash/sha224 ; openssl/{algo}/{mode} where mode can be: CBC, CFB, OFB ; algo can be: aes256, camellia256, idea ; can also be blowfish (CBC only)
 //---------------------------------------
 //============================================================ REVIEW AND CHANGE IF PRODUCTION MODE
@@ -111,8 +111,9 @@ const SMART_FRAMEWORK_SEMANTIC_URL_SKIP_MODULE = 		false;										// Semantic U
 const SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE = 	 	'';											// Default is `` (do not use rewrite) ; URL Rewrite Mode (requires Apache Rewrite): `standard` | `semantic` :: Apache like rewrite rules (must be enabled in .htaccess) and the SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT must be set to TRUE ; semantic URLS must be not disabled ; this works just for index.php (declared as directory index under apache)
 //---------------------------------------- SPECIAL FEATURES
 const SMART_FRAMEWORK_RESERVED_CONTROLLER_NAMES =  		'<php>,<html>,<shtml>,<phtml>,<stml>,<css>,<js>,<json>,<xml>,<rss>,<txt>,<md>,<csv>,<sql>,<svg>,<png>,<gif>,<jpg>,<webp>,<webm>,<pdf>,<zip>,<tar>,<bz2>,<gz>,<tgz>,<xz>,<7z>,<netarch>,<z-netarch>'; // OPTIONAL: The list with reserved controller names to avoid confusion between controller names and URL page reserved extensions that can lead to wrong browser behaviour if serving a page with such extension without an explicit mime type ; a controller name must avoid having any name from this list
-const SMART_SOFTWARE_AUTH_2FA = 						0; 											// Default is set to 1 ; Set to: 0 = no area ; 1 = only admin/task area ; 2 = both: index area & admin/task area ; 3 = only index area
-const SMART_SOFTWARE_AUTH_TOKENS = 						1; 											// Default is set to 0 ; Set to: 0 = no area ; 1 = only admin/task area ; 2 = both: index area & admin/task area ; 3 = only index area
+const SMART_SOFTWARE_AUTH_2FA = 						1; 											// Default is set to 1 ; Set to: 0 = no area ; 1 = only admin/task area ; 2 = both: index area & admin/task area ; 3 = only index area
+const SMART_SOFTWARE_AUTH_REQUIRED_2FA = 				0; 											// Default is set to 0 ; Set to: 0 = no area ; 1 = only admin/task area ; 2 = both: index area & admin/task area ; 3 = only index area
+const SMART_SOFTWARE_AUTH_TOKENS = 						1; 											// Default is set to 1 ; Set to: 0 = no area ; 1 = only admin/task area ; 2 = both: index area & admin/task area ; 3 = only index area
 const SMART_SOFTWARE_URL_ALLOW_PATHINFO = 				1;											// Default is set to 1 ; Set to: 0 = no area ; 1 = only admin/task area ; 2 = both: index area & admin/task area ; 3 = only index area :: Sample PathInfo (index.php|task.php|admin.php/path/to/something/~)
 const SMART_SOFTWARE_FRONTEND_DISABLED = 				false;										// To Disable Frontend service (index.php) set this to TRUE
 const SMART_SOFTWARE_BACKEND_DISABLED = 				false;										// To Disable Backend service (admin.php) set this to TRUE
