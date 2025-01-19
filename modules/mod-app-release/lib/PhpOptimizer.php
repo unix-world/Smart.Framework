@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class PhpOptimizer {
 
 	// ::
-	// v.20221222
+	// v.20250107
 
 
 	//====================================================

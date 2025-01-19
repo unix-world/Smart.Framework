@@ -1,4 +1,4 @@
-<!-- View: form-record v.20231121 -->
+<!-- View: form-record v.20250112 -->
 [@@@SUB-TEMPLATE:partials/styles.mtpl.htm@@@]
 <style>
 label {
@@ -38,7 +38,7 @@ jQuery(() => {
 </script>
 <div id="form-container"><center>
 <form id="oauth2_form" name="oauth2_form" class="ux-form ux-form-aligned" onSubmit="return false;">
-	<legend><h1>[%%%IF:IS-EDIT-FORM:==yes;%%%]ReAuthorize / Refresh[%%%ELSE:IS-EDIT-FORM%%%]Register New[%%%/IF:IS-EDIT-FORM%%%] OAuth2 API</h1></legend>
+	<legend><h1>[%%%IF:IS-EDIT-FORM:==yes;%%%]Re-Authorize[%%%ELSE:IS-EDIT-FORM%%%]Register New[%%%/IF:IS-EDIT-FORM%%%] OAuth2 API</h1></legend>
 	<br>
 	<div class="ux-control-group form-step1">
 		<label>ID</label>

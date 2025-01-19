@@ -44,11 +44,12 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 /**
  * Class: SmartMarkersTemplating - provides a very fast and low footprint templating system: Marker-TPL
+ * Max template size to parse is limited to 16MB
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartEnvironment, SmartUnicode, SmartFileSysUtils ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS, SMART_SOFTWARE_MKTPL_DEBUG_LEN (optional)
- * @version 	v.20241228
+ * @version 	v.20250118
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -202,6 +203,11 @@ final class SmartMarkersTemplating {
 			return '';
 		} //end if
 		//--
+		if((int)strlen((string)$ptemplate) > (int)Smart::SIZE_BYTES_16M) { // {{{SYNC-TPL-MAX-SIZE}}}
+			Smart::log_warning('OverSized Placeholder-TPL Content: '.print_r($y_arr_vars,1));
+			return (string) '{### ERROR: OverSized Placeholder-TPL Template ###}';
+		} //end if
+		//--
 		if((!is_array($y_arr_vars)) OR ((Smart::array_size($y_arr_vars) > 0) AND (Smart::array_type_test($y_arr_vars) != 2))) {
 			Smart::log_warning('Invalid Placeholder-TPL Data-Set for Template: '.$ptemplate.' # '.print_r($y_arr_vars,1));
 			return (string) $ptemplate; // no prepare syntax here, leave untouched
@@ -263,6 +269,11 @@ final class SmartMarkersTemplating {
 				return (string) '{### ERROR: Empty Marker-TPL Template ###}';
 			} //end if
 			return '';
+		} //end if
+		//--
+		if((int)strlen((string)$mtemplate) > (int)Smart::SIZE_BYTES_16M) { // {{{SYNC-TPL-MAX-SIZE}}}
+			Smart::log_warning('OverSized Placeholder-TPL Content: '.print_r($y_arr_vars,1));
+			return (string) '{### ERROR: OverSized Placeholder-TPL Template ###}';
 		} //end if
 		//--
 		if((!is_array($y_arr_vars)) OR ((Smart::array_size($y_arr_vars) > 0) AND (Smart::array_type_test($y_arr_vars) != 2))) {
@@ -340,6 +351,8 @@ final class SmartMarkersTemplating {
 		// it can *optional* use caching to avoid read a file template (or it's sub-templates) more than once per execution
 		// if using the cache the template and also sub-templates (if any) are cached internally to avoid re-read them from filesystem
 		// the replacement of sub-templates is made before injecting variables to avoid security issues
+		//--
+		// {{{SYNC-TPL-MAX-SIZE}}} ; the max allowed size is Smart::SIZE_BYTES_16M ; the size control is in another method, the one that reads from disk
 		//--
 		$y_file_path = (string) $y_file_path;
 		//--
@@ -1518,6 +1531,8 @@ final class SmartMarkersTemplating {
 						} else {
 							$val = 'false';
 						} //end if else
+					} elseif((string)$escexpr == '|len') { // Length
+						$val = (string) (int) strlen((string)$val);
 					} elseif((string)$escexpr == '|int') { // Integer
 						$val = (string) (int) $val;
 					} elseif((string)substr((string)$escexpr, 0, 4) == '|dec') {
@@ -1658,7 +1673,7 @@ final class SmartMarkersTemplating {
 						$val = (string) Smart::int10_to_hex((int)(string)$val); // Converts a 64-bit integer number to hex (string)
 					//--
 					} elseif((string)$escexpr == '|b64') {
-						$val = (string) base64_encode((string)$val); // Apply Base64 Encode
+						$val = (string) Smart::b64_enc((string)$val); // Apply Base64 Encode
 					} elseif((string)$escexpr == '|b64s') {
 						$val = (string) Smart::b64s_enc((string)$val); // Apply Base64 Safe URL Encode
 					} elseif((string)$escexpr == '|b64tob64s') {
@@ -2749,7 +2764,7 @@ final class SmartMarkersTemplating {
 								$stemplate = (string) Smart::escape_url((string)$stemplate); // not use the escape template here because may modify the contents (trim)
 								$stemplate = (string) Smart::escape_html((string)$stemplate);
 							} elseif((string)$sfx == '|tpl-b64-encode') { // this is used for inline images
-								$stemplate = (string) base64_encode((string)$stemplate);
+								$stemplate = (string) Smart::b64_enc((string)$stemplate);
 								$stemplate = (string) Smart::escape_html((string)$stemplate);
 							} //end if
 						} //end if else
@@ -2838,12 +2853,12 @@ final class SmartMarkersTemplating {
 	//================================================================
 	private static function read_from_fs_the_template_file(string $y_file_path) : string {
 		//--
-		if((strpos((string)$y_file_path, '.php.') !== false) OR (substr((string)$y_file_path, -4, 4) == '.php')) {
+		if((strpos((string)$y_file_path, '.php.') !== false) OR ((string)substr((string)$y_file_path, -4, 4) == '.php')) {
 			Smart::raise_error('ERROR: Invalid Marker-TPL File Path (PHP File Extension should not be used for a template): '.$y_file_path);
 			return (string) 'ERROR: (401) in '.__CLASS__;
 		} //end if
 		//--
-		return (string) SmartFileSysUtils::readStaticFile((string)$y_file_path);
+		return (string) SmartFileSysUtils::readStaticFile((string)$y_file_path, (int)Smart::SIZE_BYTES_16M, true); // {{{SYNC-TPL-MAX-SIZE}}} ; max read size enforced, don't read if oversized
 		//--
 	} //END FUNCTION
 	//================================================================

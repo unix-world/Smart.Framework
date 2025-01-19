@@ -53,7 +53,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Sockets ; classes: Smart, SmartEnvironment, SmartComponents (optional)
- * @version 	v.20241218
+ * @version 	v.20250107
  * @package 	Plugins:Database:Redis
  *
  */
@@ -156,7 +156,7 @@ final class SmartRedisDb {
 			$this->db = 255;
 		} //end if
 		//--
-		$this->timeout = Smart::format_number_int($timeout, '+');
+		$this->timeout = (int) Smart::format_number_int($timeout, '+');
 		if($this->timeout < 1) {
 			$this->timeout = 1;
 		} //end if
@@ -165,7 +165,7 @@ final class SmartRedisDb {
 		} //end if
 		//--
 		if((string)$password != '') {
-			$this->password = (string) base64_decode((string)$password);
+			$this->password = (string) Smart::b64_dec((string)$password, true); // STRICT
 		} else {
 			$this->password = '';
 		} //end if else

@@ -7,7 +7,7 @@
 // Changing the code below is on your own risk and may lead to severe disrupts in the execution of this software !
 //####################
 
-//== v.20241123
+//== v.20250107
 //--
 ini_set('display_errors', '1'); 											// temporary enable this to display bootstrap errors if any ; will be managed later by Smart Error Handler
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED); 						// on bootstrap show real-time errors (sync with Smart Error Handler)

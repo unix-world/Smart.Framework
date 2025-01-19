@@ -1,5 +1,5 @@
 
--- START :: SQLite: PageBuilder :: r.20220915 # smart.framework.v.8.7 ###
+-- START :: SQLite: PageBuilder :: r.20250107 # smart.framework.v.8.7 ###
 
 --
 
@@ -7,11 +7,11 @@ BEGIN;
 
 -- Register in MetaData
 
-INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('version@page-builder', 'v.2021.05.26');
+INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('version@page-builder', 'v.2025.01.07');
 
 -- Table Structure: Page-Builder #
 
-CREATE TABLE 'page_builder' ( 								-- Web - Page Builder v.2021.05.26
+CREATE TABLE 'page_builder' ( 								-- Web - Page Builder v.2025.01.07
 	`id` CHARACTER VARYING(63) PRIMARY KEY NOT NULL, 		-- Unique ID for the Record: Page or Segment (segments must begin with: #)
 	`ref` TEXT DEFAULT '[]' NOT NULL, 						-- Reference Parent IDs as Json-Array [], Optional
 	`ctrl` CHARACTER VARYING(128) DEFAULT '' NOT NULL, 		-- Parent Controller ID, Optional
@@ -45,7 +45,7 @@ CREATE INDEX 'page_builder__idx__modified' ON `page_builder` (`modified` DESC);
 
 -- Table Structure: Page-Builder Translations #
 
-CREATE TABLE 'page_translations' ( 							-- Web - Page (Builder) Translations v.2021.05.26
+CREATE TABLE 'page_translations' ( 							-- Web - Page (Builder) Translations v.2025.01.07
 	`id` CHARACTER VARYING(63) NOT NULL, 					-- Unique ID for the Record: Page or Segment (segments must begin with: #)
 	`lang` CHARACTER VARYING(2) NOT NULL, 					-- Language ID: de, fr, ro, ...
 	`code` TEXT NOT NULL, 									-- Render Code (Txt/B64)

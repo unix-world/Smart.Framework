@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20221219
+ * @version 	v.20250107
  * @package 	development:modules:PageBuilder
  *
  */
@@ -269,7 +269,7 @@ abstract class AbstractFrontendPageBuilder extends \SmartAbstractAppController {
 	//=====
 	final public function getObjectArrExtraData(?string $b64_data) : array {
 		//--
-		$yaml = (string) \base64_decode((string)$b64_data);
+		$yaml = (string) \Smart::b64_dec((string)$b64_data, true); // B64 STRICT
 		//--
 		if((string)\trim((string)$yaml) != '') {
 			$ymp = new \SmartYamlConverter(false); // do not log YAML errors

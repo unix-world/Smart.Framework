@@ -11,8 +11,9 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_AREA', 'SHARED'); // ADMIN or TASK
+define('SMART_APP_MODULE_AREA', 'SHARED'); // ADMIN or TASK (INDEX is denied)
 define('SMART_APP_MODULE_AUTH', true);
+define('SMART_APP_MODULE_REALM_AUTH', 'SMART-ADMINS-AREA'); // if set will check the login realm
 
 // [PHP8]
 
@@ -22,7 +23,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 abstract class AbstractAdminLoginsController extends SmartAbstractAppController {
 
-	// v.20240115
+	// v.20250112
 
 
 	public function Initialize() {
@@ -43,12 +44,7 @@ abstract class AbstractAdminLoginsController extends SmartAbstractAppController 
 		} //end if
 		//--
 		if(!SmartEnvironment::isAdminArea()) { // allow: adm/tsk
-			$this->PageViewSetCfg('error', 'Auth Admins Login Manager is allowed to run under `Admin` or Task areas only ! ...');
-			return 403;
-		} //end if
-		//--
-		if(SmartAuth::get_auth_realm() !== 'SMART-ADMINS-AREA') {
-			$this->PageViewSetCfg('error', 'This Area Requires the `SMART-ADMINS-AREA` Auth Realm !'."\n".'The current Auth Realm is: `'.SmartAuth::get_auth_realm().'` ...');
+			$this->PageViewSetCfg('error', 'Auth Admins Login Manager is allowed to run under `Admin` or `Task` areas only ! ...');
 			return 403;
 		} //end if
 		//--
@@ -144,7 +140,11 @@ abstract class AbstractAdminLoginsController extends SmartAbstractAppController 
 
 			default: // other invalid actions
 				//--
-				$this->PageViewSetCfg('error', 'Auth Admins Login Invalid Action `'.$action.'` ...');
+				if((string)$action == '') {
+					$this->PageViewSetCfg('error', 'Auth Admins Login :: No Action has been requested ...');
+				} else {
+					$this->PageViewSetCfg('error', 'Auth Admins Login :: Invalid Action request: `'.$action.'`');
+				} //end if else
 				//--
 				return 400;
 				//--
@@ -179,5 +179,19 @@ final class SmartAppAdminController extends AbstractAdminLoginsController {
 final class SmartAppTaskController extends AbstractAdminLoginsController {
 } //END CLASS
 
+/**
+ * Index Login Controller ; DISABLED ; if not implemented will return 502
+ * @ignore
+ */
+//final class SmartAppIndexController extends SmartAbstractAppController {
+//
+//	public function Run() {
+//		//--
+//		$this->PageViewSetCfg('error', 'Invalid Login Controller Area: Index');
+//		return 501;
+//		//--
+//	} //END FUNCTION
+//
+//} //END CLASS
 
 //end of php code

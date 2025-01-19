@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20250105 s.20250105.1521
+// [AppCodeUnpack / APP] v.20250107 s.20250107.2358
 // (c) 2008-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -94,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) : voi
 final class AppCodeUnpack {
 
 	// ::
-	// v.20250105
+	// v.20250107
 
-	private const APPCODEUNPACK_VERSION = 's.20250105.1521';
+	private const APPCODEUNPACK_VERSION = 's.20250107.2358';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
@@ -333,7 +333,7 @@ final class AppCodeUnpack {
 				//--
 				$fdata = null;
 				if(!$err) {
-					$fdata = (string) trim((string)base64_decode((string)$frm['list']));
+					$fdata = (string) trim((string)Smart::b64_dec((string)$frm['list'], true)); // B64 STRICT
 					if((string)$fdata == '') {
 						$err = true;
 						$status = 'Empty Data';
@@ -464,7 +464,7 @@ final class AppCodeUnpack {
 				//--
 				$fdata = null;
 				if(!$err) {
-					$fdata = (string) trim((string)base64_decode((string)$frm['list']));
+					$fdata = (string) trim((string)Smart::b64_dec((string)$frm['list'], true)); // B64 STRICT
 					if((string)$fdata == '') {
 						$err = true;
 						$status = 'Empty Data';

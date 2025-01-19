@@ -51,7 +51,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, PHP SQLite3 Extension, SmartSQliteDb
- * @version 	v.20231031
+ * @version 	v.20250107
  * @package 	Application:Plugins:PersistentCache:SQlite
  *
  */

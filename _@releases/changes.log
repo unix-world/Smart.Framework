@@ -2,11 +2,24 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
-January 07, 2025
+January 18, 2025
+	* new module: hello world
+	* add crypto randomization: PHP and Javascript
+	* validate decrypt pak format before decrypt: PHP and JavaScript
+	* fix JWT auth in sync with SmartGo requirements
+	* add limits on input for encrypt / decrypt
+	* add limits on input for markdown
+
+January 08, 2025
 	* fix JS Framework message on status zero
 	* privleges and restrictions parsing fixes
 	* add JWT generator for Lib Auth, external auth with SmartGo
-	* add Ed25519 in lib Crypto ; JWT support for Ed25519
+	* add Ed25519 in lib Crypto and for auth JWT generator
+	* implement encrypted JWT headers: 3F/2F/1F
+	* add B64 fix padding (PHP / JS)
+	* strip padding from Crypto B64s
+	* add Smart b64_enc / b64_dec
+	* replace base64_encode / base64_decode with: Smart b64_enc / b64_dec
 
 December 28, 2024
 	* add HTTP Cli Strict Secure Mode as option

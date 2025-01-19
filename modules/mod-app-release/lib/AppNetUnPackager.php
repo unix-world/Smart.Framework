@@ -46,9 +46,9 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetUnPackager {
 
 	// ::
-	// v.20231106
+	// v.20250107
 
-	public const APP_NET_UNPACKAGER_VERSION = 'z.20231106';// {{{SYNC-SF-APPCODE-PACK-UNPACK-PACKAGE-VERSION}}}
+	public const APP_NET_UNPACKAGER_VERSION = 'z.20250107';// {{{SYNC-SF-APPCODE-PACK-UNPACK-PACKAGE-VERSION}}}
 
 	public const APP_NET_UNPACKAGER_MIN_PACK_SIZE = 777; // min 777 bytes by the headers
 
@@ -695,8 +695,8 @@ Options -Indexes
 			return 'ERROR: Package Checksum Failed !';
 		} //end if else
 		//--
-		$data = base64_decode((string)$data, true); // STRICT ! don't make it string, may return false
-		if(($data === false) OR ((string)trim((string)$data) == '')) {
+		$data = Smart::b64_dec((string)$data, true); // STRICT ! don't make it string, may return null
+		if(($data === null) OR ((string)trim((string)$data) == '')) {
 			return 'ERROR: Package B64 Failed !';
 		} //end if
 		$data = @gzdecode((string)$data); // don't make it string, may return false

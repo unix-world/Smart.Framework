@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20240924
+ * @version 	v.20250118
  *
  */
 final class TestUnitCrypto {
@@ -81,7 +81,7 @@ final class TestUnitCrypto {
 				$err_misc[] = 'TestUnit FAILED :: BaseFromHex Convert to Base `'.(int)$key.'` Errors'."\n".'EXPECTED='.$val."\n".'RESULT='.$tmp_bconv."\n".'HEXSTR='.(string)$test_base_hex_str;
 			} //end if
 			if((int)$key == 64) {
-				$tmp_back_str = (string) \Smart::b64s_dec((string)$tmp_bconv);
+				$tmp_back_str = (string) \Smart::b64s_dec((string)$tmp_bconv, true); // STRICT
 				$tmp_back_hex = (string) \bin2hex((string)$tmp_back_str);
 			} else {
 				$tmp_back_hex = (string) \Smart::base_to_hex_convert((string)$tmp_bconv, (int)$key);
@@ -323,10 +323,10 @@ final class TestUnitCrypto {
 
 		//-- test Threefish.CBC v3 :: encrypt/decrypt
 		$t3fV3Key = 'some.Threefish! - Key@Test 2ks i782s982 s2hwgsjh2wsvng2wfs2w78s528 srt&^ # *&^&#*# e3hsfejwsfjh';
-		$testT3fV3Data = '3f1kD.v1!1TCL9yFrAQQ6fKtrxrp7ji1BC68hEThYV9C8W5;..tB8E7itpCwzrjfW5aR5wFzdAl4ilRYzAzpKZrJlXeBTTLjFJ3kP_ewmlF9JZmU7E75dgRyC3v8t8oifmYJMV44lWr7yOlyYE0RMyNf2ZqTWc-SY6i3wudXrKDWc3msTYeAuGtrkA_12KejADM-ib1ZUn5G9zdvM5Pp789u-eAXtEENU5A9F42Mwkm6dBt2af_mCiYJcHZLwrpydUONbAqxME8KeCpDUascFqyD4pwKDkkjWSWTgwrx3ay89Azp_RZ4U9CY3Gw44-3DQZ65zUoVwWcE1AiM5j-JSQwZTiz3r2r_L_U-94S8KIajO0rFgipMnK_mhnlgZ6GucKgVDfam';
+		$testT3fV3Data = '3f1kD.v1!qqXdkeUlziftjT6kzNvXc5j3B3YSj0ATsKYIW1;tB8E7itpCwzrjfW5aR5wFzdAl4ilRYzAzpKZrJlXeBTTLjFJ3kP_ewmlF9JZmU7E75dgRyC3v8t8oifmYJMV44lWr7yOlyYE0RMyNf2ZqTWc-SY6i3wudXrKDWc3msTYeAuGtrkA_12KejADM-ib1ZUn5G9zdvM5Pp789u-eAXtEENU5A9F42Mwkm6dBt2af_mCiYJcHZLwrpydUONbAqxME8KeCpDUascFqyD4pwKDkkjWSWTgwrx3ay89Azp_RZ4U9CY3Gw44-3DQZ65zUoVwWcE1AiM5j-JSQwZTiz3r2r_L_U-94S8KIajO0rFgipMnK_mhnlgZ6GucKgVDfam';
 		$testT3fV3Plain = 'Lorem Ipsum dolor sit Amet';
 		$t3f_v3_dec = (string) \SmartCipherCrypto::t3f_decrypt((string)$testT3fV3Data, (string)$t3fV3Key);
-		$t3f_v3_enc = (string) \SmartCipherCrypto::t3f_encrypt((string)$testT3fV3Plain, (string)$t3fV3Key);
+		$t3f_v3_enc = (string) \SmartCipherCrypto::t3f_encrypt((string)$testT3fV3Plain, (string)$t3fV3Key, false, false); // no randomizer
 		if(
 			((string)trim((string)$t3f_v3_dec) == '')
 			OR
@@ -346,14 +346,24 @@ final class TestUnitCrypto {
 		$t3f_key = (string) $test_key;
 		$t3f_enc = (string) \SmartCipherCrypto::t3f_encrypt((string)$unicode_text, (string)$t3f_key);
 		$t3f_dec = (string) \SmartCipherCrypto::t3f_decrypt((string)$t3f_enc, (string)$t3f_key);
+		$t3f_nornd_enc = (string) \SmartCipherCrypto::t3f_encrypt((string)$unicode_text, (string)$t3f_key, false, false); // no randomizer
+		$t3f_nornd_dec = (string) \SmartCipherCrypto::t3f_decrypt((string)$t3f_nornd_enc, (string)$t3f_key);
 		if(
+			((string)$t3f_nornd_enc == (string)$t3f_enc) // must be different, one is using randomization the other does not
+			OR
 			((string)trim((string)$t3f_dec) == '')
+			OR
+			((string)trim((string)$t3f_nornd_dec) == '')
 			OR
 			((string)$t3f_dec != (string)$unicode_text)
 			OR
+			((string)$t3f_nornd_dec != (string)$unicode_text)
+			OR
+			((string)$t3f_dec != (string)$t3f_nornd_dec)
+			OR
 			((string)\SmartHashCrypto::sh3a512((string)$t3f_dec) != (string)\SmartHashCrypto::sh3a512((string)$unicode_text))
 			OR
-			((string)\SmartHashCrypto::sha512((string)$t3f_dec) != (string)\SmartHashCrypto::sha512((string)$unicode_text))
+			((string)\SmartHashCrypto::sha512((string)$t3f_nornd_dec) != (string)\SmartHashCrypto::sha512((string)$unicode_text))
 		) {
 			$err_misc[] = 'TestUnit FAILED # PHP Crypto, ThreeFish V3 Encrypt/Decrypt test';
 		} //end if
@@ -361,14 +371,24 @@ final class TestUnitCrypto {
 		$t3ffb_key = (string) $test_key;
 		$t3ffb_enc = (string) \SmartCipherCrypto::t3f_encrypt((string)$unicode_text, (string)$t3ffb_key, true);
 		$t3ffb_dec = (string) \SmartCipherCrypto::t3f_decrypt((string)$t3ffb_enc, (string)$t3ffb_key);
+		$t3ffb_nornd_enc = (string) \SmartCipherCrypto::t3f_encrypt((string)$unicode_text, (string)$t3ffb_key, true);
+		$t3ffb_nornd_dec = (string) \SmartCipherCrypto::t3f_decrypt((string)$t3ffb_nornd_enc, (string)$t3ffb_key);
 		if(
+			((string)$t3ffb_nornd_enc == (string)$t3ffb_enc) // must be different, one is using randomization the other does not
+			OR
 			((string)trim((string)$t3ffb_dec) == '')
+			OR
+			((string)trim((string)$t3ffb_nornd_dec) == '')
 			OR
 			((string)$t3ffb_dec != (string)$unicode_text)
 			OR
+			((string)$t3ffb_nornd_dec != (string)$unicode_text)
+			OR
+			((string)$t3ffb_dec != (string)$t3ffb_nornd_dec)
+			OR
 			((string)\SmartHashCrypto::sh3a512((string)$t3ffb_dec) != (string)\SmartHashCrypto::sh3a512((string)$unicode_text))
 			OR
-			((string)\SmartHashCrypto::sha512((string)$t3ffb_dec) != (string)\SmartHashCrypto::sha512((string)$unicode_text))
+			((string)\SmartHashCrypto::sha512((string)$t3ffb_nornd_dec) != (string)\SmartHashCrypto::sha512((string)$unicode_text))
 		) {
 			$err_misc[] = 'TestUnit FAILED # PHP Crypto, ThreeFish+Twofish+BlowFish V3 Encrypt/Decrypt test';
 		} //end if
@@ -379,7 +399,7 @@ final class TestUnitCrypto {
 		$testTfV3Data = '2f256.v1!jaHNknZA0ckccWW9DEnspvZz9TEYMyeUtcyXE3;qWdxLQd-9a0eliR5UJ_s2Z_1R5yN81NtOA9v72Tg6Ev_rUzuP33l3-jlm7FHQT_2dgCtcGgtTeHeRS6hYWDTvAzrucsr9RXugM9vQRVrRhNNpJJqfm3wrRJijgme6JXuedlUt0z62y0vWOpQYRePrybm2HK_JNpM8Eu8ijK1UcqKqkSVNzZnLXE-hLCTmoSU';
 		$testTfV3Plain = 'Lorem Ipsum dolor sit Amet';
 		$tf_v3_dec = (string) \SmartCipherCrypto::tf_decrypt((string)$testTfV3Data, (string)$tfV3Key);
-		$tf_v3_enc = (string) \SmartCipherCrypto::tf_encrypt((string)$testTfV3Plain, (string)$tfV3Key);
+		$tf_v3_enc = (string) \SmartCipherCrypto::tf_encrypt((string)$testTfV3Plain, (string)$tfV3Key, false, false); // no randomizer
 		if(
 			((string)trim((string)$tf_v3_dec) == '')
 			OR
@@ -399,14 +419,24 @@ final class TestUnitCrypto {
 		$tf_key = (string) $test_key;
 		$tf_enc = (string) \SmartCipherCrypto::tf_encrypt((string)$unicode_text, (string)$tf_key);
 		$tf_dec = (string) \SmartCipherCrypto::tf_decrypt((string)$tf_enc, (string)$tf_key);
+		$tf_nornd_enc = (string) \SmartCipherCrypto::tf_encrypt((string)$unicode_text, (string)$tf_key, false, false); // no randomizer
+		$tf_nornd_dec = (string) \SmartCipherCrypto::tf_decrypt((string)$tf_nornd_enc, (string)$tf_key);
 		if(
+			((string)$tf_nornd_enc == (string)$tf_enc) // must be different, one is using randomization the other does not
+			OR
 			((string)trim((string)$tf_dec) == '')
+			OR
+			((string)trim((string)$tf_nornd_dec) == '')
 			OR
 			((string)$tf_dec != (string)$unicode_text)
 			OR
+			((string)$tf_nornd_dec != (string)$unicode_text)
+			OR
+			((string)$tf_dec != (string)$tf_nornd_dec)
+			OR
 			((string)\SmartHashCrypto::sh3a512((string)$tf_dec) != (string)\SmartHashCrypto::sh3a512((string)$unicode_text))
 			OR
-			((string)\SmartHashCrypto::sha512((string)$tf_dec) != (string)\SmartHashCrypto::sha512((string)$unicode_text))
+			((string)\SmartHashCrypto::sha512((string)$tf_nornd_dec) != (string)\SmartHashCrypto::sha512((string)$unicode_text))
 		) {
 			$err_misc[] = 'TestUnit FAILED # PHP Crypto, Twofish V3 Encrypt/Decrypt test';
 		} //end if
@@ -414,14 +444,24 @@ final class TestUnitCrypto {
 		$tfb_key = (string) $test_key;
 		$tfb_enc = (string) \SmartCipherCrypto::tf_encrypt((string)$unicode_text, (string)$tfb_key, true);
 		$tfb_dec = (string) \SmartCipherCrypto::tf_decrypt((string)$tfb_enc, (string)$tfb_key);
+		$tfb_nornd_enc = (string) \SmartCipherCrypto::tf_encrypt((string)$unicode_text, (string)$tfb_key, true, false); // no randomizer
+		$tfb_nornd_dec = (string) \SmartCipherCrypto::tf_decrypt((string)$tfb_nornd_enc, (string)$tfb_key);
 		if(
+			((string)$tfb_nornd_enc == (string)$tfb_enc) // must be different, one is using randomization the other does not
+			OR
 			((string)trim((string)$tfb_dec) == '')
+			OR
+			((string)trim((string)$tfb_nornd_dec) == '')
 			OR
 			((string)$tfb_dec != (string)$unicode_text)
 			OR
+			((string)$tfb_nornd_dec != (string)$unicode_text)
+			OR
+			((string)$tfb_dec != (string)$tfb_nornd_dec)
+			OR
 			((string)\SmartHashCrypto::sh3a512((string)$tfb_dec) != (string)\SmartHashCrypto::sh3a512((string)$unicode_text))
 			OR
-			((string)\SmartHashCrypto::sha512((string)$tfb_dec) != (string)\SmartHashCrypto::sha512((string)$unicode_text))
+			((string)\SmartHashCrypto::sha512((string)$tfb_nornd_dec) != (string)\SmartHashCrypto::sha512((string)$unicode_text))
 		) {
 			$err_misc[] = 'TestUnit FAILED # PHP Crypto, Twofish+Blowfish V3 Encrypt/Decrypt test';
 		} //end if
@@ -429,10 +469,10 @@ final class TestUnitCrypto {
 
 		//-- test Blowfish.CBC v3 :: encrypt/decrypt
 		$bfV3Key = 'some.BlowFish! - Key@Test 2ks i782s982 s2hwgsjh2wsvng2wfs2w78s528 srt&^ # *&^&#*# e3hsfejwsfjh';
-		$testBfV3Data = 'bf448.v3!Zq8mMsueyxK3rTOfELyeiuM0agz1awq5sRqxp1;..jGUxs2I2RHwo5wMvbm12ph9wK4FVYkhzvld2GRLXFMjF5HG8vpGbMcibYPdGfMq0jMeLa4dKyuWbEGRwa54GrGr6QL_613rlJSZHUExySJMkWjI7OnWUKEDOG2w9fPKwUcrl8S-zgCucfsyoVzBUDUdlFv3Igzuh2qhLmbpxMu-WB96aa_BHZm';
+		$testBfV3Data = 'bf448.v3!qHRuZCEMDQgo0moJck9OLEZaeVToFEmmLSIj23;jGUxs2I2RHwo5wMvbm12ph9wK4FVYkhzvld2GRLXFMjF5HG8vpGbMcibYPdGfMq0jMeLa4dKyuWbEGRwa54GrGr6QL_613rlJSZHUExySJMkWjI7OnWUKEDOG2w9fPKwUcrl8S-zgCucfsyoVzBUDUdlFv3Igzuh2qhLmbpxMu-WB96aa_BHZm';
 		$testBfV3Plain = 'Lorem Ipsum dolor sit Amet';
 		$bf_v3_dec = (string) \SmartCipherCrypto::bf_decrypt((string)$testBfV3Data, (string)$bfV3Key);
-		$bf_v3_enc = (string) \SmartCipherCrypto::bf_encrypt((string)$testBfV3Plain, (string)$bfV3Key);
+		$bf_v3_enc = (string) \SmartCipherCrypto::bf_encrypt((string)$testBfV3Plain, (string)$bfV3Key, false); // no randomizer
 		if(
 			((string)trim((string)$bf_v3_dec) == '')
 			OR
@@ -452,14 +492,24 @@ final class TestUnitCrypto {
 		$bf_key = (string) $test_key;
 		$bf_enc = (string) \SmartCipherCrypto::bf_encrypt((string)$unicode_text, (string)$bf_key);
 		$bf_dec = (string) \SmartCipherCrypto::bf_decrypt((string)$bf_enc, (string)$bf_key);
+		$bf_nornd_enc = (string) \SmartCipherCrypto::bf_encrypt((string)$unicode_text, (string)$bf_key, false); // no randomizer
+		$bf_nornd_dec = (string) \SmartCipherCrypto::bf_decrypt((string)$bf_nornd_enc, (string)$bf_key);
 		$btf_dec = (string) \SmartCipherCrypto::tf_decrypt((string)$bf_enc, (string)$bf_key, true);
 		$bttf_dec = (string) \SmartCipherCrypto::t3f_decrypt((string)$bf_enc, (string)$bf_key, true);
 		if(
+			((string)$bf_nornd_enc == (string)$bf_enc) // must be different, one is using randomization the other does not
+			OR
 			((string)trim((string)$bf_dec) == '')
+			OR
+			((string)trim((string)$bf_nornd_dec) == '')
 			OR
 			((string)trim((string)$btf_dec) == '')
 			OR
+			((string)trim((string)$bttf_dec) == '')
+			OR
 			((string)$bf_dec != (string)$unicode_text)
+			OR
+			((string)$bf_nornd_dec != (string)$unicode_text)
 			OR
 			((string)$btf_dec != (string)$unicode_text)
 			OR
@@ -467,7 +517,11 @@ final class TestUnitCrypto {
 			OR
 			((string)\SmartHashCrypto::sh3a512((string)$bf_dec) != (string)\SmartHashCrypto::sh3a512((string)$unicode_text))
 			OR
-			((string)\SmartHashCrypto::sha512((string)$btf_dec) != (string)\SmartHashCrypto::sha512((string)$unicode_text))
+			((string)\SmartHashCrypto::sha512((string)$bf_nornd_dec) != (string)\SmartHashCrypto::sha512((string)$unicode_text))
+			OR
+			((string)\SmartHashCrypto::sh3a384((string)$btf_dec) != (string)\SmartHashCrypto::sh3a384((string)$unicode_text))
+			OR
+			((string)\SmartHashCrypto::sha384((string)$bttf_dec) != (string)\SmartHashCrypto::sha384((string)$unicode_text))
 		) {
 			$err_misc[] = 'TestUnit FAILED # PHP Crypto, Blowfish V3 Encrypt/Decrypt, Twofish and ThreeFish Decrypt Fallback test';
 		} //end if
@@ -531,76 +585,86 @@ final class TestUnitCrypto {
 			'modules/mod-samples/libs/templates/testunit/partials/crypto-test.inc.htm',
 			[
 				//--
-				'EXE-TIME' 						=> (string) $time,
-				'MISC-ERR' 						=> (string) \Smart::json_encode((array)$err_misc),
-				'UNICODE-TEXT' 					=> (string) $unicode_text,
-				'JS-ESCAPED' 					=> (string) \Smart::escape_js((string)$unicode_text),
-				'HASH-SHA3-512-HEX' 			=> (string) \SmartHashCrypto::sh3a512((string)$unicode_text), // hex
-				'HASH-SHA3-512-B64' 			=> (string) \SmartHashCrypto::sh3a512((string)$unicode_text, true), // b64
-				'HASH-SHA3-384-HEX' 			=> (string) \SmartHashCrypto::sh3a384((string)$unicode_text), // hex
-				'HASH-SHA3-384-B64' 			=> (string) \SmartHashCrypto::sh3a384((string)$unicode_text, true), // b64
-				'HASH-SHA3-256-HEX' 			=> (string) \SmartHashCrypto::sh3a256((string)$unicode_text), // hex
-				'HASH-SHA3-256-B64' 			=> (string) \SmartHashCrypto::sh3a256((string)$unicode_text, true), // b64
-				'HASH-SHA3-224-HEX' 			=> (string) \SmartHashCrypto::sh3a224((string)$unicode_text), // hex
-				'HASH-SHA3-224-B64' 			=> (string) \SmartHashCrypto::sh3a224((string)$unicode_text, true), // b64
-				'HASH-SHA512-HEX' 				=> (string) \SmartHashCrypto::sha512((string)$unicode_text), // hex
-				'HASH-SHA512-B64' 				=> (string) \SmartHashCrypto::sha512((string)$unicode_text, true), // b64
-				'HASH-SHA384-HEX' 				=> (string) \SmartHashCrypto::sha384((string)$unicode_text), // hex
-				'HASH-SHA384-B64' 				=> (string) \SmartHashCrypto::sha384((string)$unicode_text, true), // b64
-				'HASH-SHA256-HEX' 				=> (string) \SmartHashCrypto::sha256((string)$unicode_text), // hex
-				'HASH-SHA256-B64' 				=> (string) \SmartHashCrypto::sha256((string)$unicode_text, true), // b64
-				'HASH-SHA224-HEX' 				=> (string) \SmartHashCrypto::sha224((string)$unicode_text), // hex
-				'HASH-SHA224-B64' 				=> (string) \SmartHashCrypto::sha224((string)$unicode_text, true), // b64
-				'HASH-SHA1-HEX' 				=> (string) \SmartHashCrypto::sha1((string)$unicode_text), // hex
-				'HASH-SHA1-B64' 				=> (string) \SmartHashCrypto::sha1((string)$unicode_text, true), // b64
-				'HASH-MD5-HEX' 					=> (string) \SmartHashCrypto::md5((string)$unicode_text), // hex
-				'HASH-MD5-B64' 					=> (string) \SmartHashCrypto::md5((string)$unicode_text, true), // b64
-				'HASH-CRC32B-HEX' 				=> (string) \SmartHashCrypto::crc32b((string)$unicode_text), // hex
-				'HASH-CRC32B-B36' 				=> (string) \SmartHashCrypto::crc32b((string)$unicode_text, true), // b36
-				'BIN2HEX-ENCODED' 				=> (string) $bin2hex,
-				'HEX2BIN-DECODED' 				=> (string) $hex2bin,
-				'BASE64-ENCODED' 				=> (string) $b64enc,
-				'BASE64-DECODED' 				=> (string) $b64dec,
-				'BASE-CONV-TESTS' 				=> (array)  $arr_test_bases,
-				'BASE-CONV-DEC-TESTS' 			=> (array)  $arr_test_dec_bases,
-				'BASE-CONV-STR' 				=> (string) $test_base_str,
+				'EXE-TIME' 							=> (string) $time,
+				'MISC-ERR' 							=> (string) \Smart::json_encode((array)$err_misc),
+				'UNICODE-TEXT' 						=> (string) $unicode_text,
+				'JS-ESCAPED' 						=> (string) \Smart::escape_js((string)$unicode_text),
+				'HASH-SHA3-512-HEX' 				=> (string) \SmartHashCrypto::sh3a512((string)$unicode_text), // hex
+				'HASH-SHA3-512-B64' 				=> (string) \SmartHashCrypto::sh3a512((string)$unicode_text, true), // b64
+				'HASH-SHA3-384-HEX' 				=> (string) \SmartHashCrypto::sh3a384((string)$unicode_text), // hex
+				'HASH-SHA3-384-B64' 				=> (string) \SmartHashCrypto::sh3a384((string)$unicode_text, true), // b64
+				'HASH-SHA3-256-HEX' 				=> (string) \SmartHashCrypto::sh3a256((string)$unicode_text), // hex
+				'HASH-SHA3-256-B64' 				=> (string) \SmartHashCrypto::sh3a256((string)$unicode_text, true), // b64
+				'HASH-SHA3-224-HEX' 				=> (string) \SmartHashCrypto::sh3a224((string)$unicode_text), // hex
+				'HASH-SHA3-224-B64' 				=> (string) \SmartHashCrypto::sh3a224((string)$unicode_text, true), // b64
+				'HASH-SHA512-HEX' 					=> (string) \SmartHashCrypto::sha512((string)$unicode_text), // hex
+				'HASH-SHA512-B64' 					=> (string) \SmartHashCrypto::sha512((string)$unicode_text, true), // b64
+				'HASH-SHA384-HEX' 					=> (string) \SmartHashCrypto::sha384((string)$unicode_text), // hex
+				'HASH-SHA384-B64' 					=> (string) \SmartHashCrypto::sha384((string)$unicode_text, true), // b64
+				'HASH-SHA256-HEX' 					=> (string) \SmartHashCrypto::sha256((string)$unicode_text), // hex
+				'HASH-SHA256-B64' 					=> (string) \SmartHashCrypto::sha256((string)$unicode_text, true), // b64
+				'HASH-SHA224-HEX' 					=> (string) \SmartHashCrypto::sha224((string)$unicode_text), // hex
+				'HASH-SHA224-B64' 					=> (string) \SmartHashCrypto::sha224((string)$unicode_text, true), // b64
+				'HASH-SHA1-HEX' 					=> (string) \SmartHashCrypto::sha1((string)$unicode_text), // hex
+				'HASH-SHA1-B64' 					=> (string) \SmartHashCrypto::sha1((string)$unicode_text, true), // b64
+				'HASH-MD5-HEX' 						=> (string) \SmartHashCrypto::md5((string)$unicode_text), // hex
+				'HASH-MD5-B64' 						=> (string) \SmartHashCrypto::md5((string)$unicode_text, true), // b64
+				'HASH-CRC32B-HEX' 					=> (string) \SmartHashCrypto::crc32b((string)$unicode_text), // hex
+				'HASH-CRC32B-B36' 					=> (string) \SmartHashCrypto::crc32b((string)$unicode_text, true), // b36
+				'BIN2HEX-ENCODED' 					=> (string) $bin2hex,
+				'HEX2BIN-DECODED' 					=> (string) $hex2bin,
+				'BASE64-ENCODED' 					=> (string) $b64enc,
+				'BASE64-DECODED' 					=> (string) $b64dec,
+				'BASE-CONV-TESTS' 					=> (array)  $arr_test_bases,
+				'BASE-CONV-DEC-TESTS' 				=> (array)  $arr_test_dec_bases,
+				'BASE-CONV-STR' 					=> (string) $test_base_str,
 				//--
-				'THREEFISH_TF_BF-ENCRYPTED' 	=> (string) $t3ffb_enc,
-				'THREEFISH_TF_BF-DECRYPTED' 	=> (string) $t3ffb_dec,
-				'THREEFISH_TF_BF-KEY' 			=> (string) $t3ffb_key,
-				'THREEFISH_TF_BF-ALGO' 			=> (string) \Smart::escape_html((string)\SmartCipherCrypto::t3f_algo()).'+'.\Smart::escape_html((string)\SmartCipherCrypto::tf_algo()).'+'.\Smart::escape_html((string)\SmartCipherCrypto::bf_algo()),
+				'THREEFISH_TF_BF-ENCRYPTED' 		=> (string) $t3ffb_enc,
+				'THREEFISH_TF_BF-DECRYPTED' 		=> (string) $t3ffb_dec,
+				'THREEFISH_TF_BF-NORND-ENCRYPTED' 	=> (string) $t3ffb_nornd_enc,
+				'THREEFISH_TF_BF-NORND-DECRYPTED' 	=> (string) $t3ffb_nornd_dec,
+				'THREEFISH_TF_BF-KEY' 				=> (string) $t3ffb_key,
+				'THREEFISH_TF_BF-ALGO' 				=> (string) \Smart::escape_html((string)\SmartCipherCrypto::t3f_algo()).'+'.\Smart::escape_html((string)\SmartCipherCrypto::tf_algo()).'+'.\Smart::escape_html((string)\SmartCipherCrypto::bf_algo()),
 				//--
-				'THREEFISH-ENCRYPTED' 			=> (string) $t3f_enc,
-				'THREEFISH-DECRYPTED' 			=> (string) $t3f_dec,
-				'THREEFISH-KEY' 				=> (string) $t3f_key,
-				'THREEFISH-ALGO' 				=> (string) \Smart::escape_html((string)\SmartCipherCrypto::t3f_algo()),
+				'THREEFISH-ENCRYPTED' 				=> (string) $t3f_enc,
+				'THREEFISH-DECRYPTED' 				=> (string) $t3f_dec,
+				'THREEFISH-NORND-ENCRYPTED' 		=> (string) $t3f_nornd_enc,
+				'THREEFISH-NORND-DECRYPTED' 		=> (string) $t3f_nornd_dec,
+				'THREEFISH-KEY' 					=> (string) $t3f_key,
+				'THREEFISH-ALGO' 					=> (string) \Smart::escape_html((string)\SmartCipherCrypto::t3f_algo()),
 				//--
-				'TWOFISH_BLOWFISH-ENCRYPTED' 	=> (string) $tfb_enc,
-				'TWOFISH_BLOWFISH-DECRYPTED' 	=> (string) $tfb_dec,
-				'TWOFISH_BLOWFISH-KEY' 			=> (string) $tfb_key,
-				'TWOFISH_BLOWFISH-ALGO' 		=> (string) \Smart::escape_html((string)\SmartCipherCrypto::tf_algo()).'+'.\Smart::escape_html((string)\SmartCipherCrypto::bf_algo()),
+				'TWOFISH_BLOWFISH-ENCRYPTED' 		=> (string) $tfb_enc,
+				'TWOFISH_BLOWFISH-DECRYPTED' 		=> (string) $tfb_dec,
+				'TWOFISH_BLOWFISH-NORND-ENCRYPTED' 	=> (string) $tfb_nornd_enc,
+				'TWOFISH_BLOWFISH-NORND-DECRYPTED' 	=> (string) $tfb_nornd_dec,
+				'TWOFISH_BLOWFISH-KEY' 				=> (string) $tfb_key,
+				'TWOFISH_BLOWFISH-ALGO' 			=> (string) \Smart::escape_html((string)\SmartCipherCrypto::tf_algo()).'+'.\Smart::escape_html((string)\SmartCipherCrypto::bf_algo()),
 				//--
-				'TWOFISH-ENCRYPTED' 			=> (string) $tf_enc,
-				'TWOFISH-DECRYPTED' 			=> (string) $tf_dec,
-				'TWOFISH-KEY' 					=> (string) $tf_key,
-				'TWOFISH-ALGO' 					=> (string) \Smart::escape_html((string)\SmartCipherCrypto::tf_algo()),
+				'TWOFISH-ENCRYPTED' 				=> (string) $tf_enc,
+				'TWOFISH-DECRYPTED' 				=> (string) $tf_dec,
+				'TWOFISH-NORND-ENCRYPTED' 			=> (string) $tf_nornd_enc,
+				'TWOFISH-NORND-DECRYPTED' 			=> (string) $tf_nornd_dec,
+				'TWOFISH-KEY' 						=> (string) $tf_key,
+				'TWOFISH-ALGO' 						=> (string) \Smart::escape_html((string)\SmartCipherCrypto::tf_algo()),
 				//--
-				'BLOWFISH-ENCRYPTED' 			=> (string) $bf_enc,
-				'BLOWFISH-DECRYPTED' 			=> (string) $bf_dec,
-				'BLOWFISH-KEY' 					=> (string) $bf_key,
-				'BLOWFISH-ALGO' 				=> (string) \Smart::escape_html((string)\SmartCipherCrypto::bf_algo()),
+				'BLOWFISH-ENCRYPTED' 				=> (string) $bf_enc,
+				'BLOWFISH-DECRYPTED' 				=> (string) $bf_dec,
+				'BLOWFISH-NORND-ENCRYPTED' 			=> (string) $bf_nornd_enc,
+				'BLOWFISH-NORND-DECRYPTED' 			=> (string) $bf_nornd_dec,
+				'BLOWFISH-KEY' 						=> (string) $bf_key,
+				'BLOWFISH-ALGO' 					=> (string) \Smart::escape_html((string)\SmartCipherCrypto::bf_algo()),
 				//--
-				'CUSTOMCRYPT-ENC' 				=> (string) $he_enc,
-				'CUSTOMCRYPT-DEC' 				=> (string) $he_dec,
-				'CUSTOMCRYPT-ALGO' 				=> (string) \Smart::escape_html((string)\SmartCipherCrypto::algo()),
+				'CUSTOMCRYPT-ENC' 					=> (string) $he_enc,
+				'CUSTOMCRYPT-DEC' 					=> (string) $he_dec,
+				'CUSTOMCRYPT-ALGO' 					=> (string) \Smart::escape_html((string)\SmartCipherCrypto::algo()),
 				//--
-				'DIALOG-WIDTH' 					=> '725',
-				'DIALOG-HEIGHT' 				=> '400',
-				'IMG-SIGN' 						=> 'lib/framework/img/sign-info.svg',
-				'IMG-CHECK' 					=> 'modules/mod-samples/libs/templates/testunit/img/test-crypto.svg',
-				'TXT-MAIN-HTML' 				=> '<span style="color:#83B953;">Test OK: PHP / Javascript Cryptography.</span>',
-				'TXT-INFO-HTML' 				=> '<h2><span style="color:#333333;"><span style="color:#83B953;">All</span> the SmartFramework Cryptography <span style="color:#83B953;">Tests PASSED on both PHP&nbsp;&amp;&nbsp;Javascript</span>:</span></h2>'.'<span style="font-size:14px;">'.\Smart::nl_2_br(\Smart::escape_html("===== CRYPTO / TESTS: ===== \n * Unicode support / UTF-8 \n * JS-Escape \n * SHA3-512 \n * SHA3-384 \n * SHA3-256 \n * SHA3-224 \n * SHA512 \n * SHA384 \n * SHA256 \n * SHA224 \n * SHA1 \n * MD5 \n * CRC32B \n * Base64: Encode / Decode \n * Base[32, 36, 58, 62, 64s, 85, 92]: Encode / Decode \n * Bin2Hex / Hex2Bin \n * Threefish.1024+Twofish.256+Blowfish.448.CBC (v1): Encrypt / Decrypt (** PHP only) \n * Threefish.1024.CBC (v1): Encrypt / Decrypt (** PHP only) \n * Twofish.256+Blowfish.448.CBC (v1): Encrypt / Decrypt (** PHP only) \n * Twofish.256.CBC (v1): Encrypt / Decrypt \n * Blowfish.448.CBC (v3): Encrypt / Decrypt \n * Blowfish.448.CBC (v2): Decrypt only \n * Blowfish.384.CBC (v1): Decrypt only \n * Dynamic: Encrypt / Decrypt (** Only for PHP: ".\Smart::escape_html((string)\SmartCipherCrypto::algo()).") \n ===== END TESTS ... =====")).'</span>',
-				'TEST-INFO' 					=> (string) 'Crypto Test Suite for SmartFramework: PHP + Javascript'
+				'DIALOG-WIDTH' 						=> '725',
+				'DIALOG-HEIGHT' 					=> '400',
+				'IMG-SIGN' 							=> 'lib/framework/img/sign-info.svg',
+				'IMG-CHECK' 						=> 'modules/mod-samples/libs/templates/testunit/img/test-crypto.svg',
+				'TXT-MAIN-HTML' 					=> '<span style="color:#83B953;">Test OK: PHP / Javascript Cryptography.</span>',
+				'TXT-INFO-HTML' 					=> '<h2><span style="color:#333333;"><span style="color:#83B953;">All</span> the SmartFramework Cryptography <span style="color:#83B953;">Tests PASSED on both PHP&nbsp;&amp;&nbsp;Javascript</span>:</span></h2>'.'<span style="font-size:14px;">'.\Smart::nl_2_br(\Smart::escape_html("===== CRYPTO / TESTS: ===== \n * Unicode support / UTF-8 \n * JS-Escape \n * SHA3-512 \n * SHA3-384 \n * SHA3-256 \n * SHA3-224 \n * SHA512 \n * SHA384 \n * SHA256 \n * SHA224 \n * SHA1 \n * MD5 \n * CRC32B \n * Base64: Encode / Decode \n * Base[32, 36, 58, 62, 64s, 85, 92]: Encode / Decode \n * Bin2Hex / Hex2Bin \n * Threefish.1024+Twofish.256+Blowfish.448.CBC (v1): Encrypt / Decrypt (** PHP only) \n * Threefish.1024.CBC (v1): Encrypt / Decrypt (** PHP only) \n * Twofish.256+Blowfish.448.CBC (v1): Encrypt / Decrypt (** PHP only) \n * Twofish.256.CBC (v1): Encrypt / Decrypt \n * Blowfish.448.CBC (v3): Encrypt / Decrypt \n * Blowfish.448.CBC (v2): Decrypt only \n * Blowfish.384.CBC (v1): Decrypt only \n * Dynamic: Encrypt / Decrypt (** Only for PHP: ".\Smart::escape_html((string)\SmartCipherCrypto::algo()).") \n ===== END TESTS ... =====")).'</span>',
+				'TEST-INFO' 						=> (string) 'Crypto Test Suite for SmartFramework: PHP + Javascript'
 				//--
 			]
 		);

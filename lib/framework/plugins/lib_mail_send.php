@@ -40,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20231119
+ * @version 	v.20250107
  * @package 	Plugins:Mailer
  *
  */
@@ -855,7 +855,7 @@ final class SmartMailerSend {
 					//--
 				} else {
 					//--
-					$subject = (string) '=?'.$charset.'?B?'.base64_encode((string)$subject).'?=';
+					$subject = (string) '=?'.$charset.'?B?'.Smart::b64_enc((string)$subject).'?=';
 					//--
 				} //end if else
 				//--
@@ -886,7 +886,7 @@ final class SmartMailerSend {
 		} else { // base64 encode
 			$checksum = (string) sha1((string)$part['message']); // calculate checksum prior to encode
 			$part['encode'] = 'base64'; // rewrite this for all other cases
-			$part['message'] = (string) base64_encode((string)$part['message']); // encode b64
+			$part['message'] = (string) Smart::b64_enc((string)$part['message']); // encode b64
 			$part['message'] = (string) trim((string)chunk_split((string)$part['message'], 76, "\r\n"));
 		} //end if
 		//--
@@ -1054,7 +1054,7 @@ final class SmartMailerSend {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20221223
+ * @version 	v.20250107
  * @package 	Plugins:Mailer
  *
  */
@@ -1459,7 +1459,7 @@ final class SmartMailerSmtpClient {
 				return 0;
 			} //end if
 			//--
-			$reply = $this->send_cmd(base64_encode((string)$username)); // send encoded username
+			$reply = $this->send_cmd(Smart::b64_enc((string)$username)); // send encoded username
 			if((string)$this->error != '') {
 				return 0;
 			} //end if
@@ -1469,14 +1469,14 @@ final class SmartMailerSmtpClient {
 				return 0;
 			} //end if
 			//--
-			$reply = $this->send_cmd(base64_encode((string)$pass)); // send encoded password
+			$reply = $this->send_cmd(Smart::b64_enc((string)$pass)); // send encoded password
 			if((string)$this->error != '') {
 				return 0;
 			} //end if
 			//--
 		} elseif((string)$this->authmec == 'PLAIN') { // auth:plain {{{SYNC-AUTH:PLAIN-METHOD}}}
 			//--
-			$reply = $this->send_cmd('AUTH PLAIN '.base64_encode((string)"\0".$username."\0".$pass));
+			$reply = $this->send_cmd('AUTH PLAIN '.Smart::b64_enc((string)"\0".$username."\0".$pass));
 			if((string)$this->error != '') {
 				return 0;
 			} //end if
@@ -1502,21 +1502,21 @@ final class SmartMailerSmtpClient {
 				$this->error = '[ERR] Auth/Login: CRAM-MD5 Secret is EMPTY';
 				return 0;
 			} //end if
-			$secret = (string) base64_decode((string)$secret);
+			$secret = (string) Smart::b64_dec((string)$secret);
 			if((string)trim((string)$secret) == '') {
 				$this->error = '[ERR] Auth/Login: CRAM-MD5 Secret is INVALID';
 				return 0;
 			} //end if
 			//--
 			$digest = (string) hash_hmac('md5', (string)$secret, (string)$pass);
-			$reply = $this->send_cmd(base64_encode((string)$username.' '.$digest));
+			$reply = $this->send_cmd(Smart::b64_enc((string)$username.' '.$digest));
 			if((string)$this->error != '') {
 				return 0;
 			} //end if
 			//--
 		} elseif((string)$this->authmec == 'XOAUTH2') { // auth:xoauth2 {{{SYNC-AUTH:XOAUTH2-METHOD}}}
 			//--
-			$reply = $this->send_cmd('AUTH XOAUTH2 '.base64_encode((string)'user='.$username."\1".'auth=Bearer '.$pass."\1"."\1"));
+			$reply = $this->send_cmd('AUTH XOAUTH2 '.Smart::b64_enc((string)'user='.$username."\1".'auth=Bearer '.$pass."\1"."\1"));
 			if((string)$this->error != '') {
 				return 0;
 			} //end if

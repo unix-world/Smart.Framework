@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  *
  * @depends 	classes: SmartUnicode, Smart, SmartHashCrypto, SmartCipherCrypto, SmartAuth
- * @version 	v.20231119
+ * @version 	v.20250107
  * @package 	Plugins:Mailer
  *
  */
@@ -77,7 +77,7 @@ final class SmartMailerNotes {
 			return '[ERROR #3]: Mime Message: Note is Empty';
 		} //end if
 		//--
-		$y_eml = (string) base64_decode((string)$y_eml);
+		$y_eml = (string) Smart::b64_dec((string)$y_eml);
 		if((string)trim((string)$y_eml) == '') {
 			return '[ERROR #4]: Mime Message: Note is Empty after Base64 Decode';
 		} //end if
@@ -116,7 +116,7 @@ final class SmartMailerNotes {
 		//--
 		$cksum = (string) sha1((string)$y_eml);
 		//--
-		$y_eml = (string) base64_encode(
+		$y_eml = (string) Smart::b64_enc(
 			(string) SmartCipherCrypto::tf_encrypt(
 				(string) $y_eml, // data
 				(string) self::crypto_key((string)$auth_id, (string)$auth_privkeys), // key

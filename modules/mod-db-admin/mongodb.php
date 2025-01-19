@@ -15,7 +15,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 /**
  * Admin Area Controller
- * @version 20231026
+ * @version 20250107
  * @ignore
  *
  * @requires define('SMART_FRAMEWORK_DB_ADMIN_ALLOW', true); // set in config-admin.php

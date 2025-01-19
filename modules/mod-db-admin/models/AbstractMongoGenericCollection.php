@@ -14,7 +14,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //-----------------------------------------------------
 
 
-abstract class AbstractMongoGenericCollection { // v.20230824
+abstract class AbstractMongoGenericCollection { // v.20250107
 
 	// ::
 

@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20250107 # this should be loaded from app web root only
+// # r.20250118 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -91,7 +91,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2025.01.07'); // tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2025.01.18'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--
@@ -194,8 +194,8 @@ if(!preg_match('/^[_a-z0-9\-\.]+$/', (string)SMART_SOFTWARE_NAMESPACE)) { // reg
 if((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) != (string)SMART_FRAMEWORK_SECURITY_KEY) {
 	die('A required INIT constant contains invalid characters, must not start or end with spaces: SMART_FRAMEWORK_SECURITY_KEY');
 } //end if
-if(((int)strlen((string)SMART_FRAMEWORK_SECURITY_KEY) < 16) OR ((int)strlen((string)SMART_FRAMEWORK_SECURITY_KEY) > 255)) { // {{{SYNC-SMART-SECURITY-KEY-LENGTH}}}
-	die('A required INIT constant must have a length between 16 and 255 characters: SMART_FRAMEWORK_SECURITY_KEY');
+if(((int)strlen((string)SMART_FRAMEWORK_SECURITY_KEY) < 16) OR ((int)strlen((string)SMART_FRAMEWORK_SECURITY_KEY) > 256)) { // {{{SYNC-SMART-SECURITY-KEY-LENGTH}}}
+	die('A required INIT constant must have a length between 16 and 256 characters: SMART_FRAMEWORK_SECURITY_KEY');
 } //end if
 //--
 if(((int)SMART_FRAMEWORK_NETSERVER_ID < 0) OR ((int)SMART_FRAMEWORK_NETSERVER_ID > 1295)) { // {{{SYNC-MIN-MAX-NETSERVER-ID}}}

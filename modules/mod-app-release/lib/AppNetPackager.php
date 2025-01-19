@@ -49,9 +49,9 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetPackager {
 
 	// ->
-	// v.20231106
+	// v.20250107
 
-	public const APP_NET_PACKAGER_VERSION = 'z.20231106'; // {{{SYNC-SF-APPCODE-PACK-UNPACK-PACKAGE-VERSION}}}
+	public const APP_NET_PACKAGER_VERSION = 'z.20250107'; // {{{SYNC-SF-APPCODE-PACK-UNPACK-PACKAGE-VERSION}}}
 
 	//--
 	private $error_log = '';
@@ -218,7 +218,7 @@ final class AppNetPackager {
 		//--
 		$ver_zlib = (string) phpversion('zlib');
 		//--
-		$packet = (string) base64_encode((string)$packet);
+		$packet = (string) Smart::b64_enc((string)$packet);
 		//--
 		$data  = '';
 		//--

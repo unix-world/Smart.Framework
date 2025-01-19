@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartEnvironment, SmartCipherCrypto
- * @version 	v.20250107
+ * @version 	v.20250118
  * @package 	@Core:Authentication
  *
  */
@@ -1054,7 +1054,7 @@ final class SmartAuth {
 			return (array) $valid;
 		} //end if
 		$tksum = '';
-		$json = (string) Smart::b64s_dec((string)$token);
+		$json = (string) Smart::b64s_dec((string)$token, true); // B64 STRICT
 		$token = '';
 		if((string)trim((string)$json) == '') {
 			$valid['error'] = 'Base64S decoding Failed';
@@ -1176,7 +1176,7 @@ final class SmartAuth {
 		} //end if
 		//--
 		if((string)$hashpass != '') {
-			$hashpass = (string) trim((string)base64_decode((string)$hashpass));
+			$hashpass = (string) trim((string)Smart::b64_dec((string)$hashpass), true); // STRICT
 		} //end if
 		if((string)$hashpass != '') {
 			$hashpass = (string) SmartUnicode::utf8_to_iso((string)$hashpass); // safety
@@ -1246,7 +1246,7 @@ final class SmartAuth {
 		//--
 		$arr['i'] = (string) trim((string)$arr['i']);
 		if((string)$arr['i'] != '') {
-			$arr['i'] = (string) trim((string)Smart::b64s_dec((string)$arr['i']));
+			$arr['i'] = (string) trim((string)Smart::b64s_dec((string)$arr['i'], true)); // B64 STRICT
 		} //end if
 		if((string)$arr['i'] != '') {
 			$arr['i'] = (string) SmartUnicode::utf8_to_iso((string)$arr['i']); // safety
@@ -1471,7 +1471,7 @@ final class SmartAuth {
 		$obfs_realm 		= (string) Smart::base_from_hex_convert((string)bin2hex((string)$realm), 29*2);
 		$obfs_expdt 		= (string) Smart::base_from_hex_convert((string)bin2hex((string)$expdate), 8*2*2);
 		$obfs_user_name 	= (string) Smart::base_from_hex_convert((string)bin2hex((string)$auth_user_name), 17*5);
-		$obfs_hash_pass 	= (string) base64_encode((string)Smart::base_from_hex_convert((string)bin2hex((string)$auth_hash_pass), 23*2*2));
+		$obfs_hash_pass 	= (string) Smart::b64_enc((string)Smart::base_from_hex_convert((string)bin2hex((string)$auth_hash_pass), 23*2*2));
 		$obfs_privs_lst 	= (string) Smart::base_from_hex_convert((string)bin2hex((string)$privs_list), 23*4);
 		$obfs_ip_adr_lst 	= (string) Smart::b64s_enc((string)$ip_addr_list); // b64s
 		//--
@@ -1532,6 +1532,7 @@ final class SmartAuth {
 	 *
 	 * @param 	STRING 	$algo 					:: JWT Algo: 'Ed25519' ; 'H3S512' ; 'H3S384' ; 'HS384' ; 'H3S256' ; 'H3S224' ; 'HS224'
 	 * @param 	STRING 	$user 					:: The auth user name, as email
+	 * @param 	STRING  $ipaddr 				:: IP address or wildcard *
 	 * @param 	STRING 	$area 					:: The authentication area
 	 * @param 	STRING 	$issuer 				:: The issuer, usually as host:port ; must match what is the other server expecting ...
 	 * @param 	INT		$expire 				:: The expiration time in minutes from now ; 1..525600
@@ -1541,22 +1542,25 @@ final class SmartAuth {
 	 *
 	 * @return 	ARRAY							:: array of strings as: [ 'error' => 'error if any or empty', 'token' => '...' ]
 	 */
-	public static function jwt_token_create(string $algo, string $user, string $area, string $issuer, int $expire, array $privs, array $restr, int $encrypt=0) : array {
+	public static function jwt_token_create(string $algo, string $user, string $ipaddr, string $area, string $issuer, int $expire, array $privs, array $restr, int $encrypt=0) : array {
 		//--
 		$jwt = [
 			'error' 		=> '?', // error or empty
 			'type' 			=> 'JWT',
 			'algo' 			=> '',
 			'serial' 		=> '',
+			'iplist' 		=> '',
 			'area' 			=> '',
 			'user' 			=> '',
 			'expires' 		=> 0,
 			'issuer' 		=> '',
 			'privs' 		=> '',
 			'restr' 		=> '',
+			'xtras' 		=> '',
 			'token' 		=> '',  // the jwt token (b64u) | encrypted jwt token (b64s)
 			'encoding' 		=> '',
 			'encryption' 	=> '',
+			'#bytes#' 		=> 0,
 		];
 		//--
 		switch((int)$encrypt) {
@@ -1655,7 +1659,7 @@ final class SmartAuth {
 			$jwt['error'] = 'Area is Empty';
 			return (array) $jwt;
 		} //end if
-		if(((int)strlen((string)$area) < 3) || ((int)strlen((string)$area) > 18) || ((bool)preg_match('/^[A-Z0-9\-]{3,18}$/', (string)$area) !== true)) { // {{{SYNC-AUTH-EXT-AREA-CHECK}}}
+		if(((int)strlen((string)$area) < 4) || ((int)strlen((string)$area) > 18) || ((bool)preg_match('/^[A-Z0-9\-]{4,18}$/', (string)$area) !== true)) { // disallow dot ; allow just max 18 here, the rest is reserved for SmartGo as prefix for this ; {{{SYNC-AUTH-EXT-AREA-CHECK}}}
 			$jwt['error'] = 'Area is Invalid';
 			return (array) $jwt;
 		} //end if
@@ -1701,12 +1705,36 @@ final class SmartAuth {
 		$issuedAt  = (int) time();
 		$expiresAt = (int) ((int)$issuedAt + (int)((int)$expire * 60));
 		//--
-		$serial = (string) Smart::uuid_10_seq();
+		$serial = (string) Smart::uuid_10_seq().'-'.Smart::uuid_10_str();
+		//--
+		$iplist = '';
+		$ipaddr = (string) trim((string)$ipaddr);
+		if((string)$ipaddr == '') {
+			$jwt['error'] = 'IP Address is Empty, provide a valid IP address or: * = wildcard';
+			return (array) $jwt;
+		} elseif((string)$ipaddr == '*') { // ok, wildcard
+			$iplist = '*';
+		} else {
+			if((string)trim((string)SmartValidator::validate_filter_ip_address((string)$ipaddr)) == '') { // if not valid IP address
+				$jwt['error'] = 'IP Address is Invalid';
+				return (array) $jwt;
+			} //end if
+			$ipaddr = (string) trim((string)Smart::ip_addr_compress((string)$ipaddr)); // {{{SYNC-IPV6-STORE-SHORTEST-POSSIBLE}}} ; IPV6 addresses may vary .. find a standard form, ex: shortest
+			if((string)$ipaddr == '') {
+				$jwt['error'] = 'IP Address compression Failed';
+				return (array) $jwt;
+			} //end if
+			$iplist = '<'.$ipaddr.'>';
+		} //end if
+		//--
+		$xtras = 'ApiKey.Virtual'; // mandatory
 		//--
 		$audience = [
-			(string) 'A:'.$area, // area
-			(string) 'P:'.$privs, // privileges
-			(string) 'R:'.$restr, // restrictions
+			(string) 'I:'.$iplist, // ip list of allowed addresses as `<ip1>,<ip2>` or `<ip>` or wildcard *
+			(string) 'A:'.$area,   // area
+			(string) 'P:'.$privs,  // privileges
+			(string) 'R:'.$restr,  // restrictions
+			(string) 'X:'.$xtras,  // extras
 		];
 		//--
 		$checksum = (string) Smart::b64s_enc((string)chr(0).$user.chr(8).$serial.chr(7).$expiresAt."\v".$issuedAt."\f".$issuer.chr(0).implode("\u{FFFD}", (array)$audience).chr(8).SMART_FRAMEWORK_SECURITY_KEY.chr(0));
@@ -1719,9 +1747,9 @@ final class SmartAuth {
 		];
 		//--
 		$dat = [
-			'usr' => (string) $user, // username or userid
-			'iss' => (string) $issuer, // host:port
-			'sub' => (string) $subject, // CRC32B36-CRC32B36(rev)
+			'usr' => (string) $user,      // username or userid
+			'iss' => (string) $issuer,    // host:port
+			'sub' => (string) $subject,   // CRC32B36-CRC32B36(rev)
 			'aud' => (array)  $audience,
 			'exp' => (int)    $expiresAt,
 			'iat' => (int)    $issuedAt,
@@ -1755,7 +1783,11 @@ final class SmartAuth {
 		//--
 		$token .= '.'.$sign;
 		//--
-		if(((int)strlen((string)$token) < 128) || ((int)strlen((string)$token) > 768)) {
+		if(
+			((int)strlen((string)$token) < 128)  // {{{SYNC-AUTH-JWT-MIN-ALLOWED-LEN}}} ; min size, for plain JWT
+			||
+			((int)strlen((string)$token) > 1280) // {{{SYNC-AUTH-JWT-MAX-ALLOWED-LEN}}} ; max size, for plain JWT
+		) {
 			$jwt['error'] = 'Invalid Token Length';
 			return (array) $jwt;
 		} //end if
@@ -1765,16 +1797,23 @@ final class SmartAuth {
 			switch((int)$encrypt) {
 				case 1: // BF
 					$token = (string) SmartCipherCrypto::bf_encrypt((string)strrev((string)$token), (string)SMART_FRAMEWORK_SECURITY_KEY);
+					$token = (string) 'ejwt.1f;'.substr((string)$token, (int)strlen((string)SmartCipherCrypto::SIGNATURE_BFISH_V3));
 					break;
 				case 2: // 2F
 					$token = (string) SmartCipherCrypto::tf_encrypt((string)strrev((string)$token), (string)SMART_FRAMEWORK_SECURITY_KEY);
+					$token = (string) 'ejwt.2f;'.substr((string)$token, (int)strlen((string)SmartCipherCrypto::SIGNATURE_2FISH_V1_DEFAULT));
 					break;
 				case 3: // 3F
 				default:
 					$token = (string) SmartCipherCrypto::t3f_encrypt((string)strrev((string)$token), (string)SMART_FRAMEWORK_SECURITY_KEY);
+					$token = (string) 'ejwt.3f;'.substr((string)$token, (int)strlen((string)SmartCipherCrypto::SIGNATURE_3FISH_1K_V1_DEFAULT));
 			} //end switch
 			//--
-			if(((int)strlen((string)$token) < 128) || ((int)strlen((string)$token) > 1536)) {
+			if(
+				((int)strlen((string)$token) < 128) 			// {{{SYNC-AUTH-JWT-MIN-ALLOWED-LEN}}} ; min size, for plain or encrypted JWT
+				||
+				((int)strlen((string)$token) > (int)(1280 * 2)) // {{{SYNC-AUTH-JWT-MAX-ALLOWED-LEN}}} ; max size x 2, for plain or allow encrypted JWT
+			) {
 				$jwt['error'] = 'Invalid Encrypted Token Length';
 				return (array) $jwt;
 			} //end if
@@ -1784,17 +1823,181 @@ final class SmartAuth {
 		$jwt['error'] 	= ''; // clear
 		$jwt['algo'] 	= (string) $algo;
 		$jwt['serial'] 	= (string) $serial;
+		$jwt['iplist'] 	= (string) $iplist;
 		$jwt['area'] 	= (string) $area;
 		$jwt['user'] 	= (string) $user;
 		$jwt['expires'] = (int)    $expiresAt;
 		$jwt['issuer'] 	= (string) $issuer;
 		$jwt['privs'] 	= (string) $privs;
 		$jwt['restr'] 	= (string) $restr;
+		$jwt['xtras'] 	= (string) $xtras;
 		$jwt['token'] 	= (string) $token;
+		$jwt['#bytes#'] = (int)    strlen((string)$token);
 		//--
 		// $encrypt
 		//--
 		return (array) $jwt;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Detects if a token may be valid as JWT Format for Display (Pretty Print)
+	 * IMPORTANT:
+	 *  - this will only validate the format, will not try to decode it to see if the token is a real JWT
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param STRING $jwtToken 			A Token (JWT or not ...)
+	 * @return BOOL 					will return TRUE if JWT format detected ; FALSE otherwise or empty
+	 */
+	public static function jwt_valid_format(?string $jwtToken) : bool {
+		//--
+		$jwtToken = (string) trim((string)$jwtToken);
+		if((string)$jwtToken == '') {
+			return false;
+		} //end if
+		//--
+		if(
+			(
+				((int)strlen((string)$jwtToken) >= 48)
+				AND
+				((int)strlen((string)$jwtToken) <= 4096)
+			)
+			AND
+			(
+				(strpos((string)$jwtToken, 'ey') === 0) // smartgo
+				OR
+				(strpos((string)$jwtToken, 'ew') === 0) // others
+			)
+			AND
+			(strpos((string)$jwtToken, '.') !== 0) // must not start with a dot
+			AND
+			(strpos((string)$jwtToken, '.') !== false)
+			AND
+			(strpos((string)strrev((string)$jwtToken), '.') !== 0) // must not end with a dot
+			AND
+			(!!preg_match((string)Smart::REGEX_SAFE_B64S_STR, (string)$jwtToken))
+		) {
+			return true;
+		} //end if
+		//--
+		return false;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Format for Display a JWT Token, Pretty Print
+	 * IMPORTANT:
+	 *  - if the token is empty will return an empty string (mandatory to preserve empty tokens as empty)
+	 *  - if the token is not detected to be JWT will return a pretty print too
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param STRING $jwtToken 				A Token (JWT or not ...)
+	 * @param BOOL $returnEmptyIfNotJwt 	Default is FALSE ; if set to TRUE if the token is NOT JWT will return an empty string
+	 * @return STRING 						JSON expanded and readable if JWT ; original token string if not
+	 */
+	public static function jwt_token_display(?string $jwtToken, bool $returnEmptyIfNotJwt=false) : string {
+		//--
+		$jwtToken = (string) trim((string)$jwtToken);
+		if((string)$jwtToken == '') {
+			return ''; // mandatory to return empty string if already empty ; this is a requirement to avoid display that a token is set if actually is empty for the environments where the token string is pretty print with this method !
+		} //end if
+		//--
+		$lenToken = (int) strlen((string)$jwtToken);
+		//--
+		if(self::jwt_valid_format((string)$jwtToken) === true) {
+			//--
+			$jwtsign = '';
+			//--
+			$jwtToken = (array) explode('.', (string)$jwtToken, 3);
+			if((int)Smart::array_size($jwtToken) == 3) {
+				$jwtsign = (string) trim((string)end($jwtToken));
+				array_pop($jwtToken); // remove last element, that is the binary signature
+			} //end if
+			$expiresAt = 0;
+			$issuedAt = 0;
+			$notBefore = 0;
+			$isHeader = true;
+			$bodyParsed = false;
+			foreach($jwtToken as $kk => $vv) {
+				$jwtToken[(string)$kk] = Smart::json_decode((string)Smart::b64s_dec((string)$vv, true)); // mixed ; B64 STRICT
+				if(($isHeader === false) && ($bodyParsed === false)) {
+					if(is_array($jwtToken[(string)$kk])) {
+						if(isset($jwtToken[(string)$kk]['exp'])) {
+							if(is_int($jwtToken[(string)$kk]['exp'])) {
+								$expiresAt = (int) $jwtToken[(string)$kk]['exp'];
+							} //end if
+						} //end if
+						if(isset($jwtToken[(string)$kk]['iat'])) {
+							if(is_int($jwtToken[(string)$kk]['iat'])) {
+								$issuedAt = (int) $jwtToken[(string)$kk]['iat'];
+							} //end if
+						} //end if
+						if(isset($jwtToken[(string)$kk]['nbf'])) {
+							if(is_int($jwtToken[(string)$kk]['nbf'])) {
+								$notBefore = (int) $jwtToken[(string)$kk]['nbf'];
+							} //end if
+						} //end if
+					} //end if
+					$bodyParsed = true; // set to true after 2nd segment
+				} //end if
+				$isHeader = false; // set to false after 1st segment
+			} //end foreach
+			//--
+			if((string)$jwtsign != '') {
+				$jwtToken[] = [
+					'JWT:signature' => (string) ((int)strlen((string)$jwtsign)).' bytes',
+				];
+			} //end if
+			//--
+			$jwtMetaInfo = [
+				'JWT:size' => (string) ((int)$lenToken).' bytes',
+			];
+			//--
+			if((int)$expiresAt > 0) {
+				$jwtMetaInfo['JWT:expiresAt'] = (string) date('Y-m-d H:i:s', (int)$expiresAt).' UTC';
+			} //end if
+			if((int)$issuedAt > 0) {
+				$jwtMetaInfo['JWT:issuedAt'] = (string) date('Y-m-d H:i:s', (int)$issuedAt).' UTC';
+			} //end if
+			if((int)$notBefore > 0) {
+				$jwtMetaInfo['JWT:notBefore'] = (string) date('Y-m-d H:i:s', (int)$notBefore).' UTC';
+			} //end if
+			//--
+			$jwtToken[] = (array) $jwtMetaInfo;
+			//--
+			$jwtToken = (string) Smart::json_encode((array)$jwtToken, true, true, false);
+			//--
+		} else {
+			//--
+			if($returnEmptyIfNotJwt === false) {
+				//--
+				$nonJwtToken = [
+					'Token' 		=> (string) Smart::text_cut_by_limit((string)$jwtToken, 15, true, '...'),
+					'Token:Type' 	=> 'Opaque / Non-JWT',
+					'Token:Size' 	=> (int) (string) ((int)$lenToken).' bytes',
+				];
+				//--
+				$jwtToken = (string) Smart::json_encode((array)$nonJwtToken, true, true, false);
+				//--
+			} else {
+				//--
+				$jwtToken = '';
+				//--
+			} //end if
+			//--
+		} //end if else
+		//--
+		return (string) $jwtToken;
 		//--
 	} //END FUNCTION
 	//================================================================

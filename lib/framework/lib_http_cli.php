@@ -84,7 +84,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFrameworkSecurity, SmartFileSysUtils, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS ; optional-constant: SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20241228
+ * @version 	v.20250107
  * @package 	@Core:Network
  *
  */
@@ -998,7 +998,7 @@ final class SmartHttpClient {
 			if((string)$user === (string)SmartHttpUtils::AUTH_USER_BEARER) {
 				$this->raw_headers['Authorization'] = 'Bearer '.SmartFrameworkSecurity::PrepareSafeHeaderValue((string)$pwd);
 			} else { // auth basic
-				$this->raw_headers['Authorization'] = 'Basic '.base64_encode((string)$user.':'.$pwd);
+				$this->raw_headers['Authorization'] = 'Basic '.Smart::b64_enc((string)$user.':'.$pwd);
 			} //end if else
 			//--
 		} //end if
@@ -1451,7 +1451,7 @@ final class SmartHttpClient {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartHashCrypto, SmartFrameworkSecurity
- * @version 	v.20241228
+ * @version 	v.20250107
  * @package 	@Core:Network
  *
  */

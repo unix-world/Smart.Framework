@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * DEPENDS classes: 	Smart, SmartAuth, SmartEnvironment, SmartUtils, \SmartModExtLib\AuthAdmins\AuthProviderHttp
  * DEPENDS constants: 	SMART_FRAMEWORK_SECURITY_KEY
  *
- * @version 	v.20250103
+ * @version 	v.20250118
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -663,6 +663,7 @@ abstract class AbstractAuthHandler {
 			(string) self::TPL_FILE,
 			[
 				'SEMAPHORE' => (string) \Smart::array_to_list([ 'skip:js-ui', 'skip:js-media', 'skip:unveil-js' ]),
+				'HEAD-META' => '<meta name="robots" content="noindex">',
 				'TITLE' => (string) self::TXT_LOGOUT,
 				'MAIN'  => (string) \SmartMarkersTemplating::render_file_template(
 					(string) self::TPL_INC_PATH . self::TPL_LOGOUT,
@@ -748,6 +749,7 @@ abstract class AbstractAuthHandler {
 			(string) self::TPL_FILE,
 			[
 				'SEMAPHORE' => (string) \Smart::array_to_list([ 'skip:js-ui', 'skip:js-media', 'skip:unveil-js' ]),
+				'HEAD-META' => '<meta name="robots" content="noindex">',
 				'TITLE' => (string) self::TXT_LOGIN,
 				'MAIN'  => (string) \SmartMarkersTemplating::render_file_template(
 					(string) self::TPL_INC_PATH . self::TPL_LOGIN,

@@ -54,7 +54,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP MongoDB ; classes: Smart, SmartEnvironment, SmartComponents (optional)
- * @version 	v.20241220
+ * @version 	v.20250107
  * @package 	Plugins:Database:MongoDB
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -166,7 +166,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		$this->connex_typ = (string) $type;
 		//--
 		if((string)$password != '') {
-			$password = (string) base64_decode((string)$password);
+			$password = (string) Smart::b64_dec((string)$password, true); // STRICT
 		} //end if
 		//--
 		if(((string)$host == '') OR ((string)$port == '') OR ((string)$db == '') OR ((string)$timeout == '')) {

@@ -1,6 +1,7 @@
 
 // oauth2 :: formRecord Handler
-// v.20231220
+// (c) 2023-present unix-world.org
+// v.20250116
 
 const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 	'use strict';
@@ -47,7 +48,7 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 		if((url.length < 15) || (url.length > 255)) {
 			return false;
 		} //end if
-		if(url.indexOf('https://') !== 0) {
+		if(url.indexOf('https://') !== 0) { // security check
 			return false;
 		}
 		return true;
@@ -83,11 +84,7 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 			notificationDialog('OAuth2 Client Secret is empty');
 			return null;
 		}
-		const theScope = _Utils$.stringPureVal($('input#oauth2_scope').val() || '', true);
-	//	if(theScope == '') {
-	//		notificationDialog('OAuth2 Scope is empty');
-	//		return null;
-	//	}
+		const theScope = _Utils$.stringPureVal($('input#oauth2_scope').val() || '', true); // can be empty
 		const oauth2UrlRedirect = _Utils$.stringPureVal($('input#oauth2_url_redirect').val() || '', true);
 		if(oauth2UrlRedirect == '') {
 			notificationDialog('OAuth2 URL /auth is empty');
@@ -143,7 +140,7 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 			}
 			const oauth2UrlRedirect = _Utils$.stringPureVal(theDataStepOne.oauth2UrlRedirect, true);
 			let isStandaloneUri = true;
-			if((oauth2UrlRedirect.indexOf('https://') == 0) || (oauth2UrlRedirect.indexOf('http://') == 0)) {
+			if((oauth2UrlRedirect.indexOf('https://') === 0) || (oauth2UrlRedirect.indexOf('http://') === 0)) {
 				isStandaloneUri = false;
 			}
 			let oauth2UrlAuth = _Utils$.stringPureVal(theDataStepOne.oauth2UrlAuth, true);
@@ -152,15 +149,20 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 				return false;
 			}
 			oauth2UrlAuth = new URL(String(oauth2UrlAuth));
-			const fragUrlAuth = String(oauth2UrlAuth.hash || '').trim().substring(1); // eliminate # from fragment
+			const fragUrlAuth = String(_Utils$.stringPureVal(oauth2UrlAuth.hash || '', true)).substring(1); // eliminate # from fragment
 			oauth2UrlAuth.hash = ''; // clear fragment
 			oauth2UrlAuth = String(oauth2UrlAuth); // rewrite url without fragment
 			const settingsUrlAuth = new URLSearchParams(fragUrlAuth);
 			let usePKCE = true;
+			let methodPKCE = 'S256'; // default, wide supported
 			for(const [kk, vv] of settingsUrlAuth) {
 				if(kk === 'skip-PKCE') {
 					if(!!vv) {
 						usePKCE = false;
+					}
+				} else if(kk === 'method-PKCE') {
+					if(!!vv) {
+						methodPKCE = _Utils$.stringPureVal(vv, true);
 					}
 				}
 			}
@@ -179,8 +181,6 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 				notificationDialog('OAuth2: Client-ID is Empty');
 				return false;
 			}
-			const cVfy = _Ba$eConv.base_from_hex_convert(_Crypto$Hash.hmac('sha3-384', _Utils$.strRot13(_Ba$eConv.b64s_enc(theApiId)), cId), 62);
-			const cChl = _Ba$eConv.b64_to_b64s(_Crypto$Hash.sha256(cVfy, true), false);
 			oauth2UrlAuth += _Utils$.renderMarkersTpl(_Utils$.stringPureVal(TplAuthParamsUrl), {
 					'CLIENT-ID': 				String(cId || ''),
 					'SCOPE': 					_Utils$.stringPureVal(theDataStepOne.theScope, true),
@@ -189,9 +189,59 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 				},
 				true
 			);
+			const cVfy = _Ba$eConv.base_from_hex_convert(_Crypto$Hash.hmac('sha3-384', _Utils$.strRot13(_Ba$eConv.b64s_enc(theApiId)), cId), 62); // {{{SYNC-OAUTH2-CODE-VERIFIER}}}
+			if((_Utils$.stringTrim(cVfy) == '') || (cVfy.length < 43) || (cVfy.length > 128)) {
+				notificationDialog('OAuth2: Code Verifier is Empty or Invalid');
+				return false;
+			} //end if
+			let cChl = '';
+			let chB64u = true;
+			methodPKCE = _Utils$.stringTrim(methodPKCE.toUpperCase());
+			switch(methodPKCE) { // {{{SYNC-OAUTH2-CHALLENGE-METHODS}}}
+				case 'S224':
+					cChl = _Crypto$Hash.sha224(cVfy, true);
+					break;
+				case 'S256': // most common
+					cChl = _Crypto$Hash.sha256(cVfy, true);
+					break;
+				case 'S384':
+					cChl = _Crypto$Hash.sha384(cVfy, true);
+					break;
+				case 'S512':
+					cChl = _Crypto$Hash.sha512(cVfy, true);
+					break;
+				case '3S224':
+					cChl = _Crypto$Hash.sh3a224(cVfy, true);
+					break;
+				case '3S256':
+					cChl = _Crypto$Hash.sh3a256(cVfy, true);
+					break;
+				case '3S384':
+					cChl = _Crypto$Hash.sh3a384(cVfy, true);
+					break;
+				case '3S512':
+					cChl = _Crypto$Hash.sh3a512(cVfy, true);
+					break;
+				case 'PLAIN':
+					cChl = cVfy;
+					chB64u = false;
+					methodPKCE = methodPKCE.toLowerCase(); // plain, lowercase
+					break;
+				default: // invalid
+					notificationDialog('OAuth2: PKCE Method is Invalid: `' + methodPKCE + '`');
+					return false;
+			}
+			if(!!chB64u) {
+				cChl = _Ba$eConv.b64_to_b64s(cChl, false); // b64u
+			}
+			if(!cChl) {
+				notificationDialog('OAuth2: PKCE Challenge Hash is Empty; Method: `' + methodPKCE + '`');
+				return false;
+			}
 			if(usePKCE === true) {
 				oauth2UrlAuth += _Utils$.renderMarkersTpl(_Utils$.stringPureVal(TplAuthCPartUrl), {
-						'CODE-CHALLENGE': 			String(cChl || ''),
+						'CODE-CHALLENGE': 		String(cChl || ''),
+						'METHOD-CHALLENGE': 	String(methodPKCE || ''),
 					},
 					true
 				);

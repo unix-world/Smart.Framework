@@ -36,7 +36,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access      PUBLIC
  * @depends     optional-constants: SMART_FRAMEWORK_DEBUG_MODE, SMART_FRAMEWORK_INTERNAL_DEBUG, SMART_FRAMEWORK_ENV, SMART_FRAMEWORK_ADMIN_AREA, SMART_FRAMEWORK_RUNTIME_MODE
- * @version     v.20250103
+ * @version     v.20250107
  * @package     @Core
  *
  */
@@ -554,7 +554,7 @@ final class SmartEnvironment { //  This class have to be able to run before load
  *
  * @depends 	SmartUnicode
  *
- * @version 	v.20240118
+ * @version 	v.20250107
  * @package 	Application
  *
  */

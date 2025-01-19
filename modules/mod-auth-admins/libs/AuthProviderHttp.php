@@ -27,11 +27,11 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * This class provides the mechanism for HTTP Basic Authentication
  * The HTTP Basic Authentication is more secure than HTTP Digest Authentication especially if used over HTTPS connections
  *
- * Depends: SmartFrameworkSecurity, SmartAuth, SmartUtils
+ * Depends: SmartFrameworkSecurity
  *
  * @ignore
  *
- * @version 	v.20231021
+ * @version 	v.20250107
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -147,7 +147,7 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 				if(\stripos((string)$authheader, 'Basic ') === 0) { // 1st try Basic Auth
 					$authheader = (string) \trim((string)\substr((string)$authheader, 6));
 					if((string)$authheader != '') {
-						$authheader = (string) \base64_decode((string)$authheader);
+						$authheader = (string) \base64_decode((string)$authheader, true); // B64 STRICT
 						if(((string)\trim((string)$authheader) != '') AND (\strpos((string)$authheader, ':') !== false)) {
 							$authheader = \explode(':', (string)$authheader, 2); // get just first 2 parts, by first `:` occurence, even if there are multiple :
 							if(\is_array($authheader) AND ((int)\count($authheader) == 2)) {

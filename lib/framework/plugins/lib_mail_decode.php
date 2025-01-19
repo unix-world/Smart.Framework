@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: SmartUnicode, Smart, SmartFileSysUtils, SmartDetectImages
- * @version 	v.20230101
+ * @version 	v.20250107
  * @package 	Plugins:Mailer
  *
  */
@@ -823,7 +823,7 @@ final class SmartMailerMimeDecode {
  * @internal
  *
  * @depends 	classes: Smart, SmartUnicode, SmartMailerNotes
- * @version 	v.20230101
+ * @version 	v.20250107
  *
  */
 final class SmartMailerMimeExtract {
@@ -931,7 +931,7 @@ final class SmartMailerMimeExtract {
 	//================================================================
 	private function _re_encode_part_as_b64($part) {
 		//--
-		return (string) trim((string)chunk_split((string)base64_encode((string)$part), 76, "\r\n"));
+		return (string) trim((string)chunk_split((string)Smart::b64_enc((string)$part), 76, "\r\n"));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1098,7 +1098,7 @@ final class SmartMailerMimeExtract {
 						$body .= 'Content-Transfer-Encoding: base64'."\r\n";
 						$body .= 'Content-Disposition: inline; filename="mime-decoding-errors.html"'."\r\n";
 						$body .= "\r\n";
-						$body .= (string) $this->_re_encode_part_as_b64('<br><img alt="Mime Decoding Error" title="Mime Decoding Error" align="right" width="96" height="96" src="data:image/svg+xml;base64,'.Smart::escape_html((string)base64_encode((string)self::MIME_ERR_SVG)).'"><div title="'.Smart::escape_html((string)Smart::normalize_spaces((string)$content_type['value'])).'" style="text-align:left; background:#FCFCFC; border: 1px solid #ECECEC; border-radius:3px;"><h1 style="color:#FF3300;">Smart.Framework :: MIME DECODE ERROR :: Encrypted Apple/Note</h1><h2>Failed to decrypt the main part of this note</h2><h3>Technical Info: [&nbsp;Bytes='.(int)$len_body.'&nbsp;/&nbsp;Encoding='.Smart::escape_html((string)Smart::normalize_spaces((string)$content_transfer_encoding['value'])).'&nbsp;]</h3><pre style="white-space: pre-wrap;">'.Smart::escape_html((string)$errbody).'</pre>')."\r\n";
+						$body .= (string) $this->_re_encode_part_as_b64('<br><img alt="Mime Decoding Error" title="Mime Decoding Error" align="right" width="96" height="96" src="data:image/svg+xml;base64,'.Smart::escape_html((string)Smart::b64_enc((string)self::MIME_ERR_SVG)).'"><div title="'.Smart::escape_html((string)Smart::normalize_spaces((string)$content_type['value'])).'" style="text-align:left; background:#FCFCFC; border: 1px solid #ECECEC; border-radius:3px;"><h1 style="color:#FF3300;">Smart.Framework :: MIME DECODE ERROR :: Encrypted Apple/Note</h1><h2>Failed to decrypt the main part of this note</h2><h3>Technical Info: [&nbsp;Bytes='.(int)$len_body.'&nbsp;/&nbsp;Encoding='.Smart::escape_html((string)Smart::normalize_spaces((string)$content_transfer_encoding['value'])).'&nbsp;]</h3><pre style="white-space: pre-wrap;">'.Smart::escape_html((string)$errbody).'</pre>')."\r\n";
 						$body .= "\r\n";
 						$body .= '--'.$newboundary.'--'."\r\n";
 						$errbody = '';
@@ -1336,30 +1336,30 @@ final class SmartMailerMimeExtract {
 		$matches = array();
 		while(preg_match('/(=\?([^?]+)\?(q|b)\?([^?]*)\?=)/i', (string)$input, $matches)) { // insensitive
 			//--
-			$encoded  = (string) $matches[1];
-			$charset  = (string) $matches[2];
-			$encoding = (string) $matches[3];
-			$text     = (string) $matches[4];
+			$encoded  = (string) ($matches[1] ?? null);
+			$charset  = (string) ($matches[2] ?? null);
+			$encoding = (string) ($matches[3] ?? null);
+			$text     = (string) ($matches[4] ?? null);
 			//--
-			if(((string)$charset == '') OR ((string)$charset == 'us-ascii')) {
+			if(((string)$charset == '') OR ((string)strtolower((string)$charset) == 'us-ascii')) {
 				$charset = 'iso-8859-1'; // correction :: {{{SYNC-CHARSET-FIX}}}
 			} //end if
 			//--
-			switch(strtoupper($encoding)) {
+			switch((string)strtoupper((string)$encoding)) {
 				case 'B':
-					$text = (string) base64_decode($text);
+					$text = (string) Smart::b64_dec((string)$text);
 					$text = (string) SmartUnicode::convert_charset((string)$text, (string)$charset, (string)$this->charset); // {{{SYNC-CHARSET-CONVERT}}}
 					break;
 				case 'Q':
-					$text = (string) str_replace('_', ' ', $text); // {{{SYNC-QUOTED-PRINTABLE-FIX}}} Fix: for google mail subjects ; normally on QP the _ must be encoded as =5F ; because google mail use the _ instead of space in all emails subject, it is considered a major enforcement to support this replacement
-					$text = (string) quoted_printable_decode($text);
+					$text = (string) str_replace('_', ' ', (string)$text); // {{{SYNC-QUOTED-PRINTABLE-FIX}}} Fix: for google mail subjects ; normally on QP the _ must be encoded as =5F ; because google mail use the _ instead of space in all emails subject, it is considered a major enforcement to support this replacement
+					$text = (string) quoted_printable_decode((string)$text);
 					$text = (string) SmartUnicode::convert_charset((string)$text, (string)$charset, (string)$this->charset); // {{{SYNC-CHARSET-CONVERT}}}
 					break;
 				default:
 					// as is
 			} //end switch
 			//--
-			$input = (string) str_replace($encoded, $text, $input);
+			$input = (string) str_replace((string)$encoded, (string)$text, (string)$input);
 			//--
 		} //end while
 		//--
@@ -1378,9 +1378,9 @@ final class SmartMailerMimeExtract {
 	// @access private
 	private function _decodeBody($input, $encoding='') {
 		//--
-		switch(strtolower((string)$encoding)) {
+		switch((string)strtolower((string)$encoding)) {
 			case 'base64':
-				$input = (string) base64_decode((string)$input);
+				$input = (string) Smart::b64_dec((string)$input);
 				break;
 			case 'quoted-printable':
 				$input = (string) quoted_printable_decode((string)$input);

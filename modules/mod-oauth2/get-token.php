@@ -17,7 +17,7 @@ define('SMART_APP_MODULE_AUTH', true);
  * Admin Controller
  *
  * @ignore
- * @version v.20240115
+ * @version v.20250112
  *
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -26,15 +26,22 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		if(SmartAuth::check_login() !== true) {
-			$this->PageViewSetCfg('error', 'OAuth2 Get.Token Requires Authentication ! ...');
+			$this->PageViewSetCfg('error', 'OAuth2 Get.Token Requires Authentication !');
 			return 403;
 		} //end if
 		//--
-		if(SmartEnvironment::isAdminArea()) {
-			if(SmartAuth::test_login_privilege('oauth2') !== true) { // PRIVILEGES
-				$this->PageViewSetCfg('error', 'OAuth2 Get.Token requires the following privileges: `oauth2` ...');
-				return 403;
-			} //end if
+		if(!SmartEnvironment::isAdminArea()) {
+			$this->PageViewSetCfg('error', 'OAuth2 Get.Token requires Admin Area !');
+			return 502;
+		} //end if
+		if(SmartEnvironment::isTaskArea()) {
+			$this->PageViewSetCfg('error', 'OAuth2 Get.Token cannot run under Admin Task Area !');
+			return 502;
+		} //end if
+		//--
+		if(SmartAuth::test_login_privilege('oauth2') !== true) { // PRIVILEGES
+			$this->PageViewSetCfg('error', 'OAuth2 Get.Token requires the following privileges: `oauth2`');
+			return 403;
 		} //end if
 		//--
 

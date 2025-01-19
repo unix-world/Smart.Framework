@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @hint This abstract controller can be used to build a DAV Service / CardDAV over the Admin Middleware service
  *
- * @version		20240116
+ * @version		20250107
  * @package 	development:modules:Webdav
  *
  */

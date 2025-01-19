@@ -42,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20240118
+ * @version 	v.20250107
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -985,7 +985,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20240118
+ * @version 	v.20250107
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -1928,7 +1928,7 @@ final class SmartMailerMimeParser {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartCipherCrypto, SmartHttpUtils, SmartHttpClient, SmartAuth, SmartUtils
- * @version 	v.20240119
+ * @version 	v.20250107
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -2003,7 +2003,7 @@ final class SmartMailerOauth2 {
 				} elseif((strpos((string)$url, 'https://') !== 0) OR (strpos((string)$url, '/admin.php?') === false)) { // security ! allow only https on S.F. !
 					return '';
 				} //end if
-				$params['pass'] = (string) trim((string)base64_decode((string)$params['pass'])); // it is only a pass hash, it is ok to store as B64 only
+				$params['pass'] = (string) trim((string)Smart::b64_dec((string)$params['pass'], true)); // it is only a pass hash, it is ok to store as B64 only
 				if((string)$params['pass'] == '') {
 					return '';
 				} //end if

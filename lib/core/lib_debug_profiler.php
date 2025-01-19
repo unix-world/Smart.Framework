@@ -29,7 +29,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  *
  * @depends 	css: tpl-highlight.css ; classes: Smart, SmartComponents
- * @version 	v.20231107
+ * @version 	v.20250107
  * @package 	Application:Development
  *
  */
@@ -195,21 +195,21 @@ final class SmartDebugProfiler {
 				$arr['resources-time'] = $dbg_stats['time'];
 				$arr['resources-memory'] = $dbg_stats['memory'];
 				$arr['response-code'] = (int) http_response_code();
-				$arr['response-headers'] = (string) base64_encode(Smart::seryalize((array)headers_list()));
+				$arr['response-headers'] = (string) Smart::b64_enc(Smart::seryalize((array)headers_list()));
 				if(function_exists('getallheaders')) {
-					$arr['request-headers'] = (string) base64_encode(Smart::seryalize((array)getallheaders()));
+					$arr['request-headers'] = (string) Smart::b64_enc(Smart::seryalize((array)getallheaders()));
 				} else {
-					$arr['request-headers'] = (string) base64_encode(Smart::seryalize([]));
+					$arr['request-headers'] = (string) Smart::b64_enc(Smart::seryalize([]));
 				} //end if else
-				$arr['env-req-filtered'] = (string) base64_encode(Smart::seryalize((array)SmartFrameworkRegistry::getRequestVars()));
-				$arr['env-get'] = (string) base64_encode(Smart::seryalize(is_array($_GET) ? (array)$_GET : []));
-				$arr['env-post'] = (string) base64_encode(Smart::seryalize(is_array($_POST) ? (array)$_POST : []));
-				$arr['env-cookies'] = (string) base64_encode(Smart::seryalize((array)SmartFrameworkRegistry::getCookieVars())); // reflect also cookies set in this request
-				$arr['env-server'] = (string) base64_encode(Smart::seryalize((array)SmartFrameworkRegistry::getServerVars()));
+				$arr['env-req-filtered'] = (string) Smart::b64_enc(Smart::seryalize((array)SmartFrameworkRegistry::getRequestVars()));
+				$arr['env-get'] = (string) Smart::b64_enc(Smart::seryalize(is_array($_GET) ? (array)$_GET : []));
+				$arr['env-post'] = (string) Smart::b64_enc(Smart::seryalize(is_array($_POST) ? (array)$_POST : []));
+				$arr['env-cookies'] = (string) Smart::b64_enc(Smart::seryalize((array)SmartFrameworkRegistry::getCookieVars())); // reflect also cookies set in this request
+				$arr['env-server'] = (string) Smart::b64_enc(Smart::seryalize((array)SmartFrameworkRegistry::getServerVars()));
 				if(@session_status() === PHP_SESSION_ACTIVE) {
-					$arr['php-session'] = (string) base64_encode(Smart::seryalize(is_array($_SESSION) ? (array)$_SESSION : []));
+					$arr['php-session'] = (string) Smart::b64_enc(Smart::seryalize(is_array($_SESSION) ? (array)$_SESSION : []));
 				} else {
-					$arr['php-session'] = (string) base64_encode(Smart::seryalize(''));
+					$arr['php-session'] = (string) Smart::b64_enc(Smart::seryalize(''));
 				} //end if else
 				if(SmartAuth::check_login() === true) {
 					$arr['auth-data'] = array('is_auth' => true, 'login_data' => (array)SmartAuth::get_login_data(), '#login-pass-hash#', SmartAuth::get_auth_passhash());
@@ -217,21 +217,21 @@ final class SmartDebugProfiler {
 					$arr['auth-data'] = array('is_auth' => false, 'login_data' => []);
 				} //end if else
 				foreach((array)SmartEnvironment::getDebugMsgs('optimizations') as $key => $val) {
-					$arr['log-optimizations'][(string)$key] = (string) base64_encode(Smart::seryalize((array)$val));
+					$arr['log-optimizations'][(string)$key] = (string) Smart::b64_enc(Smart::seryalize((array)$val));
 				} //end foreach
 				foreach((array)SmartEnvironment::getDebugMsgs('extra') as $key => $val) {
-					$arr['log-extra'][(string)$key] = (string) base64_encode(Smart::seryalize((array)$val));
+					$arr['log-extra'][(string)$key] = (string) Smart::b64_enc(Smart::seryalize((array)$val));
 				} //end foreach
 				foreach((array)SmartEnvironment::getDebugMsgs('db') as $key => $val) {
-					$arr['log-db'][(string)$key] = (string) base64_encode(Smart::seryalize((array)$val));
+					$arr['log-db'][(string)$key] = (string) Smart::b64_enc(Smart::seryalize((array)$val));
 				} //end foreach
 				if(Smart::array_size((array)SmartEnvironment::getDebugMsgs('mail')) > 0) {
-					$arr['log-mail'] = (string) base64_encode(Smart::seryalize((array)SmartEnvironment::getDebugMsgs('mail')));
+					$arr['log-mail'] = (string) Smart::b64_enc(Smart::seryalize((array)SmartEnvironment::getDebugMsgs('mail')));
 				} else {
 					$arr['log-mail'] = '';
 				} //end if else
 				foreach((array)SmartEnvironment::getDebugMsgs('modules') as $key => $val) {
-					$arr['log-modules'][(string)$key] = (string) base64_encode(Smart::seryalize((array)$val));
+					$arr['log-modules'][(string)$key] = (string) Smart::b64_enc(Smart::seryalize((array)$val));
 				} //end foreach
 				//--
 				SmartFileSystem::write((string)$the_file, (string)Smart::seryalize((array)$arr));
@@ -516,45 +516,45 @@ final class SmartDebugProfiler {
 			$txt_token = '<div class="smartframework_debugbar_status smartframework_debugbar_status_token" style="width: 50%;"><font size="2"><b>Debug Token: '.Smart::escape_html($arr[$i]['debug-token']).'</b></font></div>';
 			$txt_url = '<div class="smartframework_debugbar_status smartframework_debugbar_status_url"><font size="2"><b>'.'<span class="'.Smart::escape_html((string)$status_style).'">'.(int)$arr[$i]['response-code'].'</span>'.'&nbsp;URL: '.Smart::escape_html((string)($arr[$i]['request-uri'] ?? '')).'</b></font></div>';
 			//--
-			$debug_response .= $txt_main.$txt_url.$txt_token.self::print_log_headers($arr[$i]['response-code'], Smart::unseryalize((string)base64_decode((string)$arr[$i]['response-headers'])), Smart::unseryalize((string)base64_decode((string)$arr[$i]['request-headers']))).'<hr>';
+			$debug_response .= $txt_main.$txt_url.$txt_token.self::print_log_headers($arr[$i]['response-code'], Smart::unseryalize((string)Smart::b64_dec((string)$arr[$i]['response-headers'])), Smart::unseryalize((string)Smart::b64_dec((string)$arr[$i]['request-headers']))).'<hr>';
 			//--
 			$debug_resources .= $txt_main.$txt_url.$txt_token.self::print_log_resources($arr[$i]['resources-time'], $arr[$i]['resources-memory']);
 			//--
-			$debug_environment .= $txt_main.$txt_url.$txt_token.self::print_log_environment(Smart::unseryalize((string)base64_decode((string)$arr[$i]['env-req-filtered'])), Smart::unseryalize((string)base64_decode((string)$arr[$i]['env-cookies'])), Smart::unseryalize((string)base64_decode((string)$arr[$i]['env-get'])), Smart::unseryalize((string)base64_decode((string)$arr[$i]['env-post'])), Smart::unseryalize((string)base64_decode((string)$arr[$i]['env-server']))).'<hr>';
+			$debug_environment .= $txt_main.$txt_url.$txt_token.self::print_log_environment(Smart::unseryalize((string)Smart::b64_dec((string)$arr[$i]['env-req-filtered'])), Smart::unseryalize((string)Smart::b64_dec((string)$arr[$i]['env-cookies'])), Smart::unseryalize((string)Smart::b64_dec((string)$arr[$i]['env-get'])), Smart::unseryalize((string)Smart::b64_dec((string)$arr[$i]['env-post'])), Smart::unseryalize((string)Smart::b64_dec((string)$arr[$i]['env-server']))).'<hr>';
 			//--
-			$debug_session .= $txt_main.$txt_url.$txt_token.self::print_log_session(Smart::unseryalize((string)base64_decode((string)$arr[$i]['php-session']))).'<hr>';
+			$debug_session .= $txt_main.$txt_url.$txt_token.self::print_log_session(Smart::unseryalize((string)Smart::b64_dec((string)$arr[$i]['php-session']))).'<hr>';
 			//--
 			$debug_auth .= $txt_main.$txt_url.$txt_token.self::print_log_auth($arr[$i]['auth-data']).'<hr>';
 			//--
 			if(isset($arr[$i]['log-optimizations']) AND is_array($arr[$i]['log-optimizations'])) {
 				$debug_optimizations .= $txt_main.$txt_url.$txt_token;
 				foreach($arr[$i]['log-optimizations'] as $key => $val) {
-					$debug_optimizations .= self::print_log_optimizations((string)strtoupper((string)$key), Smart::unseryalize((string)base64_decode((string)$val))).'<hr>';
+					$debug_optimizations .= self::print_log_optimizations((string)strtoupper((string)$key), Smart::unseryalize((string)Smart::b64_dec((string)$val))).'<hr>';
 				} //end foreach
 			} //end if
 			//--
 			if(isset($arr[$i]['log-mail']) AND Smart::is_nscalar($arr[$i]['log-mail']) AND ((string)$arr[$i]['log-mail'] != '')) {
-				$debug_mail .= $txt_main.$txt_url.$txt_token.self::print_log_mail(Smart::unseryalize((string)base64_decode((string)$arr[$i]['log-mail']))).'<hr>';
+				$debug_mail .= $txt_main.$txt_url.$txt_token.self::print_log_mail(Smart::unseryalize((string)Smart::b64_dec((string)$arr[$i]['log-mail']))).'<hr>';
 			} //end if
 			//--
 			if(isset($arr[$i]['log-db']) AND is_array($arr[$i]['log-db'])) {
 				$debug_dbqueries .= $txt_main.$txt_url.$txt_token;
 				foreach($arr[$i]['log-db'] as $key => $val) {
-					$debug_dbqueries .= self::print_log_database((string)strtoupper((string)$key), Smart::unseryalize((string)base64_decode((string)$val))).'<hr>';
+					$debug_dbqueries .= self::print_log_database((string)strtoupper((string)$key), Smart::unseryalize((string)Smart::b64_dec((string)$val))).'<hr>';
 				} //end foreach
 			} //end if
 			//--
 			if(isset($arr[$i]['log-extra']) AND is_array($arr[$i]['log-extra'])) {
 				$debug_extra .= $txt_main.$txt_url.$txt_token;
 				foreach($arr[$i]['log-extra'] as $key => $val) {
-					$debug_extra .= self::print_log_extra((string)strtoupper((string)$key), Smart::unseryalize((string)base64_decode((string)$val))).'<hr>';
+					$debug_extra .= self::print_log_extra((string)strtoupper((string)$key), Smart::unseryalize((string)Smart::b64_dec((string)$val))).'<hr>';
 				} //end foreach
 			} //end if
 			//--
 			if(isset($arr[$i]['log-modules']) AND is_array($arr[$i]['log-modules'])) {
 				$debug_modules .= $txt_main.$txt_url.$txt_token;
 				foreach($arr[$i]['log-modules'] as $key => $val) {
-					$debug_modules .= self::print_log_modules((string)strtoupper((string)$key), Smart::unseryalize((string)base64_decode((string)$val))).'<hr>';
+					$debug_modules .= self::print_log_modules((string)strtoupper((string)$key), Smart::unseryalize((string)Smart::b64_dec((string)$val))).'<hr>';
 				} //end foreach
 			} //end if
 			//--

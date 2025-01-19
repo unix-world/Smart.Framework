@@ -110,7 +110,7 @@ final class SmartHashCrypto {
 		$nByte = (string) chr(0);
 		//--
 		$antiAtkLen = (string) self::sha384((string)$str.$nByte.$custom_salt);
-		$antiAtkB64Len = (string) base64_encode((string)hex2bin((string)$antiAtkLen));
+		$antiAtkB64Len = (string) Smart::b64_enc((string)hex2bin((string)$antiAtkLen));
 		//--
 		$cSalt = (string) self::crc32b((string)$antiAtkLen, true); // B36
 		//--
@@ -519,7 +519,7 @@ final class SmartHashCrypto {
 		//--
 		$hash = (string) hash('sha3-512', (string)$str, (bool)$b64);
 		if($b64 === true) {
-			$hash = (string) base64_encode((string)$hash);
+			$hash = (string) Smart::b64_enc((string)$hash);
 		} //end if
 		//--
 		return (string) $hash;
@@ -548,7 +548,7 @@ final class SmartHashCrypto {
 		//--
 		$hash = (string) hash('sha512', (string)$str, (bool)$b64);
 		if($b64 === true) {
-			$hash = (string) base64_encode((string)$hash);
+			$hash = (string) Smart::b64_enc((string)$hash);
 		} //end if
 		//--
 		return (string) $hash;
@@ -577,7 +577,7 @@ final class SmartHashCrypto {
 		//--
 		$hash = (string) hash('sha3-384', (string)$str, (bool)$b64);
 		if($b64 === true) {
-			$hash = (string) base64_encode((string)$hash);
+			$hash = (string) Smart::b64_enc((string)$hash);
 		} //end if
 		//--
 		return (string) $hash;
@@ -609,7 +609,7 @@ final class SmartHashCrypto {
 		//--
 		$hash = (string) hash('sha384', (string)$str, (bool)$b64);
 		if($b64 === true) {
-			$hash = (string) base64_encode((string)$hash);
+			$hash = (string) Smart::b64_enc((string)$hash);
 		} //end if
 		//--
 		return (string) $hash;
@@ -638,7 +638,7 @@ final class SmartHashCrypto {
 		//--
 		$hash = (string) hash('sha3-256', (string)$str, (bool)$b64);
 		if($b64 === true) {
-			$hash = (string) base64_encode((string)$hash);
+			$hash = (string) Smart::b64_enc((string)$hash);
 		} //end if
 		//--
 		return (string) $hash;
@@ -667,7 +667,7 @@ final class SmartHashCrypto {
 		//--
 		$hash = (string) hash('sha256', (string)$str, (bool)$b64);
 		if($b64 === true) {
-			$hash = (string) base64_encode((string)$hash);
+			$hash = (string) Smart::b64_enc((string)$hash);
 		} //end if
 		//--
 		return (string) $hash;
@@ -696,7 +696,7 @@ final class SmartHashCrypto {
 		//--
 		$hash = (string) hash('sha3-224', (string)$str, (bool)$b64);
 		if($b64 === true) {
-			$hash = (string) base64_encode((string)$hash);
+			$hash = (string) Smart::b64_enc((string)$hash);
 		} //end if
 		//--
 		return (string) $hash;
@@ -725,7 +725,7 @@ final class SmartHashCrypto {
 		//--
 		$hash = (string) hash('sha224', (string)$str, (bool)$b64);
 		if($b64 === true) {
-			$hash = (string) base64_encode((string)$hash);
+			$hash = (string) Smart::b64_enc((string)$hash);
 		} //end if
 		//--
 		return (string) $hash;
@@ -751,7 +751,7 @@ final class SmartHashCrypto {
 		//--
 		$hash = (string) hash('sha1', (string)$str, (bool)$b64);
 		if($b64 === true) {
-			$hash = (string) base64_encode((string)$hash);
+			$hash = (string) Smart::b64_enc((string)$hash);
 		} //end if
 		//--
 		return (string) $hash;
@@ -777,7 +777,7 @@ final class SmartHashCrypto {
 		//--
 		$hash = (string) hash('md5', (string)$str, (bool)$b64);
 		if($b64 === true) {
-			$hash = (string) base64_encode((string)$hash);
+			$hash = (string) Smart::b64_enc((string)$hash);
 		} //end if
 		//--
 		return (string) $hash;
@@ -811,7 +811,7 @@ final class SmartHashCrypto {
 		//--
 		$hash = (string) hash_hmac((string)$algo, (string)$str, (string)$key, (bool)$b64);
 		if($b64 === true) {
-			$hash = (string) base64_encode((string)$hash);
+			$hash = (string) Smart::b64_enc((string)$hash);
 		} //end if
 		//--
 		return (string) $hash;
@@ -872,7 +872,7 @@ final class SmartHashCrypto {
 		$sum = (string) (new SmartHashPoly1305((string)$key))->getSum((string)$str);
 		//--
 		if($b64 === true) {
-			$sum = (string) base64_encode((string)$sum);
+			$sum = (string) Smart::b64_enc((string)$sum);
 		} else {
 			$sum = (string) bin2hex((string)$sum);
 		} //end if else
@@ -971,9 +971,9 @@ final class SmartHashCrypto {
 		} //end if
 		//--
 		$data['error'] 			= ''; // clear
-		$data['private-key'] 	= (string) base64_encode((string)$privateKey);
-		$data['public-key'] 	= (string) base64_encode((string)$publicKey);
-		$data['signature'] 		= (string) base64_encode((string)$signature);
+		$data['private-key'] 	= (string) Smart::b64_enc((string)$privateKey);
+		$data['public-key'] 	= (string) Smart::b64_enc((string)$publicKey);
+		$data['signature'] 		= (string) Smart::b64_enc((string)$signature);
 		return (array) $data;
 		//--
 	} //END FUNCTION
@@ -1100,7 +1100,7 @@ final class SmartHashCrypto {
  *
  * @access      PUBLIC
  * @depends     classes: Smart
- * @version     v.20231114
+ * @version     v.20250107
  * @package     @Core:Crypto
  *
  */
@@ -1422,7 +1422,7 @@ final class SmartHashPoly1305 {
  *
  * @depends 	Smart, SmartHashCrypto
  *
- * @version 	v.20231114
+ * @version 	v.20250107
  * @package 	Application
  *
  */

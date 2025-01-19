@@ -45,7 +45,7 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartEnvironment
- * @version 	v.20231031
+ * @version 	v.20250107
  * @package 	@Core
  *
  */
@@ -226,7 +226,7 @@ final class SmartCache {
  * @internal
  *
  * @depends 	classes: Smart
- * @version 	v.20231031
+ * @version 	v.20250107
  * @package 	development:Application
  *
  */
@@ -635,7 +635,7 @@ abstract class SmartAbstractPersistentCache {
 			return '';
 		} //end if
 		//--
-		return (string) base64_encode((string)$arch_data).'#'.$crc32b;
+		return (string) Smart::b64_enc((string)$arch_data).'#'.$crc32b;
 		//--
 	} //END FUNCTION
 
@@ -671,8 +671,8 @@ abstract class SmartAbstractPersistentCache {
 			return null; // no data to unarchive or no checksum
 		} //end if
 		//--
-		$arch_data = @base64_decode((string)$arch_data, true); // STRICT ! don't make it string, may return false
-		if(($arch_data === false) OR ((string)trim((string)$arch_data) == '')) { // use trim, the deflated string can't contain only spaces
+		$arch_data = Smart::b64_dec((string)$arch_data, true); // STRICT ! don't make it string, may return null
+		if(($arch_data === null) OR ((string)trim((string)$arch_data) == '')) { // use trim, the deflated string can't contain only spaces
 			Smart::log_warning('SmartPersistentCache / Cache Variable Decompress :: Empty Data after B64-Decode ! ...');
 			return null; // something went wrong after b64 decoding ...
 		} //end if
@@ -731,7 +731,7 @@ if(defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER') AND (SMART_FRAMEWORK_PERS
  *
  * @access 		PUBLIC
  * @depends 	classes: SmartAbstractPersistentCache
- * @version 	v.20231031
+ * @version 	v.20250107
  * @package 	Application:Caching
  *
  */

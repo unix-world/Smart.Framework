@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_AREA', 'INDEX'); // INDEX, ADMIN, SHARED
  * Index Controller
  *
  * @ignore
- * @version v.20240115
+ * @version v.20250112
  *
  */
 final class SmartAppIndexController extends SmartAbstractAppController {
@@ -27,12 +27,19 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 		// Sample return URLs:
 		// 		* https://127.0.0.1/sites/smart-framework/?page=oauth2.get-code
 		// 		* https://127.0.0.1/sites/smart-framework/index.php/page/oauth2.get-code/
-		// The prefered format: https://127.0.0.1/sites/smart-framework/index.php/page/oauth2.get-code/
+		// The prefered format (wide supported) is: https://127.0.0.1/sites/smart-framework/index.php/page/oauth2.get-code/
 		// Expected Params: &code={a-new-code-provided-by-the api}&state={csrf-public-key}
 		//--
 		// IMPORTANT:
 		// 	* this page will be loaded through the OAuth2 proxy and re-displayed
 		// 	* thus everything must be inline (no linked page resources)
+		//--
+
+		//--
+		if(SmartEnvironment::isAdminArea() OR SmartEnvironment::isTaskArea()) {
+			$this->PageViewSetCfg('error', 'OAuth2 Get.Code requires Index Area');
+			return 502;
+		} //end if
 		//--
 
 		//--

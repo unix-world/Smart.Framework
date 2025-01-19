@@ -1,4 +1,4 @@
-<!-- Partial Template: TestUnit.Partials.CryptoTest r.20231203 -->
+<!-- Partial Template: TestUnit.Partials.CryptoTest r.20250118 -->
 <style>
 div.crypto-test-results {
 	white-space: nowrap !important;
@@ -46,24 +46,34 @@ Base64@Decoded:&nbsp;<span id="base64dec-string" style="color:#FF5500;">[###BASE
 Bin2Hex@Encoded:&nbsp;<span id="bin2hex-encoded" style="color:#444477;">[###BIN2HEX-ENCODED|html###]</span><br>
 Hex2Bin@Decoded:&nbsp;<span id="hex2bin-decoded" style="color:#FF5500;">[###HEX2BIN-DECODED|html###]</span><br>
 <input type="hidden" id="threefish_tf_bf-key" value="[###THREEFISH_TF_BF-KEY|html###]">
-Threefish+Twofish+Blowfish@Encrypted:&nbsp;<span id="threefish_tf_bf-encrypted" style="color:#66AA00;">[###THREEFISH_TF_BF-ENCRYPTED|html###]</span><br>
-Threefish+Twofish+Blowfish@Decrypted:&nbsp;<span id="threefish_tf_bf-decrypted" style="color:#FF5500;">[###THREEFISH_TF_BF-DECRYPTED|html###]</span><br>
+Threefish+Twofish+Blowfish@Encrypted:&nbsp;<span id="threefish_tf_bf-random-encrypted" style="color:#66AA00;">[###THREEFISH_TF_BF-ENCRYPTED|html###]</span><br>
+Threefish+Twofish+Blowfish@Decrypted:&nbsp;<span id="threefish_tf_bf-random-decrypted" style="color:#FF5500;">[###THREEFISH_TF_BF-DECRYPTED|html###]</span><br>
+Threefish+Twofish+Blowfish@Encrypted(NO-RND):&nbsp;<span id="threefish_tf_bf-encrypted" style="color:#66AA00;">[###THREEFISH_TF_BF-NORND-ENCRYPTED|html###]</span><br>
+Threefish+Twofish+Blowfish@Decrypted(NO-RND):&nbsp;<span id="threefish_tf_bf-decrypted" style="color:#FF5500;">[###THREEFISH_TF_BF-NORND-DECRYPTED|html###]</span><br>
 Threefish+Twofish+Blowfish@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###THREEFISH_TF_BF-ALGO|html###]</span><br>
 <input type="hidden" id="threefish-key" value="[###THREEFISH-KEY|html###]">
-Threefish@Encrypted:&nbsp;<span id="threefish-encrypted" style="color:#66AA00;">[###THREEFISH-ENCRYPTED|html###]</span><br>
-Threefish@Decrypted:&nbsp;<span id="threefish-decrypted" style="color:#FF5500;">[###THREEFISH-DECRYPTED|html###]</span><br>
+Threefish@Encrypted:&nbsp;<span id="threefish-random-encrypted" style="color:#66AA00;">[###THREEFISH-ENCRYPTED|html###]</span><br>
+Threefish@Decrypted:&nbsp;<span id="threefish-random-decrypted" style="color:#FF5500;">[###THREEFISH-DECRYPTED|html###]</span><br>
+Threefish@Encrypted(NO-RND):&nbsp;<span id="threefish-encrypted" style="color:#66AA00;">[###THREEFISH-NORND-ENCRYPTED|html###]</span><br>
+Threefish@Decrypted(NO-RND):&nbsp;<span id="threefish-decrypted" style="color:#FF5500;">[###THREEFISH-NORND-DECRYPTED|html###]</span><br>
 Threefish@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###THREEFISH-ALGO|html###]</span><br>
 <input type="hidden" id="twofish_blowfish-key" value="[###TWOFISH_BLOWFISH-KEY|html###]">
-Twofish+Blowfish@Encrypted:&nbsp;<span id="twofish_blowfish-encrypted" style="color:#66AA00;">[###TWOFISH_BLOWFISH-ENCRYPTED|html###]</span><br>
-Twofish+Blowfish@Decrypted:&nbsp;<span id="twofish_blowfish-decrypted" style="color:#FF5500;">[###TWOFISH_BLOWFISH-DECRYPTED|html###]</span><br>
+Twofish+Blowfish@Encrypted:&nbsp;<span id="twofish_blowfish-random-encrypted" style="color:#66AA00;">[###TWOFISH_BLOWFISH-ENCRYPTED|html###]</span><br>
+Twofish+Blowfish@Decrypted:&nbsp;<span id="twofish_blowfish-random-decrypted" style="color:#FF5500;">[###TWOFISH_BLOWFISH-DECRYPTED|html###]</span><br>
+Twofish+Blowfish@Encrypted(NO-RND):&nbsp;<span id="twofish_blowfish-encrypted" style="color:#66AA00;">[###TWOFISH_BLOWFISH-NORND-ENCRYPTED|html###]</span><br>
+Twofish+Blowfish@Decrypted(NO-RND):&nbsp;<span id="twofish_blowfish-decrypted" style="color:#FF5500;">[###TWOFISH_BLOWFISH-NORND-DECRYPTED|html###]</span><br>
 Twofish+Blowfish@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###TWOFISH_BLOWFISH-ALGO|html###]</span><br>
 <input type="hidden" id="twofish-key" value="[###TWOFISH-KEY|html###]">
-Twofish@Encrypted:&nbsp;<span id="twofish-encrypted" style="color:#66AA00;">[###TWOFISH-ENCRYPTED|html###]</span><br>
-Twofish@Decrypted:&nbsp;<span id="twofish-decrypted" style="color:#FF5500;">[###TWOFISH-DECRYPTED|html###]</span><br>
+Twofish@Encrypted:&nbsp;<span id="twofish-random-encrypted" style="color:#66AA00;">[###TWOFISH-ENCRYPTED|html###]</span><br>
+Twofish@Decrypted:&nbsp;<span id="twofish-random-decrypted" style="color:#FF5500;">[###TWOFISH-DECRYPTED|html###]</span><br>
+Twofish@Encrypted(NO-RND):&nbsp;<span id="twofish-encrypted" style="color:#66AA00;">[###TWOFISH-NORND-ENCRYPTED|html###]</span><br>
+Twofish@Decrypted(NO-RND):&nbsp;<span id="twofish-decrypted" style="color:#FF5500;">[###TWOFISH-NORND-DECRYPTED|html###]</span><br>
 Twofish@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###TWOFISH-ALGO|html###]</span><br>
 <input type="hidden" id="blowfish-key" value="[###BLOWFISH-KEY|html###]">
-Blowfish@Encrypted:&nbsp;<span id="blowfish-encrypted" style="color:#66AA00;">[###BLOWFISH-ENCRYPTED|html###]</span><br>
-Blowfish@Decrypted:&nbsp;<span id="blowfish-decrypted" style="color:#FF5500;">[###BLOWFISH-DECRYPTED|html###]</span><br>
+Blowfish@Encrypted:&nbsp;<span id="blowfish-random-encrypted" style="color:#66AA00;">[###BLOWFISH-ENCRYPTED|html###]</span><br>
+Blowfish@Decrypted:&nbsp;<span id="blowfish-random-decrypted" style="color:#FF5500;">[###BLOWFISH-DECRYPTED|html###]</span><br>
+Blowfish@Encrypted(NO-RND):&nbsp;<span id="blowfish-encrypted" style="color:#66AA00;">[###BLOWFISH-NORND-ENCRYPTED|html###]</span><br>
+Blowfish@Decrypted(NO-RND):&nbsp;<span id="blowfish-decrypted" style="color:#FF5500;">[###BLOWFISH-NORND-DECRYPTED|html###]</span><br>
 Blowfish@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###BLOWFISH-ALGO|html###]</span><br>
 DynamicCipher@Encrypted:&nbsp;<span id="hash-encrypted" style="color:#626831;">[###CUSTOMCRYPT-ENC|html###]</span><br>
 DynamicCipher@Decrypted:&nbsp;<span id="hash-decrypted" style="color:#FF5500;">[###CUSTOMCRYPT-DEC|html###]</span><br>
@@ -153,10 +163,16 @@ DynamicCipher@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###CUSTOMCRYPT-ALGO|h
 	const bf_key = $('#blowfish-key').val();
 	const bf_enc = smartJ$CipherCrypto.bfEnc(bf_key, unicodeText);
 	const bf_dec = smartJ$CipherCrypto.bfDec(bf_key, bf_enc);
+
+	const bf_noRandom_enc = smartJ$CipherCrypto.bfEnc(bf_key, unicodeText, false, false); // no randomization, needs to compare with PHP
+	const bf_noRandom_dec = smartJ$CipherCrypto.bfDec(bf_key, bf_noRandom_enc);
+
 	//--
 	const tf_key = $('#twofish-key').val();
 	const tf_enc = smartJ$CipherCrypto.tfEnc(tf_key, unicodeText);
 	const tf_dec = smartJ$CipherCrypto.tfDec(tf_key, tf_enc);
+	const tf_noRandom_enc = smartJ$CipherCrypto.tfEnc(tf_key, unicodeText, false, false); // no randomization, needs to compare with PHP
+	const tf_noRandom_dec = smartJ$CipherCrypto.tfDec(tf_key, tf_noRandom_enc);
 	//--
 	const jsescTxt = smartJ$Utils.escape_js(unicodeText);
 	//--
@@ -231,9 +247,13 @@ DynamicCipher@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###CUSTOMCRYPT-ALGO|h
 	htmlcode += 'Hex2Bin@Decoded:&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(hex2bin) + '</span><br>';
 	htmlcode += 'Twofish@Encrypted:&nbsp;<span style="color:#66AA00;">' + smartJ$Utils.escape_html(tf_enc) + '</span><br>';
 	htmlcode += 'Twofish@Decrypted:&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(tf_dec) + '</span><br>';
+	htmlcode += 'Twofish@Encrypted(NO-RND):&nbsp;<span style="color:#66AA00;">' + smartJ$Utils.escape_html(tf_noRandom_enc) + '</span><br>';
+	htmlcode += 'Twofish@Decrypted(NO-RND):&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(tf_noRandom_dec) + '</span><br>';
 	htmlcode += 'Twofish@Algo:&nbsp;<span style="color:#CCCCCC;">JS:twofish.cbc</span>' + '<br>';
 	htmlcode += 'Blowfish@Encrypted:&nbsp;<span style="color:#66AA00;">' + smartJ$Utils.escape_html(bf_enc) + '</span><br>';
 	htmlcode += 'Blowfish@Decrypted:&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(bf_dec) + '</span><br>';
+	htmlcode += 'Blowfish@Encrypted(NO-RND):&nbsp;<span style="color:#66AA00;">' + smartJ$Utils.escape_html(bf_noRandom_enc) + '</span><br>';
+	htmlcode += 'Blowfish@Decrypted(NO-RND):&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(bf_noRandom_dec) + '</span><br>';
 	htmlcode += 'Blowfish@Algo:&nbsp;<span style="color:#CCCCCC;">JS:blowfish.cbc</span>' + '<br>';
 	$('#testunit-partial-crypto').html(htmlcode);
 	//-- JS Tests
@@ -376,13 +396,26 @@ DynamicCipher@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###CUSTOMCRYPT-ALGO|h
 		msgAlert('ERROR: Hex2Bin comparison with PHP failed ...');
 		the_error++;
 	} //end if
-	if((tf_enc != $('#twofish-encrypted').text()) || (smartJ$CryptoHash.sha1(tf_enc) != smartJ$CryptoHash.sha1($('#twofish-encrypted').text()))) {
+	if(tf_noRandom_enc == tf_enc) {
+		msgAlert('ERROR: Javascript TwoFish RND failed (same as NON-RND) ...');
+		the_error++;
+	} //end if
+	if((tf_noRandom_enc != $('#twofish-encrypted').text()) || (smartJ$CryptoHash.sha1(tf_noRandom_enc) != smartJ$CryptoHash.sha1($('#twofish-encrypted').text()))) {
 		msgAlert('ERROR: PHP Twofish encrypted is different than Javascript one ...');
 		the_error++;
 	} //end if
-	const decode_php_twofish = smartJ$CipherCrypto.tfDec(tf_key, $('#twofish-encrypted').text());
+	const decode_noRandom_php_twofish = smartJ$CipherCrypto.tfDec(tf_key, $('#twofish-encrypted').text());
+	if((decode_noRandom_php_twofish != unicodeText) || (smartJ$CryptoHash.sha1(decode_noRandom_php_twofish) != smartJ$CryptoHash.sha1(unicodeText))) {
+		msgAlert('ERROR: Javascript decrypted PHP Twofish is different than PHP one ...' + decode_noRandom_php_twofish);
+		the_error++;
+	} //end if
+	if(tf_noRandom_dec !== $('#twofish-decrypted').text()) {
+		msgAlert('ERROR: Javascript decrypted Twofish is different than PHP one ...' + decode_noRandom_php_twofish);
+		the_error++;
+	} //end if
+	const decode_php_twofish = smartJ$CipherCrypto.tfDec(tf_key, $('#twofish-random-encrypted').text());
 	if((decode_php_twofish != unicodeText) || (smartJ$CryptoHash.sha1(decode_php_twofish) != smartJ$CryptoHash.sha1(unicodeText))) {
-		msgAlert('ERROR: Javascript decrypted PHP Twofish is different than PHP one ...' + decode_php_twofish);
+		msgAlert('ERROR: Javascript decrypted PHP Twofish (RND) is different than PHP one ...' + decode_php_twofish);
 		the_error++;
 	} //end if
 	if(tf_dec !== $('#twofish-decrypted').text()) {
@@ -393,11 +426,24 @@ DynamicCipher@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###CUSTOMCRYPT-ALGO|h
 		msgAlert('ERROR: PHP Twofish decrypted is different than original PHP string ...');
 		the_error++;
 	} //end if
-	if((bf_enc != $('#blowfish-encrypted').text()) || (smartJ$CryptoHash.sha1(bf_enc) != smartJ$CryptoHash.sha1($('#blowfish-encrypted').text()))) {
+	if(bf_noRandom_enc == bf_enc) {
+		msgAlert('ERROR: Javascript BlowFish RND failed (same as NON-RND) ...');
+		the_error++;
+	} //end if
+	if((bf_noRandom_enc != $('#blowfish-encrypted').text()) || (smartJ$CryptoHash.sha1(bf_noRandom_enc) != smartJ$CryptoHash.sha1($('#blowfish-encrypted').text()))) {
 		msgAlert('ERROR: PHP Blowfish encrypted is different than Javascript one ...');
 		the_error++;
 	} //end if
-	const decode_php_blowfish = smartJ$CipherCrypto.bfDec(bf_key, $('#blowfish-encrypted').text());
+	const decode_noRandom_php_blowfish = smartJ$CipherCrypto.bfDec(bf_key, $('#blowfish-encrypted').text());
+	if((decode_noRandom_php_blowfish != unicodeText) || (smartJ$CryptoHash.sha1(decode_noRandom_php_blowfish) != smartJ$CryptoHash.sha1(unicodeText))) {
+		msgAlert('ERROR: Javascript decrypted PHP Blowfish is different than PHP one ...' + decode_noRandom_php_blowfish);
+		the_error++;
+	} //end if
+	if(bf_noRandom_dec !== $('#blowfish-decrypted').text()) {
+		msgAlert('ERROR: Javascript decrypted Blowfish is different than PHP one ...' + decode_noRandom_php_blowfish);
+		the_error++;
+	} //end if
+	const decode_php_blowfish = smartJ$CipherCrypto.bfDec(bf_key, $('#blowfish-random-encrypted').text());
 	if((decode_php_blowfish != unicodeText) || (smartJ$CryptoHash.sha1(decode_php_blowfish) != smartJ$CryptoHash.sha1(unicodeText))) {
 		msgAlert('ERROR: Javascript decrypted PHP Blowfish is different than PHP one ...' + decode_php_blowfish);
 		the_error++;

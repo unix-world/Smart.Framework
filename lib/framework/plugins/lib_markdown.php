@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment, SmartUnicode, SmartHtmlParser ; optional-constants: SMART_MARKDOWN_LAZYLOAD_DEFAULT_IMG
- * @version 	v.20241218
+ * @version 	v.20250118
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -52,7 +52,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20241212';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20250108';
 
 	//===================================
 
@@ -381,6 +381,13 @@ final class SmartMarkdownToHTML {
 		} //end if
 		//-- clear log notices
 		$this->NoticesLog = [];
+		//-- max size control
+		if((int)strlen((string)$text) > (int)Smart::SIZE_BYTES_16M) { // {{{SYNC-MARKDOWN-MAX-SIZE}}}
+			return '<!-- Markdown is OverSized, skip parsing -->';
+		} //end if
+		if((string)trim((string)$text) == '') { // DO NOT TRIM OUTSIDE, NEEDS TO PRESERVE SPACES !
+			return '<!-- Markdown is Empty, skip parsing -->';
+		} //end if
 		//-- pre-fix charset, it is mandatory to be converted to UTF-8
 		$text = (string) SmartUnicode::fix_charset($text);
 		//-- substitute special reserved character as html entity ; this character is reserved (completely dissalowed), will be used for processing purposes only
@@ -1399,10 +1406,10 @@ final class SmartMarkdownToHTML {
 				} //end if
 			} //end if
 			$arr_li = (array) explode('|', (string)$karr[2]);
-			$html .= (string) str_repeat("\t", (int)$karr[1]).'<li>'.$this->createHtmlInline((string)base64_decode((string)$arr_li[0]), 'li');
+			$html .= (string) str_repeat("\t", (int)$karr[1]).'<li>'.$this->createHtmlInline((string)Smart::b64_dec((string)$arr_li[0]), 'li');
 			$arr_li[1] = (string) trim((string)$arr_li[1]);
 			if((string)$arr_li[1] != '') {
-				$arr_li[1] = (string) base64_decode((string)$arr_li[1]);
+				$arr_li[1] = (string) Smart::b64_dec((string)$arr_li[1]);
 				if((string)trim((string)$arr_li[1]) != '') {
 					$html .= (string) $arr_li[1];
 				} //end if
@@ -1436,7 +1443,7 @@ final class SmartMarkdownToHTML {
 			$val['extra'] = '';
 		} //end if
 		//--
-		return (string) ($val['type'] === 'ol' ? '#ol:' : '*ul:').' '.(int)$val['level'].' '.base64_encode((string)$val['code']).'|'.base64_encode((string)$val['extra']).' '.(int)$iterator;
+		return (string) ($val['type'] === 'ol' ? '#ol:' : '*ul:').' '.(int)$val['level'].' '.Smart::b64_enc((string)$val['code']).'|'.Smart::b64_enc((string)$val['extra']).' '.(int)$iterator;
 		//--
 	} //END FUNCTION
 

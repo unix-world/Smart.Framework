@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210512
+ * @version 	v.20250107
  * @package 	Plugins:ExportAndImport
  *
  */
@@ -168,7 +168,7 @@ final class SmartSpreadSheetExport {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartXmlParser
- * @version 	v.20210526
+ * @version 	v.20250107
  * @package 	Plugins:ExportAndImport
  *
  */

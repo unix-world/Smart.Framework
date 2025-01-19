@@ -1,5 +1,5 @@
 
-# Using the Smart PageBuilder Module for Smart.Framework, rev.20221118
+# Using the Smart PageBuilder Module for Smart.Framework, rev.20250107
 
 ## required settings in etc/config.php
 ```php

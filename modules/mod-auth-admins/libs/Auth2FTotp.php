@@ -33,13 +33,13 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * compatible with FreeOTP by RedHat ; support various combinations ; default is: algo SHA512 / 8 digits / 30 seconds (or 30 seconds, pref.)
  * compatible with GoogleAuthenticator ; algo SHA1 / 8 digits (or 6 digits, pref.) / 60 seconds (or 30 seconds, pref.)
  *
- * (c) 2023 unix-world.org
+ * (c) 2023-present unix-world.org
  * License: BSD
  *
  * @ignore
  *
  * @depends     PHP classes: Smart, SmartHashCrypto, SmartQR2DBarcode
- * @version 	v.20250103
+ * @version 	v.20250107
  * @package 	development:modules:AuthAdmins
  *
  */

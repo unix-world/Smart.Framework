@@ -68,7 +68,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSystem, SmartComponents
- * @version 	v.20240119
+ * @version 	v.20250107
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -500,7 +500,7 @@ final class SmartSQliteDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSysUtils, SmartFileSystem, SmartComponents
- * @version 	v.20240119
+ * @version 	v.20250107
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -1832,7 +1832,7 @@ final class SmartSQliteUtilDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20240119
+ * @version 	v.20250107
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -1936,14 +1936,14 @@ final class SmartSQliteFunctions {
 
 	public static function base64_encode($str) {
 		//--
-		return (string) base64_encode((string)$str);
+		return (string) Smart::b64_enc((string)$str);
 		//--
 	} //END FUNCTION
 
 
 	public static function base64_decode($str) {
 		//--
-		return (string) base64_decode((string)$str);
+		return (string) Smart::b64_dec((string)$str);
 		//--
 	} //END FUNCTION
 

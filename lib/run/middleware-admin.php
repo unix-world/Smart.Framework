@@ -41,7 +41,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[A][T]@v.8.7');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20250105
+ * @version		20250112
  * @package 	Application
  *
  */
@@ -293,12 +293,12 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 		//--
 		if(SmartEnvironment::isTaskArea() === true) {
 			if(((string)SMART_APP_MODULE_AREA !== 'TASK') AND ((string)SMART_APP_MODULE_AREA !== 'SHARED')) {
-				SmartFrameworkRuntime::Raise403Error('Page Access Denied for Task Area: '.$page);
+				SmartFrameworkRuntime::Raise502Error('Page Access Denied for Task Area: '.$page);
 				return;
 			} //end if
 		} else {
 			if(((string)SMART_APP_MODULE_AREA !== 'ADMIN') AND ((string)SMART_APP_MODULE_AREA !== 'SHARED')) {
-				SmartFrameworkRuntime::Raise403Error('Page Access Denied for Admin Area: '.$page);
+				SmartFrameworkRuntime::Raise502Error('Page Access Denied for Admin Area: '.$page);
 				return;
 			} //end if
 		} //end if else
@@ -316,7 +316,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 			} //end if
 			if(defined('SMART_APP_MODULE_REALM_AUTH')) {
 				if((string)SmartAuth::get_auth_realm() !== (string)SMART_APP_MODULE_REALM_AUTH) {
-					SmartFrameworkRuntime::Raise403Error('Page Access Denied ! Invalid Login Realm: '.$page);
+					SmartFrameworkRuntime::Raise423Error('Page Access Denied ! Invalid Login Realm: '.$page);
 					return;
 				} //end if
 			} //end if
@@ -325,7 +325,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 		if(SmartEnvironment::isTaskArea() === true) {
 			if(!class_exists('SmartAppTaskController')) {
 				if((string)SMART_APP_MODULE_AREA === 'SHARED') {
-					SmartFrameworkRuntime::Raise403Error('Page Access Not Allowed for TASK Area: '.$page);
+					SmartFrameworkRuntime::Raise502Error('Page Access Not Allowed for TASK Area: '.$page);
 				} else {
 					SmartFrameworkRuntime::Raise500Error('Invalid Module Class Runtime for TASK Page: '.$page);
 				} //end if
@@ -338,7 +338,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 		} else {
 			if(!class_exists('SmartAppAdminController')) {
 				if((string)SMART_APP_MODULE_AREA === 'SHARED') {
-					SmartFrameworkRuntime::Raise403Error('Page Access Not Allowed for ADMIN Area: '.$page);
+					SmartFrameworkRuntime::Raise502Error('Page Access Not Allowed for ADMIN Area: '.$page);
 				} else {
 					SmartFrameworkRuntime::Raise500Error('Invalid Module Class Runtime for ADMIN Page: '.$page);
 				} //end if

@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AREA', 'SHARED');
  */
 abstract class SmartAppAbstractController extends SmartAbstractAppController {
 
-	// v.20240114
+	// v.20250118
 
 	final public function Initialize() {
 
@@ -93,17 +93,17 @@ abstract class SmartAppAbstractController extends SmartAbstractAppController {
 		$bfTimeUnicode = microtime(true) - $bfTimeUnicode;
 		//--
 		$bSfTimeEmpty = microtime(true);
-		$bSfEncEmpty = (string) SmartCipherCrypto::bf_encrypt((string)$emptyString, (string)$isoString);
+		$bSfEncEmpty = (string) SmartCipherCrypto::bf_encrypt((string)$emptyString, (string)$isoString, false); // no rnd
 		$bSfDecEmpty = (string) SmartCipherCrypto::bf_decrypt((string)$bSfEncEmpty, (string)$isoString);
 		$bSfTimeEmpty = microtime(true) - $bSfTimeEmpty;
 		//--
 		$bSfTimeIso = microtime(true);
-		$bSfEncIso = (string) SmartCipherCrypto::bf_encrypt((string)$isoString, (string)$isoString);
+		$bSfEncIso = (string) SmartCipherCrypto::bf_encrypt((string)$isoString, (string)$isoString, false); // no rnd
 		$bSfDecIso = (string) SmartCipherCrypto::bf_decrypt((string)$bSfEncIso, (string)$isoString);
 		$bSfTimeIso = microtime(true) - $bSfTimeIso;
 		//--
 		$bSfTimeUnicode = microtime(true);
-		$bSfEncUnicode = (string) SmartCipherCrypto::bf_encrypt((string)$unicodeString, (string)$isoString);
+		$bSfEncUnicode = (string) SmartCipherCrypto::bf_encrypt((string)$unicodeString, (string)$isoString, false); // no rnd
 		$bSfDecUnicode = (string) SmartCipherCrypto::bf_decrypt((string)$bSfEncUnicode, (string)$isoString);
 		$bSfTimeUnicode = microtime(true) - $bSfTimeUnicode;
 		//--
@@ -128,32 +128,32 @@ abstract class SmartAppAbstractController extends SmartAbstractAppController {
 		$tfTimeUnicode = microtime(true) - $tfTimeUnicode;
 		//--
 		$tSfTimeEmpty = microtime(true);
-		$tSfEncEmpty = (string) SmartCipherCrypto::tf_encrypt((string)$emptyString, (string)$isoString);
+		$tSfEncEmpty = (string) SmartCipherCrypto::tf_encrypt((string)$emptyString, (string)$isoString, false, false); // no rnd
 		$tSfDecEmpty = (string) SmartCipherCrypto::tf_decrypt((string)$tSfEncEmpty, (string)$isoString);
 		$tSfTimeEmpty = microtime(true) - $tSfTimeEmpty;
 		//--
 		$tSfTimeIso = microtime(true);
-		$tSfEncIso = (string) SmartCipherCrypto::tf_encrypt((string)$isoString, (string)$isoString);
+		$tSfEncIso = (string) SmartCipherCrypto::tf_encrypt((string)$isoString, (string)$isoString, false, false); // no rnd
 		$tSfDecIso = (string) SmartCipherCrypto::tf_decrypt((string)$tSfEncIso, (string)$isoString);
 		$tSfTimeIso = microtime(true) - $tSfTimeIso;
 		//--
 		$tSfTimeUnicode = microtime(true);
-		$tSfEncUnicode = (string) SmartCipherCrypto::tf_encrypt((string)$unicodeString, (string)$isoString);
+		$tSfEncUnicode = (string) SmartCipherCrypto::tf_encrypt((string)$unicodeString, (string)$isoString, false, false); // no rnd
 		$tSfDecUnicode = (string) SmartCipherCrypto::tf_decrypt((string)$tSfEncUnicode, (string)$isoString);
 		$tSfTimeUnicode = microtime(true) - $tSfTimeUnicode;
 		//--
 		$tbSfTimeEmpty = microtime(true);
-		$tbSfEncEmpty = (string) SmartCipherCrypto::tf_encrypt((string)$emptyString, (string)$isoString, true);
+		$tbSfEncEmpty = (string) SmartCipherCrypto::tf_encrypt((string)$emptyString, (string)$isoString, true, false); // no rnd
 		$tbSfDecEmpty = (string) SmartCipherCrypto::tf_decrypt((string)$tbSfEncEmpty, (string)$isoString);
 		$tbSfTimeEmpty = microtime(true) - $tbSfTimeEmpty;
 		//--
 		$tbSfTimeIso = microtime(true);
-		$tbSfEncIso = (string) SmartCipherCrypto::tf_encrypt((string)$isoString, (string)$isoString, true);
+		$tbSfEncIso = (string) SmartCipherCrypto::tf_encrypt((string)$isoString, (string)$isoString, true, false); // no rnd
 		$tbSfDecIso = (string) SmartCipherCrypto::tf_decrypt((string)$tbSfEncIso, (string)$isoString);
 		$tbSfTimeIso = microtime(true) - $tbSfTimeIso;
 		//--
 		$tbSfTimeUnicode = microtime(true);
-		$tbSfEncUnicode = (string) SmartCipherCrypto::tf_encrypt((string)$unicodeString, (string)$isoString, true);
+		$tbSfEncUnicode = (string) SmartCipherCrypto::tf_encrypt((string)$unicodeString, (string)$isoString, true, false); // no rnd
 		$tbSfDecUnicode = (string) SmartCipherCrypto::tf_decrypt((string)$tbSfEncUnicode, (string)$isoString);
 		$tbSfTimeUnicode = microtime(true) - $tbSfTimeUnicode;
 		//--
@@ -179,32 +179,32 @@ abstract class SmartAppAbstractController extends SmartAbstractAppController {
 		$t3fTimeUnicode = microtime(true) - $t3fTimeUnicode;
 		//--
 		$t3SfTimeEmpty = microtime(true);
-		$t3SfEncEmpty = (string) SmartCipherCrypto::t3f_encrypt((string)$emptyString, (string)$isoString);
+		$t3SfEncEmpty = (string) SmartCipherCrypto::t3f_encrypt((string)$emptyString, (string)$isoString, false, false); // no rnd
 		$t3SfDecEmpty = (string) SmartCipherCrypto::t3f_decrypt((string)$t3SfEncEmpty, (string)$isoString);
 		$t3SfTimeEmpty = microtime(true) - $t3SfTimeEmpty;
 		//--
 		$t3SfTimeIso = microtime(true);
-		$t3SfEncIso = (string) SmartCipherCrypto::t3f_encrypt((string)$isoString, (string)$isoString);
+		$t3SfEncIso = (string) SmartCipherCrypto::t3f_encrypt((string)$isoString, (string)$isoString, false, false); // no rnd
 		$t3SfDecIso = (string) SmartCipherCrypto::t3f_decrypt((string)$t3SfEncIso, (string)$isoString);
 		$t3SfTimeIso = microtime(true) - $t3SfTimeIso;
 		//--
 		$t3SfTimeUnicode = microtime(true);
-		$t3SfEncUnicode = (string) SmartCipherCrypto::t3f_encrypt((string)$unicodeString, (string)$isoString);
+		$t3SfEncUnicode = (string) SmartCipherCrypto::t3f_encrypt((string)$unicodeString, (string)$isoString, false, false); // no rnd
 		$t3SfDecUnicode = (string) SmartCipherCrypto::t3f_decrypt((string)$t3SfEncUnicode, (string)$isoString);
 		$t3SfTimeUnicode = microtime(true) - $t3SfTimeUnicode;
 		//--
 		$t3t2bSfTimeEmpty = microtime(true);
-		$t3t2bSfEncEmpty = (string) SmartCipherCrypto::t3f_encrypt((string)$emptyString, (string)$isoString, true);
+		$t3t2bSfEncEmpty = (string) SmartCipherCrypto::t3f_encrypt((string)$emptyString, (string)$isoString, true, false); // no rnd
 		$t3t2bSfDecEmpty = (string) SmartCipherCrypto::t3f_decrypt((string)$t3t2bSfEncEmpty, (string)$isoString);
 		$t3t2bSfTimeEmpty = microtime(true) - $t3t2bSfTimeEmpty;
 		//--
 		$t3t2bSfTimeIso = microtime(true);
-		$t3t2bSfEncIso = (string) SmartCipherCrypto::t3f_encrypt((string)$isoString, (string)$isoString, true);
+		$t3t2bSfEncIso = (string) SmartCipherCrypto::t3f_encrypt((string)$isoString, (string)$isoString, true, false); // no rnd
 		$t3t2bSfDecIso = (string) SmartCipherCrypto::t3f_decrypt((string)$t3t2bSfEncIso, (string)$isoString);
 		$t3t2bSfTimeIso = microtime(true) - $t3t2bSfTimeIso;
 		//--
 		$t3t2bSfTimeUnicode = microtime(true);
-		$t3t2bSfEncUnicode = (string) SmartCipherCrypto::t3f_encrypt((string)$unicodeString, (string)$isoString, true);
+		$t3t2bSfEncUnicode = (string) SmartCipherCrypto::t3f_encrypt((string)$unicodeString, (string)$isoString, true, false); // no rnd
 		$t3t2bSfDecUnicode = (string) SmartCipherCrypto::t3f_decrypt((string)$t3t2bSfEncUnicode, (string)$isoString);
 		$t3t2bSfTimeUnicode = microtime(true) - $t3t2bSfTimeUnicode;
 		//--

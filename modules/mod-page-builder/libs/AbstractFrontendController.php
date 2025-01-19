@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20221219
+ * @version 	v.20250107
  * @package 	development:modules:PageBuilder
  *
  */
@@ -536,7 +536,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		//--
 
 		//--
-		$yaml = (string) \base64_decode((string)$arr['data']);
+		$yaml = (string) \Smart::b64_dec((string)$arr['data'], true); // B64 STRICT
 		//--
 		if((string)$yaml != '') {
 			$ymp = new \SmartYamlConverter(false); // do not log YAML errors
@@ -616,7 +616,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			} //end if
 		} //end for
 		//--
-		$realm = (string) (isset($arr_parse_transl_key[0]) ? $arr_parse_transl_key[0] : '').(isset($arr_parse_transl_key[1]) ? $arr_parse_transl_key[1] : '');
+		$realm = (string) ($arr_parse_transl_key[0] ?? null).($arr_parse_transl_key[1] ?? null);
 		//--
 		if(!\is_array($this->translators)) {
 			$this->translators = []; // init array if not array # fix for PHP8
@@ -625,10 +625,10 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			$this->translators[(string)$realm.'@'.$lang] = null; // init key if not exists # fix for PHP8
 		} //end if
 		if(!\is_object($this->translators[(string)$realm.'@'.$lang])) {
-			$this->translators[(string)$realm.'@'.$lang] = \SmartTextTranslations::getTranslator((string)(isset($arr_parse_transl_key[0]) ? $arr_parse_transl_key[0] : ''), (string)(isset($arr_parse_transl_key[1]) ? $arr_parse_transl_key[1] : ''), (string)$lang);
+			$this->translators[(string)$realm.'@'.$lang] = \SmartTextTranslations::getTranslator((string)($arr_parse_transl_key[0] ?? null), (string)($arr_parse_transl_key[1] ?? null), (string)$lang);
 		} //end if
 		if(\is_object($this->translators[(string)$realm.'@'.$lang])) {
-			$translated_text = (string) $this->translators[(string)$realm.'@'.$lang]->text((string)(isset($arr_parse_transl_key[2]) ? $arr_parse_transl_key[2] : ''));
+			$translated_text = (string) $this->translators[(string)$realm.'@'.$lang]->text((string)($arr_parse_transl_key[2] ?? null));
 		} //end if
 		//--
 		$translated_text = (string) \Smart::escape_html((string)$translated_text);
@@ -868,7 +868,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 				return (array) $data_arr;
 			} //end if
 			//--
-			$this->auth_required += (int) (isset($arr['auth']) ? $arr['auth'] : 0);
+			$this->auth_required += (int) ($arr['auth'] ?? null);
 			$data_arr['auth'] = (int) $this->auth_required;
 			//--
 		} //end if
@@ -884,7 +884,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		//--
 
 		//--
-		$yaml = (string) \base64_decode((string)$arr['data']);
+		$yaml = (string) \Smart::b64_dec((string)$arr['data'], true); // B64 STRICT
 		//--
 		if((string)\trim((string)$yaml) != '') {
 			$ymp = new \SmartYamlConverter(false); // do not log YAML errors
@@ -947,7 +947,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 				$data_arr['layout'] = (string) $arr['layout']; // no html escape on this as it is a file
 			} //end if else
 			//--
-			$data_arr['code'] = (string) \base64_decode((string)$arr['code']);
+			$data_arr['code'] = (string) \Smart::b64_dec((string)$arr['code'], true); // B64 STRICT
 			if((string)$data_arr['mode'] == 'raw') { // FIX: RAW Pages might have the code empty if need to output from a plugin and to avoid inject spaces ...
 				if((string)\trim((string)$data_arr['code']) == '') {
 					if((string)$type == 'segment') {
@@ -1214,7 +1214,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 												$arr_tmp_item['id'] = (string) $this->page_params['self-syntax'];
 												break;
 											case '@self-code':
-												$arr_tmp_item['id'] = (string) \base64_decode((string)$this->page_params['self-code']);
+												$arr_tmp_item['id'] = (string) \Smart::b64_dec((string)$this->page_params['self-code'], true); // B64 STRICT
 												if((!\array_key_exists('config', $v)) OR (!\is_array($v['config']))) {
 													$v['config'] = [];
 												} //end if
@@ -1689,7 +1689,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 													if(!\array_key_exists((string)\substr((string)$key, \strlen('TEMPLATE@')), $data_arr['smart-markers'])) {
 														$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] = '';
 													} //end if
-													$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] .= (string) (isset($plugin_exec['content']) ? $plugin_exec['content'] : ''); // append is mandatory here else will not render correctly more than one sub-segment/plugin
+													$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] .= (string) ($plugin_exec['content'] ?? null); // append is mandatory here else will not render correctly more than one sub-segment/plugin
 													//--
 												} elseif(\preg_match((string)self::REGEX_PBS_MARKER_KEY, (string)$key)) {
 													//--
@@ -1698,7 +1698,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 														if(!\array_key_exists('{{:'.(string)$key.':}}', $arr_replacements)) {
 															$arr_replacements['{{:'.(string)$key.':}}'] = '';
 														} //end if
-														$arr_replacements['{{:'.(string)$key.':}}'] .= (string) (isset($plugin_exec['content']) ? $plugin_exec['content'] : ''); // OK: always append
+														$arr_replacements['{{:'.(string)$key.':}}'] .= (string) ($plugin_exec['content'] ?? null); // OK: always append
 														//--
 													} else {
 														//--
@@ -1769,7 +1769,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 											$arr_replacements['{{:'.(string)$key.':}}'] = '';
 										} //end if
 										//$arr_replacements['{{:'.(string)$key.':}}'] .= '<!-- Segment['.(int)$i.']: '.\Smart::escape_html((string)$key).' -->';
-										$arr_replacements['{{:'.(string)$key.':}}'] .= (string) (isset($val[$i]['code']) ? $val[$i]['code'] : ''); // OK: always append
+										$arr_replacements['{{:'.(string)$key.':}}'] .= (string) ($val[$i]['code'] ?? null); // OK: always append
 										//$arr_replacements['{{:'.(string)$key.':}}'] .= '<!-- /Segment['.(int)$i.']: '.\Smart::escape_html((string)$key).' -->';
 										//--
 									} else {

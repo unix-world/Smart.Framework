@@ -19,7 +19,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 
 /**
  * Shrink (Strip) Code
- * (c) 2021-2022 unix-world.org
+ * (c) 2021-present unix-world.org
  *
  * based on Minifier Class v.1.3.63, license BSD
  * (c) 2012-2021 Matthias Mullie
@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 abstract class ShrinkCode {
 
 	// ->
-	// v.20221221
+	// v.20250107
 
 	protected $isClean = true;
 	protected $sourceCode = '';

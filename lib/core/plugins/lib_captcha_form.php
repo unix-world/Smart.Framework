@@ -60,7 +60,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	constants: SMART_FRAMEWORK_SECURITY_KEY ; classes: Smart, SmartUtils, SmartTextTranslations, SmartSVGCaptcha, SmartQR2DBarcode ; javascript: jquery.js, smart-framework.pak.js
- * @version 	v.20241115
+ * @version 	v.20250107
  * @package 	Application:Plugins:Captcha
  *
  */
@@ -259,12 +259,12 @@ final class SmartCaptcha {
 			if(!self::initCaptcha((string)$y_form_name, (string)$captcha_code, (string)$y_mode, (string)$ds)) {
 				Smart::log_warning(__METHOD__.' # Failed to INIT SVG Captcha Plugin');
 			} //end if
-			$captcha_url = (string) base64_encode((string)$captcha_url);
-			$js_interractive_solver = (string) 'covariancePointer(crrPointerPos.x, crrPointerPos.y); $entropy = h$.crc32b($form + \'#\' + data$Handler(JSON.stringify(b$.parseCurrentUrlGetParams()), d$.getIsoDate(new Date(), true))); $dhkx = \''.base64_encode((string)$dhks).'\';';
-			$captcha_url = (string) base64_encode((string)SmartCipherCrypto::tf_encrypt('(() => { mFx = () => { if((typeof(jQuery) == \'undefined\') || (typeof(smartJ$Utils) == \'undefined\') || (typeof(u$) == \'undefined\') || (typeof(b$) == \'undefined\') || (typeof(c$e) == \'undefined\') || (typeof(mFy) == \'undefined\') || (typeof(sq) == \'undefined\') || (typeof(mTan) == \'undefined\') || (typeof(zSVG) == \'undefined\') || (typeof(event$Observer) != \'function\')) { console.warn(\'Captcha context is missing !\'); return; } if(!!event$Observer(mFy)) { let mX = 0, mY = 0; try { mX = u$.format_number_float(event.clientX); mY = u$.format_number_float(event.clientY); } catch(fail){} mTan = u$.format_number_float(Math.abs(Math.atan(Math.PI + Math.E + Math.sin(Math.abs(sq)) * (Math.pow(Math.tan(mX), 2) * Math.pow(Math.tan(mY), 2)))), false) + 1/100; let fldVal = \''.Smart::escape_js((string)SmartCipherCrypto::tf_encrypt((string)$captcha_code, (string)strtoupper((string)$uuid))).'\'; let kZ = String(jQuery(\'#Smart-Captcha-Container-'.Smart::escape_js((string)Smart::create_htmid((string)$uuid)).'\').find(\'input\').data(\'id\')).toUpperCase(); '.$js_solver.' } else { zSVG = \''.Smart::escape_js((string)$captcha_url).'\'; } }; })();', 'setInterval(() => { '.$js_exports.' '.$js_interractive_solver.' }, 700);'));
+			$captcha_url = (string) Smart::b64_enc((string)$captcha_url);
+			$js_interractive_solver = (string) 'covariancePointer(crrPointerPos.x, crrPointerPos.y); $entropy = h$.crc32b($form + \'#\' + data$Handler(JSON.stringify(b$.parseCurrentUrlGetParams()), d$.getIsoDate(new Date(), true))); $dhkx = \''.Smart::b64_enc((string)$dhks).'\';';
+			$captcha_url = (string) Smart::b64_enc((string)SmartCipherCrypto::tf_encrypt('(() => { mFx = () => { if((typeof(jQuery) == \'undefined\') || (typeof(smartJ$Utils) == \'undefined\') || (typeof(u$) == \'undefined\') || (typeof(b$) == \'undefined\') || (typeof(c$e) == \'undefined\') || (typeof(mFy) == \'undefined\') || (typeof(sq) == \'undefined\') || (typeof(mTan) == \'undefined\') || (typeof(zSVG) == \'undefined\') || (typeof(event$Observer) != \'function\')) { console.warn(\'Captcha context is missing !\'); return; } if(!!event$Observer(mFy)) { let mX = 0, mY = 0; try { mX = u$.format_number_float(event.clientX); mY = u$.format_number_float(event.clientY); } catch(fail){} mTan = u$.format_number_float(Math.abs(Math.atan(Math.PI + Math.E + Math.sin(Math.abs(sq)) * (Math.pow(Math.tan(mX), 2) * Math.pow(Math.tan(mY), 2)))), false) + 1/100; let fldVal = \''.Smart::escape_js((string)SmartCipherCrypto::tf_encrypt((string)$captcha_code, (string)strtoupper((string)$uuid))).'\'; let kZ = String(jQuery(\'#Smart-Captcha-Container-'.Smart::escape_js((string)Smart::create_htmid((string)$uuid)).'\').find(\'input\').data(\'id\')).toUpperCase(); '.$js_solver.' } else { zSVG = \''.Smart::escape_js((string)$captcha_url).'\'; } }; })();', 'setInterval(() => { '.$js_exports.' '.$js_interractive_solver.' }, 700);'));
 			//-- perfect scores are not for humans, but neither too low scores ...
 			$captcha_qurl = (string) (new SmartQR2DBarcode('L'))->renderAsSVG((string)$captcha_code, ['cm'=>'#888888','wq'=>0]);
-			$captcha_qurl = (string) base64_encode((string)SmartCipherCrypto::tf_encrypt('(() => { if((typeof(qSVG) == \'undefined\') || qSVG) { return; } qSVG = \''.Smart::escape_js((string)base64_encode((string)$captcha_qurl)).'\'; })();', 'setInterval(() => { '.$js_exports.' '.$js_interractive_solver.' }, 800);'));
+			$captcha_qurl = (string) Smart::b64_enc((string)SmartCipherCrypto::tf_encrypt('(() => { if((typeof(qSVG) == \'undefined\') || qSVG) { return; } qSVG = \''.Smart::escape_js((string)Smart::b64_enc((string)$captcha_qurl)).'\'; })();', 'setInterval(() => { '.$js_exports.' '.$js_interractive_solver.' }, 800);'));
 			//--
 			$input_style = 'display:none;';
 			//--
@@ -388,10 +388,10 @@ final class SmartCaptcha {
 		$arr_value = [];
 		if((string)$var_value != '') {
 			//-- use here rawurldecode instead of urldecode, because is a special context and this is how should be
-			$arr_value = (array) explode((string)rawurldecode((string)hex2bin((string)$prefix.$middle.$suffix.$control.$float.$shift.$control.$float.$prefix.$middle.$suffix.$suffix)), (string)base64_decode((string)SmartCipherCrypto::tf_decrypt((string)hex2bin((string)Smart::base_to_hex_convert((string)$var_value, 62)), (string)self::cookie_val_frm((string)$y_form_name))), 3);
+			$arr_value = (array) explode((string)rawurldecode((string)hex2bin((string)$prefix.$middle.$suffix.$control.$float.$shift.$control.$float.$prefix.$middle.$suffix.$suffix)), (string)Smart::b64_dec((string)SmartCipherCrypto::tf_decrypt((string)hex2bin((string)Smart::base_to_hex_convert((string)$var_value, 62)), (string)self::cookie_val_frm((string)$y_form_name))), 3);
 			$arr_value[0] = (string) trim((string)($arr_value[0] ?? null)); // timestamp
 			$arr_value[1] = (string) trim((string)($arr_value[1] ?? null)); // captcha code
-			$arr_value[2] = (string) trim((string)base64_decode((string)($arr_value[2] ?? null))); // dhkx data, as json
+			$arr_value[2] = (string) trim((string)Smart::b64_dec((string)($arr_value[2] ?? null))); // dhkx data, as json
 			$arr_value[2] = Smart::json_decode((string)$arr_value[2]);
 			if(!is_array($arr_value[2])) {
 				$arr_value[2] = [];

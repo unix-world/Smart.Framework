@@ -1,5 +1,5 @@
 # [@[#[!SF.DEV-ONLY!]#]@] ; do not remove this line, it is for safety to dissalow this file to be send in a release package
-# appcodepack.yaml s.20240216.1345 ; sample: MINIFY ; (c) 2013-present unix-world.org
+# appcodepack.yaml s.20250107.2358 ; sample: MINIFY ; (c) 2013-present unix-world.org
 APP-RELEASE:
 	# the app ID
 	smart-framework.local:
@@ -14,7 +14,7 @@ APP-RELEASE:
 		# the app deploy auth username ; default is: `super.admin`
 		deploy-auth-user: super.admin
 		# the app unpack auth password ; default is: `The1pass!` ; use AppCode Deploy Password Encryption Utility to generate this pass ; If the deploy-secret changes, this pass have to be regenerated ...
-		deploy-auth-pass: bf448.v3!Iywa5MYV9c08U3zoHH3QkyjpW6515s8cTqjEj4;..tJkRbKDtyNZgGdZyLun4sokJjfK_PVZsHJcI4fZ6TVOr6Cj7LsofLdRwubwcqspf1ThuRtjOC7rTDylpT0r8_ywIJ5xzthHrxpauwIPDd1WEGyebfGwynpi7wC_lKQozxWz0PcZGKgPEmKC-RcDh99
+		deploy-auth-pass: bf448.v3!sPN4h698EO0vuvJtXMD3Qmh9adqHlapMAPY1c4;tJkRbKDtyNZgGdZyLun4sokJjfK_PVZsHJcI4fZ6TVOr6Cj7LsofLdRwubwcqspf1ThuRtjOC7rTDylpT0r8_ywIJ5xzthHrxpauwIPDd1WEGyebfGwynpi7wC_lKQozxWz0PcZGKgPEmKC-RcDh99
 		# list of folders to include or exclude
 		folders:
 			- _sql ; =sql
@@ -48,7 +48,7 @@ APP-RELEASE:
 			- https://127.0.0.1/sites/RELEASE/test-unpack/appcodeunpack.php
 		deploy-secret: "Set-here-1-private-key-that-must-not-be-disclosed!"
 		deploy-auth-user: super.admin
-		deploy-auth-pass: bf448.v3!Iywa5MYV9c08U3zoHH3QkyjpW6515s8cTqjEj4;..tJkRbKDtyNZgGdZyLun4sokJjfK_PVZsHJcI4fZ6TVOr6Cj7LsofLdRwubwcqspf1ThuRtjOC7rTDylpT0r8_ywIJ5xzthHrxpauwIPDd1WEGyebfGwynpi7wC_lKQozxWz0PcZGKgPEmKC-RcDh99
+		deploy-auth-pass: bf448.v3!sPN4h698EO0vuvJtXMD3Qmh9adqHlapMAPY1c4;tJkRbKDtyNZgGdZyLun4sokJjfK_PVZsHJcI4fZ6TVOr6Cj7LsofLdRwubwcqspf1ThuRtjOC7rTDylpT0r8_ywIJ5xzthHrxpauwIPDd1WEGyebfGwynpi7wC_lKQozxWz0PcZGKgPEmKC-RcDh99
 		folders:
 			- etc
 			- lib

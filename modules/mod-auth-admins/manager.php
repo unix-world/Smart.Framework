@@ -13,6 +13,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 
 define('SMART_APP_MODULE_AREA', 'ADMIN');
 define('SMART_APP_MODULE_AUTH', true);
+define('SMART_APP_MODULE_REALM_AUTH', 'SMART-ADMINS-AREA'); // if set will check the login realm
 
 // [PHP8]
 
@@ -22,7 +23,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20250103
+	// v.20250112
 
 	// TODO:
 	// 	* Edit: support to bind to a specific IP address list, for extra security
@@ -59,10 +60,14 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			$this->PageViewSetCfg('error', 'Auth Admins Manager is allowed to run under `Admin` area only ! ...');
 			return 403;
 		} //end if
+		if(SmartEnvironment::isTaskArea()) {
+			$this->PageViewSetCfg('error', 'Auth Admins Manager cannot run under Admin Task Area !');
+			return 502;
+		} //end if
 		//--
-		if(SmartAuth::get_auth_realm() !== 'SMART-ADMINS-AREA') {
-			$this->PageViewSetCfg('error', 'This Area Requires the `SMART-ADMINS-AREA` Auth Realm !'."\n".'The current Auth Realm is: `'.SmartAuth::get_auth_realm().'` ...');
-			return 403;
+		if((string)SmartAuth::get_auth_realm() !== (string)SMART_APP_MODULE_REALM_AUTH) {
+			$this->PageViewSetCfg('error', 'Auth Admins Manager requires a specific Auth Realm `'.Smart::escape_html((string)SMART_APP_MODULE_REALM_AUTH).'` ! ...');
+			return 423;
 		} //end if
 		//--
 		if(!defined('APP_AUTH_PRIVILEGES')) {
@@ -1501,7 +1506,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 			default: // other invalid actions
 				//--
-				$this->PageViewSetCfg('error', 'Auth Admins Manager :: Invalid Action `'.$action.'` ...');
+				$this->PageViewSetCfg('error', 'Auth Admins Manager :: Invalid Action request: `'.$action.'`');
 				//--
 				return 400;
 				//--

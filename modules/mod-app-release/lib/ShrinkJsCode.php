@@ -19,7 +19,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 
 /**
  * Shrink (Strip) Javascript Code
- * (c) 2021-2022 unix-world.org
+ * (c) 2021-present unix-world.org
  *
  * based on JavaScript Minifier Class v.1.3.63, license BSD
  * (c) 2012-2021 Matthias Mullie
@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class ShrinkJsCode extends ShrinkCode {
 
 	// ->
-	// v.20221221
+	// v.20250107
 
 
 	private const PROPERTIESANDMETHODS = [ // 13 [ 8 + 5 ]

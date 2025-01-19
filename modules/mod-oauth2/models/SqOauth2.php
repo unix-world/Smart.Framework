@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqOauth2 {
 
 	// ->
-	// v.20240115
+	// v.20250114
 
 	private $db;
 	private $userId;
@@ -137,10 +137,10 @@ final class SqOauth2 {
 			return [];
 		} //end if
 		//--
-		if(\Smart::array_size($fields) > 0) {
+		if((int)\Smart::array_size($fields) > 0) {
 			$tmp_arr = (array) $fields;
 			$fields = array();
-			for($i=0; $i<\Smart::array_size($tmp_arr); $i++) {
+			for($i=0; $i<(int)\Smart::array_size($tmp_arr); $i++) {
 				if(\is_array($tmp_arr[$i])) {
 					foreach($tmp_arr[$i] as $kk => $vv) {
 						$fields[] = $vv.'('.'`'.$kk.'`'.') AS `'.$kk.'-'.$vv.'`';
@@ -195,11 +195,21 @@ final class SqOauth2 {
 	} //END FUNCTION
 
 
-	public function getById(string $id, bool $decrypt=false) : array {
+	public function getById(string $id, bool $decrypt=false, bool $displayOnlyFormat=false) : array {
+		//--
+		// if $decrypt is set to TRUE the tokens are decrypted
+		// if $displayOnlyFormat is set to TRUE the tokens are usable just for display
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			\Smart::raise_error('Invalid OAUTH2 DB Connection !');
 			return [];
+		} //end if
+		//--
+		if($displayOnlyFormat === true) {
+			if($decrypt !== true) {
+				\Smart::raise_error('Invalid OAUTH2 DB::getById() parameters ... if `displayOnlyFormat=TRUE` it also requires `decrypt=TRUE` !');
+				return [];
+			} //end if
 		} //end if
 		//--
 		if((string)\trim((string)$id) == '') {
@@ -211,61 +221,48 @@ final class SqOauth2 {
 			array((string)$id)
 		);
 		//--
-		if($decrypt === true) {
+		if((int)\Smart::array_size($arr) > 0) {
 			//--
-			if(\Smart::array_size($arr) > 0) {
+			$arr['client_secret'] 	= (string) ($arr['client_secret'] ?? null);
+			$arr['code'] 			= (string) ($arr['code'] ?? null);
+			$arr['access_token'] 	= (string) ($arr['access_token'] ?? null);
+			$arr['refresh_token'] 	= (string) ($arr['refresh_token'] ?? null);
+			$arr['id_token'] 		= (string) ($arr['id_token'] ?? null);
+			$arr['logs'] 			= (string) ($arr['logs'] ?? null);
+			//--
+			if($decrypt === true) {
 				//--
-				if(\array_key_exists('client_secret', $arr)) {
-					if((string)\trim((string)$arr['client_secret']) != '') {
-						$arr['client_secret'] = (string) \SmartCipherCrypto::tf_decrypt((string)$arr['client_secret'], (string)$arr['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY); // no fallback
+				if((string)\trim((string)$arr['client_secret']) != '') {
+					$arr['client_secret'] = (string) \SmartCipherCrypto::tf_decrypt((string)$arr['client_secret'], (string)$arr['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY); // no fallback
+				} //end if
+				//--
+				if((string)\trim((string)$arr['code']) != '') {
+					$arr['code'] = (string) \SmartCipherCrypto::tf_decrypt((string)$arr['code'], (string)$arr['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY); // no fallback
+				} //end if
+				//--
+				if((string)\trim((string)$arr['access_token']) != '') {
+					$arr['access_token'] = (string) \SmartCipherCrypto::tf_decrypt((string)$arr['access_token'], (string)$arr['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY); // no fallback
+					if($displayOnlyFormat === true) {
+						$arr['access_token'] = (string) \SmartAuth::jwt_token_display((string)$arr['access_token']);
 					} //end if
 				} //end if
 				//--
-				if(\array_key_exists('code', $arr)) {
-					if((string)\trim((string)$arr['code']) != '') {
-						$arr['code'] = (string) \SmartCipherCrypto::tf_decrypt((string)$arr['code'], (string)$arr['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY); // no fallback
+				if((string)\trim((string)$arr['refresh_token']) != '') {
+					$arr['refresh_token'] = (string) \SmartCipherCrypto::tf_decrypt((string)$arr['refresh_token'], (string)$arr['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY); // no fallback
+					if($displayOnlyFormat === true) {
+						$arr['refresh_token'] = (string) \SmartAuth::jwt_token_display((string)$arr['refresh_token']);
 					} //end if
 				} //end if
 				//--
-				if(\array_key_exists('access_token', $arr)) {
-					if((string)\trim((string)$arr['access_token']) != '') {
-						$arr['access_token'] = (string) \SmartCipherCrypto::tf_decrypt((string)$arr['access_token'], (string)$arr['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY); // no fallback
+				if((string)\trim((string)$arr['id_token']) != '') {
+					$arr['id_token'] = (string) \SmartCipherCrypto::tf_decrypt((string)$arr['id_token'], (string)$arr['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY); // no fallback
+					if($displayOnlyFormat === true) {
+						$arr['id_token'] = (string) \SmartAuth::jwt_token_display((string)$arr['id_token']);
 					} //end if
 				} //end if
 				//--
-				if(\array_key_exists('refresh_token', $arr)) {
-					if((string)\trim((string)$arr['refresh_token']) != '') {
-						$arr['refresh_token'] = (string) \SmartCipherCrypto::tf_decrypt((string)$arr['refresh_token'], (string)$arr['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY); // no fallback
-					} //end if
-				} //end if
-				//--
-				if(\array_key_exists('id_token', $arr)) {
-					if((string)\trim((string)$arr['id_token']) != '') {
-						$arr['id_token'] = (string) \SmartCipherCrypto::tf_decrypt((string)$arr['id_token'], (string)$arr['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY); // no fallback
-						if(((string)$arr['id_token'] != '') AND (\strpos((string)$arr['id_token'], '.') !== false)) {
-							$arr['id_token'] = (array) \explode('.', (string)$arr['id_token'], 3);
-							$jwtsign = '';
-							if((int)\Smart::array_size($arr['id_token']) == 3) {
-								$jwtsign = (string) \trim((string)\end($arr['id_token']));
-								\array_pop($arr['id_token']); // remove last element, that is binary signature
-							} //end if
-							foreach($arr['id_token'] as $kk => $vv) {
-								$arr['id_token'][(string)$kk] = \Smart::json_decode((string)\Smart::b64s_dec((string)$vv)); // mixed
-							} //end foreach
-							if((string)$jwtsign != '') {
-								$arr['id_token'][] = [
-									'#JWT:signature#' => (string) (int) \strlen((string)$jwtsign).' bytes'
-								];
-							} //end if
-							$arr['id_token'] = (string) \Smart::json_encode((array)$arr['id_token'], true, true, false);
-						} //end if
-					} //end if
-				} //end if
-				//--
-				if(\array_key_exists('logs', $arr)) {
-					if((string)\trim((string)$arr['logs']) != '') {
-						$arr['logs'] = (string) \SmartCipherCrypto::bf_decrypt((string)$arr['logs'], (string)$arr['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY);
-					} //end if
+				if((string)\trim((string)$arr['logs']) != '') {
+					$arr['logs'] = (string) \SmartCipherCrypto::bf_decrypt((string)$arr['logs'], (string)$arr['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY);
 				} //end if
 				//--
 			} //end if
@@ -410,7 +407,7 @@ final class SqOauth2 {
 				(string) $data['id']
 			]
 		);
-		if(\Smart::array_size($check_id) > 0) {
+		if((int)\Smart::array_size($check_id) > 0) {
 			return -2; // duplicate ID
 		} //end if
 		//--
@@ -447,7 +444,7 @@ final class SqOauth2 {
 		} //end if
 		//--
 		$rdarr = (array) $this->getById((string)$id); // do not decrypt, no need here
-		if(\Smart::array_size($rdarr) <= 0) {
+		if((int)\Smart::array_size($rdarr) <= 0) {
 			return -11; // record not found, Invalid ID
 		} //end if
 		if((string)$rdarr['refresh_token'] == '') {
@@ -729,7 +726,7 @@ final class SqOauth2 {
 //-- default schema ; default user: APP_OAUTH2_ADMIN_USERNAME ; default pass: APP_OAUTH2_ADMIN_PASSWORD
 $version = (string) $this->db->escape_str((string)\SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.\SMART_FRAMEWORK_RELEASE_VERSION);
 $schema = <<<SQL
--- #START: tables schema: _smartframework_metadata / admins @ 20231121
+-- #START: tables schema: _smartframework_metadata / admins @ 20250107
 INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('version@oauth2', '{$version}');
 CREATE TABLE 'oauth2_data' (
 	`id` character varying(127) PRIMARY KEY NOT NULL,

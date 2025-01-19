@@ -27,7 +27,7 @@ define('SMART_FRAMEWORK__INFO__CUSTOM_SESSION_ADAPTER', 'MongoDB: DB NoSQL based
  *
  * @access 		PUBLIC
  * @depends 	SmartMongoDb, Smart
- * @version 	v.20210830
+ * @version 	v.20250107
  * @package 	Application:Session
  *
  */

@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20231119
+	// v.20250107
 
 
 	private static $db = null;
@@ -692,7 +692,7 @@ final class PageBuilderBackend {
 			//-- delete ref from all objects
 			self::clearRecordRefsById($y_id);
 			//-- rebuild reference from YAML (if new YAML segments entered will be created automatically)
-			$tmp_yaml = (string) \trim((string)\base64_decode((string)$y_arr_data['data']));
+			$tmp_yaml = (string) \trim((string)\Smart::b64_dec((string)$y_arr_data['data']));
 			if((string)$tmp_yaml != '') {
 				$tmp_ymp = new \SmartYamlConverter(false); // do not log YAML parse errors
 				$tmp_yaml = (array) $tmp_ymp->parse((string)$tmp_yaml);
@@ -1451,14 +1451,14 @@ final class PageBuilderBackend {
 			$arr = (array) \SmartPgsqlDb::read_adata(
 				'SELECT "id", "code" FROM "web"."page_builder" WHERE (("code" = $1) AND ("translations" = 1))',
 				[
-					(string) \base64_encode((string)$text_deflang)
+					(string) \Smart::b64_enc((string)$text_deflang)
 				]
 			);
 		} elseif((string)self::dbType() == 'sqlite') {
 			$arr = (array) self::$db->read_adata(
 				'SELECT `id`, `code` FROM `page_builder` WHERE ((`code` = ?) AND (`translations` = 1))',
 				[
-					(string) \base64_encode((string)$text_deflang)
+					(string) \Smart::b64_enc((string)$text_deflang)
 				]
 			);
 		} else {
@@ -1495,7 +1495,7 @@ final class PageBuilderBackend {
 							[
 								'id' 		=> (string) $arr[$i]['id'],
 								'lang' 		=> (string) $lang,
-								'code' 		=> (string) \base64_encode((string)$text_lang),
+								'code' 		=> (string) \Smart::b64_enc((string)$text_lang),
 								'admin' 	=> (string) $admin,
 								'modified' 	=> (string) \date('Y-m-d H:i:s')
 							],
@@ -1508,7 +1508,7 @@ final class PageBuilderBackend {
 							[
 								'id' 		=> (string) $arr[$i]['id'],
 								'lang' 		=> (string) $lang,
-								'code' 		=> (string) \base64_encode((string)$text_lang),
+								'code' 		=> (string) \Smart::b64_enc((string)$text_lang),
 								'admin' 	=> (string) $admin,
 								'modified' 	=> (string) \date('Y-m-d H:i:s')
 							],

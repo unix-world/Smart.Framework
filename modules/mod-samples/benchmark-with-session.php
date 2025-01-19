@@ -13,7 +13,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 
 define('SMART_APP_MODULE_AREA', 'SHARED'); 						// ADMIN, TASK, SHARED
 define('SMART_APP_MODULE_AUTH', true); 							// if set to TRUE requires auth always
-//define('SMART_APP_MODULE_REALM_AUTH', 'ADMINS-AREA-SIMPLE'); 	// if set will check the login realm
+//define('SMART_APP_MODULE_REALM_AUTH', 'SMART-ADMINS-AREA'); 	// if set will check the login realm
 
 /**
  * Admin Controller

@@ -3,9 +3,9 @@
 	<d:lockdiscovery>
 		<s:info>
 			Type: DAV/Lock
-			Method: [###DAV-METHOD|xml###]
-			Path: [###DAV-REQ-PATH|xml###]
-			Owner: [###DAV-AUTHOR|xml###]
+			Method: [###DAV-METHOD|exml###]
+			Path: [###DAV-REQ-PATH|exml###]
+			Owner: [###DAV-AUTHOR|exml###]
 		</s:info>
 		<d:activelock>
 			<d:locktype>
@@ -14,16 +14,16 @@
 			<d:lockscope>
 				<d:exclusive/>
 			</d:lockscope>
-			<d:depth>[###LOCK-DEPTH|xml###]</d:depth>
-			<d:owner>[###DAV-AUTHOR|xml###]</d:owner>
+			<d:depth>[###LOCK-DEPTH|exml###]</d:depth>
+			<d:owner>[###DAV-AUTHOR|exml###]</d:owner>
 			<d:timeout>Second-[###LOCK-TIME-SEC|int###]</d:timeout>
 			<d:locktoken>
-				<d:href>urn:uuid:[###LOCK-UUID|xml###]</d:href>
+				<d:href>urn:uuid:[###LOCK-UUID|exml###]</d:href>
 			</d:locktoken>
 			<d:lockroot>
-				<d:href>[###DAV-REQ-PATH|xml###]</d:href>
+				<d:href>[###DAV-REQ-PATH|exml###]</d:href>
 			</d:lockroot>
 		</d:activelock>
 	</d:lockdiscovery>
 </d:lockinfo>
-<!-- # xml # r.20240116 # -->
+<!-- # xml # r.20250107 # -->

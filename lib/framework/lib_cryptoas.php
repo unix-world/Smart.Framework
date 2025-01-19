@@ -47,6 +47,8 @@ if(!function_exists('gmp_binomial')) { // test the newest method from GMP ; req.
 /**
  * Class: Smart Cipher Crypto
  * Provides a built-in based feature to handle various encryption / decryption.
+ * Max allowed packet to encrypt is 16MB theoretical from memory point of view, ... but may depend by many factors ...
+ * Max allowed packet to decrypt is 64MB theoretical from memory point of view, ... but may depend by algo ...
  *
  * <code>
  * // Usage example:
@@ -56,13 +58,32 @@ if(!function_exists('gmp_binomial')) { // test the newest method from GMP ; req.
  * @usage       static object: Class::method() - This class provides only STATIC methods
  *
  * @depends     classes: Smart, SmartEnvironment, SmartCryptoCiphersTwofishCBC, SmartCryptoCiphersBlowfishCBC, SmartCryptoCiphersOpenSSL, SmartCryptoCiphersHashCryptOFB, SmartDhKx
- * @version     v.20231203
+ * @version     v.20250118
  * @package     @Core:Crypto
  *
  */
 final class SmartCipherCrypto {
 
 	// ::
+
+
+	public const SIGNATURE_3FISH_1K_V1_DEFAULT 		= '3f1kD.v1!'; 			// 3F ; current,       v1 1024 (default)                           ; encrypt + decrypt
+	public const SIGNATURE_3FISH_1K_V1_2FBF_D 		= '3ffb2kD.v1!'; 		// 3F ; current,       v1 1024 (default+twofish/256+blowfish/448)  ; encrypt + decrypt
+
+	public const SIGNATURE_2FISH_V1_DEFAULT 		= '2f256.v1!'; 			// 2F ; current,       v1  256 (default)                           ; encrypt + decrypt
+	public const SIGNATURE_2FISH_V1_BF_DEFAULT 		= '2fb88.v1!'; 			// 2F ; current,       v1  256 (default+blowfish/448)              ; encrypt + decrypt ; Blowfish 56 (448) + TwoFish 32 (256) = 88 (704)
+
+	public const SIGNATURE_BFISH_V3 				= 'bf448.v3!'; 			// BF ; current,       v3  448                                     ; encrypt + decrypt
+	public const SIGNATURE_BFISH_V2 				= 'bf448.v2!'; 			// BF ; compatibility, v2  448                                     ; decrypt only
+	public const SIGNATURE_BFISH_V1 				= 'bf384.v1!'; 			// BF ; compatibility, v1  384                                     ; decrypt only
+
+
+	private const SEPARATOR_CRYPTO_CHECKSUM_V3 		= '#CKSUM512V3#'; 		// current,            v3 ; threefish, twofish, blowfish
+	private const SEPARATOR_CRYPTO_CHECKSUM_V2 		= '#CKSUM256#'; 		// compatibility,      v2 ; blowfish v2 only
+	private const SEPARATOR_CRYPTO_CHECKSUM_V1 		= '#CHECKSUM-SHA1#'; 	// compatibility,      v1 ; blowfish v1 only
+
+
+	private const REGEX_SAFE_CRYPTO_PACKAGE_STR  	= '/^[a-zA-Z0-9\-_\.;\!]+$/'; // must allow characters and exclamation sign from the signature: B64s ; !
 
 
 	private const ALGO_T3F_CBC_INTERNAL = 'threefish.cbc';
@@ -129,9 +150,25 @@ final class SmartCipherCrypto {
 	 * @param BOOL $b2fpreenc 	Default is FALSE ; If set to TRUE will pre-encrypt data using BF enc (v2)
 	 * @return STRING 			The encrypted data as B64S or empty string on error
 	 */
-	public static function t3f_encrypt(?string $data, ?string $key='', bool $b2fpreenc=false) : string {
+	public static function t3f_encrypt(?string $data, ?string $key='', bool $b2fpreenc=false, bool $randomize=true) : string {
 		//--
 		$cipher = (string) self::t3f_algo(); // {{{SYNC-ASCRYPTO-SUPPORTED-T3F-ALGOS}}}
+		//--
+		$lenOfData = (int) strlen((string)$data);
+		$isDatOverSized = false;
+		if($b2fpreenc === true) {
+			if((int)$lenOfData > (int)((int)Smart::SIZE_BYTES_16M / 2)) { // {{{SYNC-MAX-DATA-ENCRYPT-3F-2F-BF}}} ; max 8M because will be re-encrypted to TF and/or BF which are limited on input to 16M
+				$isDatOverSized = true;
+			} //end if
+		} else {
+			if((int)$lenOfData > (int)Smart::SIZE_BYTES_16M) { // {{{SYNC-MAX-DATA-ENCRYPT}}} ; max 16MB
+				$isDatOverSized = true;
+			} //end if
+		} //end if else
+		if($isDatOverSized !== false) {
+			Smart::log_warning(__METHOD__.' # ERROR: Failed, Data is OverSized');
+			return ''; // data is oversized
+		} //end if
 		//--
 		$key = (string) trim((string)$key);
 		if((string)trim((string)$key) == '') {
@@ -146,7 +183,7 @@ final class SmartCipherCrypto {
 		$sig = '1kD';
 		if($b2fpreenc === true) {
 			$sig = 'fb2kD';
-			$data = (string) self::tf_encrypt((string)$data, (string)$key, true);
+			$data = (string) self::tf_encrypt((string)$data, (string)$key, true, (bool)$randomize);
 			if(
 				((string)trim((string)$data) == '')
 				OR
@@ -160,7 +197,7 @@ final class SmartCipherCrypto {
 			$data = (string) Smart::dataRRot13((string)$data); // because TF+BF v1 is RRot13-ed but so is public exposed, inside T3F capsule normalize it by reverse RRot13 so would be more hard to guess
 		} //end if
 		//--
-		return (string) '3f'.$sig.'.v1'.'!'.Smart::dataRRot13((string)self::encrypt_with_version((string)$cipher, (string)$key, (string)$data, 3));
+		return (string) '3f'.$sig.'.v1'.'!'.Smart::dataRRot13((string)self::encrypt_with_version((string)$cipher, (string)$key, (string)$data, 3, (bool)$randomize));
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -181,28 +218,34 @@ final class SmartCipherCrypto {
 		//--
 		$cipher = (string) self::t3f_algo(); // {{{SYNC-ASCRYPTO-SUPPORTED-T3F-ALGOS}}}
 		//--
+		if((int)strlen((string)$data) > (int)((int)Smart::SIZE_BYTES_16M * 4)) { // {{{SYNC-MAX-DATA-DECRYPT-3F}}} ; max 64M because the max size of data to encrypt is 16M, may have inside 2F + BF
+			return ''; // oversized
+		} //end if
+		$data = (string) trim((string)$data);
+		if((string)$data == '') {
+			return ''; // do not log when data is empty ... it may come from external output: ex: URL or Cookie ...
+		} //end if
+		if(!preg_match((string)self::REGEX_SAFE_CRYPTO_PACKAGE_STR, (string)$data)) {
+			return ''; // do not log when data is contains invalid characters ... it may come from external output: ex: URL or Cookie ...
+		} //end if
+		//--
 		$key = (string) trim((string)$key);
 		if((string)trim((string)$key) == '') {
 			$key = (string) self::default_security_key();
 		} //end if
 		//--
-		$data = (string) trim((string)$data);
-		if((string)$data == '') {
-			return ''; // do not log when data is empty ... it may come from external output: ex: URL or Cookie ...
-		} //end if
-		//--
 		$b2fpreenc = false;
 		if(
-			(strpos((string)$data, '3f'.'1kD'.'.'.'v1'.'!') !== 0)
+			(strpos((string)$data, (string)self::SIGNATURE_3FISH_1K_V1_DEFAULT) !== 0)
 			AND
-			(strpos((string)$data, '3f'.'fb2kD'.'.'.'v1'.'!') !== 0)
+			(strpos((string)$data, (string)self::SIGNATURE_3FISH_1K_V1_2FBF_D) !== 0)
 		) {
 			if($fallback2fb === true) { // support backward compatible encrypted TF or TF+BF or BF content via this method ...
 				return (string) self::tf_decrypt((string)$data, (string)$key, true); // if not T3F ... fallback and try TF+BF, TF and also BF (propagate fallback)
 			} else {
 				return ''; // stop here, invalid signature
 			} //end if else
-		} elseif(strpos((string)$data, '3f'.'fb2kD'.'.'.'v1'.'!') === 0) {
+		} elseif(strpos((string)$data, (string)self::SIGNATURE_3FISH_1K_V1_2FBF_D) === 0) {
 			$b2fpreenc = true;
 		} //end if else
 		//--
@@ -216,7 +259,7 @@ final class SmartCipherCrypto {
 		//--
 		if($b2fpreenc === true) {
 			$data = (string) Smart::dataRRot13((string)$data); // fix back RRot13 reversed from T3F Encrypt
-			$data = (string) self::tf_decrypt((string)'2fb'.(22*4).'.'.'v1'.'!'.$data, (string)$key); // re-add signature
+			$data = (string) self::tf_decrypt((string)self::SIGNATURE_2FISH_V1_BF_DEFAULT.$data, (string)$key); // re-add signature
 		} //end if
 		//--
 		return (string) $data;
@@ -254,9 +297,25 @@ final class SmartCipherCrypto {
 	 * @param BOOL $bfpreenc 	Default is FALSE ; If set to TRUE will pre-encrypt data using BF enc (v3)
 	 * @return STRING 			The encrypted data as B64S or empty string on error
 	 */
-	public static function tf_encrypt(?string $data, ?string $key='', bool $bfpreenc=false) : string {
+	public static function tf_encrypt(?string $data, ?string $key='', bool $bfpreenc=false, bool $randomize=true) : string {
 		//--
 		$cipher = (string) self::tf_algo(); // {{{SYNC-ASCRYPTO-SUPPORTED-TF-ALGOS}}}
+		//--
+		$lenOfData = (int) strlen((string)$data);
+		$isDatOverSized = false;
+		if($bfpreenc === true) {
+			if((int)$lenOfData > (int)((int)Smart::SIZE_BYTES_16M / 2)) { // {{{SYNC-MAX-DATA-ENCRYPT-3F-2F-BF}}} ; max 8M because will be re-encrypted to TF and/or BF which are limited on input to 16M
+				$isDatOverSized = true;
+			} //end if
+		} else {
+			if((int)$lenOfData > (int)Smart::SIZE_BYTES_16M) { // {{{SYNC-MAX-DATA-ENCRYPT}}} ; max 16MB
+				$isDatOverSized = true;
+			} //end if
+		} //end if else
+		if($isDatOverSized !== false) {
+			Smart::log_warning(__METHOD__.' # ERROR: Failed, Data is OverSized');
+			return ''; // data is oversized
+		} //end if
 		//--
 		$key = (string) trim((string)$key);
 		if((string)trim((string)$key) == '') {
@@ -271,7 +330,7 @@ final class SmartCipherCrypto {
 		$sig = (string) (16*16);
 		if($bfpreenc === true) {
 			$sig = (string) 'b'.(22*4);
-			$data = (string) self::bf_encrypt((string)$data, (string)$key);
+			$data = (string) self::bf_encrypt((string)$data, (string)$key, (bool)$randomize);
 			if(
 				((string)trim((string)$data) == '')
 				OR
@@ -285,7 +344,7 @@ final class SmartCipherCrypto {
 			$data = (string) Smart::dataRRot13((string)$data); // because BF v3 is RRot13-ed but so is public exposed, inside TF capsule normalize it by reverse RRot13 so would be more hard to guess
 		} //end if
 		//--
-		return (string) '2f'.$sig.'.v1'.'!'.Smart::dataRRot13((string)self::encrypt_with_version((string)$cipher, (string)$key, (string)$data, 3));
+		return (string) '2f'.$sig.'.v1'.'!'.Smart::dataRRot13((string)self::encrypt_with_version((string)$cipher, (string)$key, (string)$data, 3, (bool)$randomize));
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -306,28 +365,34 @@ final class SmartCipherCrypto {
 		//--
 		$cipher = (string) self::tf_algo(); // {{{SYNC-ASCRYPTO-SUPPORTED-TF-ALGOS}}}
 		//--
+		if((int)strlen((string)$data) > (int)((int)Smart::SIZE_BYTES_16M * 3)) { // {{{SYNC-MAX-DATA-DECRYPT-2F}}} ; max 48M because the max size of data to encrypt is 16M, may have inside BF
+			return ''; // oversized
+		} //end if
+		$data = (string) trim((string)$data);
+		if((string)$data == '') {
+			return ''; // do not log when data is empty ... it may come from external output: ex: URL or Cookie ...
+		} //end if
+		if(!preg_match((string)self::REGEX_SAFE_CRYPTO_PACKAGE_STR, (string)$data)) {
+			return ''; // do not log when data is contains invalid characters ... it may come from external output: ex: URL or Cookie ...
+		} //end if
+		//--
 		$key = (string) trim((string)$key);
 		if((string)trim((string)$key) == '') {
 			$key = (string) self::default_security_key();
 		} //end if
 		//--
-		$data = (string) trim((string)$data);
-		if((string)$data == '') {
-			return ''; // do not log when data is empty ... it may come from external output: ex: URL or Cookie ...
-		} //end if
-		//--
 		$bfpreenc = false;
 		if(
-			(strpos((string)$data, '2f'.(16*16).'.'.'v1'.'!') !== 0)
+			(strpos((string)$data, (string)self::SIGNATURE_2FISH_V1_DEFAULT) !== 0)
 			AND
-			(strpos((string)$data, '2fb'.(22*4).'.'.'v1'.'!') !== 0)
+			(strpos((string)$data, (string)self::SIGNATURE_2FISH_V1_BF_DEFAULT) !== 0)
 		) {
 			if($fallbackbf === true) { // support backward compatible encrypted BF content via this method ...
 				return (string) self::bf_decrypt((string)$data, (string)$key); // if not TF ... fallback and try BF
 			} else {
 				return ''; // stop here, invalid signature
 			} //end if else
-		} elseif(strpos((string)$data, '2fb'.(22*4).'.'.'v1'.'!') === 0) {
+		} elseif(strpos((string)$data, (string)self::SIGNATURE_2FISH_V1_BF_DEFAULT) === 0) {
 			$bfpreenc = true;
 		} //end if else
 		//--
@@ -341,7 +406,7 @@ final class SmartCipherCrypto {
 		//--
 		if($bfpreenc === true) {
 			$data = (string) Smart::dataRRot13((string)$data); // fix back RRot13 reversed from TF Encrypt
-			$data = (string) self::bf_decrypt((string)'bf'.(56*8).'.'.'v3'.'!'.$data, (string)$key); // re-add signature
+			$data = (string) self::bf_decrypt((string)self::SIGNATURE_BFISH_V3.$data, (string)$key); // re-add signature
 		} //end if
 		//--
 		return (string) $data;
@@ -378,9 +443,19 @@ final class SmartCipherCrypto {
 	 * @param STRING $key 		The encryption key (secret) ; must be between 7 and 4096 bytes ; If no key is provided will use the internal key from init: SMART_FRAMEWORK_SECURITY_KEY
 	 * @return STRING 			The encrypted data as B64S or empty string on error
 	 */
-	public static function bf_encrypt(?string $data, ?string $key='') : string {
+	public static function bf_encrypt(?string $data, ?string $key='', bool $randomize=true) : string {
 		//--
 		$cipher = (string) self::bf_algo(); // {{{SYNC-ASCRYPTO-SUPPORTED-BF-ALGOS}}}
+		//--
+		$lenOfData = (int) strlen((string)$data);
+		$isDatOverSized = false;
+		if((int)$lenOfData > (int)Smart::SIZE_BYTES_16M) { // {{{SYNC-MAX-DATA-ENCRYPT}}} ; max 16MB
+			$isDatOverSized = true;
+		} //end if
+		if($isDatOverSized !== false) {
+			Smart::log_warning(__METHOD__.' # ERROR: Failed, Data is OverSized');
+			return ''; // data is oversized
+		} //end if
 		//--
 		$key = (string) trim((string)$key);
 		if((string)trim((string)$key) == '') {
@@ -392,7 +467,7 @@ final class SmartCipherCrypto {
 			return ''; // do not log when data is empty ... it may come from external output: ex: URL or Cookie ...
 		} //end if
 		//--
-		return (string) 'bf'.(56*8).'.'.'v3'.'!'.Smart::dataRRot13((string)self::encrypt_with_version((string)$cipher, (string)$key, (string)$data, 3));
+		return (string) self::SIGNATURE_BFISH_V3.Smart::dataRRot13((string)self::encrypt_with_version((string)$cipher, (string)$key, (string)$data, 3, (bool)$randomize));
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -412,25 +487,31 @@ final class SmartCipherCrypto {
 		//--
 		$cipher = (string) self::bf_algo(); // {{{SYNC-ASCRYPTO-SUPPORTED-BF-ALGOS}}}
 		//--
+		if((int)strlen((string)$data) > (int)((int)Smart::SIZE_BYTES_16M * 2)) { // {{{SYNC-MAX-DATA-DECRYPT-BF}}} ; max 32M because the max size of data to encrypt is 16M
+			return ''; // oversized
+		} //end if
+		$data = (string) trim((string)$data);
+		if((string)$data == '') {
+			return ''; // do not log when data is empty ... it may come from external output: ex: URL or Cookie ...
+		} //end if
+		if(!preg_match((string)self::REGEX_SAFE_CRYPTO_PACKAGE_STR, (string)$data)) {
+			return ''; // do not log when data is contains invalid characters ... it may come from external output: ex: URL or Cookie ...
+		} //end if
+		//--
 		$key = (string) trim((string)$key);
 		if((string)trim((string)$key) == '') {
 			$key = (string) self::default_security_key();
 		} //end if
 		//--
-		$data = (string) trim((string)$data);
-		if((string)$data == '') {
-			return ''; // do not log when data is empty ... it may come from external output: ex: URL or Cookie ...
-		} //end if
-		//--
 		$version = -1; // default
 		if(
-			(strpos((string)$data, 'bf'.(56*8).'.'.'v3'.'!') === 0) // v3
+			(strpos((string)$data, (string)self::SIGNATURE_BFISH_V3) === 0) // v3
 			OR
-			(strpos((string)$data, 'bf'.(56*8).'.'.'v2'.'!') === 0) // v2
+			(strpos((string)$data, (string)self::SIGNATURE_BFISH_V2) === 0) // v2
 		) {
 			$version = 2;
 			$isRRot13 = false;
-			if(strpos((string)$data, 'bf'.(56*8).'.'.'v3'.'!') === 0) {
+			if(strpos((string)$data, (string)self::SIGNATURE_BFISH_V3) === 0) {
 				$version = 3;
 				$isRRot13 = true;
 			} //end if
@@ -440,7 +521,7 @@ final class SmartCipherCrypto {
 				$data = (string) Smart::dataRRot13((string)$data);
 			} //end if
 		} else { // v1, with signature or not
-			if(strpos((string)$data, 'bf'.(48*8).'.'.'v1'.'!') === 0) { // v1
+			if(strpos((string)$data, (string)self::SIGNATURE_BFISH_V1) === 0) { // v1
 				$data = (array) explode('!', (string)$data, 2);
 				$data = (string) trim((string)($data[1] ?? null));
 			} //end if
@@ -516,16 +597,26 @@ final class SmartCipherCrypto {
 	 * @param ENUM $cipher 		Selected cipher: hash/{mode}, blowfish.cbc, openssl/{cipher}/{mode} ; If no cipher is provided will use the default cipher
 	 * @return STRING 			The encrypted data as B64S or empty string on error
 	 */
-	public static function encrypt(?string $data, ?string $key='', ?string $cipher='') : string {
+	public static function encrypt(?string $data, ?string $key='', ?string $cipher='', bool $randomize=true) : string {
+		//--
+		$cipher = (string) self::algo((string)$cipher);
+		//--
+		$lenOfData = (int) strlen((string)$data);
+		$isDatOverSized = false;
+		if((int)$lenOfData > (int)Smart::SIZE_BYTES_16M) { // {{{SYNC-MAX-DATA-ENCRYPT}}} ; max 16MB
+			$isDatOverSized = true;
+		} //end if
+		if($isDatOverSized !== false) {
+			Smart::log_warning(__METHOD__.' # ERROR: Failed, Data is OverSized ; Cipher: `'.($cipher ? $cipher : '@default').'`');
+			return ''; // data is oversized
+		} //end if
 		//--
 		$key = (string) trim((string)$key);
 		if((string)trim((string)$key) == '') {
 			$key = (string) self::default_security_key();
 		} //end if
 		//--
-		$cipher = (string) self::algo((string)$cipher);
-		//--
-		return (string) Smart::dataRRot13((string)self::encrypt_with_version((string)$cipher, (string)$key, (string)$data, 3)); // hardcoded to v3 only, this is without signature
+		return (string) Smart::dataRRot13((string)self::encrypt_with_version((string)$cipher, (string)$key, (string)$data, 3, (bool)$randomize)); // hardcoded to v3 only, this is without signature
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -543,12 +634,23 @@ final class SmartCipherCrypto {
 	 */
 	public static function decrypt(?string $data, ?string $key='', ?string $cipher='') : string {
 		//--
+		$cipher = (string) self::algo((string)$cipher);
+		//--
+		if((int)strlen((string)$data) > (int)((int)Smart::SIZE_BYTES_16M * 2)) { // {{{SYNC-MAX-DATA-DECRYPT-OTHERS}}} ; max 32M because the max size of data to encrypt is 16M
+			return ''; // oversized
+		} //end if
+		$data = (string) trim((string)$data);
+		if((string)$data == '') {
+			return ''; // do not log when data is empty ... it may come from external output: ex: URL or Cookie ...
+		} //end if
+		if(!preg_match((string)self::REGEX_SAFE_CRYPTO_PACKAGE_STR, (string)$data)) {
+			return ''; // do not log when data is contains invalid characters ... it may come from external output: ex: URL or Cookie ...
+		} //end if
+		//--
 		$key = (string) trim((string)$key);
 		if((string)trim((string)$key) == '') {
 			$key = (string) self::default_security_key();
 		} //end if
-		//--
-		$cipher = (string) self::algo((string)$cipher);
 		//-- {{{SYNC-ASCRYPTO-SUPPORTED-ALGOS}}} is verified in the below method
 		return (string) self::decrypt_with_version((string)$cipher, (string)$key, (string)Smart::dataRRot13((string)$data), 3); // hardcoded to v3 only, this is without signature
 		//--
@@ -717,7 +819,7 @@ final class SmartCipherCrypto {
 			];
 		} //end if
 		//--
-		$arr[1] = (string) trim((string)Smart::b64s_dec((string)Smart::dataRRot13((string)$arr[1])));
+		$arr[1] = (string) trim((string)Smart::b64s_dec((string)Smart::dataRRot13((string)$arr[1]), true)); // B64 STRICT
 		if((string)$arr[1] == '') {
 			return [
 				'err' => 'Invalid IDZ (5)'
@@ -850,7 +952,7 @@ final class SmartCipherCrypto {
 	 * @param ENUM $ver 		The version ; supported: 1, 2, 3 (current)
 	 * @return STRING 			The encrypted data as B64S or empty string on error
 	 */
-	private static function encrypt_with_version(?string $cipher, ?string $key, ?string $data, int $ver) : string {
+	private static function encrypt_with_version(?string $cipher, ?string $key, ?string $data, int $ver, bool $randomize) : string {
 		//--
 		$errCipherVersion = (string) self::verify_cipher_with_version((string)$cipher, (int)$ver);
 		if((string)$errCipherVersion != '') {
@@ -876,7 +978,7 @@ final class SmartCipherCrypto {
 		} //end if
 		//--
 		return (string) self::dataContainerPack(
-			(string) $crypto->encrypt((string)self::dataB64WithChecksumPrepare((string)$data, (int)$ver)), // b64
+			(string) $crypto->encrypt((string)self::dataB64WithChecksumPrepare((string)$data, (int)$ver, (bool)$randomize)), // b64
 			(string) $data,
 			(int)    $ver
 		); // B64s
@@ -1033,12 +1135,52 @@ final class SmartCipherCrypto {
 		// #END: {{{SYNC-CRYPTO-POST-B64DECODE-LOGIC}}}
 		//--
 
+		//--
+		if(strpos((string)$b64data, '$') !== false) {
+			//--
+			$rndArr = (array) explode('$', (string)$b64data, 5);
+			//--
+			if((int)Smart::array_size($rndArr) != 4) {
+				Smart::log_notice(__METHOD__.' # ERR-21 [v'.(int)$ver.']: Invalid Data Packet RND Segments');
+				return ''; // data is empty or invalid
+			} //end if
+			//--
+			$rndArr[0] = (string) trim(((string)$rndArr[0] ?? null)); // random prefix
+			$rndArr[1] = (string) trim(((string)$rndArr[1] ?? null)); // data
+			$rndArr[2] = (string) trim(((string)$rndArr[2] ?? null)); // crc32b26
+			$rndArr[3] = (string) trim(((string)$rndArr[3] ?? null)); // random suffix
+			//--
+			if(((string)$rndArr[0] == '') || ((int)strlen((string)$rndArr[0]) != 10)) {
+				Smart::log_notice(__METHOD__.' # ERR-22 [v'.(int)$ver.']: Invalid Data Packet RND Prefix');
+				return ''; // data is empty or invalid
+			} //end if
+			//--
+			if(((string)$rndArr[1] == '') || (!preg_match((string)Smart::REGEX_SAFE_B64_STR, (string)$rndArr[1]))) {
+				Smart::log_notice(__METHOD__.' # ERR-23 [v'.(int)$ver.']: Invalid Data Packet RND Data');
+				return ''; // data is empty or invalid
+			} //end if
+			//--
+			if(((string)$rndArr[2] == '') || (SmartHashCrypto::crc32b((string)$rndArr[1], true) != (string)$rndArr[2])) {
+				Smart::log_notice(__METHOD__.' # ERR-23 [v'.(int)$ver.']: Invalid Data Packet RND Checksum');
+				return ''; // data is empty or invalid
+			} //end if
+			//--
+			if(((string)$rndArr[3] == '') || ((int)strlen((string)$rndArr[3]) != 10)) {
+				Smart::log_notice(__METHOD__.' # ERR-25 [v'.(int)$ver.']: Invalid Data Packet RND Suffix');
+				return ''; // data is empty or invalid
+			} //end if
+			//--
+			$b64data = (string) $rndArr[1];
+			//--
+		} //end if
+		//--
+
 		//-- b64 because is not UTF-8 safe and may corrupt unicode characters
-		$data = (string) base64_decode((string)$b64data);
+		$data = (string) Smart::b64_dec((string)$b64data, true); // STRICT
 		$b64data = null; // free mem
 		//--
 		if(self::verifyDecryptedData((string)$cksumPak, (string)$originalData, (string)$data, (int)$ver) !== true) {
-			Smart::log_notice(__METHOD__.' # ERR-21 [v'.(int)$ver.']: Invalid Package Verification Checksum vs. Decrypted Data');
+			Smart::log_notice(__METHOD__.' # ERR-31 [v'.(int)$ver.']: Invalid Package Verification Checksum vs. Decrypted Data');
 			return ''; // data is empty or invalid
 		} //end if
 		//--
@@ -1094,21 +1236,24 @@ final class SmartCipherCrypto {
 	//==============================================================
 	// prepare a data holder, before encryption, B64 + Checksum ; Encrypting non-safe characters may break the algo, so B64 charset is safe ...
 	// this is the plain data input container, stores data (ex: unsafe UTF-16 ... or even binary data as Base64) before encryption
-	private static function dataB64WithChecksumPrepare(string $plainText, int $iver) : string {
+	private static function dataB64WithChecksumPrepare(string $plainText, int $iver, bool $randomize) : string {
 		//--
 		if((string)$plainText == '') {
 			return ''; // nothing to prepare or encode ! empty data ...
 		} //end if
 		//--
-		$plainText = (string) base64_encode((string)$plainText); // b64 because is not UTF-8 safe and may corrupt unicode characters
+		$plainText = (string) Smart::b64_enc((string)$plainText); // b64 because is not UTF-8 safe and may corrupt unicode characters
 		//-- {{{SYNC-BLOWFISH-CHECKSUM}}}
 	//	if((int)$iver == 1) { // v1
-	//		$plainText .= '#CHECKSUM-SHA1#'.SmartHashCrypto::sha1((string)$plainText); // sha1, hex
+	//		$plainText .= (string) self::SEPARATOR_CRYPTO_CHECKSUM_V1.SmartHashCrypto::sha1((string)$plainText); // sha1, hex
 	//	} elseif((int)$iver == 2) { // v2
 		if((int)$iver == 2) { // v2
-			$plainText .= '#CKSUM256#'.SmartHashCrypto::sha256((string)$plainText, true); // sha256, b64
+			$plainText .= (string) self::SEPARATOR_CRYPTO_CHECKSUM_V2.SmartHashCrypto::sha256((string)$plainText, true); // sha256, b64
 		} else { // v3
-			$plainText .= '#CKSUM512V3#'.Smart::base_from_hex_convert((string)SmartHashCrypto::sh3a512((string)$plainText), 62); // sh3a512, b62
+			if($randomize !== false) {
+				$plainText = (string) Smart::uuid_10_str().'$'.$plainText.'$'.SmartHashCrypto::crc32b((string)$plainText, true).'$'.Smart::uuid_10_num();
+			} //end if
+			$plainText .= (string) self::SEPARATOR_CRYPTO_CHECKSUM_V3.Smart::base_from_hex_convert((string)SmartHashCrypto::sh3a512((string)$plainText), 62); // sh3a512, b62
 		} //end if else
 		//--
 		return (string) trim((string)$plainText); // trim, it is safe, it is B64 data ...
@@ -1139,11 +1284,11 @@ final class SmartCipherCrypto {
 		//-- {{{SYNC-BLOWFISH-CHECKSUM}}}
 		$separator = '########'; // init, fake one !
 		if((int)$iver == 1) { // v1
-			$separator = '#CHECKSUM-SHA1#';
+			$separator = (string) self::SEPARATOR_CRYPTO_CHECKSUM_V1;
 		} elseif((int)$iver == 2) { // v2
-			$separator = '#CKSUM256#';
+			$separator = (string) self::SEPARATOR_CRYPTO_CHECKSUM_V2;
 		} else { // v3
-			$separator = '#CKSUM512V3#';
+			$separator = (string) self::SEPARATOR_CRYPTO_CHECKSUM_V3;
 		} //end if else
 		//--
 		$arr = [];
@@ -1156,7 +1301,8 @@ final class SmartCipherCrypto {
 			$dec['err'] = 'Data Decode Failed: Empty Data, after the checksum separation by `'.$separator.'` ... (v'.(int)$iver.')';
 			return (array) $dec;
 		} //end if
-		if(!preg_match((string)Smart::REGEX_SAFE_B64_STR, (string)$b64data)) { // {{{SYNC-BFCRYPTO-VALIDATE-B64-PAK}}}
+	//	if(!preg_match((string)Smart::REGEX_SAFE_B64_STR, (string)$b64data)) { // {{{SYNC-BFCRYPTO-VALIDATE-B64-PAK}}}
+		if(!preg_match((string)Smart::REGEX_SAFE_B64_STR, (string)strtr((string)$b64data, ['$'=>'']))) { // {{{SYNC-BFCRYPTO-VALIDATE-B64-PAK}}} ; fixed with randomizer
 			$dec['err'] = 'Data Decode Failed: Data contains B64 Invalid Characters (v'.(int)$iver.')';
 			return (array) $dec;
 		} //end if
@@ -1235,7 +1381,8 @@ final class SmartCipherCrypto {
 				return ''; // cannot create a checksum without this !
 			} //end if
 			//--
-			$pak = (string) Smart::b64s_enc((string)$rawCipherData); // b64s
+		//	$pak = (string) Smart::b64s_enc((string)$rawCipherData); // b64s
+			$pak = (string) Smart::b64s_enc((string)$rawCipherData, false); // b64u
 			//--
 			$cks = (string) SmartHashCrypto::sh3a224((string)$pak.chr(0).$originalPlainTextUsedJustForChecksum);
 			$cks = (string) Smart::base_from_hex_convert((string)$cks, 62); // {{{SYNC-CRYPTO-PAK-SIGNATURE-SHA224B62}}}
@@ -1302,7 +1449,7 @@ final class SmartCipherCrypto {
 				$upk['err'] = 'Unpack: Data v2 contains Invalid B64S Characters (v'.(int)$iver.'/'.$encmode.')';
 				return (array) $upk; // data v2 is invalid
 			} //end if
-			$cipherText = (string) Smart::b64s_dec((string)$cipherText); // b64s
+			$cipherText = (string) Smart::b64s_dec((string)$cipherText, true); // b64s ; B64 STRICT
 		} else { // v3
 			if((string)trim((string)$pcheck) == '') {
 				$upk['err'] = 'Unpack: Data v3 Raw Checksum is Empty (v'.(int)$iver.')';
@@ -1330,7 +1477,7 @@ final class SmartCipherCrypto {
 				$upk['err'] = 'Unpack: Data v3 contains Invalid B64S Characters (v'.(int)$iver.'/'.$encmode.')';
 				return (array) $upk; // data v3 is invalid
 			} //end if
-			$cipherText = (string) Smart::b64s_dec((string)$cipherText); // b64s
+			$cipherText = (string) Smart::b64s_dec((string)$cipherText, true); // b64s // B64 STRICT
 		} //end if else
 		//--
 		if((string)trim((string)$cipherText) == '') {
@@ -1404,9 +1551,9 @@ final class SmartCipherCrypto {
 		} //end if
 		//--
 		if(
-			((string)$cipher != (string)self::ALGO_BF_CBC_INTERNAL) // blowfish . cbc
-			AND
 			((int)$smartVerKD != 3)
+			AND
+			((string)$cipher != (string)self::ALGO_BF_CBC_INTERNAL) // blowfish . cbc
 		) { // only blowfish . cbc cand handle other versions than current (v3)
 			return 'Invalid Smart Version ['.(int)$smartVerKD.'] for Cipher: '.$cipher;
 		} //end if
@@ -1886,7 +2033,7 @@ final class SmartCipherCrypto {
 		} //end if
 		//--
 		$ckSumCrc32bKeyHex 	= (string) SmartHashCrypto::crc32b((string)$key);
-		$ckSumCrc32bDKeyHex = (string) SmartHashCrypto::crc32b((string)base64_encode((string)$key));
+		$ckSumCrc32bDKeyHex = (string) SmartHashCrypto::crc32b((string)Smart::b64_enc((string)$key));
 		$ckSumCrc32bKeyEnc 	= (string) Smart::base_from_hex_convert((string)$ckSumCrc32bKeyHex.$ckSumCrc32bDKeyHex, 62);
 		$ckSumCrc32bDKeyEnc = (string) Smart::base_from_hex_convert((string)$ckSumCrc32bDKeyHex.$ckSumCrc32bKeyHex, 58);
 		$ckSumHash 			= (string) SmartHashCrypto::sh3a512((string)$key.chr(0).SmartHashCrypto::SALT_PREFIX.' '.SmartHashCrypto::SALT_SEPARATOR.' '.SmartHashCrypto::SALT_SUFFIX.chr(0).$ckSumCrc32bKeyEnc.chr(0).$ckSumCrc32bDKeyEnc, true); // b64
@@ -2112,7 +2259,7 @@ final class SmartCipherCrypto {
 			],
 			'#AEAD-TAG#' 	=> (string) SmartHashCrypto::poly1305(
 											(string) md5((string)$b92Key.chr(0).$b85Iv), // 32 chars, hex
-											(string) base64_encode((string)random_bytes(4096)),
+											(string) Smart::b64_enc((string)random_bytes(4096)),
 											true
 										), // internal random salt, crypto safe ...
 		];
@@ -2290,7 +2437,7 @@ final class SmartCipherCrypto {
 		$arr_kiv = [ // {{{SYNC-ASCRYPTO-KEY-DERIVE-ARR-KEYS}}}
 			'err' 	=> '', // none, here, at v1 ...
 			'key' 	=> (string) substr((string)SmartHashCrypto::sha512((string)$key), 13, 29).strtoupper((string)substr((string)sha1((string)$key), 13, 10)).substr((string)md5((string)$key), 13, 9),
-			'iv' 	=> (string) substr((string)base64_encode((string)sha1('@Smart.Framework-Crypto/BlowFish:'.$key.'#'.sha1('BlowFish-iv-SHA1'.$key).'-'.strtoupper((string)md5('BlowFish-iv-MD5'.$key)).'#')), 1, 8),
+			'iv' 	=> (string) substr((string)Smart::b64_enc((string)sha1('@Smart.Framework-Crypto/BlowFish:'.$key.'#'.sha1('BlowFish-iv-SHA1'.$key).'-'.strtoupper((string)md5('BlowFish-iv-MD5'.$key)).'#')), 1, 8),
 		];
 		//--
 	//Smart::log_notice('V1 Derive: '.print_r($arr_kiv,1));
@@ -2326,7 +2473,7 @@ final class SmartCipherCrypto {
  * @usage       dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends     PHP GMP extension (optional, only if uses BigInt) ; classes: Smart, SmartHashCrypto, SmartCipherCrypto, SmartCryptoCiphersBlowfishCBC
- * @version     v.20231202
+ * @version     v.20250107
  *
  */
 final class SmartDhKx {
@@ -2738,7 +2885,7 @@ final class SmartDhKx {
  *
  * @usage       dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  * @hints       Threefish-1024 is a 1024-bit (128 bytes) block cipher, with a Key / Iv size of 128 chars length (128 bytes = 1024 bits). The CBC mode requires a initialization vector (iv). Threefish also requires a Tweak.
- * @hints       Threefish also supports 512-bit (64 bytes) and 256 bit (32 bytes) variants, but they are not implemented in this class because are not so safe and they have a slighly different, weaker algorithm
+ * @hints       Threefish also supports 512-bit (64 bytes) and 256 bit (32 bytes) variants, but they are not implemented in this class because are not safe for post-quantum era and they have a slighly different, weaker algorithm
  * @hints       Threefish-256 and Threefish-512 (not implemented by this class) are up to 72 rounds and are vulnerable to some rebound attacks
  * @hints       Threefish-1024 (80 rounds) implemented in this class have no vulnerability up to present. Requires 256-bit computing to break it ... :-)) ...
  *
@@ -2746,7 +2893,7 @@ final class SmartDhKx {
  * @internal
  *
  * @depends     PHP GMP extension ; classes: Smart
- * @version     v.20231203
+ * @version     v.20250118
  *
  */
 final class SmartCryptoCiphersThreefishCBC {
@@ -2763,7 +2910,7 @@ final class SmartCryptoCiphersThreefishCBC {
 	// In that respect, it is similar to Salsa20, TEA, and the SHA-3 candidates CubeHash and BLAKE
 
 	// License: BSD
-	// code was ported to PHP on 2023-12-02 by unixman: Radu Ovidiu Ilies <iradu@unix-world.org> (c) 2023 unix-world.org
+	// code was ported to PHP on 2023-12-02 by unixman: Radu Ovidiu Ilies <iradu@unix-world.org> (c) 2023-present unix-world.org
 	// code was released as part of PHP Smart Framework github.com/unix-world/Smart.Framework
 
 	// inspired by github.com/schultz-is/go-threefish (c) 2020 Matt Schultz <matt@schultz.is>
@@ -2773,9 +2920,9 @@ final class SmartCryptoCiphersThreefishCBC {
 	// (c) Bruce Schneier, Niels Ferguson, Stefan Lucks, Doug Whiting, Mihir Bellare, Tadayoshi Kohno, Jon Callas, and Jesse Walker
 
 	// it operates only on uint64 which overflows the max int64 supported by PHP thus it requires PHP GMP extension !
-	// supports only 64-bit machines ; works on words of 64 bits (unsigned Little endian integers)
-	// works and tested on little endian machines
-	// should work also (but not tested yet) on big endian machines ... ; export is made via GMP uwing the GMP_NATIVE_ENDIAN flag
+	// supports only 64-bit machines ; works on words of 64 bits (unsigned Little Endian integers)
+	// works and tested on little endian machines: Intel/AMD64, Apple/ARM64
+	// should work also (but not tested yet) on big endian machines, ex: IBM Z ... ; export is made via GMP uwing the GMP_NATIVE_ENDIAN flag
 
 	//------- # end copyright
 
@@ -3526,7 +3673,7 @@ final class SmartCryptoCiphersThreefishCBC {
  * @internal
  *
  * @depends     classes: Smart, SmartEnvironment
- * @version     v.20231202
+ * @version     v.20250107
  *
  */
 final class SmartCryptoCiphersTwofishCBC { // algo has been adapted to work faster, supports 64-bit machines only
@@ -4226,8 +4373,8 @@ final class SmartCryptoCiphersTwofishCBC { // algo has been adapted to work fast
 
 /*** Sample Usage ; These are only sample Key/Iv (use your own) ; must use base64 encode/decode just like in the below example to preserve binary or unicode data !!
 $tf = new SmartCryptoCiphersTwofishCBC('a-32-bytes-secret-key-abcdefghij', 'iv:2345;78654Rf/'); // the key must be 32 bytes (characters) / 256 bits ; the iv must be 16 bytes (characters) / 128 bits
-$encrypted = (string) base64_encode((string)$tf->encrypt(base64_encode('this is some example plain text')));
-$plaintext = (string) base64_decode((string)$tf->decrypt(base64_decode((string)$encrypted)));
+$encrypted = (string) Smart::b64_enc((string)$tf->encrypt(Smart::b64_enc('this is some example plain text')));
+$plaintext = (string) Smart::b64_dec((string)$tf->decrypt(Smart::b64_dec((string)$encrypted)));
 echo 'plain text: '.$plaintext; // it should be: 'this is some example plain text'
 die();
 */
@@ -4266,7 +4413,7 @@ die();
  * @internal
  *
  * @depends     classes: Smart, SmartHashCrypto
- * @version     v.20231117
+ * @version     v.20250107
  *
  */
 final class SmartCryptoCiphersBlowfishCBC {
@@ -4847,8 +4994,8 @@ final class SmartCryptoCiphersBlowfishCBC {
 
 /*** Sample Usage ; These are only sample Key/Iv (use your own) ; must use base64 encode/decode just like in the below example to preserve binary or unicode data !!
 $bf = new SmartCryptoCiphersBlowfishCBC('a-56-bytes-secret-key-abcdefghijklmnopqrstuvwxyz-1234567', 'iv:2345;'); // the key must be 56 bytes (characters) / 448 bits ; the iv must be 8 bytes (characters) / 64 bits
-$encrypted = (string) base64_encode((string)$bf->encrypt(base64_encode('this is some example plain text')));
-$plaintext = (string) base64_decode((string)$bf->decrypt(base64_decode((string)$encrypted)));
+$encrypted = (string) Smart::b64_enc((string)$bf->encrypt(Smart::b64_enc('this is some example plain text')));
+$plaintext = (string) Smart::b64_dec((string)$bf->decrypt(Smart::b64_dec((string)$encrypted)));
 echo 'plain text: '.$plaintext; // it should be: 'this is some example plain text'
 */
 
@@ -4879,7 +5026,7 @@ echo 'plain text: '.$plaintext; // it should be: 'this is some example plain tex
  * @internal
  *
  * @depends     classes: Smart, SmartEnvironment, SmartHashCrypto
- * @version     v.20231117
+ * @version     v.20250107
  *
  */
 final class SmartCryptoCiphersHashCryptOFB {
@@ -5262,7 +5409,7 @@ final class SmartCryptoCiphersHashCryptOFB {
 		*/
 
 		$iv = (string) random_bytes(4096); // binary
-		$iv = (string) base64_encode((string)$iv); // safe character set, from binary
+		$iv = (string) Smart::b64_enc((string)$iv); // safe character set, from binary
 
 		return (string) $this->_hash((string)$iv);
 
@@ -5301,7 +5448,7 @@ final class SmartCryptoCiphersHashCryptOFB {
  * @internal
  *
  * @depends     extensions: PHP OpenSSL ; classes: Smart, SmartHashCrypto
- * @version     v.20231117
+ * @version     v.20250107
  *
  */
 final class SmartCryptoCiphersOpenSSL {

@@ -36,7 +36,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartUnicode, SmartRedisDb
- * @version 	v.20231031
+ * @version 	v.20250107
  * @package 	Plugins:PersistentCache:Redis
  *
  */

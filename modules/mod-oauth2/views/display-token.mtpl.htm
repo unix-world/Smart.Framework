@@ -1,4 +1,4 @@
-<!-- View: display-record v.20231122 -->
+<!-- View: display-record v.20250116 -->
 [@@@SUB-TEMPLATE:partials/styles.mtpl.htm@@@]
 <style>
 #area-token {
@@ -11,6 +11,27 @@
 button {
 	margin-left: 10px;
 	margin-bottom: 10px;
+}
+img#logo-oauth {
+	position: absolute;
+	top: 140px;
+	left: 25px;
+}
+img#logo-openid {
+	position: absolute;
+	top: 156px;
+	right: 25px;
+}
+@media all and (max-width:767px) {
+	img#logo-oauth {
+		top: 210px;
+		max-width: 64px !important;
+		max-height: 64px !important;
+	}
+	img#logo-openid {
+		top: 226px;
+		max-height: 32px !important;
+	}
 }
 </style>
 <script>
@@ -25,10 +46,13 @@ const copyElemToClipboard = () => {
 	}
 };
 </script>
-<h1 style="color:#666699;!important">[###TITLE|html###]</h1>
-<h3 style="color:#444444;">[###ID|html###]</h3>
-<div style="font-size:2rem; font-weight:bold;">
-	Status:&nbsp;[&nbsp;[###STATUS|html###]&nbsp;]
+<img id="logo-oauth" width="128" height="128" src="modules/mod-oauth2/views/img/logo-oauth.svg">
+[%%%IF:JWT:!=;%%%]<img id="logo-openid" height="96" src="modules/mod-oauth2/views/img/logo-openid.svg">[%%%ELSE:JWT%%%]<!-- NOT JWT -->[%%%/IF:JWT%%%]
+<h1 style="color:#666699;!important; display:inline;">[###TITLE|html###]</h1>
+<br>
+<h2 style="color:#777788; display:inline;">[###ID|html###]</h2>
+<div>
+	<h3 style="display:inline;">Status:&nbsp;[&nbsp;[###STATUS|html###]&nbsp;]</h3>
 	<br>
 	<img width="64" height="64" src="[###IMG|html###]" alt="svg">
 </div>
@@ -39,5 +63,14 @@ const copyElemToClipboard = () => {
 </div><br>
 <button class="ux-button ux-button-details" style="cursor:cell;" onClick="copyElemToClipboard(); return false;">Copy to Clipboard &nbsp; <i class="sfi sfi-lg sfi-stack" style="color:#FFCC00;"></i></button>
 <button class="ux-button ux-button-dark" onClick="self.location='[###URL-BACK|js|html###]'; return false;">Go Back &nbsp; <i class="sfi sfi-lg sfi-spinner11"></i></button>
+[%%%IF:JWT:!=;%%%]
+[###HTML-HLJS###]
+<br>
+<br>
+<h4>JWT Token: Data</h4>
+<div class="hilite"><pre><code data-syntax="json">[###JWT|html###]</code></pre></div>
+[%%%/IF:JWT%%%]
+<br>
+<br>
 <script type="text/javascript">smartJ$Browser.RefreshParent();</script>
 <!-- View: #end -->

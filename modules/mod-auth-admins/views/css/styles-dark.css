@@ -1,0 +1,16 @@
+/* dark styles r.20250118 */
+
+@media (prefers-color-scheme: dark) {
+	body {
+		background-color: #2E2E2E;
+		color: #F8F8F8;
+	}
+	a {
+		color: #F8F8F8;
+	}
+	hr {
+		height:1px;
+		border:none 0;
+		border-top:1px dashed #888888;
+	}
+}

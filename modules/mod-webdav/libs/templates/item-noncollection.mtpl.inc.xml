@@ -1,19 +1,19 @@
 	<d:response>
 		<s:info>
 			Type: DAV/MultiStatus
-			Method: [###DAV-METHOD|xml###]
-			Path: [###DAV-REQ-PATH|xml###]
+			Method: [###DAV-METHOD|exml###]
+			Path: [###DAV-REQ-PATH|exml###]
 			Item: DAV / item type non-collection
-			V: r.20240116
+			V: r.20250107
 		</s:info>
-		<d:href>[###ITEM.DAV-REQUEST-PATH|xml###]</d:href>
+		<d:href>[###ITEM.DAV-REQUEST-PATH|exml###]</d:href>
 		<d:propstat>
 			<d:prop>
 				<d:resourcetype/>
-				<d:getlastmodified xmlns:b="urn:uuid:c2f41010-65b3-11d1-a29f-00aa00c14882/" b:dt="dateTime.rfc1123">[###ITEM.DATE-MODIFIED|xml###]</d:getlastmodified>
-				<d:getcontenttype>[###ITEM.MIME-TYPE|xml###]</d:getcontenttype>
-				<d:getcontentlength>[###ITEM.SIZE-BYTES|xml###]</d:getcontentlength>
-				<d:getetag>[###ITEM.E-TAG|xml###]</d:getetag>[%%%IF:ITEM.C-XML-DATA:!=;%%%][%%%|N%%%][###ITEM.C-XML-DATA###][%%%/IF:ITEM.C-XML-DATA%%%]
+				<d:getlastmodified xmlns:b="urn:uuid:c2f41010-65b3-11d1-a29f-00aa00c14882/" b:dt="dateTime.rfc1123">[###ITEM.DATE-MODIFIED|exml###]</d:getlastmodified>
+				<d:getcontenttype>[###ITEM.MIME-TYPE|exml###]</d:getcontenttype>
+				<d:getcontentlength>[###ITEM.SIZE-BYTES|exml###]</d:getcontentlength>
+				<d:getetag>[###ITEM.E-TAG|exml###]</d:getetag>[%%%IF:ITEM.C-XML-DATA:!=;%%%][%%%|N%%%][###ITEM.C-XML-DATA###][%%%/IF:ITEM.C-XML-DATA%%%]
 			</d:prop>
 			<d:status>HTTP/1.1 200 OK</d:status>
 		</d:propstat>

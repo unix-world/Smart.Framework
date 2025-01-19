@@ -49,7 +49,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20231119
+ * @version 	v.20250107
  * @package 	PageBuilder
  *
  */
@@ -232,7 +232,7 @@ final class Manager {
 		$out .= \SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body', 'light');
 		$out .= '<div style="text-align:left;">';
 		$out .= '<h3>Code Preview: '.\Smart::escape_html($query['name']).' :: '.\Smart::escape_html($query['id']).'</h3>';
-		$out .= '<pre><code class="syntax" data-syntax="'.\Smart::escape_html($type).'" id="code-view-area">'.\Smart::escape_html((string)\base64_decode((string)$query['code'])).'</code></pre>';
+		$out .= '<pre><code class="syntax" data-syntax="'.\Smart::escape_html($type).'" id="code-view-area">'.\Smart::escape_html((string)\Smart::b64_dec((string)$query['code'])).'</code></pre>';
 		$out .= '</div>';
 		//--
 		return (string) $out;
@@ -256,7 +256,7 @@ final class Manager {
 		$out .= \SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body', 'dark');
 		$out .= '<div style="text-align:left;">';
 		$out .= '<h3>Data Preview: '.\Smart::escape_html($query['name']).' :: '.\Smart::escape_html($query['id']).'</h3>';
-		$out .= '<pre><code class="syntax" data-syntax="'.\Smart::escape_html($type).'" id="data-view-area">'.\Smart::escape_html((string)\base64_decode((string)$query['data'])).'</code></pre>';
+		$out .= '<pre><code class="syntax" data-syntax="'.\Smart::escape_html($type).'" id="data-view-area">'.\Smart::escape_html((string)\Smart::b64_dec((string)$query['data'])).'</code></pre>';
 		$out .= '</div>';
 		//--
 		return (string) $out;
@@ -630,8 +630,8 @@ final class Manager {
 			$tselect = ''; // not translatable page
 		} //end if
 		//--
-		$query['code'] = (string) \base64_decode((string)$query['code']);
-		$query['data'] = (string) \base64_decode((string)$query['data']);
+		$query['code'] = (string) \Smart::b64_dec((string)$query['code']);
+		$query['data'] = (string) \Smart::b64_dec((string)$query['data']);
 		//--
 		$translator_window = \SmartTextTranslations::getTranslator('@core', 'window');
 		//--
@@ -955,8 +955,8 @@ final class Manager {
 		//--
 		$translator_window = \SmartTextTranslations::getTranslator('@core', 'window');
 		//--
-		$query['code'] = (string) \base64_decode((string)$query['code']);
-		$query['data'] = (string) \base64_decode((string)$query['data']);
+		$query['code'] = (string) \Smart::b64_dec((string)$query['code']);
+		$query['data'] = (string) \Smart::b64_dec((string)$query['data']);
 		//--
 		if(\defined('\\SMART_PAGEBUILDER_THEME_DARK') AND (\SMART_PAGEBUILDER_THEME_DARK === true)) {
 			$theme_readonly = 'oceanic-next';
@@ -1281,7 +1281,7 @@ final class Manager {
 		} //end if
 		if(!$err) {
 			$y_content = (array) \explode(';base64,', (string)$y_content);
-			$y_content = (string) @\base64_decode((string)\trim((string)(isset($y_content[1]) ? $y_content[1] : '')));
+			$y_content = (string) \Smart::b64_dec((string)\trim((string)($y_content[1] ?? null)));
 			if((string)$y_content == '') {
 				$err = 'Invalid SVG Content';
 			} //end if
@@ -1816,7 +1816,7 @@ final class Manager {
 									$data['mode'] = 'html';
 							} //end switch
 							//--
-							$data['layout'] = (string) \trim((string)(isset($y_frm['layout']) ? $y_frm['layout'] : ''));
+							$data['layout'] = (string) \trim((string)($y_frm['layout'] ?? null));
 							$data['layout'] = (string) \Smart::safe_filename((string)$data['layout']);
 							$data['layout'] = (string) \strtolower((string)$data['layout']);
 							if(\strlen((string)$data['layout']) > 75) {
@@ -1869,7 +1869,7 @@ final class Manager {
 								//--
 								$data['code'] = (string) \SmartModExtLib\PageBuilder\Utils::prepareCodeData((string)$data['code'], true);
 								//--
-								$data['code'] = (string) \base64_encode((string)$data['code']);
+								$data['code'] = (string) \Smart::b64_enc((string)$data['code']);
 								//--
 							} //end if
 							//--
@@ -1910,7 +1910,7 @@ final class Manager {
 									//--
 									$data['data'] = (string) \SmartModExtLib\PageBuilder\Utils::prepareCodeData((string)$data['data'], false, true); // for yaml re-indent spaces as tabs ...
 									//--
-									$data['data'] = (string) \base64_encode((string)$data['data']); // encode data b64 (encode must be here because will be transmitted later as B64 encode and must cover all error situations)
+									$data['data'] = (string) \Smart::b64_enc((string)$data['data']); // encode data b64 (encode must be here because will be transmitted later as B64 encode and must cover all error situations)
 									//--
 								} //end if
 								$y_frm['data'] = '';

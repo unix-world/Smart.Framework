@@ -80,7 +80,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20250105
+ * @version     v.20250118
  * @package     @Core
  *
  */
@@ -113,6 +113,8 @@ final class Smart {
 	public const CHARSET_BASE_92 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#|;,_~`"'; // uxm, compatible with smartgo
 
 	public const UNDEF_VAR_NAME = 'Undef____V_a_r';
+
+	public const SIZE_BYTES_16M = 16777216; // Reference Unit
 
 	//--
 
@@ -3253,7 +3255,7 @@ final class Smart {
 			$repl = (array) self::CHDIFF_BASE_64u;
 		} //end if
 		//--
-		return (string) strtr((string)base64_encode((string)$str), (array)$repl);
+		return (string) strtr((string)self::b64_enc((string)$str), (array)$repl);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -3267,16 +3269,72 @@ final class Smart {
 	 * '.' with '=' (optional, if padded, otherwise ignore)
 	 *
 	 * @param STRING 	$str 				:: The Base64s or Base64u (if no padding) encoded string
+	 * @param BOOL 		$strict 			:: Strict mode: default is FALSE ; set to TRUE for strict decoding (may return null for invalid characters) ; FALSE means non-strict (if the input contains character from outside the base64 alphabet will be silently discarded)
 	 * @return STRING 						:: The decoded string
 	 */
-	public static function b64s_dec(?string $str) : string {
+	public static function b64s_dec(?string $str, bool $strict=false) : string {
 		//--
 		$str = (string) trim((string)$str);
 		if((string)$str == '') {
 			return '';
 		} //end if
 		//--
-		return (string) base64_decode((string)strtr((string)$str, (array)array_flip((array)self::CHDIFF_BASE_64s)));
+		return (string) self::b64_dec((string)strtr((string)$str, (array)array_flip((array)self::CHDIFF_BASE_64s)), (bool)$strict);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Returns the Safet Decoded string from Base64 ; Will Fix the missing padding
+	 *
+	 * @param STRING 	$str 				:: The Base64 encoded string
+	 * @param BOOL 		$strict 			:: Strict mode: default is FALSE ; set to TRUE for strict decoding (may return null for invalid characters) ; FALSE means non-strict (if the input contains character from outside the base64 alphabet will be silently discarded)
+	 * @return STRING | NULL 				:: The decoded string ; if base64_decode() will return FALSE, it will return NULL, otherwise will return STRING
+	 */
+	public static function b64_dec(?string $str, bool $strict=false) : ?string {
+		//--
+		$str = (string) trim((string)$str);
+		if((string)$str == '') {
+			return '';
+		} //end if
+		//--
+		$l = (int) ((int)strlen((string)$str) % 4);
+		if((int)$l > 0) {
+			if((int)$l == 1) { // {{{SYNC-B64-WRONG-PAD-3}}} ; it cannot end with 3 "=" signs ; every 4 characters of base64 encoded string represent exactly 3 bytes, because byte contains 8 bits (2^8), and 64 = 2^6 ; so 4 characters of base-64 encoding can hold up to 2^6 * 2^6 * 2^6 * 2^6 bits, which is exactly 2^8 * 2^8 * 2^8 = 3 bytes
+				self::log_notice(__METHOD__.' # Invalid B64 Padding Length, more than 2, L = '.(int)$l);
+				return null;
+			} //end if
+			$str .= (string) str_repeat('=', (int)(4 - (int)$l)); // fix missing padding
+		} //end if
+		//--
+		$str = base64_decode((string)$str, (bool)$strict); // returns: string | false
+		if($str === false) {
+			self::log_notice(__METHOD__.' # Invalid B64 Content');
+			return null;
+		} //end if
+		//--
+		return (string) $str;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Returns the Base64 Encoded from a string
+	 *
+	 * @param STRING 	$str 				:: The string to be encoded
+	 * @return STRING 						:: The Base64s or Base64u (if no padding) encoded string
+	 */
+	public static function b64_enc(?string $str) : string {
+		//--
+		if((string)$str == '') {
+			return '';
+		} //end if
+		//--
+		return (string) base64_encode((string)$str);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -3758,7 +3816,7 @@ final class Smart {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment
- * @version 	v.20240106
+ * @version 	v.20250118
  * @package 	@Core:FileSystem
  *
  */
@@ -3821,11 +3879,12 @@ final class SmartFileSysUtils {
 	 * It should be used just with static files which does not changes between executions ; it does not use safe lock checks
 	 *
 	 * @param 	STRING 		$file_relative_path 				:: The relative path of file to be read (can be a symlink to a file)
-	 * @param 	INTEGER+	$length 							:: :: DEFAULT is 0 (zero) ; If zero will read the entire file ; If > 0 (ex: 100) will read only the first 100 bytes fro the file or less if the file size is under 100 bytes
+	 * @param 	INTEGER+	$length 							:: DEFAULT is 0 (zero) ; If zero will read the entire file ; If > 0 (ex: 100) will read only the first 100 bytes fro the file or less if the file size is under 100 bytes
+	 * @param 	BOOL 		$dont_read_if_overSized 			:: DEFAULT is FALSE ; if set to TRUE and a Max length is Set the file will not be read if size is more than max length
 	 *
 	 * @return 	STRING											:: The file contents or an empty string if file not found or cannot read file or other error cases
 	 */
-	public static function readStaticFile(?string $file_relative_path, ?int $length=null) : string {
+	public static function readStaticFile(?string $file_relative_path, ?int $length=null, bool $dont_read_if_overSized=false) : string {
 		//--
 		if(self::staticFileExists((string)$file_relative_path) !== true) {
 			Smart::log_warning(__METHOD__.' # File Path is Invalid: Empty / Unsafe / Not Found / Not Readable: `'.$file_relative_path.'`');
@@ -3844,9 +3903,15 @@ final class SmartFileSysUtils {
 		self::raiseErrorIfUnsafePath((string)$file_relative_path);
 		self::raiseErrorIfUnsafePath((string)$staticRootPath.$file_relative_path);
 		//--
+		if($dont_read_if_overSized === true) { // {{{SYNC-DONT-READ-FILE-IF-SPECIFIC-LEN-AND-OVERSIZED}}}
+			if((int)filesize((string)$staticRootPath.$file_relative_path) > (int)$length) { // if this param is set to TRUE even if the max length was not specified and that is zero stop here !
+				return '';
+			} //end if
+		} //end if
+		//--
 		$fcontent = null;
 		if((int)$length > 0) {
-			$fcontent = @file_get_contents(
+			$fcontent = file_get_contents(
 				(string) $staticRootPath.$file_relative_path,
 				false, // don't use include path
 				null, // context resource
@@ -3854,7 +3919,7 @@ final class SmartFileSysUtils {
 				(int) $length // max length to read ; if zero, read the entire file
 			);
 		} else {
-			$fcontent = @file_get_contents(
+			$fcontent = file_get_contents(
 				(string) $staticRootPath.$file_relative_path,
 				false, // don't use include path
 				null, // context resource

@@ -37,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry, SmartValidator, SmartParser ; optional-constants: SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20250105
+ * @version 	v.20250112
  * @package 	Application:Utils
  *
  */
@@ -298,10 +298,10 @@ final class SmartUtils {
 
 
 	//================================================================
-	// de-obfuscate an URL parameter using b64s decode + safe filter
+	// de-obfuscate an URL parameter using b64s strict decode + safe filter
 	public static function url_obfs_decode(?string $y_enc_val) : string {
 		//--
-		return (string) SmartFrameworkSecurity::FilterUnsafeString((string)Smart::b64s_dec((string)$y_enc_val));
+		return (string) SmartFrameworkSecurity::FilterUnsafeString((string)Smart::b64s_dec((string)$y_enc_val, true)); // B64 STRICT
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -378,7 +378,7 @@ final class SmartUtils {
 		//--
 		$y_str = ''; // free mem
 		//-- add signature
-		$out = (string) trim((string)base64_encode((string)$out))."\n".'[SFZ.20231031/B64.ZLibRaw.hex]'; // v3
+		$out = (string) trim((string)Smart::b64_enc((string)$out))."\n".'[SFZ.20231031/B64.ZLibRaw.hex]'; // v3
 		$out .= "\n".'('.self::data_cksgn_archive((string)$out).')'; // v3+ signature
 		//-- test unarchive
 		$unarch_checksum = (string) SmartHashCrypto::sh3a384((string)self::data_unarchive($out), true); // B64
@@ -473,8 +473,8 @@ final class SmartUtils {
 			Smart::log_warning(__METHOD__.' # Invalid Package Format @ v.'.$versionDetected);
 			return '';
 		} //end if
-		$out = @base64_decode((string)$arr[0]); // NON-STRICT ! don't make it string, may return false
-		if(($out === false) OR ((string)trim((string)$out) == '')) { // use trim, the deflated string can't contain only spaces, expect having hex data + checksum
+		$out = Smart::b64_dec((string)$arr[0]); // NON-STRICT ! don't make it string, may return null
+		if(($out === null) OR ((string)trim((string)$out) == '')) { // use trim, the deflated string can't contain only spaces, expect having hex data + checksum
 			Smart::log_warning(__METHOD__.' # Invalid B64 Data @ v.'.$versionDetected);
 			return '';
 		} //end if
@@ -1991,7 +1991,7 @@ final class SmartUtils {
 		$sdom = '';
 		//--
 		$the_dom_crr = (string) SmartUtils::get_server_current_domain_name();
-		if((string)trim((string)SmartValidator::validate_filter_ip_address($the_dom_crr)) == '') { // if not IP address
+		if((string)trim((string)SmartValidator::validate_filter_ip_address((string)$the_dom_crr)) == '') { // if not IP address
 			//--
 			$the_dom_base = (string) SmartUtils::get_server_current_basedomain_name();
 			if((strpos((string)$the_dom_base, '.') !== false) AND ((string)$the_dom_base != (string)$the_dom_crr)) { // for sub-domain the base domain must contain a dot
@@ -2399,7 +2399,7 @@ final class SmartUtils {
 				$ip = (string) self::_head_value_get_last_val((string)$hval); // can be one or multiple IP addresses ; since this is mostly a custom header which can be faked, trust the last one as it should be the one added by the proxy by example (a proxy will rewrite or append it's address to this field ...)
 			} //end if else
 			//--
-			$ip = (string) trim((string)SmartValidator::validate_filter_ip_address($ip));
+			$ip = (string) trim((string)SmartValidator::validate_filter_ip_address((string)$ip));
 			//--
 		} //end if
 		//--
@@ -2408,7 +2408,7 @@ final class SmartUtils {
 			$hkey = 'REMOTE_ADDR';
 			$hval = (string) SmartFrameworkRegistry::getServerVar((string)$hkey);
 			$ip = (string) self::_head_value_get_first_val((string)$hval); // when using this one, normally there is just one address ; but if there are many, trust the 1st one being the client's IP
-			$ip = (string) trim((string)SmartValidator::validate_filter_ip_address($ip));
+			$ip = (string) trim((string)SmartValidator::validate_filter_ip_address((string)$ip));
 			//--
 			if((string)$ip == '') { // fallback
 				$hkey = 'FAKE_ADDR';
@@ -2545,7 +2545,7 @@ final class SmartUtils {
 				if((string)$hval != '') {
 					if((string)SmartFrameworkSecurity::FilterUnsafeString((string)$hval) != '') {
 						$proxy = (string) self::_head_value_get_last_val((string)$hval); // since this is mostly from a custom header which can be faked, trust the last one as it should be the one added by the proxy by example (a proxy will rewrite or append it's address to this field ...)
-						$proxy = (string) trim((string)SmartValidator::validate_filter_ip_address($proxy));
+						$proxy = (string) trim((string)SmartValidator::validate_filter_ip_address((string)$proxy));
 						if((string)$proxy != '') {
 							break;
 						} //end if

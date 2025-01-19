@@ -69,7 +69,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartEnvironment, SmartHashCrypto, SmartUnicode, SmartComponents (optional) : constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20241220
+ * @version 	v.20250107
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -193,7 +193,7 @@ final class SmartPgsqlDb {
 
 		//--
 		if((string)$ypass != '') {
-			$password = (string) base64_decode((string)$ypass);
+			$password = (string) Smart::b64_dec((string)$ypass, true); // STRICT
 		} else {
 			$password = '';
 		} //end if else
@@ -2595,7 +2595,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartEnvironment, SmartUnicode, SmartComponents (optional) ; constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20241220
+ * @version 	v.20250107
  * @package 	Plugins:Database:PostgreSQL
  *
  */

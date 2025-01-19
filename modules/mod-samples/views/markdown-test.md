@@ -1,7 +1,7 @@
 # [%%%IF:TITLE:==;%%%]... ==Title is empty== ...[%%%ELSE:TITLE%%%][###TITLE|html###][%%%/IF:TITLE%%%]
 
-&copy;&nbsp;&nbsp;2015-2024&nbsp;unix-world.org
-Extended Markdown v.II (smart flavour + markers + compatibility) // Test :: r.20241210
+&copy;&nbsp;&nbsp;unix-world.org
+Extended Markdown v.II (smart flavour + markers + compatibility) // Test :: r.20250118
 
 # (H1) Markdown v2 (smart flavour) comes with many new features and optimizations ; however few old "bad" features have been dropped, and others supported ==only in compatibility mode== ...
 

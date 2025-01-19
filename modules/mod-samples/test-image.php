@@ -67,7 +67,10 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//-- 1st level output buffering to avoid inject warnings / errors into PNG ... if any !!
 		ob_start();
 		//--
+		$isImageTrueColor = false;
+		$im = null;
 		if(function_exists('imagecreatetruecolor')) {
+			$isImageTrueColor = true;
 			$im = imagecreatetruecolor(280, 90);
 		} else {
 			$im = imagecreate(280, 90);
@@ -77,12 +80,52 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			$this->PageViewSetErrorStatus(500, 'ERROR: Cannot create the sample image ...'); // set an error message for 500 http status
 			return;
 		} //end if
+		if($isImageTrueColor === true) {
+			imageresolution($im, 250, 250); // 250 dpi
+			imagealphablending($im, true); // improves text appearance
+			imageantialias($im, true); // improves text appearance
+		} //end if
 		//--
-		$bgcolor = imagecolorallocate($im, 0xEC, 0xEC, 0xEC); // color for background
+		$bgcolor = imagecolorallocate($im, 0x88, 0x77, 0x77); // color for background
 		imagefill($im, 0, 0, $bgcolor);
-		$text_color = imagecolorallocate($im, 33, 33, 33); // color for text
-		imagestring($im, 20, 5, 20, 'This is a sample PNG image ...', $text_color);
-		imagestring($im, 20, 5, 45, 'Generated from PHP GD Library', $text_color);
+		$text_color = imagecolorallocate($im, 0xFF, 0xFF, 0xFF); // color for text
+		$shad_color = imagecolorallocate($im, 0x66, 0x55, 0x55); // black for text
+		//--
+		$font = 20;
+		$isttf = false;
+		if(!!function_exists('imagettftext')) {
+			$isttf = true;
+			$ttfFile = 'lib/core/plugins/fonts/typo/mono/ibm-plex-mono-semibold.ttf';
+		} //end if
+		if($isttf === true) { // TTF font
+			//--
+			imagettftext($im, 11, 0, 8, 29, $shad_color, (string)Smart::real_path((string)$ttfFile), 'This is a sample PNG image ...');
+			imagettftext($im, 11, 0, 7, 28, $text_color, (string)Smart::real_path((string)$ttfFile), 'This is a sample PNG image ...');
+			//--
+			imagettftext($im, 11, 0, 8, 54, $shad_color, (string)Smart::real_path((string)$ttfFile), 'Generated from PHP GD Library');
+			imagettftext($im, 11, 0, 7, 53, $text_color, (string)Smart::real_path((string)$ttfFile), 'Generated from PHP GD Library');
+			//--
+			imagettftext($im, 11, 0, 8, 69, $shad_color, (string)Smart::real_path((string)$ttfFile), 'using a TTF Font');
+			imagettftext($im, 11, 0, 7, 68, $text_color, (string)Smart::real_path((string)$ttfFile), 'using a TTF Font');
+			//--
+		} else { // GDF font
+			//--
+			imagestring($im, (int)$font, 7, 21, 'This is a sample PNG image ...', $shad_color);
+			imagestring($im, (int)$font, 6, 20, 'This is a sample PNG image ...', $text_color);
+			//--
+			imagestring($im, (int)$font, 7, 46, 'Generated from PHP GD Library',  $shad_color);
+			imagestring($im, (int)$font, 6, 45, 'Generated from PHP GD Library',  $text_color);
+			//--
+		} //end if else
+		//--
+		if($isImageTrueColor === true) {
+			imagesavealpha($im, true); // improves text appearance
+		} //end if
+		//--
+		$logs = (string) ob_get_contents();
+		if((string)trim((string)$logs) != '') {
+			Smart::log_notice('Image generated warnings: '.__METHOD__.' # `'.$logs.'`');
+		} //end if
 		//--
 		ob_end_clean(); // #end 1st level buffering
 		//--

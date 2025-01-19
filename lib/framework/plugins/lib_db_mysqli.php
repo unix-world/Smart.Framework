@@ -71,7 +71,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartEnvironment, SmartUnicode, SmartComponents (optional) ; constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20241220
+ * @version 	v.20250107
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -207,7 +207,7 @@ final class SmartMysqliDb {
 
 		//--
 		if((string)$ypass != '') {
-			$password = (string) base64_decode((string)$ypass);
+			$password = (string) Smart::b64_dec((string)$ypass, true); // STRICT
 		} else {
 			$password = '';
 		} //end if else
@@ -1915,7 +1915,7 @@ final class SmartMysqliDb {
  * @hints		This class have no catcheable Exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just Exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartEnvironment, SmartUnicode, SmartComponents (optional) ; constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20241220
+ * @version 	v.20250107
  * @package 	Plugins:Database:MySQL
  *
  */

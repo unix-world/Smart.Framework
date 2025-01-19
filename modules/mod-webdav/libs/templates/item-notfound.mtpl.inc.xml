@@ -1,12 +1,12 @@
 	<d:response>
 		<s:info>
 			Type: DAV/MultiStatus
-			Method: [###DAV-METHOD|xml###]
-			Path: [###DAV-REQ-PATH|xml###]
+			Method: [###DAV-METHOD|exml###]
+			Path: [###DAV-REQ-PATH|exml###]
 			Item: DAV / item not-found
-			V: r.20240116
+			V: r.20250107
 		</s:info>
-		<d:href>[###DAV-REQUEST-URI|xml###]</d:href>
+		<d:href>[###DAV-REQUEST-URI|exml###]</d:href>
 		<d:propstat>
 			<d:prop/>
 			<d:status>HTTP/1.1 404 Not Found</d:status>

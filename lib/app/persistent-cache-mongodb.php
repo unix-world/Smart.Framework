@@ -36,7 +36,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	SmartMongoDbPersistentCache, SmartMongoDb, Smart
- * @version 	v.20221224
+ * @version 	v.20250107
  * @package 	Application:Caching
  *
  */

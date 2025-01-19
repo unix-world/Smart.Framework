@@ -30,7 +30,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @ignore
  *
  * @depends     classes: Smart, SmartAuth
- * @version 	v.20240119
+ * @version 	v.20250107
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -235,7 +235,7 @@ final class AuthTokens {
 			return (array) $valid;
 		} //end if
 		$tksum = '';
-		$json = (string) \Smart::b64s_dec((string)$token);
+		$json = (string) \Smart::b64s_dec((string)$token, true); // B64 STRICT
 		$token = '';
 		if((string)\trim((string)$json) == '') {
 			$valid['error'] = 'Base64S decoding Failed';

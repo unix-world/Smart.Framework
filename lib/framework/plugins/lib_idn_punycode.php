@@ -40,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: SmartUnicode
- * @version 	v.20211127
+ * @version 	v.20250107
  * @package 	Plugins:ConvertersAndParsers
  *
  */

@@ -33,7 +33,7 @@ define('SMART_FRAMEWORK__INFO__TEXT_TRANSLATIONS_ADAPTER', 'YAML: File based');
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartFileSystem, SmartFileSysUtils, SmartYamlConverter, SmartTextTranslations ; constants: SMART_FRAMEWORK_RELEASE_VERSION, SMART_FRAMEWORK_RELEASE_TAGVERSION, SMART_APP_MODULES_RELEASE, SMART_FRAMEWORK__INFO__TEXT_TRANSLATIONS_ADAPTER
- * @version 	v.20221220
+ * @version 	v.20250107
  * @package 	Application:Translations:Adapters:Yaml
  *
  */

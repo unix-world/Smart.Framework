@@ -82,7 +82,7 @@ if(!defined('SMART_FRAMEWORK_HTACCESS_NOINDEXING')) {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be mostly safe ; Reads can also use optional shared locking if needed
  *
  * @depends 	classes: Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_CHMOD_DIRS, SMART_FRAMEWORK_CHMOD_FILES
- * @version 	v.20240119
+ * @version 	v.20250118
  * @package 	Application:FileSystem
  *
  */
@@ -516,7 +516,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	STRING								:: The file contents (or a part of file contents if $file_len parameter is used) ; if the file does not exists will return an empty string
 	 */
-	public static function read(?string $file_name, ?int $file_len=0, ?string $markchmod='no', ?string $safelock='no', bool $allow_protected_paths=false) : string {
+	public static function read(?string $file_name, ?int $file_len=0, ?string $markchmod='no', ?string $safelock='no', bool $allow_protected_paths=false, bool $dont_read_if_overSized=false) : string {
 		//-- override (this is actually done automatically in raiseErrorIfUnsafePath() and checkIfSafePath() but reflect also here this as there are logs below ...
 		if(SmartEnvironment::isAdminArea() === true) {
 			if(SmartEnvironment::isTaskArea() === true) {
@@ -554,6 +554,12 @@ final class SmartFileSystem {
 					if(!self::have_access_read((string)$file_name)) {
 						Smart::log_warning(__METHOD__.' # A file is not readable: '.$file_name);
 						return '';
+					} //end if
+					//--
+					if($dont_read_if_overSized === true) { // {{{SYNC-DONT-READ-FILE-IF-SPECIFIC-LEN-AND-OVERSIZED}}}
+						if((int)filesize((string)$file_name) > (int)$file_len) { // if this param is set to TRUE even if the max length was not specified and that is zero stop here !
+							return '';
+						} //end if
 					} //end if
 					//-- fix for read file locking when using file_get_contents() # https://stackoverflow.com/questions/49262971/does-phps-file-get-contents-ignore-file-locking
 					// USE LOCKING ON READS, only if specified so:
@@ -2125,7 +2131,7 @@ final class SmartFileSystem {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be safe
  *
  * @depends 	classes: Smart
- * @version 	v.20240119
+ * @version 	v.20250107
  * @package 	Application:FileSystem
  *
  */

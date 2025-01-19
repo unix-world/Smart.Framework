@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @hints 		After each operation on the IMAP4 Server should check the $imap4->error string and if non-empty stop and disconnect to free the socket
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20231003
+ * @version 	v.20250107
  * @package 	Plugins:Mailer
  *
  */
@@ -591,7 +591,7 @@ final class SmartMailerImap4Client {
 			if($this->debug) {
 				$this->log .= '[INF] Login Method: AUTHENTICATE / '.$this->authmec.' (DEFAULT) { UNSECURE over non-encrypted connections }'."\n";
 			} //end if
-			$reply = $this->send_cmd('AUTHENTICATE '.$this->authmec.' '.(string)base64_encode((string)"\0".$username."\0".$pass));
+			$reply = $this->send_cmd('AUTHENTICATE '.$this->authmec.' '.(string)Smart::b64_enc((string)"\0".$username."\0".$pass));
 		} elseif((string)$this->authmec == 'CRAM-MD5') { // auth:cram-md5 {{{SYNC-AUTH:CRAM-MD5-METHOD}}}
 			if($this->debug) {
 				$this->log .= '[INF] Login Method: AUTHENTICATE / CRAM-MD5 { LESS SECURE ; if an encrypted connection is available is better to use PLAIN instead of CRAM-MD5 }'."\n";
@@ -607,18 +607,18 @@ final class SmartMailerImap4Client {
 				$this->error = '[ERR] IMAP4 Login: CRAM-MD5 Secret is EMPTY';
 				return 0;
 			} //end if
-			$secret = (string) base64_decode((string)$secret);
+			$secret = (string) Smart::b64_dec((string)$secret);
 			if((string)trim((string)$secret) == '') {
 				$this->error = '[ERR] IMAP4 Login: CRAM-MD5 Secret is INVALID';
 				return 0;
 			} //end if
 			$digest = (string) hash_hmac('md5', (string)$secret, (string)$pass);
-			$reply = $this->send_cmd((string)base64_encode((string)$username.' '.$digest), true); // raw command with no banner tag
+			$reply = $this->send_cmd((string)Smart::b64_enc((string)$username.' '.$digest), true); // raw command with no banner tag
 		} elseif((string)$this->authmec == 'XOAUTH2') { // auth:xoauth2 {{{SYNC-AUTH:XOAUTH2-METHOD}}}
 			if($this->debug) {
 				$this->log .= '[INF] Login Method: AUTHENTICATE / XOAUTH2'."\n";
 			} //end if
-			$reply = $this->send_cmd('AUTHENTICATE '.$this->authmec.' '.(string)base64_encode((string)'user='.$username."\1".'auth=Bearer '.$pass."\1"."\1"), false, true); // special command with get only line (req. to avoid freeze) ; sometimes return a standard NOT OK answer, othertimes return an answer that start with +SPACE as B64 encoded json which can trap the client ... ; "\1" is ^A
+			$reply = $this->send_cmd('AUTHENTICATE '.$this->authmec.' '.(string)Smart::b64_enc((string)'user='.$username."\1".'auth=Bearer '.$pass."\1"."\1"), false, true); // special command with get only line (req. to avoid freeze) ; sometimes return a standard NOT OK answer, othertimes return an answer that start with +SPACE as B64 encoded json which can trap the client ... ; "\1" is ^A
 		} else { // others, invalid or not supported
 			$this->error = '[ERR] IMAP4 Invalid Auth/Login Mechanism: '.$this->authmec;
 			return 0;
@@ -1631,7 +1631,7 @@ final class SmartMailerImap4Client {
  * @hints 		After each operation on the POP3 Server should check the $pop3->error string and if non-empty stop and disconnect to free the socket
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20231003
+ * @version 	v.20250107
  * @package 	Plugins:Mailer
  *
  */
@@ -2242,14 +2242,14 @@ final class SmartMailerPop3Client {
 				$this->error = '[ERR] POP3 Login: CRAM-MD5 Secret is EMPTY';
 				return 0;
 			} //end if
-			$secret = (string) base64_decode((string)$secret);
+			$secret = (string) Smart::b64_dec((string)$secret);
 			if((string)trim((string)$secret) == '') {
 				$this->error = '[ERR] POP3 Login: CRAM-MD5 Secret is INVALID';
 				return 0;
 			} //end if
 			$digest = (string) hash_hmac('md5', (string)$secret, (string)$pass);
 			//--
-			$reply = $this->send_cmd((string)base64_encode((string)$username.' '.$digest));
+			$reply = $this->send_cmd((string)Smart::b64_enc((string)$username.' '.$digest));
 			if((string)$this->error != '') {
 				return 0;
 			} //end if

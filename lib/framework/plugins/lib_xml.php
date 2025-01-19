@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access      PUBLIC
  * @depends     extensions: PHP XML ; classes: Smart
- * @version     v.20231207
+ * @version     v.20250107
  * @package     Plugins:ConvertersAndParsers
  *
  */
@@ -596,7 +596,7 @@ final class SmartXmlParser {
  *
  * @access      PUBLIC
  * @depends     classes: Smart
- * @version     v.20231207
+ * @version     v.20250107
  * @package     Plugins:ConvertersAndParsers
  *
  */
@@ -715,7 +715,7 @@ final class SmartXmlComposer {
  * @access 		private
  * @internal
  *
- * @version 	v.20231207
+ * @version 	v.20250107
  *
  */
 final class SmartDomUtils {

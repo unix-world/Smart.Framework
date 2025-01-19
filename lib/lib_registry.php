@@ -31,7 +31,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  *
  * @depends 	classes: SmartFrameworkSecurity, SmartEnvironment
  *
- * @version 	v.20221220
+ * @version 	v.20250107
  * @package 	Application
  *
  */

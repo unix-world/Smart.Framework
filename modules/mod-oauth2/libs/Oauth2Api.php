@@ -25,18 +25,18 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Class: \SmartModExtLib\Oauth2\Oauth2Api
  * Manages the OAuth2 API Requests
  *
- * @version 	v.20240115
+ * @version 	v.20250114
  * @package 	modules:Oauth2
  *
  */
 final class Oauth2Api {
 
 
-	public const OAUTH2_AUTHORIZE_URL_CHPART 	= '&code_challenge=[###CODE-CHALLENGE|url###]&code_challenge_method=S256'; // sha256 ; currently this is wide supported and by example github does not support others
-	public const OAUTH2_AUTHORIZE_URL_PARAMS 	= 'response_type=code&client_id=[###CLIENT-ID|url###]&scope=[###SCOPE|url###]&redirect_uri=[###REDIRECT-URI|url###]&state=[###STATE|url###]';
+	public const OAUTH2_AUTHORIZE_URL_CHPART 	= '&code_challenge=[###CODE-CHALLENGE|trim|url###]&code_challenge_method=[###METHOD-CHALLENGE|trim|url###]'; // ex: code_challenge_method=S256 as 'sha256' which is currently wide supported ; github does not support others
+	public const OAUTH2_AUTHORIZE_URL_PARAMS 	= 'response_type=code&client_id=[###CLIENT-ID|trim|url###]&scope=[###SCOPE|trim|url###]&redirect_uri=[###REDIRECT-URI|trim|url###]&state=[###STATE|trim|url###]';
 	public const OAUTH2_STANDALONE_REFRESH_URL 	= 'urn:ietf:wg:oauth:2.0:oob';
 
-	public const OAUTH2_COOKIE_NAME_CSRF 		= 'SfOAuth2_Csrf'; // {{{SYNC-OAUTH2-COOKIE-NAME-CSRF}}} ; public key
+	public const OAUTH2_COOKIE_NAME_CSRF 		= 'SfOAuth2_Csrf'; // {{{SYNC-OAUTH2-COOKIE-NAME-CSRF}}} ; CSRF public key
 
 	public const OAUTH2_PATTERN_VALID_ID 		= '[_a-zA-Z0-9,@\#\/\-\:\.]{5,127}'; // OK
 	public const OAUTH2_REGEX_VALID_ID 			= '/^'.self::OAUTH2_PATTERN_VALID_ID.'$/';
@@ -44,6 +44,11 @@ final class Oauth2Api {
 	private const OAUTH2_REQUEST_MAX_REDIRECTS 	= 2;
 
 	private static $model = null;
+
+
+	// #method-PKCE=S224|S256|S384|S512|3S224|3S256|3S384|3S512 ; optional ; if not specified will use the default one: S256
+	// #skip-PKCE=authorize|refresh ; optional ; if set will skip sending the PKCE code challenge part: OAUTH2_AUTHORIZE_URL_CHPART
+	// #post-PARAMS=rawurlencode('a=b&c=d') ; ex: #post-PARAMS=token_content_type%3Djwt ; extra POST parameters
 
 
 	/**
@@ -60,7 +65,7 @@ final class Oauth2Api {
 			return 'Requires an Authenticated User';
 		} //end if
 		//--
-		if(\Smart::array_size($data) <= 0) {
+		if((int)\Smart::array_size($data) <= 0) {
 			return 'Invalid Data Format';
 		} //end if else
 		//--
@@ -108,15 +113,6 @@ final class Oauth2Api {
 			$testExists = null;
 		} //end if
 		//--
-		$cVfy = (string) self::codeVerifier((string)$data['id'], (string)$data['client_id']);
-		if((string)$cVfy == '') {
-			return 'Invalid ID Code Verifier';
-		} //end if
-		$cChl = (string) self::codeChallenge((string)$cVfy);
-		if((string)$cChl == '') {
-			return 'Invalid ID Code Challenge';
-		} //end if
-		//--
 		$url = (string) \trim((string)$data['url_token']);
 		if((string)\trim((string)$url) == '') {
 			return []; // the token URL is empty, cannot update
@@ -133,18 +129,28 @@ final class Oauth2Api {
 		$settings = (array) $uarr['settings']; // use the settings from auth URL
 		$uarr = null;
 		//--
+		$cVfy = (string) self::codeVerifier((string)$data['id'], (string)$data['client_id']);
+		if((string)$cVfy == '') {
+			return 'Invalid Code Verifier';
+		} //end if
+		//--
 		$bw = new \SmartHttpClient();
-		$bw->rawheaders = [ 'Accept' => 'application/json' ]; // this is because for github the answer can be without this header like: access_token=12345&token_type=bearer
+		$bw->rawheaders = [ 'Accept' => 'application/json' ]; // this is mandatory for this implementation, below it only parses a json answer ; there are other implementations, ex: github answer (without this header) would be like: access_token=12345&token_type=bearer
 		$bw->connect_timeout = (int) (((int)$timeout >= 15) && ((int)$timeout <= 60)) ? $timeout : 15; // {{{SYNC-OAUTH2-REQUEST-TIMEOUT}}}
 		$bw->postvars = [
 			'grant_type' 	=> (string) 'authorization_code',
-			'code' 			=> (string) $data['code'],
 			'client_id' 	=> (string) $data['client_id'],
 			'client_secret' => (string) $data['client_secret'],
 			'redirect_uri' 	=> (string) $data['url_redirect'],
+			'code' 			=> (string) $data['code'],
 		];
 		if(!isset($settings['skip-PKCE'])) {
 			$bw->postvars['code_verifier'] = (string) $cVfy;
+			if(isset($settings['method-PKCE'])) {
+				if((string)self::getValidPKCEMethod((string)$settings['method-PKCE']) == '') {
+					return 'Invalid PKCE Method: `'.$settings['method-PKCE'].'`';
+				} //end if
+			} //end if
 		} //end if
 		if(isset($settings['post-PARAMS'])) { // ex: the /authorize url when open in browser must send some params by get and after by post ...
 			$extraParams = (array) \Smart::url_parse_query((string)\rawurldecode((string)$settings['post-PARAMS']));
@@ -164,17 +170,27 @@ final class Oauth2Api {
 				} //end if
 			} //end if
 		} //end if
+		if(self::allowInsecureHTTPS((string)$url) !== true) {
+			$bw->securemode = true; // enable SSL/TLS Strict Secure Mode by default
+		} //end if
 		$response = (array) $bw->browse_url((string)$url, 'POST', '', '', '', (int)self::OAUTH2_REQUEST_MAX_REDIRECTS);
+		if((int)\strlen((string)$response['content']) > 65535) {
+			$response['content'] = (string) \substr((string)$response['content'], 0, 65535);
+		} //end if
 		if(\SmartEnvironment::ifDebug()) {
 			\Smart::log_notice(__METHOD__.' # DEBUG # '.$url."\n".'Post-Vars: '.print_r($bw->postvars,1)."\n".'Server-Response: '.print_r($response,1));
 		} //end if
 		if(((int)$response['result'] != 1) OR (((string)$response['code'] != '200'))) {
-			return 'Invalid HTTP(S) Answer: ['.(int)$response['result'].'] / Status Code: '.(string)$response['code'];
+			return 'Invalid HTTP(S) Answer: ['.(int)$response['result'].'] / Status Code: '.(string)$response['code']."\n".self::parseErrJsonAnswer((string)$response['content']);
 		} //end if
 		//--
-		$json = \Smart::json_decode((string)$response['content']);
-		if(\Smart::array_size($json) <= 0) {
-			return 'Invalid HTTP(S) Answer: JSON Data is Invalid: `'.$response['content'].'`';
+		$json = \Smart::json_decode((string)$response['content']); // do not cast to array
+		if((int)\Smart::array_size($json) <= 0) {
+			return 'Invalid HTTP(S) Answer: JSON Data is Invalid:'."\n".self::parseErrJsonAnswer((string)$response['content']);
+		} //end if
+		//-- err check
+		if(isset($json['error']) && !empty($json['error'])) {
+
 		} //end if
 		//--
 		if(
@@ -182,23 +198,13 @@ final class Oauth2Api {
 			OR
 			((string)\strtolower((string)$json['token_type']) != 'bearer')
 		//	OR
-		//	(!isset($json['scope'])) // if the returned scope is empty or unset it means scope is invalid ...
-		//	OR
-		//	((string)\trim((string)$json['scope']) == '')
-		//	OR
-		//	( // facebook oauth2 does not provide any scope in the reply ...
-		//		((string)$json['scope'] != (string)$data['scope']) // must contains exactly the scope
-		//		AND
-		//		(\strpos((string)$json['scope'], (string)$data['scope'].' ') !== 0) // scopes start with, appended with a space and other values ; ex: google apis append the returned scopes with ` openid`
-		//		AND
-		//		((string)\substr((string)$json['scope'], -1*(int)((int)\strlen((string)$json['scope'])+1), (int)((int)\strlen((string)$json['scope'])+1)) != (string)' '.$data['scope']) // scopes end with, prepend with a space and other values ; ex: google apis prepend the returned scopes with `openid `
-		//	)
+		//	(!isset($json['scope'])) // do not check for scope as mandatory, some providers does not return this (ex: facebook)
 			OR
 			(!isset($json['access_token']))
 			OR
 			((string)\trim((string)$json['access_token']) == '')
 		) {
-			return 'Invalid HTTP(S) Answer: JSON Structure is NOT Valid: '.$response['content'];
+			return 'Invalid HTTP(S) Answer: JSON Structure is NOT Valid:'."\n".self::parseErrJsonAnswer((string)$response['content']);
 		} //end if else
 		//--
 		if(!isset($json['refresh_token'])) {
@@ -209,7 +215,7 @@ final class Oauth2Api {
 		} //end if
 		if((string)$json['refresh_token'] != '') {
 			if((int)$json['expires_in'] <= 0) {
-				return 'Invalid HTTP(S) Answer: JSON Structure contains an Invalid ExpireIn value: '.$response['content'];
+				return 'Invalid HTTP(S) Answer: JSON Structure contains an Invalid ExpireIn value:'."\n".self::parseErrJsonAnswer((string)$response['content']);
 			} //end if
 		} //end if
 		//--
@@ -246,6 +252,28 @@ final class Oauth2Api {
 
 
 	/**
+	 * Get the API Data by ID for Display Only
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param STRING $id 		The unique API ID
+	 * @param BOOL $decrypt 	Decrypt sensitive information ; Default is TRUE
+	 * @return ARRAY 			The array containing the full api data
+	 */
+	public static function getApiDisplayData(string $id) : array {
+		//--
+		if(\trim((string)\SmartAuth::get_auth_id()) == '') {
+			\Smart::log_warning(__METHOD__.' # requires an Authenticated User !');
+			return [];
+		} //end if
+		//--
+		return (array) self::getDataModel()->getById((string)$id, true, true); // decrypt=TRUE ; displayOnlyFormat=TRUE
+		//--
+	} //END FUNCTION
+
+
+	/**
 	 * Get the API Data by ID
 	 *
 	 * @param STRING $id 		The unique API ID
@@ -259,7 +287,7 @@ final class Oauth2Api {
 			return [];
 		} //end if
 		//--
-		return (array) self::getDataModel()->getById((string)$id, (bool)$decrypt); // decrypt
+		return (array) self::getDataModel()->getById((string)$id, (bool)$decrypt);
 		//--
 	} //END FUNCTION
 
@@ -283,7 +311,7 @@ final class Oauth2Api {
 		//--
 		$arr = (array) self::getApiData((string)$id);
 		//--
-		if(\Smart::array_size($arr) <= 0) {
+		if((int)\Smart::array_size($arr) <= 0) {
 			return null;
 		} //end if
 		//--
@@ -323,7 +351,7 @@ final class Oauth2Api {
 			} else { // the expired Access Token must be updated, it is expired
 				//--
 				$upd = (array) self::updateApiAccessToken((string)$id, (int)$timeout);
-				if(\Smart::array_size($upd) > 0) {
+				if((int)\Smart::array_size($upd) > 0) {
 					$data['access_token'] 		= (string) ($upd['access_token'] ?? null);
 					$data['access_expire_time'] = (int)    ($upd['access_expire_time'] ?? null);
 				} //end if
@@ -365,7 +393,7 @@ final class Oauth2Api {
 		//--
 		$arr = (array) self::getApiData((string)$id);
 		//--
-		if(\Smart::array_size($arr) <= 0) {
+		if((int)\Smart::array_size($arr) <= 0) {
 			return [];
 		} //end if
 		//--
@@ -396,15 +424,11 @@ final class Oauth2Api {
 		//--
 		$cVfy = (string) self::codeVerifier((string)$arr['id'], (string)$arr['client_id']);
 		if((string)$cVfy == '') {
-			return []; // Invalid ID Code Verifier
-		} //end if
-		$cChl = (string) self::codeChallenge((string)$cVfy);
-		if((string)$cChl == '') {
-			return []; // Invalid ID Code Challenge
+			return []; // Invalid Code Verifier
 		} //end if
 		//--
 		$bw = new \SmartHttpClient();
-		$bw->rawheaders = [ 'Accept' => 'application/json' ];
+		$bw->rawheaders = [ 'Accept' => 'application/json' ]; // this is mandatory for this implementation, below it only parses a json answer
 		$bw->connect_timeout = (int) (((int)$timeout >= 15) && ((int)$timeout <= 60)) ? $timeout : 15; // {{{SYNC-OAUTH2-REQUEST-TIMEOUT}}}
 		$bw->postvars = [
 			'grant_type' 	=> (string) 'refresh_token',
@@ -414,6 +438,11 @@ final class Oauth2Api {
 		];
 		if(!isset($settings['skip-PKCE'])) {
 			$bw->postvars['code_verifier'] = (string) $cVfy;
+			if(isset($settings['method-PKCE'])) {
+				if((string)self::getValidPKCEMethod((string)$settings['method-PKCE']) == '') {
+					return []; // Invalid PKCE Method
+				} //end if
+			} //end if
 		} //end if
 		if(isset($settings['post-PARAMS'])) { // ex: the /authorize url when open in browser must send some params by get and after by post ...
 			$extraParams = (array) \Smart::url_parse_query((string)\rawurldecode((string)$settings['post-PARAMS']));
@@ -433,30 +462,31 @@ final class Oauth2Api {
 				} //end if
 			} //end if
 		} //end if
+		if(self::allowInsecureHTTPS((string)$url) !== true) {
+			$bw->securemode = true; // enable SSL/TLS Strict Secure Mode by default
+		} //end if
 		$response = (array) $bw->browse_url((string)$url, 'POST', '', '', '', (int)self::OAUTH2_REQUEST_MAX_REDIRECTS);
+		if((int)\strlen((string)$response['content']) > 65535) {
+			$response['content'] = (string) \substr((string)$response['content'], 0, 65535);
+		} //end if
 		if(\SmartEnvironment::ifDebug()) {
 			\Smart::log_notice(__METHOD__.' # DEBUG # '.$url."\n".'Post-Vars: '.print_r($bw->postvars,1)."\n".'Server-Response: '.print_r($response,1));
 		} //end if
 		if(((int)$response['result'] != 1) OR (((string)$response['code'] != '200'))) {
-			$logs = 'Invalid HTTP(S) Answer for Refresh Access Token: ['.(int)$response['result'].'] / Status Code: '.(string)$response['code'];
-			$json = \Smart::json_decode((string)$response['content']);
-			if(\Smart::array_size($json) > 0) {
-				if(isset($json['error'])) {
-					$logs .= "\n".'Error: `'.(string)\trim((string)$json['error']).'`';
-				} //end if
-				if(isset($json['error_description'])) {
-					$logs .= "\n".'Error-Description: `'.(string)\trim((string)$json['error_description']).'`';
-				} //end if
-			} //end if
+			$logs = 'Invalid HTTP(S) Answer for Refresh Access Token: ['.(int)$response['result'].'] / Status Code: '.(string)$response['code']."\n".self::parseErrJsonAnswer((string)$response['content']);
 			self::getDataModel()->updateRecordLogs((string)$id, (string)'# '.\date('Y-m-d H:i:s O')."\n".'# '.$logs, true);
 			return [];
 		} //end if
 		//--
 		$json = \Smart::json_decode((string)$response['content']);
-		if(\Smart::array_size($json) <= 0) {
-			$logs = 'Invalid HTTP(S) JSON Answer for Refresh Access Token: '."\n".(string)\base64_encode((string)$response['content']);
+		if((int)\Smart::array_size($json) <= 0) {
+			$logs = 'Invalid HTTP(S) JSON Answer for Refresh Access Token:'."\n".(string)\Smart::b64_enc((string)$response['content']);
 			self::getDataModel()->updateRecordLogs((string)$id, (string)'# '.\date('Y-m-d H:i:s O')."\n".'# '.$logs, true);
 			return [];
+		} //end if
+		//-- err check
+		if(isset($json['error']) && !empty($json['error'])) {
+
 		} //end if
 		//-- Fix: https://www.oauth.com/oauth2-servers/making-authenticated-requests/refreshing-an-access-token/
 		if(!isset($json['refresh_token'])) {
@@ -466,11 +496,9 @@ final class Oauth2Api {
 		if(
 			(!isset($json['token_type']))
 			OR
-			((string)strtolower((string)$json['token_type']) != 'bearer')
+			((string)\strtolower((string)$json['token_type']) != 'bearer')
 		//	OR
-		//	(!isset($json['scope']))
-		//	OR // facebook oauth2 does not provide any scope in the reply ...
-		//	((string)$json['scope'] != (string)$arr['scope'])
+		//	(!isset($json['scope'])) // do not check for scope as mandatory, some providers does not return this (ex: facebook)
 			OR
 			(!isset($json['access_token']))
 			OR
@@ -484,7 +512,7 @@ final class Oauth2Api {
 			OR
 			((int)$json['expires_in'] <= 0)
 		) {
-			$logs = 'Invalid HTTP(S) JSON Structure Answer for Refresh Access Token: '."\n".(string)\Smart::json_encode((array)$json, false, false, true);
+			$logs = 'Invalid HTTP(S) JSON Structure Answer for Refresh Access Token:'."\n".self::parseErrJsonAnswer((string)$response['content']);
 			self::getDataModel()->updateRecordLogs((string)$id, (string)'# '.\date('Y-m-d H:i:s O')."\n".'# '.$logs, true);
 			return [];
 		} //end if else
@@ -520,7 +548,7 @@ final class Oauth2Api {
 		//--
 		$arr = (array) self::getApiData((string)$id, false); // no need to decrypt here, just test if exists
 		//--
-		if(\Smart::array_size($arr) <= 0) {
+		if((int)\Smart::array_size($arr) <= 0) {
 			return -999;
 		} //end if
 		//--
@@ -648,6 +676,59 @@ final class Oauth2Api {
 	//##### PRIVATES
 
 
+	private static function parseErrJsonAnswer(?string $body) : string {
+		//--
+		$body = (string) \trim((string)$body);
+		if((string)$body == '') {
+			return '';
+		} //end if
+		//--
+		$errDetails = [];
+		$json = \Smart::json_decode((string)$body); // do not cast
+		if((int)\Smart::array_size($json) > 0) {
+			if(isset($json['error'])) {
+				if(\Smart::is_nscalar($json['error'])) {
+					$errDetails[] = '# Error-Code: '.(string)\trim((string)$json['error']);
+				} //end if
+			} //end if
+			if(isset($json['error_description'])) {
+				if(\Smart::is_nscalar($json['error_description'])) {
+					$errDetails[] = '# Error-Description: '.(string)\trim((string)$json['error_description']);
+				} //end if
+			} //end if
+		} //end if
+		//--
+		if((int)\Smart::array_size($errDetails) <= 0) {
+			$errDetails = [ 'Unknown Error' ];
+		} //end if
+		//--
+		return (string) \trim((string)\implode("\n", (array)$errDetails));
+		//--
+	} //END FUNCTION
+
+
+	private static function allowInsecureHTTPS(string $url) : bool {
+		//--
+		$url = (string) \trim((string)$url);
+		if((string)$url == '') {
+			return false;
+		} //end if
+		//--
+		$arr = (array) \Smart::url_parse((string)$url);
+		if((string)$arr['scheme'] == 'https') {
+			$arr['host'] = (string) \trim((string)$arr['host']);
+			if((string)$arr['host'] != '') {
+				if((string)\trim((string)\SmartValidator::validate_filter_ip_address((string)$arr['host'])) != '') { // if host is an IP address
+					return true;
+				} //end if
+			} //end if
+		} //end if
+		//--
+		return false;
+		//--
+	} //END FUNCTION
+
+
 	private static function parseUrlAndSettings(string $url) : array {
 		//--
 		$url = (string) \trim((string)$url);
@@ -662,7 +743,34 @@ final class Oauth2Api {
 	} //END FUNCTION
 
 
-	private static function codeVerifier(string $id, string $cid) : string {
+	private static function getValidPKCEMethod(string $method) : string {
+		//--
+		$method = (string) \strtoupper((string)\trim((string)$method));
+		if((string)$method == '') {
+			return 'S256';
+		} //end if
+		//--
+		switch((string)$method) { // {{{SYNC-OAUTH2-CHALLENGE-METHODS}}}
+			case 'S224': // sha224
+			case 'S256': // sha256 ; wide supported, default
+			case 'S384': // sha384
+			case 'S512': // sha512
+			case '3S224': // sha3-224
+			case '3S256': // sha3-256
+			case '3S384': // sha3-384
+			case '3S512': // sha3-512
+			case 'PLAIN': // plain
+				break;
+			default:
+				return '';
+		} //end switch
+		//--
+		return (string) $method;
+		//--
+	} //END FUNCTION
+
+
+	private static function codeVerifier(string $id, string $cid) : string { // {{{SYNC-OAUTH2-CODE-VERIFIER}}}
 		//--
 		$id = (string) \trim((string)$id);
 		if((string)$id == '') {
@@ -673,20 +781,15 @@ final class Oauth2Api {
 		if((string)$cid == '') {
 			return '';
 		} //end if
-		//--
-		return (string) \Smart::base_from_hex_convert((string)\SmartHashCrypto::hmac('sha3-384', (string)\Smart::dataRot13((string)\Smart::b64s_enc((string)$id)), (string)$cid), 62);
-		//--
-	} //END FUNCTION
-
-
-	private static function codeChallenge(string $cVfy) : string {
-		//--
-		$cVfy = (string) \trim((string)$cVfy);
-		if((string)$cVfy == '') {
+		//-- must contain only: A-Z a-z 0-9 - . _ ~
+		$cVfy = (string) \Smart::base_from_hex_convert((string)\SmartHashCrypto::hmac('sha3-384', (string)\Smart::dataRot13((string)\Smart::b64s_enc((string)$id)), (string)$cid), 62);
+		//-- must be between 43..28 characters
+		if(((string)\trim((string)$cVfy) == '') OR ((int)\strlen((string)$cVfy) < 43) OR ((int)\strlen((string)$cVfy) > 128)) {
+			\Smart::log_warning(__METHOD__.' # OAuth2: Code Verifier is Empty or Invalid !');
 			return '';
 		} //end if
 		//--
-		return (string) \Smart::b64_to_b64s((string)\SmartHashCrypto::sha256((string)$cVfy, true), false); // b64u ; {{{SYNC-OAUTH2-OAUTH2_AUTHORIZE_URL_CHPART}}}
+		return (string) $cVfy;
 		//--
 	} //END FUNCTION
 

@@ -9,7 +9,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 	@http_response_code(500);
 	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
-//----------------------------------------------------- r.20240118
+//----------------------------------------------------- r.20250107
 
 //--------------------------------------- Templates and Home Page (admin)
 $configs['app']['admin-domain'] 					= 'localhost.local'; 					// admin domain as yourdomain.ext

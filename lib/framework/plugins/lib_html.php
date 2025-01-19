@@ -28,7 +28,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment, SmartUnicode, SmartValidator ; optional-constant: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20221224
+ * @version 	v.20250107
  * @package 	Plugins:ConvertersAndParsers
  *
  */

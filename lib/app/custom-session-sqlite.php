@@ -29,7 +29,7 @@ define('SMART_FRAMEWORK__INFO__CUSTOM_SESSION_ADAPTER', 'SQLite: DB file based')
  *
  * @access 		PUBLIC
  * @depends 	SmartSQliteDb, Smart, SmartPersistentCache, PHP SQLite3 Extension
- * @version 	v.20221219
+ * @version 	v.20250107
  * @package 	Application:Session
  *
  */

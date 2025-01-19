@@ -17,7 +17,7 @@ define('SMART_APP_MODULE_AUTH', true);
  * Admin Controller
  *
  * @ignore
- * @version v.20231121
+ * @version v.20250116
  *
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -48,6 +48,10 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		if(!SmartEnvironment::isAdminArea()) { // allow: adm/tsk ; but this controller does not extends in a task controller
 			$this->PageViewSetCfg('error', 'OAuth2 Manager is allowed to run under `Admin` area only ! ...');
 			return 403;
+		} //end if
+		if(SmartEnvironment::isTaskArea()) {
+			$this->PageViewSetCfg('error', 'OAuth2 Manager cannot run under Admin Task Area !');
+			return 502;
 		} //end if
 		//--
 		if(SmartAuth::test_login_privilege('oauth2') !== true) { // PRIVILEGES
@@ -130,7 +134,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=close-modal';
 				} else {
 					$status = 'ERROR';
-					$message = 'ERR.Message: '.Smart::escape_html((string)$test);
+					$message = 'ERR.Message: '.Smart::nl_2_br((string)Smart::escape_html((string)$test));
 				} //end if else
 				//--
 				$this->PageViewSetVar(
@@ -166,7 +170,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=close-modal';
 				} else {
 					$status = 'ERROR';
-					$message = 'ERR.Message: '.Smart::escape_html((string)$test);
+					$message = 'ERR.Message: '.Smart::nl_2_br((string)Smart::escape_html((string)$test));
 				} //end if else
 				//--
 				$this->PageViewSetVar(
@@ -184,7 +188,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				break;
 
-			case 'reinit-token-form': // Form for ReAuthorize/Refresh Record, when expired (OUTPUTS: HTML)
+			case 'reinit-token-form': // Form for Re-Authorize Record, when expired (OUTPUTS: HTML)
 				//--
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				//--
@@ -245,7 +249,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					return 400;
 				} //end if
 				//--
-				$data = (array) \SmartModExtLib\Oauth2\Oauth2Api::getApiData((string)$id);
+			//	$data = (array) \SmartModExtLib\Oauth2\Oauth2Api::getApiData((string)$id);
+				$data = (array) \SmartModExtLib\Oauth2\Oauth2Api::getApiDisplayData((string)$id); // this will also pretty print JWT / Tokens
 				if((int)Smart::array_size($data) <= 0) {
 					$this->PageViewSetCfg('error', 'ID Not Found');
 					return 400;
@@ -291,7 +296,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 							'IS-EXPIRING' 			=> (string) (($isExpiringToken === true) ? 'yes' : 'no'), // {{{SYNC-TOKEN-NON-EXPIRING-TEST}}}
 							'IS-EXPIRED' 			=> (string) (($isExpired === true) ? 'yes' : 'no'),
 							'IS-ACTIVE' 			=> (string) (((int)$data['active'] == 1) ? 'yes' : 'no'),
-							'DATA-ARR' 				=> (array)  $data
+							'IS-JWT' 				=> (string) ((strpos((string)trim((string)$data['access_token']), '[') === 0) && (strpos((string)$data['access_token'], '"JWT:signature":') !== false)) ? 'yes' : 'no', // if already decoded and is JWT should start with `[` because is JSON array
+							'DATA-ARR' 				=> (array)  $data,
 						]
 					)
 				]);
@@ -310,7 +316,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if
 				//--
 				$upd = (array) \SmartModExtLib\Oauth2\Oauth2Api::updateApiAccessToken((string)$id);
-				if(Smart::array_size($upd) > 0) {
+				if((int)Smart::array_size($upd) > 0) {
 					$result = 'OK';
 					$img = 'lib/framework/img/sign-ok.svg';
 				} else {
@@ -382,19 +388,29 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					} //end if else
 				} //end if else
 				//--
-				$title = 'Access Token for OAuth2 API';
+				$jwtPretty = '';
+				if(SmartAuth::jwt_valid_format((string)$token) === true) {
+					$jwtPretty = (string) SmartAuth::jwt_token_display((string)$token, true);
+					if((string)trim((string)$jwtPretty) == '') {
+						$jwtPretty = '';
+					} //end if
+				} //end if
+				//--
+				$title = 'OAuth2 Access Token';
 				//--
 				$this->PageViewSetVars([
 					'title' => (string) $title,
 					'main' => (string) SmartMarkersTemplating::render_file_template(
 						(string) $this->ControllerGetParam('module-view-path').'display-token.mtpl.htm',
 						[
+							'URL-BACK' 	=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=view-data&id='.Smart::escape_url((string)$id),
 							'TITLE' 	=> (string) $title,
 							'ID' 		=> (string) $id,
 							'STATUS' 	=> (string) $result,
 							'IMG' 		=> (string) $img,
 							'TOKEN' 	=> (string) $token,
-							'URL-BACK' 	=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=view-data&id='.Smart::escape_url((string)$id),
+							'JWT' 		=> (string) $jwtPretty,
+							'HTML-HLJS' => (string) SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body', 'light'),
 						]
 					)
 				]);

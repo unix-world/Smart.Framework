@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: SmartUnicode, Smart, SmartDetectImages, SmartUtils, SmartEnvironment, SmartFrameworkSecurity, SmartFrameworkRegistry
- * @version 	v.20250105
+ * @version 	v.20250107
  * @package 	Application:Plugins:Network:HTTP
  *
  */
@@ -307,7 +307,7 @@ final class SmartRobot {
 					$eimg = (string) trim((string)urldecode((string)$eimg)); // use url decode instead of rawurldecode ; will do the job of rawurldecode + will decode also + as spaces
 				} else { // svg + b64 / png|gif|jpg|webp +b64
 					$eimg = (array) explode(';base64,', (string)$y_url_or_path, 2);
-					$eimg = (string) isset($eimg[1]) ? base64_decode((string)trim((string)($eimg[1]))) : '';
+					$eimg = (string) isset($eimg[1]) ? Smart::b64_dec((string)trim((string)($eimg[1]))) : '';
 				} //end if
 				//--
 				if( // if svg, validate

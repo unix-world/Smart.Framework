@@ -27,7 +27,7 @@ define('SMART_FRAMEWORK__INFO__CUSTOM_SESSION_ADAPTER', 'DBA: DB file based');
  *
  * @access 		PUBLIC
  * @depends 	SmartDbaDb, Smart, SmartPersistentCache, PHP DBA Extension
- * @version 	v.20221219
+ * @version 	v.20250107
  * @package 	Application:Session
  *
  */

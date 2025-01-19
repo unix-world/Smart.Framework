@@ -160,7 +160,7 @@ if(mb_substitute_character() !== 63) {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP MBString, PHP XML ; constants: SMART_FRAMEWORK_CHARSET, SMART_FRAMEWORK_SECURITY_FILTER_INPUT
- * @version     v.20241226
+ * @version     v.20250107
  * @package     @Core
  *
  */

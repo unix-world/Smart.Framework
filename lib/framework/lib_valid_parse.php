@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access      PUBLIC
  * @depends     classes: Smart, SmartUnicode
- * @version     v.20231012
+ * @version     v.20250107
  * @package     @Core:Extra
  *
  */
@@ -428,7 +428,7 @@ final class SmartValidator {
  *
  * @access      PUBLIC
  * @depends     classes: Smart, SmartUnicode, SmartValidator ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS
- * @version     v.20231003
+ * @version     v.20250107
  * @package     @Core:Extra
  *
  */

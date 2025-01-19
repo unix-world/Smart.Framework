@@ -13,6 +13,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 
 define('SMART_APP_MODULE_AREA', 'ADMIN');
 define('SMART_APP_MODULE_AUTH', true);
+define('SMART_APP_MODULE_REALM_AUTH', 'SMART-ADMINS-AREA'); // if set will check the login realm
 
 // [PHP8]
 
@@ -22,7 +23,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20231020
+	// v.20250112
 
 
 	public function Initialize() {
@@ -115,7 +116,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		$this->PageViewSetVars([
 			'title' => 'MetaInfo',
-			'main' 	=> '<h1>Web Server MetaInfo</h1>'.Smart::nl_2_br((string)Smart::escape_html((string)implode("\n", (array)$metainfo)))
+			'main' 	=> '<h1>Web Server MetaInfo</h1><pre>'.Smart::escape_html((string)implode("\n", (array)$metainfo)).'</pre>'
 		]);
 		//--
 

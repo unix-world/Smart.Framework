@@ -12,6 +12,8 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 define('SMART_APP_MODULE_AREA', 'TASK'); // TASK
+define('SMART_APP_MODULE_AUTH', true);
+define('SMART_APP_MODULE_REALM_AUTH', 'SMART-ADMINS-AREA'); // if set will check the login realm
 
 /**
  * Index Controller
@@ -21,7 +23,7 @@ define('SMART_APP_MODULE_AREA', 'TASK'); // TASK
  */
 final class SmartAppTaskController extends SmartAbstractAppController {
 
-	// v.20231020
+	// v.20250112
 
 
 	public function Run() {
@@ -38,8 +40,8 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 		//--
 		$this->PageViewSetVars([
 			'title' 	=> 'Task NameSpaces',
-			'main' 		=> SmartMarkersTemplating::render_file_template(
-				$this->ControllerGetParam('module-view-path').'tasks.mtpl.htm',
+			'main' 		=> (string) SmartMarkersTemplating::render_file_template(
+				(string) $this->ControllerGetParam('module-view-path').'tasks.mtpl.htm',
 				[
 					'DATE-TIME' 		=> (string) date('Y-m-d H:i:s O'),
 					'HTML-POWERED-INFO' => (string) SmartComponents::app_powered_info('yes'),

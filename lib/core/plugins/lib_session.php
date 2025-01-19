@@ -67,7 +67,7 @@ if(!function_exists('session_start')) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP Session Module ; classes: Smart, SmartUtils
- * @version 	v.20231103
+ * @version 	v.20250107
  * @package 	Application:Plugins:Session
  *
  */
@@ -514,7 +514,7 @@ final class SmartSession {
  * Abstract Class Smart Custom Session
  * This is the abstract for extending the class SmartCustomSession
  *
- * @version 	v.20231103
+ * @version 	v.20250107
  * @package 	development:Application
  */
 abstract class SmartAbstractCustomSession {
