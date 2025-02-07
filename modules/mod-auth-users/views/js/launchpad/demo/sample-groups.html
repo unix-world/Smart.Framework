@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Launchpad Demo</title>
+<link rel="stylesheet" href="../launchpad.css">
+<script src="../launchpad.js"></script>
+</head>
+<body>
+<div id="canvas-holder"></div>
+<button type="button" onclick="launchpad.toggle()">Test</button>
+<script>
+launchpad.setData([
+	{
+		group: 'Popular',
+		apps: [
+			{
+				icon: "../../../img/icon-oo-writer.svg",
+				link: "#writer",
+				label: "Writer",
+			},
+			{
+				icon: "../../../img/icon-oo-calc.svg",
+				link: "#calc",
+				label: "Calc",
+			},
+			{
+				icon: "../../../img/icon-oo-impress.svg",
+				link: "#impress",
+				label: "Impress",
+			},
+		]
+	},
+	{
+		group: 'Extra',
+		apps: [
+			{
+				icon: "../../../img/icon-oo-draw.svg",
+				link: "#draw",
+				label: "Draw",
+			},
+			{
+				icon: "../../../img/icon-oo-db.svg",
+				link: "#database",
+				label: "DataBase",
+			},
+		]
+	},
+	{
+		icon: "../../../img/icon-oo-profiles.svg",
+		link: "#contacts",
+		label: "Contacts",
+	},
+	{
+		icon: "../../../img/icon-oo-keys.svg",
+		link: "#keychain",
+		label: "KeyChain",
+	},
+]);
+</script>
+</body>
+</html>

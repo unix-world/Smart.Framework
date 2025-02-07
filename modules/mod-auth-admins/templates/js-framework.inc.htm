@@ -1,13 +1,9 @@
-<!-- Js Framework :: r.20250107 -->
+<!-- Js Framework :: r.20250124 -->
 [@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-check.inc.htm!@@@]
 <script>
 const smartJ$Options = {
-	ModalBox: {
-		CssOverlayOpacity: 0.8,
-	},
 	BrowserUtils: {
 		LanguageId: '[###LANG|js###]',
-		Charset: '[###CHARSET|js###]',
 		CookieLifeTime: [###CLIENT-UID-COOKIE-LIFETIME|int###],
 		CookieDomain: '[###CLIENT-UID-COOKIE-DOMAIN|js###]',
 		CookieSameSitePolicy: '[###CLIENT-UID-COOKIE-SAMESITE|js###]',
@@ -15,7 +11,6 @@ const smartJ$Options = {
 		NotificationDialogType: [%%%IF:SEMAPHORE:&*<dialog:alertable>;(88)%%%]'alertable'[%%%ELSE:SEMAPHORE(88)%%%]'auto'[%%%/IF:SEMAPHORE(88)%%%],
 		ModalBoxProtected: true,
 		NotifyLoadError: true,
-		CssOverlayOpacity: 0.8,
 	},
 };
 Object.freeze(smartJ$Options); // sec.

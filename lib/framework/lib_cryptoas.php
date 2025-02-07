@@ -21,7 +21,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // 			- AES256 (CBC/CFB/OFB) via OpenSSL
 // 			- Camellia256 (CBC/CFB/OFB) via OpenSSL
 // 			- Idea (CBC/CFB/OFB) via OpenSSL
-// 		* asymmetric (shad key): DhKx built-in
+// 		* asymmetric (shad/key):
+// 			- Csrf build-in ; requires PHP GMP extension
+// 			- DhKx built-in ; requires PHP GMP extension
 //======================================================
 // NOTICE: This is unicode safe
 //======================================================
@@ -36,9 +38,140 @@ if(!function_exists('random_bytes')) {
 //--
 if(!function_exists('gmp_binomial')) { // test the newest method from GMP ; req. at least PHP 7.3 or later and a modern GMP implementation
 	@http_response_code(500);
-	die('ERROR: The PHP (GMP extension) gmp_init Function is required for Smart.Framework / Crypto');
+	die('ERROR: The PHP GMP extension is required for Smart.Framework / Crypto');
 } //end if
 //--
+
+
+//=====================================================================================
+//===================================================================================== CLASS START
+//=====================================================================================
+
+/**
+ * Class Smart.Framework CSRF
+ * A Safety Handler against Cross-Site Request Forgery (CSRF)
+ *
+ * <code>
+ * // Usage example:
+ * SmartCsrf::some_method_of_this_class(...);
+ * </code>
+ *
+ * @usage 		static object: Class::method() - This class provides only STATIC methods
+ * @hints 		This is generally intended for advanced usage !
+ *
+ * @depends 	PHP GMP extension, Smart, SmartHashCrypto
+ *
+ * @version 	v.20250203
+ * @package 	Application
+ *
+ */
+final class SmartCsrf {
+
+	// ::
+
+
+	//==============================================================
+	// this is intended to store in a private session ; if need to be exposed in a cookie (public) it have to be encrypted, ex: Blowfish !
+	public static function newPrivateKey() : string {
+		//--
+		return (string) Smart::int10_to_base62_str((int)time()).'#'.Smart::uuid_35(); // case sensitive ; bind the key with a date/day prefix, will be checked in verify ; this way a key cannot be reused more than max 24 hours !
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	// returns a public key hash that can be public exposed, it is just a one-way hash, safe
+	public static function getPublicKey(string $privKey, string $secret) : string {
+		//--
+		$privKey = (string) trim((string)$privKey); // the unencrypted private key
+		if((string)$privKey == '') {
+			return '';
+		} //end if
+		//--
+		if((string)trim((string)$secret) == '') { // a secret
+			return '';
+		} //end if
+		//--
+		return SmartHashCrypto::checksum((string)$secret.chr(0).$privKey); // B62, SHA3-384
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	// will check if the keys match
+	public static function verifyKeys(string $pubKey, string $privKey, string $secret) : bool {
+		//--
+		if(!function_exists('gmp_init')) {
+			Smart::raise_error(__METHOD__.' # PHP GMP Extension is required');
+			return false;
+		} //end if
+		//--
+		$privKey = (string) trim((string)$privKey);
+		if(strpos((string)$privKey, '#') === false) {
+			return false;
+		} //end if
+		$arr = (array) explode('#', $privKey, 2);
+		$b62 = (string) trim((string)($arr[0] ?? null));
+		$arr = null;
+		if((string)$b62 == '') {
+			return false;
+		} //end if
+		if((int)strlen((string)$b62) !== (int)strspn((string)$b62, (string)Smart::CHARSET_BASE_62)) {
+			return false;
+		} //end if
+		$hex = (string) Smart::base_to_hex_convert((string)$b62, 62);
+		$b62 = null;
+		if((string)trim((string)$hex) == '') {
+			return false;
+		} //end if
+		//--
+		$b10N = (string) gmp_init('0x'.$hex);
+		$hex = null;
+		//--
+		$now10N = (string) gmp_init('0x'.dechex((int)time()));
+		//--
+		$diff10N = (string) gmp_sub((string)$now10N, (string)$b10N);
+		if((int)gmp_cmp((string)$diff10N, '0') <= 0) { // diff must be positive
+			return false;
+		} //end if
+		//--
+		if((int)gmp_cmp('3600', (string)$diff10N) <= 0) { // the difference in seconds must not be more than 3600 (1 hour) ; must be positive
+			return false;
+		} //end if
+		//--
+		$pubKey = (string) trim((string)$pubKey);
+		//--
+		$ok = false;
+		//--
+		if(
+			((string)$pubKey != '')
+			AND
+			((string)$privKey != '')
+			AND
+			((string)trim((string)$secret) != '')
+		) {
+			//--
+			if((string)$pubKey === (string)self::getPublicKey((string)$privKey, (string)$secret)) {
+				$ok = true;
+			} //end if
+			//--
+		} //end if
+		//--
+		return (bool) $ok;
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+} //END CLASS
+
+
+//=====================================================================================
+//===================================================================================== CLASS END
+//=====================================================================================
+
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -57,8 +190,8 @@ if(!function_exists('gmp_binomial')) { // test the newest method from GMP ; req.
  *
  * @usage       static object: Class::method() - This class provides only STATIC methods
  *
- * @depends     classes: Smart, SmartEnvironment, SmartCryptoCiphersTwofishCBC, SmartCryptoCiphersBlowfishCBC, SmartCryptoCiphersOpenSSL, SmartCryptoCiphersHashCryptOFB, SmartDhKx
- * @version     v.20250118
+ * @depends     classes: Smart, SmartEnvironment, SmartHashCrypto, SmartCryptoCiphersTwofishCBC, SmartCryptoCiphersBlowfishCBC, SmartCryptoCiphersOpenSSL, SmartCryptoCiphersHashCryptOFB, SmartDhKx
+ * @version     v.20250203
  * @package     @Core:Crypto
  *
  */
@@ -1784,7 +1917,7 @@ final class SmartCipherCrypto {
 					} //end if
 				} //end if
 				//--
-	//	Smart::log_notice(__METHOD__.' # DEBUG: '.print_r($arr_kiv,1));
+				//	Smart::log_notice(__METHOD__.' # DEBUG: '.print_r($arr_kiv,1));
 				//--
 			} //end if else
 			//-- TEST Key and IV !
@@ -2080,7 +2213,7 @@ final class SmartCipherCrypto {
 			'iv'  => (string) $safeIv, 		// b85
 			'tk'  => (string) $safeTweak, 	// b92
 		];
-	//Smart::log_notice('V2 Derive: '.print_r($arr_kiv,1));
+		//Smart::log_notice('V2 Derive: '.print_r($arr_kiv,1));
 		//--
 		return (array) $arr_kiv;
 		//--
@@ -2264,7 +2397,7 @@ final class SmartCipherCrypto {
 										), // internal random salt, crypto safe ...
 		];
 		//--
-	//Smart::log_notice('V3 Derive: '.print_r($arr_kiv,1));
+		//Smart::log_notice('V3 Derive: '.print_r($arr_kiv,1));
 		//--
 		return (array) $arr_kiv;
 		//--
@@ -2341,7 +2474,7 @@ final class SmartCipherCrypto {
 			'key' => (string) $derived_key, // b92 ; safe derivation: contains a complete SHA256(B64) and the first 11 chars from SHA512(B64) from the hash of derived key
 			'iv'  => (string) $iv, // b36 ; ensure the checksum of original input string
 		];
-	//Smart::log_notice('V2 Derive: '.print_r($arr_kiv,1));
+		//Smart::log_notice('V2 Derive: '.print_r($arr_kiv,1));
 		//--
 		return (array) $arr_kiv;
 		//--
@@ -2440,7 +2573,7 @@ final class SmartCipherCrypto {
 			'iv' 	=> (string) substr((string)Smart::b64_enc((string)sha1('@Smart.Framework-Crypto/BlowFish:'.$key.'#'.sha1('BlowFish-iv-SHA1'.$key).'-'.strtoupper((string)md5('BlowFish-iv-MD5'.$key)).'#')), 1, 8),
 		];
 		//--
-	//Smart::log_notice('V1 Derive: '.print_r($arr_kiv,1));
+		//Smart::log_notice('V1 Derive: '.print_r($arr_kiv,1));
 		//--
 		return (array) $arr_kiv;
 		//--
@@ -2473,7 +2606,7 @@ final class SmartCipherCrypto {
  * @usage       dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends     PHP GMP extension (optional, only if uses BigInt) ; classes: Smart, SmartHashCrypto, SmartCipherCrypto, SmartCryptoCiphersBlowfishCBC
- * @version     v.20250107
+ * @version     v.20250203
  *
  */
 final class SmartDhKx {
@@ -2893,7 +3026,7 @@ final class SmartDhKx {
  * @internal
  *
  * @depends     PHP GMP extension ; classes: Smart
- * @version     v.20250118
+ * @version     v.20250203
  *
  */
 final class SmartCryptoCiphersThreefishCBC {
@@ -3673,7 +3806,7 @@ final class SmartCryptoCiphersThreefishCBC {
  * @internal
  *
  * @depends     classes: Smart, SmartEnvironment
- * @version     v.20250107
+ * @version     v.20250203
  *
  */
 final class SmartCryptoCiphersTwofishCBC { // algo has been adapted to work faster, supports 64-bit machines only
@@ -4413,7 +4546,7 @@ die();
  * @internal
  *
  * @depends     classes: Smart, SmartHashCrypto
- * @version     v.20250107
+ * @version     v.20250203
  *
  */
 final class SmartCryptoCiphersBlowfishCBC {
@@ -5026,7 +5159,7 @@ echo 'plain text: '.$plaintext; // it should be: 'this is some example plain tex
  * @internal
  *
  * @depends     classes: Smart, SmartEnvironment, SmartHashCrypto
- * @version     v.20250107
+ * @version     v.20250203
  *
  */
 final class SmartCryptoCiphersHashCryptOFB {
@@ -5448,7 +5581,7 @@ final class SmartCryptoCiphersHashCryptOFB {
  * @internal
  *
  * @depends     extensions: PHP OpenSSL ; classes: Smart, SmartHashCrypto
- * @version     v.20250107
+ * @version     v.20250203
  *
  */
 final class SmartCryptoCiphersOpenSSL {

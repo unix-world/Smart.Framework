@@ -1,0 +1,29 @@
+<!-- sign-up -->
+	<h5><i class="sfi sfi-users sfi-xl"></i> &nbsp; [###TXT-SIGNUP-TITLE|html###]</h5>
+	<br>
+	<div class="ux-control-group">
+		<label><i class="sfi sfi-user sfi-xl"></i></label>
+		<input class="ux-field auth" type="email" maxlength="72" autocomplete="off" id="fld-email" placeholder="[###TXT-EMAIL-ADDRESS|html###]" title="[###TXT-EMAIL-ADDRESS|html###]" required>
+	</div>
+	<div class="ux-control-group">
+		<label><i class="sfi sfi-lock sfi-xl"></i></label>
+		<input class="ux-field auth" type="password" maxlength="128" autocomplete="off" id="fld-pass" placeholder="[###TXT-PASSWORD|html###]" title="[###TXT-PASSWORD|html###]" required>
+	</div>
+	<div class="ux-control-group">
+		<label><i class="sfi sfi-loop sfi-xl"></i></label>
+		<input class="ux-field auth" type="password" maxlength="128" autocomplete="off" id="fld-rpass" placeholder="[###TXT-RE-PASSWORD|html###]" title="[###TXT-RE-PASSWORD|html###]" required>
+	</div>
+	<div class="ux-control-group">
+		<button type="button" onclick="authSignUpRequest(); return false;" class="ux-button ux-button-info ux-button-super signup" title="[###TXT-BTN-SIGNUP|html###]"><i class="sfi sfi-user-plus"></i> &nbsp; [###TXT-BTN-SIGNUP-DEFAULT|html###]</button>
+	</div>
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/plugins.mtpl.inc.htm!@@@]
+	<hr>
+	<div class="ux-control-group">
+		<a class="ux-button ux-button-primary ux-button-super signin" href="?page=auth-users.signin" title="[###TXT-BTN-SIGNIN|html###]"><i class="sfi sfi-user-check"></i> &nbsp; [###TXT-BTN-SIGNIN-DEFAULT|html###]</a>
+	</div>
+	<div class="ux-control-group">
+		<a class="ux-button ux-button-highlight ux-button-super recovery" href="#recovery" title="[###TXT-BTN-RECOVERY|html###]"><i class="sfi sfi-unlocked"></i> &nbsp; [###TXT-BTN-PASSWORD-RESET|html###]</a>
+	</div>
+	<br>
+	<a href="#instructions">[###TXT-LNK-TROUBLE-SIGNUP|html###]</a>
+<!-- /sign-up -->

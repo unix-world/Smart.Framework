@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Captcha :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* v.20231117 */
+/* v.20250203 */
 
 /* ----------------------------- */
 
@@ -13,9 +13,9 @@ div.Smart-Captcha-Area {
 	margin-right: 20px;
 	margin-bottom: 20px;
 	border: 0 !important;
-	width: 475px !important;
-	min-width: 475px !important;
-	max-width: 475px !important;
+	width: 470px !important;
+	min-width: 470px !important;
+	max-width: 470px !important;
 }
 
 div.Smart-Captcha-Area * {

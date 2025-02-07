@@ -1,0 +1,192 @@
+<style>
+div.area-aside {
+	background-color: #2A497E !important;
+}
+</style>
+<script src="lib/js/jscharts/charts.pak.js"></script>
+<br>
+<div style="text-align:center;">
+	<h6 style="color:#4B77BE;" id="chart-title"></h6>
+	<br>
+	<br>
+	<canvas id="canvas-radar" width="80%" height="40%"></canvas>
+	<br>
+	<div id="legend-area" style="padding:8px; text-align:center;"></div>
+</div>
+<script>
+const radarChart = () => {
+	//--
+	const chartTitle = 'Security Hint: Online Account Security Key Factors';
+	const radarChartData = {
+		labels: [ 'Two Factor Authentication (2FA)', 'HTTPS / TLS Encryption', 'Password Hashing Algorithm', 'Password Complexity', 'Password Recovery Mode', 'Secure Cookies', 'Captcha Protection' ],
+		datasets: [
+			{
+				label: 'Security Impact',
+				fillColor: 'rgba(151,187,205,0.1)',
+				strokeColor: '#345792',
+				pointColor: 'rgba(151,187,205,1)',
+				pointStrokeColor: '#5D85C5',
+				pointHighlightFill: '#ED2559',
+				pointHighlightStroke: '#19386D',
+				data: [ 98, 31, 75, 92, 67, 78, 87 ]
+			}
+		]
+	};
+	//--
+	const $title = jQuery('#chart-title');
+	const $canvas = jQuery('canvas#canvas-radar')[0].getContext('2d');
+	jQuery('canvas#canvas-radar').css('opacity', 1);
+	//--
+	$title.text(chartTitle);
+	new Chart($canvas).Radar(radarChartData, {
+		responsive: true,
+		animationSteps: 78,
+		pointLabelFontColor: '#5D85C5',
+		tooltipTemplate:      '<%if(datasetLabel){%><%=smartJ$Utils.escape_html(datasetLabel)%>: <%}%><%=smartJ$Utils.escape_html(value)%>',
+		multiTooltipTemplate: '<%if(datasetLabel){%><%=smartJ$Utils.escape_html(datasetLabel)%>: <%}%><%=smartJ$Utils.escape_html(value)%>',
+	});
+	//--
+};
+
+const polarChart = () => {
+	//--
+	const chartTitle = 'Security Hint: Crypto Ciphers Post-Quantum Resistance Score';
+	//--
+	const datasets = [
+		{
+			label:     'ThreeFish 1024-bit',
+			value:     8.7,
+			color:     'rgba(237, 37, 89, 0.4)',
+			highlight: 'rgba(237, 37, 89, 0.6)',
+		},
+		{
+			label:     'Ed448',
+			value:     7.8,
+			color:     'rgba(22, 22, 22, 0.3)',
+			highlight: 'rgba(22, 22, 22, 0.4)',
+		},
+		{
+			label:     'Ed25519',
+			value:     5.6,
+			color:     'rgba(151, 187, 205,0.3)',
+			highlight: 'rgba(151, 187, 205,0.4)',
+		},
+		{
+			label:     'Dilithium5',
+			value:     9.2,
+			color:     'rgba(51, 103, 194, 0.4)',
+			highlight: 'rgba(51, 103, 194, 0.6)',
+		},
+		{
+			label:     'Kyber 1024-bit',
+			value:     8.8,
+			color:     'rgba(253, 180, 76, 0.6)',
+			highlight: 'rgba(253, 180, 76, 0.7)',
+		},
+		{
+			label:     'AES 256-bit',
+			value:     4.5,
+			color:     'rgba(224, 224, 224, 0.5)',
+			highlight: 'rgba(224, 224, 224, 0.6)',
+		},
+		{
+			label:     'TwoFish 256-bit',
+			value:     5.1,
+			color:     'rgba(136, 119, 119, 0.8)',
+			highlight: 'rgba(136, 119, 119, 1.0)',
+		},
+		{
+			label:     'BlowFish 448-bit',
+			value:     3.7,
+			color:     'rgba(255, 118, 0, 0.3)',
+			highlight: 'rgba(255, 118, 0, 0.4)',
+		},
+	];
+	//--
+	const $title = jQuery('#chart-title');
+	const $canvas = jQuery('canvas#canvas-radar')[0].getContext('2d');
+	jQuery('canvas#canvas-radar').css('opacity', 0.8);
+	//--
+	$title.text(chartTitle);
+	const gfx = new Chart($canvas).PolarArea(datasets, {
+		responsive: true,
+		animationSteps: 87,
+		segmentStrokeWidth: 1,
+		segmentStrokeColor: 'rgba(255, 255, 255, 0)',
+		scaleBackdropColor: 'rgba(0, 0, 0, 0.5)',
+		tooltipTemplate:      '<%if(label){%><%=smartJ$Utils.escape_html(label)%>: <%}%><%=smartJ$Utils.escape_html(value)%>',
+		multiTooltipTemplate: '<%if(label){%><%=smartJ$Utils.escape_html(label)%>: <%}%><%=smartJ$Utils.escape_html(value)%>',
+		legendTemplate : '<% for(let i=0; i<segments.length; i++){%><div style="display:inline; margin-right:20px; font-size:0.75rem; color:#5D85C5;"><span style="padding:2px; background-color:<%=smartJ$Utils.escape_html(segments[i].fillColor)%>;">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(segments[i].label){%><%=smartJ$Utils.escape_html(segments[i].label)%><%}%></div><%}%>',
+	});
+	//--
+	document.getElementById('legend-area').innerHTML = gfx.generateLegend();
+	//--
+};
+
+const chartsPrettyFormatSeconds = (seconds, rounded=false) => {
+	return smartJ$Date.prettySecondsHFmt(seconds, !!rounded, ' ', 'seconds', 'minutes', 'hours', 'days', 'years');
+};
+
+const areaChart = () => {
+	//-- https://www.euronews.com/next/2024/05/11/how-long-does-it-take-a-hacker-to-crack-a-password-in-2024
+	const chartTitle = 'Security Hint: Password Length and Complexity vs. Time to Brute Force';
+	const lineChartData = {
+		labels : [ 'Numbers Only', 'Lowercase Letters', 'Upper and Lowercase Letters', 'Numbers, Upper and Lowercase Letters', 'Numbers, Upper and Lowercase Letters, Symbols' ],
+		datasets : [
+			{
+				label: 'Password Length 7 characters, BCrypt hash',
+				fillColor: "rgba(240,73,73,0.4)",
+				strokeColor: "rgba(240,73,73,0.4)",
+				pointColor: "rgba(240,73,73,0.8)",
+				pointStrokeColor : '#5D85C5',
+				pointHighlightFill : '#ED2559',
+				pointHighlightStroke : '#19386D',
+				data : [ 4, 60*70, 60*60*24*5, 60*60*24*26, 60*60*24*90 ] // 4s, 70m, 5d, 26d, 90d
+			},
+			{
+				label: 'Password Length 8 characters, BCrypt hash',
+				fillColor : 'rgba(151,187,205,0.1)',
+				strokeColor : '#345792',
+				pointColor : 'rgba(151,187,205,1)',
+				pointStrokeColor : '#5D85C5',
+				pointHighlightFill : '#ED2559',
+				pointHighlightStroke : '#19386D',
+				data : [ 37, 60*60*22, 60*60*24*30*8, 60*60*24*365*3, 60*60*24*365*7 ] // 37s, 22h, 240d, 3y, 7y
+			},
+		]
+	};
+	//--
+	const $title = jQuery('#chart-title');
+	const $canvas = jQuery('canvas#canvas-radar')[0].getContext('2d');
+	jQuery('canvas#canvas-radar').css('opacity', 1);
+	//--
+	$title.text(chartTitle);
+	const gfx = new Chart($canvas).Line(lineChartData, {
+		responsive: true,
+		animationSteps: 78,
+		datasetFill: true,
+		scaleFontColor: '#5D85C5',
+		scaleShowLabels: true,
+		scaleOverride: true,
+		scaleSteps: 4,
+		scaleStepWidth: 86400 * 365 * 2, // use rounded values on scale
+		scaleLabel: '<%=chartsPrettyFormatSeconds(value,true)%>', // use rounded values on scale
+		tooltipTemplate:      '<%if(datasetLabel){%><%=smartJ$Utils.escape_html(datasetLabel)%>: <%}%><%= chartsPrettyFormatSeconds(value,true)%>',
+		multiTooltipTemplate: '<%if(datasetLabel){%><%=smartJ$Utils.escape_html(datasetLabel)%>: <%}%><%= chartsPrettyFormatSeconds(value,true)%>',
+		legendTemplate : '<% for(let i=0; i<datasets.length; i++){%><div style="display:inline; margin-right:20px; font-size:0.75rem; color:#5D85C5;"><span style="padding:2px; background-color:<%=smartJ$Utils.escape_html(datasets[i].strokeColor)%>;">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=smartJ$Utils.escape_html(datasets[i].label)%><%}%></div><%}%>',
+	});
+	//--
+	document.getElementById('legend-area').innerHTML = gfx.generateLegend();
+	//--
+};
+</script>
+<script>
+const randNum = smartJ$Utils.randNum(0,30);
+if(randNum < 10) {
+	radarChart();
+} else if(randNum < 20) {
+	polarChart();
+} else {
+	areaChart();
+}
+</script>

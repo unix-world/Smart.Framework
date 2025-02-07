@@ -84,7 +84,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFrameworkSecurity, SmartFileSysUtils, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS ; optional-constant: SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20250107
+ * @version 	v.20250129
  * @package 	@Core:Network
  *
  */
@@ -938,13 +938,14 @@ final class SmartHttpClient {
 				$this->txtsecurestrictmode = 'HTTPS:StrictSecureMode:ON:Use:Defaults';
 			} else {
 				$this->txtsecurestrictmode = 'HTTPS:StrictSecureMode:OFF:Use:Config';
-				@stream_context_set_option($stream_context, 'ssl', 'verify_host', 			(bool)SMART_FRAMEWORK_SSL_VFY_HOST); // allways must be set to true !
-				@stream_context_set_option($stream_context, 'ssl', 'verify_peer', 			(bool)SMART_FRAMEWORK_SSL_VFY_PEER); // this may fail with some CAs
-				@stream_context_set_option($stream_context, 'ssl', 'verify_peer_name', 		(bool)SMART_FRAMEWORK_SSL_VFY_PEER_NAME); // allow also wildcard names *
-				@stream_context_set_option($stream_context, 'ssl', 'allow_self_signed', 	(bool)SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED); // must allow self-signed certificates but verified above
-			} //end if
+				@stream_context_set_option($stream_context, 'ssl', 'verify_host', 		(bool)SMART_FRAMEWORK_SSL_VFY_HOST); // allways must be set to true !
+				@stream_context_set_option($stream_context, 'ssl', 'verify_peer', 		(bool)SMART_FRAMEWORK_SSL_VFY_PEER); // this may fail with some CAs
+				@stream_context_set_option($stream_context, 'ssl', 'verify_peer_name', 	(bool)SMART_FRAMEWORK_SSL_VFY_PEER_NAME); // allow also wildcard names *
+				@stream_context_set_option($stream_context, 'ssl', 'allow_self_signed', (bool)SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED); // must allow self-signed certificates but verified above
+			} //end if else
 			@stream_context_set_option($stream_context, 'ssl', 'disable_compression', 	(bool)SMART_FRAMEWORK_SSL_DISABLE_COMPRESS); // help mitigate the CRIME attack vector
 			//--
+			//Smart::log_notice(__METHOD__.' # '.$this->txtsecurestrictmode);
 			$this->log .= '[INF] Secure Strict Mode: '.$this->txtsecurestrictmode."\n";
 			//--
 		} //end if else
@@ -995,8 +996,14 @@ final class SmartHttpClient {
 				$this->log .= '[INF] Authentication will be attempted for USERNAME = \''.$user.'\' ; PASSWORD('.strlen($pwd).') *****'."\n";
 			} //end if
 			//--
-			if((string)$user === (string)SmartHttpUtils::AUTH_USER_BEARER) {
+			if((string)$user === (string)SmartHttpUtils::AUTH_USER_RAW) { // auth raw, will send the auth string as it is ; may be a jwt or digest or anything supported
+				$this->raw_headers['Authorization'] = (string) SmartFrameworkSecurity::PrepareSafeHeaderValue((string)$pwd);
+			} else if((string)$user === (string)SmartHttpUtils::AUTH_USER_BEARER) {
 				$this->raw_headers['Authorization'] = 'Bearer '.SmartFrameworkSecurity::PrepareSafeHeaderValue((string)$pwd);
+			} else if((string)$user === (string)SmartHttpUtils::AUTH_USER_APIKEY) {
+				$this->raw_headers['Authorization'] = 'ApiKey '.SmartFrameworkSecurity::PrepareSafeHeaderValue((string)$pwd);
+			} else if((string)$user === (string)SmartHttpUtils::AUTH_USER_TOKEN) {
+				$this->raw_headers['Authorization'] = 'Token '.SmartFrameworkSecurity::PrepareSafeHeaderValue((string)$pwd);
 			} else { // auth basic
 				$this->raw_headers['Authorization'] = 'Basic '.Smart::b64_enc((string)$user.':'.$pwd);
 			} //end if else
@@ -1451,7 +1458,7 @@ final class SmartHttpClient {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartHashCrypto, SmartFrameworkSecurity
- * @version 	v.20250107
+ * @version 	v.20250129
  * @package 	@Core:Network
  *
  */
@@ -1460,6 +1467,9 @@ final class SmartHttpUtils {
 	// ::
 
 	public const AUTH_USER_BEARER = ':BEARER';
+	public const AUTH_USER_APIKEY = ':APIKEY';
+	public const AUTH_USER_TOKEN  = ':TOKEN';
+	public const AUTH_USER_RAW    = ':RAW';
 
 	public const MAX_HEADER_SIZE = 16384; // apache/haproxy:8k ; nginx:4k ; iis:16k ; tomcat:48k ; go:1m
 

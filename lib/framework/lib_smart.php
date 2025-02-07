@@ -80,13 +80,17 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20250118
+ * @version     v.20250207
  * @package     @Core
  *
  */
 final class Smart {
 
 	// ::
+
+	public const REGEX_ASCII_NOSPACE_CHARACTERS 	= '/^[[:graph:]]+$/'; 			// match all ASCII safe printable characters except spaces ; [[:graph:]] is equivalent to [[:alnum:][:punct:]]
+	public const REGEX_ASCII_ANDSPACE_CHARACTERS 	= '/^[[:graph:] \t\r\n]+$/'; 	// match all ASCII safe printable characters ; allow extra safe spaces only: space, tab, line feed, carriage return
+	public const REGEX_ASCII_PRINTABLE_CHARACTERS 	= '/^[[:print:]]+$/'; 			// match all ASCII printable characters [[:print:]] is equivalent to [[:graph:][:whitespace:]] ; [:whitespace:] match a whitespace character such as space, tab, formfeed, and carriage return
 
 	public const REGEX_SAFE_PATH_NAME 	= '/^[_a-zA-Z0-9\-\.@\#\/]+$/';
 	public const REGEX_SAFE_FILE_NAME 	= '/^[_a-zA-Z0-9\-\.@\#]+$/';
@@ -99,6 +103,7 @@ final class Smart {
 	public const REGEX_SAFE_HEX_STR 	= '/^[0-9a-f]+$/'; // if need case insensitive check just append the `i` flag
 	public const REGEX_SAFE_B64_STR 	= '/^[a-zA-Z0-9\+\/\=]+$/';
 	public const REGEX_SAFE_B64S_STR 	= '/^[a-zA-Z0-9\-_\.]+$/';
+	public const REGEX_SAFE_B64U_STR 	= '/^[a-zA-Z0-9\-_]+$/';
 
 	public const DECIMAL_NUM_PRECISION 	= '9999999999999.9'; // DECIMAL I[13].D[1] ; if I + D > 14 looses some decimal precision ; by example: 99999999999999.9900 becomes 99999999999999.98 with 2 decimals and 100000000000000.0 with one decimal on number format ! ; no higher decimal numbers than this are safe using a precision like 14, the max in PHP
 
@@ -1824,6 +1829,89 @@ final class Smart {
 
 	//================================================================
 	/**
+	 * Convert an Array to a List String
+	 *
+	 * @param ARRAY 	$y_arr			:: The Array to be converted: Array(elem1, elem2, ..., elemN)
+	 *
+	 * @return STRING 					:: The List String: '<elem1>, <elem2>, ..., <elemN>'
+	 */
+	public static function array_to_list($y_arr) : string { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO WORK ALSO NON-ARRAY VARS !!!
+		//--
+		$out = '';
+		//--
+		if(self::array_size($y_arr) > 0) { // this also check if it is array
+			//--
+			$arr = array();
+			//--
+			foreach($y_arr as $key => $val) {
+				//--
+				if(!is_array($val)) {
+					//--
+					$val = (string) trim((string)$val); // must not do strtolower as it is used to store both cases
+					$val = (string) str_replace(['<', '>'], ['‹', '›'], (string)$val); // {{{SYNC-SMARTLIST-BRACKET-REPLACEMENTS}}}
+					$val = (string) str_replace(',', ';', (string)$val); // fix just on value
+					if((string)$val != '') {
+						if(!in_array('<'.$val.'>', $arr)) {
+							$arr[] = '<'.$val.'>';
+						} //end if
+					} //end if
+					//--
+				} //end if
+				//--
+			} //end foreach
+			//--
+			$out = (string) implode(', ', (array)$arr);
+			//--
+			$arr = array();
+			//--
+		} //end if else
+		//--
+		return (string) trim((string)$out);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Convert a List String to Array
+	 *
+	 * @param STRING 	$y_list			:: The List String to be converted: '<elem1>, <elem2>, ..., <elemN>'
+	 * @param BOOLEAN 	$y_trim 		:: *Optional* default is TRUE ; If set to FALSE will not trim the values in the list, in some cases preserve spaces is required
+	 *
+	 * @return ARRAY 					:: The Array: Array(elem1, elem2, ..., elemN)
+	 */
+	public static function list_to_array(?string $y_list, bool $y_trim=true) : array {
+		//--
+		if((string)trim((string)$y_list) == '') {
+			return array(); // empty list
+		} //end if
+		//--
+		$y_list = (string) trim((string)$y_list);
+		//--
+		$arr = (array) explode(',', (string)$y_list);
+		$new_arr = array();
+		for($i=0; $i<self::array_size($arr); $i++) {
+			$arr[$i] = (string) trim((string)$arr[$i]); // must trim outside <> entries because was exploded by ',' and list can be also ', '
+			$arr[$i] = (string) str_replace(['<', '>'], ['', ''], (string)$arr[$i]);
+			if($y_trim !== false) {
+				$arr[$i] = (string) trim((string)$arr[$i]); // trim <> inside values only if explicit required (otherwise preserve inside spaces)
+			} //end if
+			if((string)trim((string)$arr[$i]) != '') {
+				if(!in_array((string)$arr[$i], $new_arr)) {
+					$new_arr[] = (string) $arr[$i];
+				} //end if
+			} //end if
+		} //end for
+		//--
+		return (array) $new_arr;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
 	 * Cut a text by a fixed length, if longer than allowed length.
 	 * If cut words option is FALSE it may make the string shorted by rolling back until the last space and cutting off the last partial word.
 	 * The default cut suffix is (...) but can be disabled using the last parameter.
@@ -2375,6 +2463,203 @@ final class Smart {
 		//--
 	} //END FUNCTION
 	//================================================================
+
+
+	//================================================================
+	/**
+	 * Converts from Base64 to Base64s / Base64u (Base64 Safe URL / Base64 URL) by replacing characters as follows:
+	 * '+' with '-',
+	 * '/' with '_',
+	 * '=' with '.' (if padding) or '' (if no padding)
+	 *
+	 * @param STRING 	$str 				:: The Base64 string to be converted
+	 * @param BOOL 		$pad 				:: Use padding ; Default is TRUE ; if set to FALSE will not use padding (`=`:`` instead of `=`:`.`)
+	 * @return STRING 						:: The Base64s or Base64u (if no padding) encoded string
+	 */
+	public static function b64_to_b64s(?string $str, bool $pad=true) : string {
+		//--
+		if((string)$str == '') {
+			return '';
+		} //end if
+		//--
+		$repl = (array) self::CHDIFF_BASE_64s;
+		if($pad === false) {
+			$repl = (array) self::CHDIFF_BASE_64u;
+		} //end if
+		//--
+		return (string) strtr((string)$str, (array)$repl);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Converts from Base64s / Base64u (Base64 Safe URL / Base64 URL) to Base64 by replacing characters as follows:
+	 * '-' with '+',
+	 * '_' with '/',
+	 * '.' with '=' (optional, if padded, otherwise ignore)
+	 *
+	 * @param STRING 	$str 				:: The Base64s or Base64u (if no padding) string to be converted
+	 * @return STRING 						:: The Base64 string
+	 */
+	public static function b64s_to_b64(?string $str) : string {
+		//--
+		if((string)$str == '') {
+			return '';
+		} //end if
+		//--
+		return (string) strtr((string)$str, (array)array_flip((array)self::CHDIFF_BASE_64s));
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Returns the Base64s / Base64u (Base64 Safe URL / Base64 URL) Modified Encoding from a string by replacing the standard base64 encoding as follows:
+	 * '+' with '-',
+	 * '/' with '_',
+	 * '=' with '.' (if padding) or '' (if no padding)
+	 *
+	 * @param STRING 	$str 				:: The string to be encoded
+	 * @param BOOL 		$pad 				:: Use padding ; Default is TRUE ; if set to FALSE will not use padding (`=`:`` instead of `=`:`.`)
+	 * @return STRING 						:: The Base64s or Base64u (if no padding) encoded string
+	 */
+	public static function b64s_enc(?string $str, bool $pad=true) : string {
+		//--
+		if((string)$str == '') {
+			return '';
+		} //end if
+		//--
+		$repl = (array) self::CHDIFF_BASE_64s;
+		if($pad === false) {
+			$repl = (array) self::CHDIFF_BASE_64u;
+		} //end if
+		//--
+		return (string) strtr((string)self::b64_enc((string)$str), (array)$repl);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Returns the Decoded string from Base64s / Base64u (Base64 Safe URL / Base64 URL) Encoding by replacing back as follows before applying the standard base64 decoding:
+	 * '-' with '+',
+	 * '_' with '/',
+	 * '.' with '=' (optional, if padded, otherwise ignore)
+	 *
+	 * @param STRING 	$str 				:: The Base64s or Base64u (if no padding) encoded string
+	 * @param BOOL 		$strict 			:: Strict mode: default is FALSE ; set to TRUE for strict decoding (may return null for invalid characters) ; FALSE means non-strict (if the input contains character from outside the base64 alphabet will be silently discarded)
+	 * @return STRING 						:: The decoded string
+	 */
+	public static function b64s_dec(?string $str, bool $strict=false) : string {
+		//--
+		$str = (string) trim((string)$str);
+		if((string)$str == '') {
+			return '';
+		} //end if
+		//--
+		return (string) self::b64_dec((string)strtr((string)$str, (array)array_flip((array)self::CHDIFF_BASE_64s)), (bool)$strict);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Returns the Safet Decoded string from Base64 ; Will Fix the missing padding
+	 *
+	 * @param STRING 	$str 				:: The Base64 encoded string
+	 * @param BOOL 		$strict 			:: Strict mode: default is FALSE ; set to TRUE for strict decoding (may return null for invalid characters) ; FALSE means non-strict (if the input contains character from outside the base64 alphabet will be silently discarded)
+	 * @return STRING | NULL 				:: The decoded string ; if base64_decode() will return FALSE, it will return NULL, otherwise will return STRING
+	 */
+	public static function b64_dec(?string $str, bool $strict=false) : ?string {
+		//--
+		$str = (string) trim((string)$str);
+		if((string)$str == '') {
+			return '';
+		} //end if
+		//--
+		$l = (int) ((int)strlen((string)$str) % 4);
+		if((int)$l > 0) {
+			if((int)$l == 1) { // {{{SYNC-B64-WRONG-PAD-3}}} ; it cannot end with 3 "=" signs ; every 4 characters of base64 encoded string represent exactly 3 bytes, because byte contains 8 bits (2^8), and 64 = 2^6 ; so 4 characters of base-64 encoding can hold up to 2^6 * 2^6 * 2^6 * 2^6 bits, which is exactly 2^8 * 2^8 * 2^8 = 3 bytes
+				self::log_notice(__METHOD__.' # Invalid B64 Padding Length, more than 2, L = '.(int)$l);
+				return null;
+			} //end if
+			$str .= (string) str_repeat('=', (int)(4 - (int)$l)); // fix missing padding
+		} //end if
+		//--
+		$str = base64_decode((string)$str, (bool)$strict); // returns: string | false
+		if($str === false) {
+			self::log_notice(__METHOD__.' # Invalid B64 Content');
+			return null;
+		} //end if
+		//--
+		return (string) $str;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Returns the Base64 Encoded from a string
+	 *
+	 * @param STRING 	$str 				:: The string to be encoded
+	 * @return STRING 						:: The Base64s or Base64u (if no padding) encoded string
+	 */
+	public static function b64_enc(?string $str) : string {
+		//--
+		if((string)$str == '') {
+			return '';
+		} //end if
+		//--
+		return (string) base64_encode((string)$str);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//==============================================================
+	/**
+	 * Perform the rot13 transform on a string
+	 * ! This is not encryption ; It is just simply obfuscate !
+	 * When combined with encryption, this can be very powerful ...
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param $str 				The string ; must be ISO-8859-1 character set only !
+	 * @return STRING 			The modified string
+	 */
+	public static function dataRot13(string $str) {
+		//--
+		return (string) str_rot13((string)$str);
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Perform the rot13 + reverse transform on a string
+	 * ! This is not encryption ; It is just simply obfuscate !
+	 * When combined with encryption, this can be very powerful ...
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param $str 				The string ; must be ISO-8859-1 character set only !
+	 * @return STRING 			The modified string
+	 */
+	public static function dataRRot13(string $str) {
+		//--
+		return (string) strrev((string)self::dataRot13((string)$str));
+		//--
+	} //END FUNCTION
+	//==============================================================
 
 
 	//================================================================
@@ -3102,246 +3387,6 @@ final class Smart {
 
 	//================================================================
 	/**
-	 * Convert an Array to a List String
-	 *
-	 * @param ARRAY 	$y_arr			:: The Array to be converted: Array(elem1, elem2, ..., elemN)
-	 *
-	 * @return STRING 					:: The List String: '<elem1>, <elem2>, ..., <elemN>'
-	 */
-	public static function array_to_list($y_arr) : string { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO WORK ALSO NON-ARRAY VARS !!!
-		//--
-		$out = '';
-		//--
-		if(self::array_size($y_arr) > 0) { // this also check if it is array
-			//--
-			$arr = array();
-			//--
-			foreach($y_arr as $key => $val) {
-				//--
-				if(!is_array($val)) {
-					//--
-					$val = (string) trim((string)$val); // must not do strtolower as it is used to store both cases
-					$val = (string) str_replace(['<', '>'], ['‹', '›'], (string)$val); // {{{SYNC-SMARTLIST-BRACKET-REPLACEMENTS}}}
-					$val = (string) str_replace(',', ';', (string)$val); // fix just on value
-					if((string)$val != '') {
-						if(!in_array('<'.$val.'>', $arr)) {
-							$arr[] = '<'.$val.'>';
-						} //end if
-					} //end if
-					//--
-				} //end if
-				//--
-			} //end foreach
-			//--
-			$out = (string) implode(', ', (array)$arr);
-			//--
-			$arr = array();
-			//--
-		} //end if else
-		//--
-		return (string) trim((string)$out);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Convert a List String to Array
-	 *
-	 * @param STRING 	$y_list			:: The List String to be converted: '<elem1>, <elem2>, ..., <elemN>'
-	 * @param BOOLEAN 	$y_trim 		:: *Optional* default is TRUE ; If set to FALSE will not trim the values in the list, in some cases preserve spaces is required
-	 *
-	 * @return ARRAY 					:: The Array: Array(elem1, elem2, ..., elemN)
-	 */
-	public static function list_to_array(?string $y_list, bool $y_trim=true) : array {
-		//--
-		if((string)trim((string)$y_list) == '') {
-			return array(); // empty list
-		} //end if
-		//--
-		$y_list = (string) trim((string)$y_list);
-		//--
-		$arr = (array) explode(',', (string)$y_list);
-		$new_arr = array();
-		for($i=0; $i<self::array_size($arr); $i++) {
-			$arr[$i] = (string) trim((string)$arr[$i]); // must trim outside <> entries because was exploded by ',' and list can be also ', '
-			$arr[$i] = (string) str_replace(['<', '>'], ['', ''], (string)$arr[$i]);
-			if($y_trim !== false) {
-				$arr[$i] = (string) trim((string)$arr[$i]); // trim <> inside values only if explicit required (otherwise preserve inside spaces)
-			} //end if
-			if((string)trim((string)$arr[$i]) != '') {
-				if(!in_array((string)$arr[$i], $new_arr)) {
-					$new_arr[] = (string) $arr[$i];
-				} //end if
-			} //end if
-		} //end for
-		//--
-		return (array) $new_arr;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Converts from Base64 to Base64s / Base64u (Base64 Safe URL / Base64 URL) by replacing characters as follows:
-	 * '+' with '-',
-	 * '/' with '_',
-	 * '=' with '.' (if padding) or '' (if no padding)
-	 *
-	 * @param STRING 	$str 				:: The Base64 string to be converted
-	 * @param BOOL 		$pad 				:: Use padding ; Default is TRUE ; if set to FALSE will not use padding (`=`:`` instead of `=`:`.`)
-	 * @return STRING 						:: The Base64s or Base64u (if no padding) encoded string
-	 */
-	public static function b64_to_b64s(?string $str, bool $pad=true) : string {
-		//--
-		if((string)$str == '') {
-			return '';
-		} //end if
-		//--
-		$repl = (array) self::CHDIFF_BASE_64s;
-		if($pad === false) {
-			$repl = (array) self::CHDIFF_BASE_64u;
-		} //end if
-		//--
-		return (string) strtr((string)$str, (array)$repl);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Converts from Base64s / Base64u (Base64 Safe URL / Base64 URL) to Base64 by replacing characters as follows:
-	 * '-' with '+',
-	 * '_' with '/',
-	 * '.' with '=' (optional, if padded, otherwise ignore)
-	 *
-	 * @param STRING 	$str 				:: The Base64s or Base64u (if no padding) string to be converted
-	 * @return STRING 						:: The Base64 string
-	 */
-	public static function b64s_to_b64(?string $str) : string {
-		//--
-		if((string)$str == '') {
-			return '';
-		} //end if
-		//--
-		return (string) strtr((string)$str, (array)array_flip((array)self::CHDIFF_BASE_64s));
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Returns the Base64s / Base64u (Base64 Safe URL / Base64 URL) Modified Encoding from a string by replacing the standard base64 encoding as follows:
-	 * '+' with '-',
-	 * '/' with '_',
-	 * '=' with '.' (if padding) or '' (if no padding)
-	 *
-	 * @param STRING 	$str 				:: The string to be encoded
-	 * @param BOOL 		$pad 				:: Use padding ; Default is TRUE ; if set to FALSE will not use padding (`=`:`` instead of `=`:`.`)
-	 * @return STRING 						:: The Base64s or Base64u (if no padding) encoded string
-	 */
-	public static function b64s_enc(?string $str, bool $pad=true) : string {
-		//--
-		if((string)$str == '') {
-			return '';
-		} //end if
-		//--
-		$repl = (array) self::CHDIFF_BASE_64s;
-		if($pad === false) {
-			$repl = (array) self::CHDIFF_BASE_64u;
-		} //end if
-		//--
-		return (string) strtr((string)self::b64_enc((string)$str), (array)$repl);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Returns the Decoded string from Base64s / Base64u (Base64 Safe URL / Base64 URL) Encoding by replacing back as follows before applying the standard base64 decoding:
-	 * '-' with '+',
-	 * '_' with '/',
-	 * '.' with '=' (optional, if padded, otherwise ignore)
-	 *
-	 * @param STRING 	$str 				:: The Base64s or Base64u (if no padding) encoded string
-	 * @param BOOL 		$strict 			:: Strict mode: default is FALSE ; set to TRUE for strict decoding (may return null for invalid characters) ; FALSE means non-strict (if the input contains character from outside the base64 alphabet will be silently discarded)
-	 * @return STRING 						:: The decoded string
-	 */
-	public static function b64s_dec(?string $str, bool $strict=false) : string {
-		//--
-		$str = (string) trim((string)$str);
-		if((string)$str == '') {
-			return '';
-		} //end if
-		//--
-		return (string) self::b64_dec((string)strtr((string)$str, (array)array_flip((array)self::CHDIFF_BASE_64s)), (bool)$strict);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Returns the Safet Decoded string from Base64 ; Will Fix the missing padding
-	 *
-	 * @param STRING 	$str 				:: The Base64 encoded string
-	 * @param BOOL 		$strict 			:: Strict mode: default is FALSE ; set to TRUE for strict decoding (may return null for invalid characters) ; FALSE means non-strict (if the input contains character from outside the base64 alphabet will be silently discarded)
-	 * @return STRING | NULL 				:: The decoded string ; if base64_decode() will return FALSE, it will return NULL, otherwise will return STRING
-	 */
-	public static function b64_dec(?string $str, bool $strict=false) : ?string {
-		//--
-		$str = (string) trim((string)$str);
-		if((string)$str == '') {
-			return '';
-		} //end if
-		//--
-		$l = (int) ((int)strlen((string)$str) % 4);
-		if((int)$l > 0) {
-			if((int)$l == 1) { // {{{SYNC-B64-WRONG-PAD-3}}} ; it cannot end with 3 "=" signs ; every 4 characters of base64 encoded string represent exactly 3 bytes, because byte contains 8 bits (2^8), and 64 = 2^6 ; so 4 characters of base-64 encoding can hold up to 2^6 * 2^6 * 2^6 * 2^6 bits, which is exactly 2^8 * 2^8 * 2^8 = 3 bytes
-				self::log_notice(__METHOD__.' # Invalid B64 Padding Length, more than 2, L = '.(int)$l);
-				return null;
-			} //end if
-			$str .= (string) str_repeat('=', (int)(4 - (int)$l)); // fix missing padding
-		} //end if
-		//--
-		$str = base64_decode((string)$str, (bool)$strict); // returns: string | false
-		if($str === false) {
-			self::log_notice(__METHOD__.' # Invalid B64 Content');
-			return null;
-		} //end if
-		//--
-		return (string) $str;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Returns the Base64 Encoded from a string
-	 *
-	 * @param STRING 	$str 				:: The string to be encoded
-	 * @return STRING 						:: The Base64s or Base64u (if no padding) encoded string
-	 */
-	public static function b64_enc(?string $str) : string {
-		//--
-		if((string)$str == '') {
-			return '';
-		} //end if
-		//--
-		return (string) base64_encode((string)$str);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
 	 * Remove brackets [] from IPv6 domain for using it as IPv6 address
 	 *
 	 * @access 		private
@@ -3451,7 +3496,7 @@ final class Smart {
 		if((defined('SMART_FRAMEWORK_INFO_LOG')) AND is_string(SMART_FRAMEWORK_INFO_LOG) AND ((string)trim((string)SMART_FRAMEWORK_INFO_LOG) != '') AND (is_dir((string)self::dir_name((string)trim((string)SMART_FRAMEWORK_INFO_LOG))))) { // must use is_dir here to avoid dependency with smart file system lib
 			@file_put_contents((string)trim((string)SMART_FRAMEWORK_INFO_LOG), '[INF]'."\t".date('Y-m-d H:i:s O')."\t".self::normalize_spaces($title)."\t".self::normalize_spaces($message)."\n", FILE_APPEND | LOCK_EX);
 		} else {
-			self::log_notice('INFO-LOG NOT SET :: Logging to Notices ... # Message: '.$title."\n".$message);
+			self::log_notice('INFO-LOG NOT SET :: Logging to Notices ... # Message: '.self::normalize_spaces($title)."\t".self::normalize_spaces($message));
 		} //end if else
 		//--
 	} //END FUNCTION
@@ -3699,46 +3744,6 @@ final class Smart {
 	//================================================================
 
 
-	//==============================================================
-	/**
-	 * Perform the rot13 transform on a string
-	 * ! This is not encryption ; It is just simply obfuscate !
-	 * When combined with encryption, this can be very powerful ...
-	 *
-	 * @access 		private
-	 * @internal
-	 *
-	 * @param $str 				The string ; must be ISO-8859-1 character set only !
-	 * @return STRING 			The modified string
-	 */
-	public static function dataRot13(string $str) {
-		//--
-		return (string) str_rot13((string)$str);
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-	//==============================================================
-	/**
-	 * Perform the rot13 + reverse transform on a string
-	 * ! This is not encryption ; It is just simply obfuscate !
-	 * When combined with encryption, this can be very powerful ...
-	 *
-	 * @access 		private
-	 * @internal
-	 *
-	 * @param $str 				The string ; must be ISO-8859-1 character set only !
-	 * @return STRING 			The modified string
-	 */
-	public static function dataRRot13(string $str) {
-		//--
-		return (string) strrev((string)self::dataRot13((string)$str));
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
 	//##### DEBUG ONLY
 
 
@@ -3816,7 +3821,7 @@ final class Smart {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment
- * @version 	v.20250118
+ * @version 	v.20250203
  * @package 	@Core:FileSystem
  *
  */

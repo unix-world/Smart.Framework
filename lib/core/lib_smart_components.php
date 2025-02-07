@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20250107
+ * @version 	v.20250126
  * @package 	Application:ViewComponents
  *
  */
@@ -256,10 +256,17 @@ final class SmartComponents {
 	// 401 Unauthorized :: Similar to 403 Forbidden, but specifically for use when authentication is required and has failed or has not yet been provided. The response must include a WWW-Authenticate header field containing a challenge applicable to the requested resource. See Basic access authentication and Digest access authentication.
 	public static function http_message_401_unauthorized(?string $y_message, ?string $y_html_message='') : string {
 		//--
-		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
+		$customErrPages = '';
+		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGE_401')) { // this is a special case to allow mixing custom err pages with auth users module to override 401 ...
+			$customErrPages = (string) SMART_FRAMEWORK_CUSTOM_ERR_PAGE_401;
+		} else if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
+			$customErrPages = (string) SMART_FRAMEWORK_CUSTOM_ERR_PAGES;
+		} //end if
+		//--
+		if((string)$customErrPages != '') {
 			//--
-			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'401.php')) {
-				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'401.php');
+			if(SmartFileSystem::is_type_file($customErrPages.'401.php')) {
+				require_once($customErrPages.'401.php');
 				if(function_exists('custom_http_message_401_unauthorized')) {
 					return (string) custom_http_message_401_unauthorized((string)$y_message, (string)$y_html_message);
 				} //end if
@@ -1102,7 +1109,7 @@ final class SmartComponents {
 		$arr_data['timeout-netsocket'] 			= (int)    $timeout_netsocket; 												// netsocket timeout (req. by qunit)
 		$arr_data['time-date-start'] 			= (string) date('Y-m-d H:i:s O'); 											// date time start
 		$arr_data['time-date-year'] 			= (string) date('Y'); 														// date time Year
-		$arr_data['auth-login-ok'] 				= (string) (SmartAuth::check_login() === true ? 'yes' : 'no'); 				// Auth Login OK: yes/no
+		$arr_data['auth-login-ok'] 				= (string) (SmartAuth::is_authenticated() === true ? 'yes' : 'no'); 		// Auth Login OK: yes/no
 		$arr_data['auth-login-id'] 				= (string) SmartAuth::get_auth_id(); 										// Auth ID (can be the same as UserName or Different)
 		$arr_data['auth-login-username'] 		= (string) SmartAuth::get_auth_username(); 									// Auth UserName
 		$arr_data['auth-login-fullname'] 		= (string) SmartAuth::get_user_fullname(); 									// (Auth) User FullName

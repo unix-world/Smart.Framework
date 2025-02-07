@@ -25,13 +25,13 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20250107
+ * @version 	v.20250124
  * @package 	development:modules:PageBuilder
  *
  */
 abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder {
 
-	private const REGEX_TPL_MARKER_KEY = '/^[A-Z0-9_\-\.@]+$/'; 	// regex for TPL markers
+	private const REGEX_TPL_MARKER_KEY  = '/^[A-Z0-9_\-\.@]+$/'; 	// regex for TPL markers
 	private const REGEX_PBS_MARKER_KEY 	= '/^[A-Z0-9_\-\.]+$/'; 	// regex for internal markers {{{SYNC-PAGEBUILDER-REGEX-MARKERS-INT}}}
 
 	private $max_depth 			= 2; 						// 0=page, 1=segment, 2=sub-segment (max allow depth)
@@ -202,7 +202,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		} //end if
 		//-- check auth
 		if($arr['auth'] > 0) { // if auth > 0, req. to be logged in
-			if(\SmartAuth::check_login() !== true) {
+			if(\SmartAuth::is_authenticated() !== true) {
 				$this->PageViewSetErrorStatus(403, 'Authentication Required');
 				return; // auth required
 			} //end if

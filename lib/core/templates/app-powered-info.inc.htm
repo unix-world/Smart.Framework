@@ -1,4 +1,4 @@
-<!-- Partial Template: Core.AppPoweredInfo v.20250118 -->
+<!-- Partial Template: Core.AppPoweredInfo v.20250207 -->
 <style>
 div#Powered-Info img {
 	vertical-align: baseline !important;
@@ -16,6 +16,8 @@ div#Powered-Info img {
 	</div>
 	[%%%ELSE:SHOW-APP%%%]
 		[%%%IF:SHOW-CLOCK:==yes;%%%]
+		<script>const watchCanvasScaleFactor = 0.5;</script>
+		<script src="lib/js/jswclock/smart-watch.js"></script>
 		<div style="display:inline-block!important; margin:10px!important; cursor:help;" title="Watch Clock">
 			<style>
 			.Watch-Clock {
@@ -54,9 +56,10 @@ div#Powered-Info img {
 			<style>
 			.Watch-Clock {
 				background: #FFFFFF;
-				opacity: 0.35;
+				opacity: 0.4;
 			}
 			</style>
+			<script src="lib/js/jswclock/smart-watch.js"></script>
 			<script>const watchCanvasScaleFactor = 0.42;</script>
 			<div style="width:64px; height:64px; cursor:default!important;">[@@@SUB-TEMPLATE:canvas-clock.inc.htm@@@]</div>
 		</div>

@@ -23,7 +23,7 @@ define('SMART_APP_MODULE_REALM_AUTH', 'SMART-ADMINS-AREA'); // if set will check
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20250112
+	// v.20250124
 
 	// TODO:
 	// 	* Edit: support to bind to a specific IP address list, for extra security
@@ -51,7 +51,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//-- {{{SYNC-AUTH-ADMINS-PRE-CHECKS}}}
-		if(SmartAuth::check_login() !== true) {
+		if(SmartAuth::is_authenticated() !== true) {
 			$this->PageViewSetCfg('error', 'Auth Admins Manager Requires Authentication ! ...');
 			return 403;
 		} //end if
@@ -128,6 +128,19 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$frm['priv'] 	= (string) trim((string)($frm['priv'] ?? null));
 				$frm['exp'] 	= (string) trim((string)($frm['exp'] ?? null));
 				//--
+				if((string)$frm['priv'] != '') {
+					if((string)$frm['priv'] != '*') {
+						$frm['priv'] = (array) SmartAuth::safe_arr_privileges_or_restrictions((array)explode(',', (string)str_replace([' ', "\t", "\r", "\n"], '', (string)strtolower((string)$frm['priv']))), true); // non-associative
+						$frm['priv'] = (array) array_values( // security: even if the STK tokens privileges are safe intersected on login via STK, to avoid confusion do this intersect also here
+							(array) array_intersect( // {{{SYNC-AUTH-TOKEN-PRIVS-INTERSECT}}}
+								(array) SmartAuth::get_user_arr_privileges(),
+								(array) $frm['priv']
+							)
+						); // {{{SYNC-SWT-IMPLEMENT-PRIVILEGES}}}
+						$frm['priv'] = (string) implode(',', (array)$frm['priv']);
+					} //end if
+				} //end if
+				//--
 				$message = '';
 				if(
 					((string)$frm['id'] != (string)SmartAuth::get_auth_id()) // not the current logged in user
@@ -140,7 +153,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				} elseif((int)strlen((string)$frm['name']) > 25) {
 					$message = 'Name is too long (max: 25)';
 				} elseif((string)trim((string)$frm['priv']) == '') {
-					$message = 'Privileges list is Empty';
+					$message = 'Privileges list is Empty or Contain only Invalid Privileges';
 				} elseif((int)strlen((string)$frm['priv']) > 255) {
 					$message = 'Privileges list is too long (max: 255)';
 				} elseif(
@@ -723,6 +736,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$frm['id'] 		= (string) trim((string)($frm['id'] ?? null));
 				$frm['chk'] 	= (string) trim((string)($frm['chk'] ?? null));
 				$frm['key'] 	= (string) trim((string)($frm['key'] ?? null));
+				$frm['pin'] 	= (string) trim((string)($frm['pin'] ?? null));
 				//--
 				$message = '';
 				if(
@@ -734,7 +748,9 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				} elseif((string)trim((string)$frm['id']) == '') {
 					$message = 'INVALID ID (empty)';
 				} elseif((int)strlen((string)$frm['key']) != 52) {
-					$message = 'INVALID 2FA KEY (empty)';
+					$message = 'EMPTY or INVALID 2FA KEY';
+				} elseif(((int)strlen((string)$frm['pin']) < 4) || ((int)strlen((string)$frm['pin']) > 16) || (!preg_match((string)\SmartModExtLib\AuthAdmins\Auth2FTotp::REGEX_VALID_TOTP_CODE, (string)$frm['pin']))) {
+					$message = 'EMPTY or INVALID 2FA PIN'; // {{{SYNC-TOTP-PIN-LENGTH-CHECK}}}
 				} elseif(SmartHashCrypto::checksum((string)$frm['key'], (string)$frm['id']) != (string)$frm['chk']) {
 					$message = 'INVALID 2FA KEY (checksum)';
 				} //end if else
@@ -752,7 +768,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					} //end try catch
 					$wr = (int) $model->enableAccount2FA(
 						(string) $frm['id'],
-						(string) $frm['key']
+						(string) $frm['key'],
+						(string) $frm['pin']
 					);
 					$model = null; // close connection
 				} //end if
@@ -760,6 +777,11 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				if(((int)$wr == 1) AND ((string)$message == '')) {
 					$status = 'OK';
 					$message = 'Account: [<b>'.Smart::escape_html((string)$frm['id']).'</b>] 2FA Enabled !';
+				} elseif((int)$wr == -21) { // {{{SYNC-ENABLE-2FA-INVALID-CODE-ERR}}}
+					$status = 'ERROR';
+					if((string)$message == '') {
+						$message = 'Failed to enable 2FA for Account: [<b>'.Smart::escape_html((string)$frm['id']).'</b>] / The 2FA Pin Code is Invalid';
+					} //end if
 				} else {
 					$status = 'ERROR';
 					if((string)$message == '') {
@@ -774,9 +796,11 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if else
 				//--
 				$jsevcode = '';
-				if((string)$frm['id'] == (string)SmartAuth::get_auth_id()) { // if 2FA enabled for current account must handle different
+				if((string)$frm['id'] == (string)SmartAuth::get_auth_id()) { // if 2FA enabled for current account must handle different, but just if OK
 					$redirect = '';
-					$jsevcode = 'setTimeout(() => { smartJ$Browser.RefreshParent(); smartJ$Browser.CloseDelayedModalPopUp(); }, 3750);';
+					if((string)$status == 'OK') {
+						$jsevcode = 'setTimeout(() => { smartJ$Browser.RefreshParent(); smartJ$Browser.CloseDelayedModalPopUp(); }, 3750);';
+					} //end if
 				} //end if
 				//--
 				$this->PageViewSetVar(
@@ -784,6 +808,74 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					(string) SmartViewHtmlHelpers::js_ajax_replyto_html_form(
 						(string) $status,
 						'Account Enable 2FA',
+						(string) $message,
+						(string) $redirect,
+						'',
+						'',
+						(string) $jsevcode
+					)
+				);
+				//--
+				break;
+
+			case 'disable-2fa-confirm':
+				//--
+				$this->PageViewSetCfg('rawpage', true);
+				//--
+				$status = 'WARNING';
+				$message = 'No Operation ...';
+				//--
+				$id = (string)  $this->RequestVarGet('id', '', 'string');
+				//--
+				$message = '';
+				if(
+					(SmartAuth::test_login_privilege('super-admin') !== true) // not superadmin
+					AND // and
+					((string)$id != (string)SmartAuth::get_auth_id()) // not the current logged in user
+				) { // PRIVILEGES
+					$message = 'You are not authorized to use this area !';
+				} //end if
+				//--
+				$wr = 0;
+				$status = 'INVALID';
+				//--
+				if((string)$message == '') {
+					$model = null;
+					try {
+						$model = new SmartModelAuthAdmins(); // open connection
+					} catch(Exception $e) {
+						$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
+						return 500;
+					} //end try catch
+					$wr = (int) $model->disableAccount2FA(
+						(string) $id
+					);
+					$model = null; // close connection
+				} //end if
+				//--
+				if(((int)$wr == 1) AND ((string)$message == '')) {
+					$status = 'OK';
+					$message = 'Account: [<b>'.Smart::escape_html((string)$id).'</b>] 2FA Disabled !';
+				} else {
+					$status = 'ERROR';
+					if((string)$message == '') {
+						$message = 'Failed to disable 2FA for Account: [<b>'.Smart::escape_html((string)$id).'</b>] / Error: '.Smart::escape_html((string)$wr);
+					} //end if
+				} //end if else
+				//--
+				if((string)$status == 'OK') {
+					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=close-modal'; // redirect URL (just on success)
+				} else {
+					$redirect = '';
+				} //end if else
+				//--
+				$jsevcode = '';
+				//--
+				$this->PageViewSetVar(
+					'main',
+					(string) SmartViewHtmlHelpers::js_ajax_replyto_html_form(
+						(string) $status,
+						'Account Disable 2FA',
 						(string) $message,
 						(string) $redirect,
 						'',
@@ -856,8 +948,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$user_num_tokens = 0;
 				$user_max_tokens = 0;
 				if(
-					(SmartAuth::test_login_privilege('super-admin') === true)
-					OR
+				//	(SmartAuth::test_login_privilege('super-admin') === true) // hide for superadmin ; now it can disable 2FA to reset it
+				//	OR
 					((string)($select_user['id'] ?? null) == (string)SmartAuth::get_auth_id())
 				) { // do not try to decrypt priv keys of another user (except superadmin) because are supposed to only be decrypted by the user itself only
 					//--
@@ -875,12 +967,23 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 							} //end if
 						} //end if
 					} //end if
+					//--
+				} //end if
+
+
+				if(
+					(SmartAuth::test_login_privilege('super-admin') === true)
+					OR
+					((string)($select_user['id'] ?? null) == (string)SmartAuth::get_auth_id())
+				) { // do not try to decrypt priv keys of another user (except superadmin) because are supposed to only be decrypted by the user itself only
+					//--
 					if(SmartEnvironment::isATKEnabled() === true) {
 						$user_num_tokens = (int) $model->countTokensById((string)($select_user['id'] ?? null));
 						$user_max_tokens = (int) $model::MAX_TOKENS_PER_ACCOUNT;
 					} //end if
 					//--
 				} //end if
+
 				//--
 				$model = null; // close connection
 				//--
@@ -954,6 +1057,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 							'NUM-TOKENS' 		=> (int)    $user_num_tokens,
 							'ENABLED-TOKENS' 	=> (int)    (bool) SmartEnvironment::isATKEnabled(),
 							'ENABLED-2FA' 		=> (int)    (bool) SmartEnvironment::is2FAEnabled(),
+							'SHOW-2FA' 			=> (int)    ((bool) SmartEnvironment::is2FAEnabled() || ($select_user['fa2'] ?? null)) ? 1 : 0,
+							'2FA-DB-KEY' 		=> (int)    ($select_user['fa2'] ?? null) ? 1 : 0, // this is for display the disable 2FA button even if the 2FA is disabled, for safety recovery, if an admin must reset it's own key by example ...
 							'2FA-KEY' 			=> (string) $user_2fakey, // {{{SYNC-ADM-AUTH-2FAKEY}}}
 							'2FA-TEST-TK' 		=> (string) $user_2fatktest,
 							'2FA-TEST-DATE' 	=> (string) date('Y-m-d H:i:s O'),

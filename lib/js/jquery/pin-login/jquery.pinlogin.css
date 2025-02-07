@@ -3,11 +3,15 @@
  * License: MIT
  * Version 1.0.3
  *
- * (c) 2023 unix-world.org
- * v.20231020
+ * (c) 2023-present unix-world.org
+ * v.20250120
  * contains fixes by unixman:
  * 		- fixed some styles
  */
+
+div.pinlogin {
+	display: inline-block;
+}
 
 .pinlogin .pinlogin-field {
 	box-sizing: border-box;

@@ -245,7 +245,7 @@ var files = event.originalEvent.dataTransfer.files;
         <p>The variation you choose is generally a matter of style or convenience.</p>
 
         <p><strong>Note</strong>: In jQuery 1.3 <code>[@attr]</code> style selectors were removed (they were previously deprecated in jQuery 1.2). Simply remove the "@" symbol from your selectors in order to make them work again.</p>
-        
+
       </desc>
     </category>
     <category name="Basic" slug="basic-css-selectors">
@@ -941,7 +941,7 @@ $( "p" ).after( $( "b" ) );
   <title>.ajaxComplete()</title>
   <signature>
     <added>1.0</added>
-    <argument name="handler" type="Function">      
+    <argument name="handler" type="Function">
       <argument name="event" type="Event"/>
       <argument name="jqXHR" type="jqXHR"/>
       <argument name="ajaxOptions" type="PlainObject"/>
@@ -1005,8 +1005,8 @@ $( document ).ajaxComplete(function( event, request, settings ) {
       <desc>The function to be invoked.</desc>
       <argument name="event" type="Event"/>
       <argument name="jqXHR" type="jqXHR"/>
-      <argument name="ajaxSettings" type="PlainObject"/>      
-      <argument name="thrownError" type="String"/>   
+      <argument name="ajaxSettings" type="PlainObject"/>
+      <argument name="thrownError" type="String"/>
     </argument>
   </signature>
   <desc>Register a handler to be called when Ajax requests complete with an error. This is an <a href="/Ajax_Events/">Ajax Event</a>.</desc>
@@ -1215,8 +1215,8 @@ $( document ).ajaxStop(function() {
       <desc>The function to be invoked.</desc>
       <argument name="event" type="Event"/>
       <argument name="jqXHR" type="jqXHR"/>
-      <argument name="ajaxOptions" type="PlainObject"/>     
-      <argument name="data" type="PlainObject"/>  
+      <argument name="ajaxOptions" type="PlainObject"/>
+      <argument name="data" type="PlainObject"/>
     </argument>
   </signature>
   <desc>Attach a function to be executed whenever an Ajax request completes successfully. This is an <a href="/Ajax_Events/">Ajax Event</a>.</desc>
@@ -1482,7 +1482,7 @@ $( "div.after-andself" ).find( "p" ).andSelf().addClass( "background" );
 	</property>
 	<property name="complete" type="Function">
 		<desc>A function that is called once the animation on an element is complete.</desc>
-		
+
 	</property>
 	<property name="start" type="Function" added="1.8">
 		<desc>A function to call when the animation on an element begins.</desc>
@@ -1938,7 +1938,7 @@ animateIt();
         <type name="htmlString"/>
         <type name="Element"/>
         <type name="Text"/>
-        <type name="jQuery"/>        
+        <type name="jQuery"/>
       </return>
     </argument>
   </signature>
@@ -2301,7 +2301,7 @@ The title of the emphasis is:&lt;div&gt;&lt;/div&gt;
         <argument name="attr" type="String"/>
         <return>
           <type name="String"/>
-          <type name="Number"/>          
+          <type name="Number"/>
         </return>
       </argument>
     </signature>
@@ -4938,7 +4938,7 @@ $( "div" ).click(function() {
         <desc>A function returning the value to set. <code>this</code> is the current element. Receives the index position of the element in the set and the old value as arguments.</desc>
         <argument name="index" type="Integer"/>
         <argument name="value" type="String"/>
-        <return>  
+        <return>
           <type name="String"/>
           <type name="Number"/>
         </return>
@@ -6464,7 +6464,7 @@ $( "input:disabled" ).val( "this is it" );
     <argument name="function" type="Function">
       <desc>A function to execute for each matched element.</desc>
       <argument name="index" type="Integer"/>
-      <argument name="element" type="Element"/>      
+      <argument name="element" type="Element"/>
     </argument>
   </signature>
   <desc>Iterate over a jQuery object, executing a function for each matched element. </desc>
@@ -7784,7 +7784,7 @@ $( "#whichkey" ).on( "mousedown", function( event ) {
 	</property>
 	<property name="complete" type="Function">
 		<desc>A function that is called once the animation on an element is complete.</desc>
-		
+
 	</property>
 	<property name="start" type="Function" added="1.8">
 		<desc>A function to call when the animation on an element begins.</desc>
@@ -8011,7 +8011,7 @@ $( "a" ).click(function() {
 	</property>
 	<property name="complete" type="Function">
 		<desc>A function that is called once the animation on an element is complete.</desc>
-		
+
 	</property>
 	<property name="start" type="Function" added="1.8">
 		<desc>A function to call when the animation on an element begins.</desc>
@@ -8445,7 +8445,7 @@ $( "div" )
 	</property>
 	<property name="complete" type="Function">
 		<desc>A function that is called once the animation on an element is complete.</desc>
-		
+
 	</property>
 	<property name="start" type="Function" added="1.8">
 		<desc>A function to call when the animation on an element begins.</desc>
@@ -10053,7 +10053,7 @@ $( "span:last" ).text( "Found " + $( "input:hidden" ).length + " hidden inputs."
 	</property>
 	<property name="complete" type="Function">
 		<desc>A function that is called once the animation on an element is complete.</desc>
-		
+
 	</property>
 	<property name="start" type="Function" added="1.8">
 		<desc>A function to call when the animation on an element begins.</desc>
@@ -10093,7 +10093,7 @@ $( "span:last" ).text( "Found " + $( "input:hidden" ).length + " hidden inputs."
   </signature>
   <signature>
     <added>1.4.3</added>
-    
+
     <argument name="duration" default="400">
       <desc>A string or number determining how long the animation will run.</desc>
       <type name="Number"/>
@@ -10246,11 +10246,11 @@ $( "div" ).click(function() {
       <added>1.0</added>
       <argument name="handlerIn" type="Function">
         <argument name="eventObject" type="Event"/>
-        <desc>A function to execute when the mouse pointer enters the element.</desc>        
+        <desc>A function to execute when the mouse pointer enters the element.</desc>
       </argument>
       <argument name="handlerOut" type="Function">
         <argument name="eventObject" type="Event"/>
-        <desc>A function to execute when the mouse pointer leaves the element.</desc>        
+        <desc>A function to execute when the mouse pointer leaves the element.</desc>
       </argument>
     </signature>
     <longdesc>
@@ -10324,7 +10324,7 @@ $( "td" ).off( "mouseenter mouseleave" );
       <added>1.4</added>
       <argument name="handlerInOut" type="Function">
         <argument name="eventObject" type="Event"/>
-        <desc>A function to execute when the mouse pointer enters or leaves the element.</desc>        
+        <desc>A function to execute when the mouse pointer enters or leaves the element.</desc>
       </argument>
     </signature>
     <longdesc>
@@ -11296,7 +11296,7 @@ $( "p" ).insertBefore( "#foo" );
       <desc>A function used as a test for every element in the set. It accepts two arguments, <code>index</code>, which is the element's index in the jQuery collection, and <code>element</code>, which is the DOM element. Within the function, <code>this</code> refers to the current DOM element.</desc>
       <argument name="index" type="Integer"/>
       <argument name="element" type="Element"/>
-      <return type="Boolean"/>      
+      <return type="Boolean"/>
     </argument>
   </signature>
   <signature>
@@ -12283,7 +12283,7 @@ $.ajax({
       <desc>A handler to set default values for future Ajax requests.</desc>
       <argument name="options" type="PlainObject"/>
       <argument name="originalOptions" type="PlainObject"/>
-      <argument name="jqXHR" type="jqXHR"/>      
+      <argument name="jqXHR" type="jqXHR"/>
     </argument>
   </signature>
   <longdesc>
@@ -13051,11 +13051,11 @@ $( "button" ).click(function() {
       <desc>The array or array-like object to iterate over.</desc>
     </argument>
     <argument name="callback" type="Function">
-      <argument name="indexInArray" type="Integer"/>      
-      <argument name="value" type="Object"/>      
+      <argument name="indexInArray" type="Integer"/>
+      <argument name="value" type="Object"/>
       <desc>The function that will be executed on every value.</desc>
     </argument>
-  </signature>  
+  </signature>
   <signature>
     <added>1.0</added>
     <argument name="object" type="Object">
@@ -13063,7 +13063,7 @@ $( "button" ).click(function() {
     </argument>
     <argument name="callback" type="Function">
       <argument name="propertyName" type="String"/>
-      <argument name="valueOfProperty" type="Object"/>      
+      <argument name="valueOfProperty" type="Object"/>
       <desc>The function that will be executed on every value.</desc>
     </argument>
   </signature>
@@ -13579,7 +13579,7 @@ $.get( "test.php", function( data ) {
     <argument name="success" optional="true" type="Function">
       <argument name="data" type="PlainObject"/>
       <argument name="textStatus" type="String"/>
-      <argument name="jqXHR" type="jqXHR"/>      
+      <argument name="jqXHR" type="jqXHR"/>
       <desc>A callback function that is executed if the request succeeds.</desc>
     </argument>
   </signature>
@@ -14407,7 +14407,7 @@ jQuery.isArray( arr ) === true;
     <argument name="callback" type="Function">
       <argument name="elementOfArray" type="Object"/>
       <argument name="indexInArray" type="Integer"/>
-      <return type="Object"/>      
+      <return type="Object"/>
       <desc>The function to process each item against.  The first argument to the function is the array item, the second argument is the index in array The function can return any value. A returned array will be flattened into the resulting array. Within the function, <code>this</code> refers to the global (window) object.</desc>
     </argument>
   </signature>
@@ -14419,7 +14419,7 @@ jQuery.isArray( arr ) === true;
     <argument name="callback" type="Function">
       <argument name="propertyOfObject" type="Object"/>
       <argument name="key" type="String"/>
-      <return type="Object"/>            
+      <return type="Object"/>
       <desc>The function to process each item against.  The first argument to the function is the value; the second argument is the key of the object property. The function can return any value to add to the array. A returned array will be flattened into the resulting array. Within the function, <code>this</code> refers to the global (window) object. </desc>
     </argument>
   </signature>
@@ -16493,7 +16493,7 @@ $( "#other" ).click(function() {
 &lt;button id="other"&gt;
   Trigger the handler
 &lt;/button&gt;
-&lt;script type="text/javascript" src="/resources/events.js"&gt;&lt;/script&gt;
+&lt;script src="/resources/events.js"&gt;&lt;/script&gt;
 </html>
   </example>
   <category slug="events/keyboard-events"/>
@@ -16721,7 +16721,7 @@ $( "#other").click(function() {
 &lt;button id="other"&gt;
   Trigger the handler
 &lt;/button&gt;
-&lt;script type="text/javascript" src="/resources/events.js"&gt;&lt;/script&gt;
+&lt;script src="/resources/events.js"&gt;&lt;/script&gt;
 </html>
   </example>
   <category slug="events/keyboard-events"/>
@@ -17220,7 +17220,7 @@ $( "img.userIcon" ).load(function() {
     <argument name="complete" type="Function" optional="true">
       <argument name="responseText" type="String"/>
       <argument name="textStatus" type="String"/>
-      <argument name="jqXHR" type="jqXHR"/>       
+      <argument name="jqXHR" type="jqXHR"/>
       <desc>A callback function that is executed when the request completes.</desc>
     </argument>
   </signature>
@@ -18752,7 +18752,7 @@ $( "input").attr( "disabled", "disabled" );
       <desc>A function used as a test for each element in the set. It accepts two arguments, <code>index</code>, which is the element's index in the jQuery collection, and <code>element</code>, which is the DOM element. Within the function, <code>this</code> refers to the current DOM element.</desc>
       <argument name="index" type="Integer"/>
       <argument name="element" type="Element"/>
-      <return type="Boolean"/>      
+      <return type="Boolean"/>
     </argument>
   </signature>
   <signature>
@@ -19527,7 +19527,7 @@ $( "*", document.body ).click(function( event ) {
       <argument name="function" type="Function">
         <argument name="index" type="Integer"/>
         <argument name="coords" type="PlainObject"/>
-        <return type="PlainObject"/>   
+        <return type="PlainObject"/>
         <desc>A function to return the coordinates to set. Receives the index of the element in the collection as the first argument and the current coordinates as the second argument. The function should return an object with the new <code>top</code> and <code>left</code> properties.</desc>
       </argument>
     </signature>
@@ -20794,8 +20794,8 @@ $( "p:last" ).text( "left: " + position.left + ", top: " + position.top );
         <type name="htmlString"/>
         <type name="Element"/>
         <type name="Text"/>
-        <type name="jQuery"/>        
-      </return>     
+        <type name="jQuery"/>
+      </return>
       <desc>A function that returns an HTML string, DOM element(s), text node(s), or jQuery object to insert at the beginning of each element in the set of matched elements. Receives the index position of the element in the set and the old HTML value of the element as arguments. Within the function, <code>this</code> refers to the current element in the set.</desc>
     </argument>
   </signature>
@@ -21782,7 +21782,7 @@ $( "form" ).submit(function( event ) {
     <p>Most browsers <a href="https://caniuse.com/#search=DOMContentLoaded">provide similar functionality</a> in the form of a <code>DOMContentLoaded</code> event. However, jQuery's <code>.ready()</code> method differs in an important and useful way: If the DOM becomes ready and the browser fires <code>DOMContentLoaded</code> before the code calls <code>.ready( handler )</code>, the function <code>handler</code> will still be executed. In contrast, a <code>DOMContentLoaded</code> event listener added after the event fires is never executed.</p>
 
     <p>Browsers also provide the <code>load</code> event on the <code>window</code> object. When this event fires it indicates that all assets on the page have loaded, including images. This event can be watched in jQuery using <code>$( window ).on( "load", handler )</code>. In cases where code relies on loaded assets (for example, if the dimensions of an image are required), the code should be placed in a handler for the <code>load</code> event instead.</p>
-    
+
     <p>Note that although the DOM always becomes ready before the page is fully loaded, it is <em>usually not safe</em> to attach a <code>load</code> event listener in code executed during a <code>.ready()</code> handler. For example, scripts can be loaded dynamically long after the page has loaded using methods such as <code>$.getScript()</code>. Although handlers added by <code>.ready()</code> will always be executed in a dynamically loaded script, the <code>window</code>'s <code>load</code> event has already occurred and those listeners will never run.</p>
 
     <p>jQuery offers several ways to attach a function that will run when the DOM is ready. All of the following syntaxes are equivalent:</p>
@@ -23223,7 +23223,7 @@ $( "form" ).submit(function( event ) {
 	</property>
 	<property name="complete" type="Function">
 		<desc>A function that is called once the animation on an element is complete.</desc>
-		
+
 	</property>
 	<property name="start" type="Function" added="1.8">
 		<desc>A function to call when the animation on an element begins.</desc>
@@ -23263,7 +23263,7 @@ $( "form" ).submit(function( event ) {
   </signature>
   <signature>
     <added>1.4.3</added>
-    
+
     <argument name="duration" default="400">
       <desc>A string or number determining how long the animation will run.</desc>
       <type name="Number"/>
@@ -23760,7 +23760,7 @@ $( "p" ).slice( -1 ).wrapInner( "&lt;b&gt;&lt;/b&gt;" );
 	</property>
 	<property name="complete" type="Function">
 		<desc>A function that is called once the animation on an element is complete.</desc>
-		
+
 	</property>
 	<property name="start" type="Function" added="1.8">
 		<desc>A function to call when the animation on an element begins.</desc>
@@ -23984,7 +23984,7 @@ $( "div" ).click(function() {
 	</property>
 	<property name="complete" type="Function">
 		<desc>A function that is called once the animation on an element is complete.</desc>
-		
+
 	</property>
 	<property name="start" type="Function" added="1.8">
 		<desc>A function to call when the animation on an element begins.</desc>
@@ -24213,7 +24213,7 @@ $( "#aa" ).click(function() {
 	</property>
 	<property name="complete" type="Function">
 		<desc>A function that is called once the animation on an element is complete.</desc>
-		
+
 	</property>
 	<property name="start" type="Function" added="1.8">
 		<desc>A function to call when the animation on an element begins.</desc>
@@ -24867,7 +24867,7 @@ $( "p:last" ).html( str );
       <argument name="function" type="Function">
         <argument name="index" type="Integer"/>
         <argument name="text" type="String"/>
-        <return type="String"/>        
+        <return type="String"/>
         <desc>A function returning the text content to set. Receives the index position of the element in the set and the old text value as arguments.</desc>
       </argument>
     </signature>
@@ -25099,7 +25099,7 @@ $( "td" ).toggle(
 	</property>
 	<property name="complete" type="Function">
 		<desc>A function that is called once the animation on an element is complete.</desc>
-		
+
 	</property>
 	<property name="start" type="Function" added="1.8">
 		<desc>A function to call when the animation on an element begins.</desc>
@@ -25139,7 +25139,7 @@ $( "td" ).toggle(
   </signature>
   <signature>
     <added>1.4.3</added>
-    
+
     <argument name="duration" default="400">
       <desc>A string or number determining how long the animation will run.</desc>
       <type name="Number"/>

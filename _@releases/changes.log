@@ -2,6 +2,20 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+February 07, 2025
+	* mod Auth Users WIP
+	* watch clock export as js lib
+	* CSRF improvements in  security level
+	* captcha fixes
+	* minor optimizations
+
+January 24, 2025
+	* refactored Lib Auth
+	* add Js hex2rgba
+	* overlays add blur effect
+	* fixes: pin-login, captcha
+	* Framework JS: enhance prettySecondsToDHMS ; rename to prettySecondsHFmt
+
 January 18, 2025
 	* new module: hello world
 	* add crypto randomization: PHP and Javascript

@@ -30,12 +30,12 @@ if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) {
  */
 class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs {
 
-	// v.20231112
+	// v.20250124
 
 	public function Run() {
 
 		//--
-		if(SmartAuth::check_login() !== true) {
+		if(SmartAuth::is_authenticated() !== true) {
 			SmartFrameworkRuntime::Raise403Error('ERROR: PageBuilder.Files requires Authentication ...');
 			return;
 		} //end if

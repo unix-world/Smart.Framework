@@ -1,5 +1,7 @@
-<!-- v.20250107 -->
+<!-- v.20250122 -->
 [@@@SUB-TEMPLATE:acc-styles-form.mtpl.inc.htm@@@]
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/pin-login/jquery.pinlogin.css" media="all">
+<script src="lib/js/jquery/pin-login/jquery.pinlogin.js"></script>
 <script>
 const handleFormAcc2FA = () => {
 	const accId = '[###ID|js###]';
@@ -18,13 +20,31 @@ const handleFormAcc2FA = () => {
 <center><div><table><tr><td>
 	<form id="fa2_confirm_form" name="fa2_confirm_form" class="ux-form ux-form-aligned" onSubmit="return false;">
 		<legend><h1>Enable 2FA for Account</h1></legend><br>
-		<div class="operation_info" style="display:inline-block; max-width:600px!important;">Important:<div>You are about to enable Two-Factor Authentication for the selected account.<br><br>Make a safe backup of the below 2FA key, for recovery:<br>`<span style="color:#685A8B;">[###2FA-CODE|html###]</span>`.<br><br>Also, scan the below 2FA Setup QRCode with <span style="color:#ED2839;">FreeOTP App</span> or similar 2FA <span style="color:#ED2839;">Authenticator apps</span>.<br><br><div style="text-align:center;"><img src="data:image/svg+xml,[###2FA-BARCODE|url###]" title="[###2FA-URL|html###]"></div></div></div>
+		<div class="operation_info" style="display:inline-block; max-width:600px!important;">Important:<div>You are about to enable Two-Factor Authentication for the selected account.<br><br>Make a safe backup of the below 2FA key, for recovery:<br>`<span style="color:#685A8B;">[###2FA-CODE|html###]</span>`.<br><br>Also, scan the below 2FA Setup QRCode with <span style="color:#ED2839;">FreeOTP App</span> or similar 2FA Authenticator apps like <span style="color:#ED2839;">Google Authenticator App</span>.</div></div>
+		<br><br>
+		<div id="app-container">
+			<div class="ux-grid-row">
+				<div class="ux-grid-col s12 m6 l4">
+					<div style="text-align:center;">
+						<img src="data:image/svg+xml,[###2FA-BARCODE|url###]" title="[###2FA-URL|html###]">
+					</div>
+				</div>
+				<div class="ux-grid-col s12 m6 l8">
+					<br>
+					<div style="text-align:center;">
+						<h6>Enter the 2FA Code here</h6>
+						<span id="fa2-test-input" title="Enter the Two-Factor Authentication Code here (TOTP 2FA Token) to test before enabling 2FA"></span>
+					</div>
+				</div>
+			</div>
+		</div>
 		<br><br>
 		<div class="ux-control-group">
 			<label><i class="sfi sfi-user"></i>&nbsp;UserName&nbsp;/&nbsp;ID</label>
 			<input type="hidden" name="frm[id]" value="[###ID|html###]">
 			<input type="hidden" name="frm[chk]" value="[###2FA-CHK|html###]">
 			<input type="hidden" name="frm[key]" value="[###2FA-CODE|html###]">
+			<input type="hidden" name="frm[pin]" value="" id="auth-2fa-pin">
 			<h6 id="user-id" style="display:inline;">[###ID|html###]</h6>
 		</div>
 		<div class="ux-controls">
@@ -33,3 +53,16 @@ const handleFormAcc2FA = () => {
 		</div>
 	</form>
 </td></tr></table></div></center>
+<script>
+(() => {
+	jQuery('#fa2-test-input').pinlogin({
+		autofocus: false,
+		hideinput: true,
+		delay: 75,
+		fields: 8,
+		complete: (digits) => {
+			jQuery('input#auth-2fa-pin').val(String(digits || ''));
+		},
+	});
+})();
+</script>

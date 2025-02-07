@@ -1,0 +1,88 @@
+<link rel="stylesheet" href="modules/mod-auth-users/views/js/launchpad/launchpad.css">
+<script src="modules/mod-auth-users/views/js/launchpad/launchpad.js"></script>
+<script>
+launchpad.setData([
+	{
+		group: 'Popular',
+		apps: [
+			{
+				icon: "modules/mod-auth-users/views/img/icon-oo-writer.svg",
+				link: "#writer",
+				label: "Writer",
+			},
+			{
+				icon: "modules/mod-auth-users/views/img/icon-oo-calc.svg",
+				link: "#calc",
+				label: "Calc",
+			},
+			{
+				icon: "modules/mod-auth-users/views/img/icon-oo-impress.svg",
+				link: "#impress",
+				label: "Impress",
+			},
+		]
+	},
+	{
+		group: 'Extra',
+		apps: [
+			{
+				icon: "modules/mod-auth-users/views/img/icon-oo-draw.svg",
+				link: "#draw",
+				label: "Draw",
+			},
+			{
+				icon: "modules/mod-auth-users/views/img/icon-oo-db.svg",
+				link: "?page=einvoice.create",
+				label: "DataBase",
+			},
+		]
+	},
+	{
+		icon: "modules/mod-auth-users/views/img/icon-oo-profiles.svg",
+		link: "#contacts",
+		label: "Contacts",
+	},
+	{
+		icon: "modules/mod-auth-users/views/img/icon-oo-keys.svg",
+		link: "#keychain",
+		label: "KeyChain",
+	},
+]);
+</script>
+<style>
+div.ux-sidebar {
+	min-height: 100% !important;
+	background-color: #323d4f !important;
+}
+div.ux-sidebar span {
+	font-size: 1.125rem !important;
+}
+</style>
+<div class="ux-sidebar">
+	<label><i class="sfi sfi-menu sfi-3x"></i></label><input type="checkbox">
+	<nav class="ux-sidenav">
+		<ul>
+			<li style="margin-left:2px;" title="My Apps">
+				<a href="javascript:javascript:void(0);" onclick="launchpad.toggle(); return false;">
+					<i class="sfi sfi-stack sfi-3x"></i> <span>My Apps</span>
+				</a>
+			</li>
+			<li>
+				<a href="?page=auth-users.apps" title="My Dashboard">
+					<i class="sfi sfi-command sfi-3x"></i> <span>My Dashboard</span>
+				</a>
+			</li>
+			<li>
+				<a href="?page=auth-users.account" title="My Account">
+					<i class="sfi sfi-user sfi-3x"></i> <span>My Account</span>
+				</a>
+			</li>
+			<li title="Sign-Out">
+				<a href="?page=auth-users.signout">
+					<i class="sfi sfi-switch sfi-3x"></i> <span>Sign-Out</span>
+				</a>
+			</li>
+		</ul>
+	</nav>
+	<img height="48" alt="sf-logo" src="lib/framework/img/sf-logo.svg" style="margin-left:16px; margin-top:50px; margin-bottom:50px; cursor:help; opacity: 0.88; filter: saturate(87%);" title="powered by Smart.Framework">
+</div>

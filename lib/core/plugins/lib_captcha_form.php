@@ -60,7 +60,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	constants: SMART_FRAMEWORK_SECURITY_KEY ; classes: Smart, SmartUtils, SmartTextTranslations, SmartSVGCaptcha, SmartQR2DBarcode ; javascript: jquery.js, smart-framework.pak.js
- * @version 	v.20250107
+ * @version 	v.20250203
  * @package 	Application:Plugins:Captcha
  *
  */
@@ -466,7 +466,7 @@ final class SmartCaptcha {
 			//--
 			if($y_clear === true) { // clear is optional (there are situations when after veryfying captcha, even if OK, other code must be run and if that code returns error, still captcha must be active, not cleared (so clearing it manually is a solution ...)
 				//--
-				self::clearCaptcha((string)$y_form_name, (string)$y_mode);
+				self::clearCaptcha((string)$y_form_name, (string)$y_mode, true); // operate in no-delete mode ; if needs delete clear may be called explicit
 				//--
 			} //end if
 			//--
@@ -496,27 +496,39 @@ final class SmartCaptcha {
 			return false; // invalid form name
 		} //end if
 		//--
-		$var_name = (string) self::cookie_name_jsc((string)$y_form_name);
+		$var_name    = (string) self::cookie_name_jsc((string)$y_form_name);
 		$cookie_name = (string) self::cookie_name_frm((string)$y_form_name);
+		$cookie_chk  = (string) self::cookie_name_chk((string)$y_form_name);
+		//--
+		$ok1 = false;
+		$ok2 = false;
+		$ok3 = false;
 		//--
 		if((string)$y_mode == 'session') {
 			//--
-			SmartSession::unsets((string)$var_name); // unset from session
-			$ok = (bool) SmartSession::unsets((string)$cookie_name); // unset from session
+			$ok1 = (bool) SmartSession::unsets((string)$var_name); // unset from session
+			$ok2 = (bool) SmartSession::unsets((string)$cookie_name); // unset from session
+			if($y_nodelete === true) {
+				$ok3 = true; // in this case the captcha solve must not be reset
+			} else {
+				$ok3 = (bool) SmartSession::unsets((string)$cookie_chk); // unset from session
+			} //end if else
 			//--
 		} else {
 			//--
 			if($y_nodelete === true) { // sometimes this method may be called before captcha to allow single captcha solve per many actions and if cookie is deleted a warning will appear in firefox console that cookie is already expired ; to avoid this warning, because later on the same page captcha is draw, just clear values of the cookies not delete
-				SmartUtils::set_cookie((string)$var_name, ' ', (int)self::COOKIE_EXPIRE_TIME); // reset ; set a space, empty value will delete
-				$ok = (bool) SmartUtils::set_cookie((string)$cookie_name, ' ', (int)self::COOKIE_EXPIRE_TIME); // reset ; set a space, empty value will delete
+				$ok1 = (bool) SmartUtils::set_cookie((string)$var_name,    ' ', (int)self::COOKIE_EXPIRE_TIME); // reset ; set a space, empty value will delete
+				$ok2 = (bool) SmartUtils::set_cookie((string)$cookie_name, ' ', (int)self::COOKIE_EXPIRE_TIME); // reset ; set a space, empty value will delete
+				$ok3 = true; // in this case the captcha solve must not be reset
 			} else {
-				SmartUtils::unset_cookie((string)$var_name); // unset cookie
-				$ok = (bool) SmartUtils::unset_cookie((string)$cookie_name); // unset cookie
+				$ok1 = (bool) SmartUtils::unset_cookie((string)$var_name);    // unset cookie
+				$ok2 = (bool) SmartUtils::unset_cookie((string)$cookie_name); // unset cookie
+				$ok3 = (bool) SmartUtils::unset_cookie((string)$cookie_chk);  // unset cookie
 			} //end if
 			//--
 		} //end if else
 		//--
-		return (bool) $ok; // OK
+		return (bool) (($ok1 === true) && ($ok2 === true) && ($ok3 === true)); // OK
 		//--
 	} //END FUNCTION
 	//================================================================

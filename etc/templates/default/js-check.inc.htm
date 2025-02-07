@@ -1,5 +1,5 @@
 [%%%IF:APP-REALM:==ADM;(87)%%%]
-<!-- Check JS Runtime (Default) :: r.20221007 -->
+<!-- Check JS Runtime (Default) :: r.20250124 -->
 <script src="lib/js/check-es-runtime.js?[###RELEASE-HASH|url|html###]"></script><script>(function(){ var testES6 = checkJsRuntime(); if(!testES6) { var errJsVersion = 'NOTICE: Your browser does not support Javascript ES6 !'; console.warn(errJsVersion, 'Javascript ES6 Test Not Passed:', testES6); if(typeof(jQuery) != 'undefined') { try { jQuery(() => { jQuery('body').append('<div class="sf--notify--js--version" style="position:fixed; top:5px; left:5px; z-index:2147483647; padding:10px; background:#ED2839; color:#FFFFFF; font-size:1rem; font-weight:bold; opacity:0.88;">' + errJsVersion + '</div>'); jQuery('.sf--notify--js--version').delay(3250).fadeOut(); }); } catch(err){} } } })();</script>
 <!-- # -->
 [%%%/IF:APP-REALM(87)%%%]

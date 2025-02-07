@@ -39,13 +39,15 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @ignore
  *
  * @depends     PHP classes: Smart, SmartHashCrypto, SmartQR2DBarcode
- * @version 	v.20250107
+ * @version 	v.20250205
  * @package 	development:modules:AuthAdmins
  *
  */
 final class Auth2FTotp {
 
 	// ::
+
+	public const REGEX_VALID_TOTP_CODE = '/[0-9]{4,16}/'; // {{{SYNC-TOTP-PIN-LENGTH-CHECK}}}
 
 
 	private const BITS_BASE_32_RIGHT_5 = 31;
@@ -122,22 +124,51 @@ final class Auth2FTotp {
 
 
 	//==============================================================
-	// returns a number as string (digits) ; the input key will be decoded from base32 (special algorithm, different than smart, does not have strings compression)
-	public static function GenerateToken(string $key, string $algo='sha512', int $length=8, int $tint=30, int $adjsec=0) : string {
+	public static function IsSecretValid(string $secret) : bool {
 		//--
-		$key = (string) \trim((string)$key);
-		if((string)$key == '') {
+		$secret = (string) \trim((string)$secret);
+		if((string)$secret == '') {
+			return false;
+		} //end if
+		//--
+		$length = (int) \strlen((string)$secret);
+		if(((int)$length < 20) || ((int)$length > 128)) { // should be between is 26 (128 bit) and 103 (512 bit), but be more flexible, as in PHP
+			return false;
+		} //end if
+		//--
+		$key = (string) self::b32dec((string)$secret); // do not trim decoded key !
+		if((string)\trim((string)$key) == '') {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	// returns a number as string (digits) ; the input key will be decoded from base32 (special algorithm, different than smart, does not have strings compression)
+	public static function GenerateToken(string $secret, string $algo='sha512', int $length=8, int $tint=30, int $adjsec=0) : string {
+		//--
+		$secret = (string) \trim((string)$secret);
+		if((string)$secret == '') {
 			\Smart::log_warning(__METHOD__.' # ERROR: Empty Hex Key');
 			return '';
-		} elseif((int)\strlen((string)$key) < 20) { // actually is 26 (128 bit), but be more flexible
+		} elseif((int)\strlen((string)$secret) < 20) { // actually is 26 (128 bit), but be more flexible
 			\Smart::log_warning(__METHOD__.' # ERROR: Hex Key is too short');
 			return '';
-		} elseif((int)\strlen((string)$key) > 128) { // actually is 103 (512 bit), but be more flexible
+		} elseif((int)\strlen((string)$secret) > 128) { // actually is 103 (512 bit), but be more flexible
 			\Smart::log_warning(__METHOD__.' # ERROR: Hex Key is too long');
 			return '';
 		} //end if
 		//--
-		$key = (string) self::b32dec((string)$key); // do not trim decoded key !
+		if(self::IsSecretValid((string)$secret) !== true) {
+			\Smart::log_warning(__METHOD__.' # ERROR: Invalid Secret');
+			return '';
+		} //end if
+		//--
+		$key = (string) self::b32dec((string)$secret); // do not trim decoded key !
 		if((string)\trim((string)$key) == '') {
 			\Smart::log_warning(__METHOD__.' # ERROR: Empty Key');
 			return '';
@@ -147,17 +178,25 @@ final class Auth2FTotp {
 		switch((string)$algo) {
 			case 'md5':
 			case 'sha1':
+				// old, deprecated
+				break;
 			case 'sha224':
 			case 'sha256':
 			case 'sha384':
 			case 'sha512':
-				// ok ...
+				// ok
+				break;
+			case 'sha3-224':
+			case 'sha3-256':
+			case 'sha3-384':
+			case 'sha3-512':
+				// ok, next generation
 				break;
 			default:
 				\Smart::log_warning(__METHOD__.' # ERROR: Invalid Algo Selected: '.\strtoupper((string)$algo).' Hash/HMAC/Algo');
 				return '';
 		} //end switch
-		//--
+		//-- {{{SYNC-TOTP-PIN-LENGTH-CHECK}}}
 		if((int)$length < 4) {
 			\Smart::log_warning(__METHOD__.' # ERROR: Min Length is 4');
 			return '';
@@ -283,8 +322,12 @@ final class Auth2FTotp {
 	//==============================================================
 	private static function b32dec(string $data) : string {
 		//--
-		$data     = (string) \strtolower((string)\trim((string)$data));
-		$dataSize = (int)    \strlen((string)$data);
+		$data = (string) \strtolower((string)\trim((string)$data));
+		if((int)\strlen((string)$data) !== (int)\strspn((string)$data, (string)self::CHARSET_BASE_32)) { // check, case sensitive
+			return '';
+		} //end if
+		//--
+		$dataSize = (int) \strlen((string)$data);
 		$buf = 0;
 		$bufSize = 0;
 		$res = '';
@@ -322,12 +365,12 @@ final class Auth2FTotp {
 /* Sample Usage
 
 // # generate a new key
-//$key = \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateSecret(16); die('Key: '.$key);
+//$secret = \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateSecret(16); die('Key: '.$secret);
 
-$key = 'sm57jvghyoer7pw6w3jkx5ay7q'; // test key, generated above
+$secret = 'sm57jvghyoer7pw6w3jkx5ay7q'; // test key, generated above
 
 // # generate tokens based on a previous generated key, below
-$totp = (string) \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateToken((string)$key, 'sha512', 8, 60); die('Token: '.$totp);
+$totp = (string) \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateToken((string)$secret, 'sha512', 8, 60); die('Token: '.$totp);
 
 */
 

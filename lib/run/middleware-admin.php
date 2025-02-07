@@ -41,7 +41,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[A][T]@v.8.7');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20250112
+ * @version		20250124
  * @package 	Application
  *
  */
@@ -310,8 +310,8 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 			require_once((string)$the_path_to_module.'lib/autoload.php');
 		} //end if
 		if(defined('SMART_APP_MODULE_AUTH')) {
-			if(SmartAuth::check_login() !== true) {
-				SmartFrameworkRuntime::Raise403Error('Page Access Denied ! No Authentication Provided for: '.$page);
+			if(SmartAuth::is_authenticated() !== true) {
+				SmartFrameworkRuntime::Raise401Error('Authentication is Required for this page: '.$page);
 				return;
 			} //end if
 			if(defined('SMART_APP_MODULE_REALM_AUTH')) {

@@ -1,0 +1,51 @@
+<style>
+body, div#app-container {
+	padding: 0 !important;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+	margin: 0 !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+	margin-top: 0 !important;
+	margin-bottom: 0 !important;
+}
+div.app-container {
+	min-width: 800px !important;
+	width: 100vw !important;
+	height: 100vh !important;
+}
+div.area-main {
+	min-width: 320px !important;
+	height: 100vh !important;
+	overflow: hidden;
+	overflow-y: auto;
+}
+div.area-aside {
+	height: 100vh !important;
+	overflow: hidden;
+	overflow-y: auto;
+	background-color: #3F3F3F;
+}
+div.area-aside,
+div.area-aside a {
+	color: #FFFFFF;
+}
+@media all and (max-width:991px) {
+	div.area-main {
+		height: auto !important;
+	}
+	div.area-main {
+		height: auto !important;
+		overflow: visible !important;
+		overflow-y: visible !important;
+	}
+	div.area-aside {
+		height: auto !important;
+		overflow: visible !important;
+		overflow-y: visible !important;
+		padding-bottom: 50px !important;
+	}
+}
+</style>

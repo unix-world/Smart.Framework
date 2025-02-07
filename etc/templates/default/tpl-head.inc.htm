@@ -1,4 +1,4 @@
-<!-- TPL Head (default) r.20231001 :: [###SEMAPHORE|smartlist|html###] -->
+<!-- TPL Head (default) r.20250124 :: [###SEMAPHORE|smartlist|html###] -->
 <!-- Template Path: [###TEMPLATE-PATH|html###] -->
 <!-- Template File: [###TEMPLATE-FILE|html###] -->
 <!-- Timezone:      [###TIMEZONE|html###] -->
@@ -25,7 +25,7 @@
 <!-- Scripts -->
 [@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-base-jquery.inc.htm!@@@]
 [@@@SUB-TEMPLATE:!etc/templates/default/js-framework.inc.htm!@@@]
-[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-media.inc.htm!@@@]
+[%%%IF:SEMAPHORE:&*<skip:js-media>;%%%]<!-- MediaJS: skip -->[%%%ELSE:SEMAPHORE%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-media.inc.htm!@@@][%%%/IF:SEMAPHORE%%%]
 [%%%IF:SEMAPHORE:&*<load:utils-js>;%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-utils.inc.htm!@@@][%%%ELSE:SEMAPHORE%%%]<!-- Utils: skip -->[%%%/IF:SEMAPHORE%%%]
 [%%%IF:SEMAPHORE:&*<skip:js-ui>;%%%]<!-- LightJS: skip -->[%%%ELSE:SEMAPHORE%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-ui.inc.htm!@@@][%%%/IF:SEMAPHORE%%%]
 <!-- CSS -->

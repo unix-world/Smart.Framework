@@ -1,0 +1,64 @@
+
+/*
+js launchpad
+(c) 2025-present unix-world.org
+r.20250131
+*/
+
+#launchpad_overlay {
+	z-index: 2147484007;
+	position: fixed;
+	top: 0 !important;
+	left: 0 !important;
+	width: 100vw !important;
+	height: 100vh !important;
+	text-align: center;
+	overflow-y: auto;
+	opacity: 0;
+	transition: opacity 0.25s linear;
+	background-color: rgba(22, 22, 22, 0.78);
+}
+
+.launchpad-active > :not(#launchpad_overlay) {
+	filter: blur(3px);
+}
+
+.launchpad-canvas {
+	width: 100%;
+	height: auto;
+}
+
+.launchpad-app-container {
+	display: inline-block;
+	width: 130px;
+	height: 150px;
+	margin: 30px;
+}
+
+.launchpad-app-container a,
+.launchpad-app-group-header {
+	color: #FFFFFF;
+	text-decoration: none !important;
+	font-weight: bold !important;
+}
+
+.launchpad-app-group-header {
+	margin: 10px 0 10px 30px;
+}
+
+.launchpad-app-label {
+	height: 20px;
+	text-align: center;
+}
+
+.launchpad-app-icon {
+	width: 128px;
+	height: 128px;
+	margin: 5px 0 5px 0;
+	overflow: hidden;
+	margin: auto;
+	vertical-align: middle;
+	text-align: center;
+}
+
+/* END */

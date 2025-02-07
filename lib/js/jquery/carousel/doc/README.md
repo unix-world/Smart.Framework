@@ -31,7 +31,7 @@ Just add a link to the css file in your `<head>`:
 Then, before your closing ```<body>``` tag add:
 
 ```html
-<script type="text/javascript" src="//cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick.min.js"></script>
 ```
 
 #### Package Managers

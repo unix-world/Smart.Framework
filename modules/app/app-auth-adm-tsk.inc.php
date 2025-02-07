@@ -8,7 +8,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 	@http_response_code(500);
 	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
-//----------------------------------------------------- v.20250118
+//----------------------------------------------------- v.20250207
 
 //======================================================
 // App Authenticate Middleware :: Admin / Task Areas Overall Authentication (admin.php and task.php)
@@ -30,7 +30,6 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 
 //-------------------------------------------
 // SMART.UNICORN AUTHENTICATION SYSTEM FOR ADMIN AND TASK AREAS, MULTI-ACCOUNT (admin.php / task.php)
-// modules/mod-auth-admins/libs/SmartAuthAdminsHandler.php
 //-------------------------------------------
 // NOTICE: This authentication system implements a Secure Authentication System with the following features:
 // 	* multi-user accounts
@@ -38,15 +37,14 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 // 	* fail login timeouts, IP based (DDOS protection after 10 fail logins ...) ; extended DDOS protected by captcha
 // INFO: see the modules/mod-auth-admins/doc/README.md on how to setup this in configs ...
 //-------------------------------------------
-if((!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) OR (!class_exists('\\SmartModExtLib\\AuthAdmins\\SmartAuthAdminsHandler'))) {
+if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
 	SmartFrameworkRuntime::Raise500Error('A required module is missing: `mod-auth-admins` # Smart.Unicorn Authentication ...');
 	die('AppAuthAdmin:ModuleMissing:AuthAdmins');
 } //end if
 final class SmartModelAuthAdmins    extends \SmartModDataModel\AuthAdmins\SqAuthAdmins{}
 final class SmartModelAuthLogAdmins extends \SmartModDataModel\AuthAdmins\SqAuthLog{}
-\SmartModExtLib\AuthAdmins\SmartAuthAdminsHandler::Authenticate(
-	false, // enforce HTTPS: TRUE/FALSE
-);
+\SmartModExtLib\AuthAdmins\SmartAuthAdminsHandler::Authenticate(); // define('APP_AUTH_ADMIN_ENFORCE_HTTPS', true);
+\SmartModExtLib\AuthAdmins\SmartAuthAdminsHandler::AuthLock();
 //-------------------------------------------
 
 // end of php code

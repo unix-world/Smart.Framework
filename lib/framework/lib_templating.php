@@ -49,7 +49,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartEnvironment, SmartUnicode, SmartFileSysUtils ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS, SMART_SOFTWARE_MKTPL_DEBUG_LEN (optional)
- * @version 	v.20250118
+ * @version 	v.20250126
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -57,7 +57,7 @@ final class SmartMarkersTemplating {
 
 	// ::
 
-	// syntax: r.20231228
+	// syntax: r.20250126
 
 	private static $MkTplAnalyzeLdDbg 		= false; 	// flag for template analysis
 	private static $MkTplAnalyzeLdRegDbg 	= []; 		// registry of template analysis
@@ -891,6 +891,28 @@ final class SmartMarkersTemplating {
 
 	//================================================================
 	/**
+	 * Extract Markers for Logging (String Template)
+	 * This is intended for INTERNAL USE ONLY
+	 *
+	 * @param 	STRING 		$mtemplate 						:: The Marker-TPL string
+	 *
+	 * @return 	ARRAY										:: The array of detected markers
+	 *
+	 */
+	private static function logging_extract_markers(string $mtemplate) : array {
+		//--
+		return (array) self::analize_parts_extract(
+			'/\#\#\#([A-Za-z0-9_\-\.]+)/', // must allow also lowercase for invalid detected markers
+			(string) $mtemplate,
+			false // must allow also lowercase for invalid detected markers
+		); // {{{SYNC-TPL-EXPR-MARKER}}} :: start part only :: - [ - ] (can be in IF statement) ; uppercase + lowercase
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
 	 * Extract Ifs for Analyze a Marker Template (String Template)
 	 * This is intended for INTERNAL USE ONLY
 	 *
@@ -1295,7 +1317,7 @@ final class SmartMarkersTemplating {
 		} //end foreach
 		//-- if any garbage markers are still detected log warning
 		if(self::have_marker((string)$mtemplate) === true) {
-			$arr_marks = (array) self::analize_extract_markers($mtemplate);
+			$arr_marks = (array) self::logging_extract_markers($mtemplate);
 			Smart::log_warning('Invalid or Undefined Marker-TPL: Markers detected in Template:'."\n".'MARKERS:'.print_r($arr_marks,1)."\n".self::log_template($mtemplate));
 			$mtemplate = (string) str_replace(['[###', '###]'], ['⁅###¦', '¦###⁆'], (string)$mtemplate); // finally protect against undefined variables
 		} //end if
@@ -1620,8 +1642,8 @@ final class SmartMarkersTemplating {
 					} elseif((string)$escexpr == '|nobackslash') { // remove backslashes from a string
 						$val = (string) strtr((string)$val, [ '\\' => '' ]);
 					} elseif((string)$escexpr == '|rxpattern') { // prepare a regex escaped pattern for a browser input
-						$val = (string) strtr((string)$val, [ // the following characters need tot to be escaped in a browser pattern sequence, but in PHP they are, in a regex pattern
-							'\\/' => '/',
+						$val = (string) strtr((string)$val, [ // the following characters need to be not escaped in a browser pattern sequence, but in PHP they are, in a regex pattern
+							// the `-` and `/` must remain escaped
 							'\\.' => '.',
 							'\\:' => ':',
 							'\\#' => '#',
@@ -1629,7 +1651,7 @@ final class SmartMarkersTemplating {
 							'\\!' => '!',
 							'\\<' => '<',
 							'\\>' => '>',
-							// when using bacslashes in a regex string, it must be '\\\\' = \\ not '\\' = \ when string is evaluated !
+							// when using backslashes in a regex string, it must be '\\\\' = \\ not '\\' = \ when string is evaluated !
 						]);
 					//--
 					} elseif(((string)substr((string)$escexpr, 0, 7) == '|substr') OR ((string)substr((string)$escexpr, 0, 7) == '|subtxt')) { // Sub(String|Text) (0,num)

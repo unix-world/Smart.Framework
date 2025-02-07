@@ -30,7 +30,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 abstract class AbstractAuthAdmins {
 
 	// ->
-	// v.20250107
+	// v.20250205
 
 	public const MAX_TOKENS_PER_ACCOUNT = 25;
 
@@ -75,7 +75,7 @@ abstract class AbstractAuthAdmins {
 	final public function encryptPrivKey(?string $pkey_plain, ?string $hash_pass=null) : string { // {{{SYNC-ADM-AUTH-KEYS}}}
 		//--
 		if($hash_pass === null) {
-			if(\SmartAuth::check_login() !== true) {
+			if(\SmartAuth::is_authenticated() !== true) {
 				return '';
 			} //end if
 			$hash_pass = (string) \SmartAuth::get_auth_passhash();
@@ -95,7 +95,7 @@ abstract class AbstractAuthAdmins {
 			return '';
 		} //end if
 		//--
-		return (string) \SmartAuth::encrypt_privkey(
+		return (string) \SmartAuth::encrypt_sensitive_data(
 			(string) $pkey_plain,
 			(string) $hash_pass.\chr(0).$secret
 		);
@@ -106,7 +106,7 @@ abstract class AbstractAuthAdmins {
 	final public function decryptPrivKey(?string $pkey_enc, ?string $hash_pass=null) : string { // {{{SYNC-ADM-AUTH-KEYS}}}
 		//--
 		if($hash_pass === null) {
-			if(\SmartAuth::check_login() !== true) {
+			if(\SmartAuth::is_authenticated() !== true) {
 				return '';
 			} //end if
 			$hash_pass = (string) \SmartAuth::get_auth_passhash();
@@ -126,7 +126,7 @@ abstract class AbstractAuthAdmins {
 			return '';
 		} //end if
 		//--
-		return (string) \SmartAuth::decrypt_privkey(
+		return (string) \SmartAuth::decrypt_sensitive_data(
 			(string) $pkey_enc,
 			(string) $hash_pass.\chr(0).$secret
 		);
@@ -137,22 +137,27 @@ abstract class AbstractAuthAdmins {
 	//-------- 2FA
 
 
-	final public function get2FAPinToken(?string $key) : string {
+
+	final public function get2FAPinToken(?string $secret) : string {
 		//--
-		$key = (string) \trim((string)$key);
-		if((string)$key == '') {
+		$secret = (string) \trim((string)$secret);
+		if((string)$secret == '') {
 			return '';
 		} //end if
 		//--
-		return (string) \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateToken((string)$key);
+		if(\SmartModExtLib\AuthAdmins\Auth2FTotp::IsSecretValid((string)$secret) !== true) {
+			return '';
+		} //end if
+		//--
+		return (string) \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateToken((string)$secret);
 		//--
 	} //END FUNCTION
 
 
-	final public function get2FAUrl(?string $key, ?string $id) : string {
+	final public function get2FAUrl(?string $secret, ?string $id) : string {
 		//--
-		$key = (string) \trim((string)$key);
-		if((string)$key == '') {
+		$secret = (string) \trim((string)$secret);
+		if((string)$secret == '') {
 			return '';
 		} //end if
 		//--
@@ -163,14 +168,14 @@ abstract class AbstractAuthAdmins {
 		//--
 		$issuer = (string) \SmartUtils::get_server_current_basedomain_name();
 		//--
-		return (string) \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateBarcodeUrl((string)$key, (string)$id, (string)$issuer);
+		return (string) \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateBarcodeUrl((string)$secret, (string)$id, (string)$issuer);
 		//--
 	} //END FUNCTION
 
 
-	final public function get2FASvgBarCode(?string $key, ?string $id) : string {
+	final public function get2FASvgBarCode(?string $secret, ?string $id) : string {
 		//--
-		$url = (string) $this->get2FAUrl((string)$key, (string)$id);
+		$url = (string) $this->get2FAUrl((string)$secret, (string)$id);
 		if((string)\trim((string)$url) == '') {
 			return '';
 		} //end if
@@ -180,10 +185,10 @@ abstract class AbstractAuthAdmins {
 	} //END FUNCTION
 
 
-	final public function encrypt2FAKey(?string $key, ?string $id) : string {
+	final public function encrypt2FAKey(?string $secret, ?string $id) : string {
 		//--
-		$key = (string) \trim((string)$key);
-		if((string)$key == '') {
+		$secret = (string) \trim((string)$secret);
+		if((string)$secret == '') {
 			return '';
 		} //end if
 		//--
@@ -192,27 +197,27 @@ abstract class AbstractAuthAdmins {
 			return '';
 		} //end if
 		//--
-		$secret = '';
+		$seckey = '';
 		if(\defined('\\SMART_FRAMEWORK_SECURITY_KEY')) {
-			$secret = (string) \SMART_FRAMEWORK_SECURITY_KEY;
+			$seckey = (string) \SMART_FRAMEWORK_SECURITY_KEY;
 		} //end if
-		if((string)\trim((string)$secret) == '') {
+		if((string)\trim((string)$seckey) == '') {
 			\Smart::log_warning(__METHOD__.' # Secret is empty');
 			return '';
 		} //end if
 		//--
-		return (string) \SmartAuth::encrypt_privkey(
-			(string) $key,
-			(string) $id.\chr(0).$secret
+		return (string) \SmartAuth::encrypt_sensitive_data(
+			(string) $secret,
+			(string) $id.\chr(0).$seckey
 		);
 		//--
 	} //END FUNCTION
 
 
-	final public function decrypt2FAKey(?string $key, ?string $id) : string {
+	final public function decrypt2FAKey(?string $secret, ?string $id) : string {
 		//--
-		$key = (string) \trim((string)$key);
-		if((string)$key == '') {
+		$secret = (string) \trim((string)$secret);
+		if((string)$secret == '') {
 			return '';
 		} //end if
 		//--
@@ -221,18 +226,18 @@ abstract class AbstractAuthAdmins {
 			return '';
 		} //end if
 		//--
-		$secret = '';
+		$seckey = '';
 		if(\defined('\\SMART_FRAMEWORK_SECURITY_KEY')) {
-			$secret = (string) \SMART_FRAMEWORK_SECURITY_KEY;
+			$seckey = (string) \SMART_FRAMEWORK_SECURITY_KEY;
 		} //end if
-		if((string)\trim((string)$secret) == '') {
+		if((string)\trim((string)$seckey) == '') {
 			\Smart::log_warning(__METHOD__.' # Secret is empty');
 			return '';
 		} //end if
 		//--
-		return (string) \SmartAuth::decrypt_privkey(
-			(string) $key,
-			(string) $id.\chr(0).$secret
+		return (string) \SmartAuth::decrypt_sensitive_data(
+			(string) $secret,
+			(string) $id.\chr(0).$seckey
 		);
 		//--
 	} //END FUNCTION

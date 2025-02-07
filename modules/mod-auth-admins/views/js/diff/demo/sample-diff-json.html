@@ -4,11 +4,11 @@
 	<meta charset="UTF-8">
 	<title>JSON Diff Sample</title>
 	<script src="../../../../../../lib/js/jquery/jquery.js"></script>
-	<script type="text/javascript" src="../../../../../../lib/js/framework/smart-framework.pak.js"></script>
+	<script src="../../../../../../lib/js/framework/smart-framework.pak.js"></script>
 	<script src="../str-diff.js"></script>
 	<link href="../json-diff.css" rel="stylesheet" type="text/css">
 	<script src="../json-diff.js"></script>
-	<script type="text/javascript">
+	<script>
 		function RunDiff() {
 			Smart_JsonDiff.Compare(document.getElementById('smart-json-diff-1'), document.getElementById('old').value, document.getElementById('new').value);
 		}
@@ -84,7 +84,7 @@
 	</table>
 </div>
 <br>
-<script type="text/javascript">
+<script>
 	RunDiff();
 </script>
 </body>

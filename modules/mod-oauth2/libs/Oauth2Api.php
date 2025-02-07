@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Class: \SmartModExtLib\Oauth2\Oauth2Api
  * Manages the OAuth2 API Requests
  *
- * @version 	v.20250114
+ * @version 	v.20250126
  * @package 	modules:Oauth2
  *
  */
@@ -38,8 +38,8 @@ final class Oauth2Api {
 
 	public const OAUTH2_COOKIE_NAME_CSRF 		= 'SfOAuth2_Csrf'; // {{{SYNC-OAUTH2-COOKIE-NAME-CSRF}}} ; CSRF public key
 
-	public const OAUTH2_PATTERN_VALID_ID 		= '[_a-zA-Z0-9,@\#\/\-\:\.]{5,127}'; // OK
-	public const OAUTH2_REGEX_VALID_ID 			= '/^'.self::OAUTH2_PATTERN_VALID_ID.'$/';
+	public const OAUTH2_PATTERN_VALID_ID 		= '^[_a-zA-Z0-9,@\#\/\-\:\.]{5,127}$'; // OK
+	public const OAUTH2_REGEX_VALID_ID 			= '/'.self::OAUTH2_PATTERN_VALID_ID.'/';
 
 	private const OAUTH2_REQUEST_MAX_REDIRECTS 	= 2;
 
@@ -196,7 +196,7 @@ final class Oauth2Api {
 		if(
 			(!isset($json['token_type']))
 			OR
-			((string)\strtolower((string)$json['token_type']) != 'bearer')
+			((string)\strtolower((string)\trim((string)$json['token_type'])) != 'bearer')
 		//	OR
 		//	(!isset($json['scope'])) // do not check for scope as mandatory, some providers does not return this (ex: facebook)
 			OR
@@ -496,7 +496,7 @@ final class Oauth2Api {
 		if(
 			(!isset($json['token_type']))
 			OR
-			((string)\strtolower((string)$json['token_type']) != 'bearer')
+			((string)\strtolower((string)\trim((string)$json['token_type'])) != 'bearer')
 		//	OR
 		//	(!isset($json['scope'])) // do not check for scope as mandatory, some providers does not return this (ex: facebook)
 			OR

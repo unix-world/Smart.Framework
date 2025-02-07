@@ -1,4 +1,4 @@
-<!-- Partial Template: Plugins.CaptchaForm r.20231117 ; Form: [###CAPTCHA-FORM|html###] ; Seed: [###CAPTCHA-RAND|html###] -->
+<!-- Partial Template: Plugins.CaptchaForm r.20250203 ; Form: [###CAPTCHA-FORM|html###] ; Seed: [###CAPTCHA-RAND|html###] -->
 [%%%IF:ALL-REQUIREMENTS:==yes;%%%]
 <!-- Sf.Icons --><link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/css/toolkit/sf-icons.css?[###RELEASE-HASH|url|html###]">
 <!-- jQuery --><script src="[###BASE-URL|html###]lib/js/jquery/jquery.js?[###RELEASE-HASH|url|html###]"></script><script>jQuery.ajaxSetup({ timeout: 0, cache: false });</script><script src="[###BASE-URL|html###]lib/js/jquery/jquery.smart.compat.js?[###RELEASE-HASH|url|html###]"></script>
@@ -9,7 +9,6 @@
 const smartJ$Options = {
 	BrowserUtils: {
 		LanguageId: '[###LANG|js###]',
-		Charset: '[###CHARSET|js###]',
 		CookieLifeTime: [###CLIENT-UID-COOKIE-LIFETIME|int###],
 		CookieDomain: '[###CLIENT-UID-COOKIE-DOMAIN|js###]',
 		CookieSameSitePolicy: '[###CLIENT-UID-COOKIE-SAMESITE|js###]',

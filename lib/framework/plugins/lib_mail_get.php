@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @hints 		After each operation on the IMAP4 Server should check the $imap4->error string and if non-empty stop and disconnect to free the socket
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20250107
+ * @version 	v.20250129
  * @package 	Plugins:Mailer
  *
  */
@@ -40,6 +40,13 @@ final class SmartMailerImap4Client {
 
 	// ->
 
+
+	/**
+	 * If set to TRUE will allow just SSL / TLS Strict Secure Mode with all (default) verifications. Enabling this will work just with valid certificates (not self-signed).
+	 * @var BOOLEAN
+	 * @default false
+	 */
+	public $securemode;
 
 	/**
 	 * @var INT
@@ -93,7 +100,7 @@ final class SmartMailerImap4Client {
 	//--
 	private $cafile = '';		// Certificate Authority File (instead of using the global SMART_FRAMEWORK_SSL_CA_FILE can use a private cafile
 	//--
-
+	private $txtsecurestrictmode = '';
 	//--
 	private $is_connected_and_logged_in = false;
 	private $selected_box = '';
@@ -318,11 +325,19 @@ final class SmartMailerImap4Client {
 			} //end if
 			//--
 			@stream_context_set_option($stream_context, 'ssl', 'ciphers', 				(string)SMART_FRAMEWORK_SSL_CIPHERS); // allow only high ciphers
-			@stream_context_set_option($stream_context, 'ssl', 'verify_host', 			(bool)SMART_FRAMEWORK_SSL_VFY_HOST); // allways must be set to true !
-			@stream_context_set_option($stream_context, 'ssl', 'verify_peer', 			(bool)SMART_FRAMEWORK_SSL_VFY_PEER); // this may fail with some CAs
-			@stream_context_set_option($stream_context, 'ssl', 'verify_peer_name', 		(bool)SMART_FRAMEWORK_SSL_VFY_PEER_NAME); // allow also wildcard names *
-			@stream_context_set_option($stream_context, 'ssl', 'allow_self_signed', 	(bool)SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED); // must allow self-signed certificates but verified above
+			if($this->securemode === true) { // if true, all the below values must be as default
+				$this->txtsecurestrictmode = 'IMAP4:StrictSecureMode:ON:Use:Defaults';
+			} else {
+				$this->txtsecurestrictmode = 'IMAP4:StrictSecureMode:OFF:Use:Config';
+				@stream_context_set_option($stream_context, 'ssl', 'verify_host', 		(bool)SMART_FRAMEWORK_SSL_VFY_HOST); // allways must be set to true !
+				@stream_context_set_option($stream_context, 'ssl', 'verify_peer', 		(bool)SMART_FRAMEWORK_SSL_VFY_PEER); // this may fail with some CAs
+				@stream_context_set_option($stream_context, 'ssl', 'verify_peer_name', 	(bool)SMART_FRAMEWORK_SSL_VFY_PEER_NAME); // allow also wildcard names *
+				@stream_context_set_option($stream_context, 'ssl', 'allow_self_signed', (bool)SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED); // must allow self-signed certificates but verified above
+			} //end if else
 			@stream_context_set_option($stream_context, 'ssl', 'disable_compression', 	(bool)SMART_FRAMEWORK_SSL_DISABLE_COMPRESS); // help mitigate the CRIME attack vector
+			//--
+			//Smart::log_notice(__METHOD__.' # '.$this->txtsecurestrictmode);
+			$this->log .= '[INF] Secure Strict Mode: '.$this->txtsecurestrictmode."\n";
 			//--
 		} //end if else
 		//--
@@ -1631,7 +1646,7 @@ final class SmartMailerImap4Client {
  * @hints 		After each operation on the POP3 Server should check the $pop3->error string and if non-empty stop and disconnect to free the socket
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20250107
+ * @version 	v.20250129
  * @package 	Plugins:Mailer
  *
  */
@@ -1639,6 +1654,13 @@ final class SmartMailerPop3Client {
 
 	// ->
 
+
+	/**
+	 * If set to TRUE will allow just SSL / TLS Strict Secure Mode with all (default) verifications. Enabling this will work just with valid certificates (not self-signed).
+	 * @var BOOLEAN
+	 * @default false
+	 */
+	public $securemode;
 
 	/**
 	 * @var INT
@@ -1684,7 +1706,7 @@ final class SmartMailerPop3Client {
 	//--
 	private $cafile = '';		// Certificate Authority File (instead of using the global SMART_FRAMEWORK_SSL_CA_FILE can use a private cafile
 	//--
-
+	private $txtsecurestrictmode = '';
 	//--
 	private $is_connected_and_logged_in = false;
 	private $selected_box = '';
@@ -1904,11 +1926,19 @@ final class SmartMailerPop3Client {
 			} //end if
 			//--
 			@stream_context_set_option($stream_context, 'ssl', 'ciphers', 				(string)SMART_FRAMEWORK_SSL_CIPHERS); // allow only high ciphers
-			@stream_context_set_option($stream_context, 'ssl', 'verify_host', 			(bool)SMART_FRAMEWORK_SSL_VFY_HOST); // allways must be set to true !
-			@stream_context_set_option($stream_context, 'ssl', 'verify_peer', 			(bool)SMART_FRAMEWORK_SSL_VFY_PEER); // this may fail with some CAs
-			@stream_context_set_option($stream_context, 'ssl', 'verify_peer_name', 		(bool)SMART_FRAMEWORK_SSL_VFY_PEER_NAME); // allow also wildcard names *
-			@stream_context_set_option($stream_context, 'ssl', 'allow_self_signed', 	(bool)SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED); // must allow self-signed certificates but verified above
+			if($this->securemode === true) { // if true, all the below values must be as default
+				$this->txtsecurestrictmode = 'POP3:StrictSecureMode:ON:Use:Defaults';
+			} else {
+				$this->txtsecurestrictmode = 'POP3:StrictSecureMode:OFF:Use:Config';
+				@stream_context_set_option($stream_context, 'ssl', 'verify_host', 		(bool)SMART_FRAMEWORK_SSL_VFY_HOST); // allways must be set to true !
+				@stream_context_set_option($stream_context, 'ssl', 'verify_peer', 		(bool)SMART_FRAMEWORK_SSL_VFY_PEER); // this may fail with some CAs
+				@stream_context_set_option($stream_context, 'ssl', 'verify_peer_name', 	(bool)SMART_FRAMEWORK_SSL_VFY_PEER_NAME); // allow also wildcard names *
+				@stream_context_set_option($stream_context, 'ssl', 'allow_self_signed', (bool)SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED); // must allow self-signed certificates but verified above
+			} //end if else
 			@stream_context_set_option($stream_context, 'ssl', 'disable_compression', 	(bool)SMART_FRAMEWORK_SSL_DISABLE_COMPRESS); // help mitigate the CRIME attack vector
+			//--
+			//Smart::log_notice(__METHOD__.' # '.$this->txtsecurestrictmode);
+			$this->log .= '[INF] Secure Strict Mode: '.$this->txtsecurestrictmode."\n";
 			//--
 		} //end if else
 		//--

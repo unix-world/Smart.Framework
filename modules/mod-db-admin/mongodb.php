@@ -15,7 +15,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 /**
  * Admin Area Controller
- * @version 20250107
+ * @version 20250203
  * @ignore
  *
  * @requires define('SMART_FRAMEWORK_DB_ADMIN_ALLOW', true); // set in config-admin.php
@@ -26,7 +26,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 	public function Initialize() {
 		//--
 		if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
-			$this->PageViewSetErrorStatus(500, ' # Mod AuthAdmins is missing !');
+			$this->PageViewSetErrorStatus(500, 'Mod AuthAdmins is missing !');
 			return false;
 		} //end if
 		//--
@@ -47,7 +47,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		if(SmartAuth::check_login() !== true) {
+		if(SmartAuth::is_authenticated() !== true) {
 			$this->PageViewSetCfg('error', 'MongoDB Admin Requires Authentication ...');
 			return 403;
 		} //end if
@@ -135,8 +135,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$this->PageViewSetVars([
 					'title' => 'Wait ...',
 					'main' => '<br><div><center><img src="lib/framework/img/loading-bars.svg" width="64" height="64"></center></div>'.
-					'<script type="text/javascript">smartJ$Browser.RefreshParent();</script>'.
-					'<script type="text/javascript">'.$final_js.'</script>'
+					'<script>smartJ$Browser.RefreshParent();</script>'.
+					'<script>'.$final_js.'</script>'
 				]);
 				//--
 				break;

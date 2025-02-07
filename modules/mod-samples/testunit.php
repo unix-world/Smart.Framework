@@ -558,9 +558,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			if(rand(0,1) == 1) {
 				$semaphores[] = 'skip:growl';
 			} //end if
-			if(rand(0,1) == 1) {
-				$semaphores[] = 'dialog:alertable';
-			} //end if
+		} //end if
+		if(rand(0,1) == 1) {
+			$semaphores[] = 'dialog:alertable';
 		} //end if
 		if(rand(0,1) == 1) {
 			if(!in_array('load:code-highlight-js', $semaphores)) {

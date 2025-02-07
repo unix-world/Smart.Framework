@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / INIT] v.20250107 s.20250107.2358
+// [AppCodeUnpack / INIT] v.20250207 s.20250207.2358
 // (c) 2013-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -23,7 +23,7 @@ if(!defined('APP_CUSTOM_LOG_PATH')) { // for standalone apps this must be define
 const APP_AUTH_ADMIN_ENFORCE_HTTPS = false;
 const APP_AUTH_ADMIN_USERNAME = 'super.admin';
 const APP_AUTH_ADMIN_PASSWORD = 'bf448.v3!sPN4h698EO0vuvJtXMD3Qmh9adqHlapMAPY1c4;tJkRbKDtyNZgGdZyLun4sokJjfK_PVZsHJcI4fZ6TVOr6Cj7LsofLdRwubwcqspf1ThuRtjOC7rTDylpT0r8_ywIJ5xzthHrxpauwIPDd1WEGyebfGwynpi7wC_lKQozxWz0PcZGKgPEmKC-RcDh99'; // should be the same as set in appcodepack.yaml ; the app unpack auth password ; default is: `The1pass!` ; use AppCode Deploy Password Encryption Utility to generate this pass ; If the deploy-secret changes, this pass have to be regenerated ...
-const APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY = ''; // To generate an encrypted private key for this config, use \SmartAuth::encrypt_privkey($plainTextKey, \SmartHashCrypto::password($plainTextPassword, $userName))
+const APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY = ''; // To generate an encrypted private key for this config, use \SmartAuth::encrypt_sensitive_data($plainTextKey, \SmartHashCrypto::password($plainTextPassword, $userName))
 //--------------------------------------- APPCODEUNPACK DEPLOY SETTINGS
 const APPCODEPACK_DEPLOY_SECRET = 'Set-here-1-private-key-that-must-not-be-disclosed!'; // should be the same as set in appcodepack.yaml
 const APPCODEPACK_DEPLOY_APPLIST = '<smart-framework.local>,<smart-framework.test>'; // the list of App-IDs to allow under this instance ; example: <app-id-1> ; example with multiple: <app-id-1>,<app-id-2>

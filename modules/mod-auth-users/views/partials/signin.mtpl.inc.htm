@@ -1,0 +1,34 @@
+<!-- sign-in -->
+	<h5><i class="sfi sfi-users sfi-xl"></i> &nbsp; [###TXT-SIGNIN-TITLE|html###]</h5>
+	<br>
+[%%%IF:IS-FA2-AVAILABLE:==1;%%%]
+	[%%%IF:IS-FA2-REQUIRED:!=1;%%%]<style>.hide2FA{ display:none; }</style>[%%%ELSE:IS-FA2-REQUIRED%%%]<!-- 2FA: required -->[%%%/IF:IS-FA2-REQUIRED%%%]
+	<div id="zone-fa2" class="ux-control-group[%%%IF:IS-FA2-REQUIRED:!=1;%%%] hide2FA[%%%/IF:IS-FA2-REQUIRED%%%]" title="[###TXT-2FA-HINT|html###]">
+		<label style="font-size: 0.75rem;"><i class="sfi sfi-clock"></i>&nbsp;[###TXT-2FA-CODE|html###]</label>
+		<span id="fa2-input" title="[###TXT-2FA-TITLE|html###]"></span>
+	</div>
+[%%%ELSE:IS-FA2-AVAILABLE%%%]
+<!-- 2FA: N/A -->
+[%%%/IF:IS-FA2-AVAILABLE%%%]
+	<div id="zone-user" class="ux-control-group">
+		<label><i class="sfi sfi-user sfi-xl"></i></label>
+		<input class="ux-field auth" type="text" maxlength="72" autocomplete="off" id="fld-user" placeholder="[###TXT-USERNAME|html###]" title="[###TXT-USERNAME|html###]" required>
+	</div>
+	<div id="zone-pass" class="ux-control-group">
+		<label><i class="sfi sfi-lock sfi-xl"></i></label>
+		<input class="ux-field auth" type="password" maxlength="128" autocomplete="off" id="fld-pass" placeholder="[###TXT-PASSWORD|html###]" title="[###TXT-PASSWORD|html###]" required>
+	</div>
+	<div class="ux-control-group">
+		<button type="button" onclick="authSignInRequest(); return false;" class="ux-button ux-button-primary ux-button-super signin" title="[###TXT-BTN-SIGNIN|html###]"><i class="sfi sfi-user-check"></i> &nbsp; [###TXT-BTN-SIGNIN-DEFAULT|html###]</button>
+	</div>
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/plugins.mtpl.inc.htm!@@@]
+	<hr>
+	<div class="ux-control-group">
+		<a class="ux-button ux-button-info ux-button-super signup" href="?page=auth-users.signup" title="[###TXT-BTN-SIGNUP|html###]"><i class="sfi sfi-user-plus"></i> &nbsp; [###TXT-BTN-SIGNUP-DEFAULT|html###]</a>
+	</div>
+	<div class="ux-control-group">
+		<a class="ux-button ux-button-highlight ux-button-super recovery" href="#recovery" title="[###TXT-BTN-RECOVERY|html###]"><i class="sfi sfi-unlocked"></i> &nbsp; [###TXT-BTN-PASSWORD-RESET|html###]</a>
+	</div>
+	<br>
+	<a href="#instructions">[###TXT-LNK-TROUBLE-SIGNIN|html###]</a>
+<!-- /sign-in -->

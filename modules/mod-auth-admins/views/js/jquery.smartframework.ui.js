@@ -32,7 +32,7 @@
  * @author unix-world.org
  * @license BSD
  * @file jquery.smartframework.ui.js
- * @version 20230123
+ * @version 20250205
  * @class smartJ$UI
  * @static
  * @frozen
@@ -93,7 +93,7 @@ const smartJ$UI = new class{constructor(){ // STATIC CLASS
 	 * @param 	{String} 		image 				the URL link to a notification icon image (svg/gif/png/jpg/webp) or null
 	 * @param 	{Integer} 		time 				the notification display time in milliseconds ; use 0 for sticky ; between 0 (0 sec) and 60000 (60 sec)
 	 * @param 	{Boolean} 		sticky 				*Optional* FALSE by default (will auto-close after the display time expire) ; TRUE to set sticky (require manual close, will not auto-close)
-	 * @param 	{Enum} 			css_class 			*Optional* a CSS class name for the notification or empty string to use default one: darknote (black), notice (white), info (blue), success (green), warning (yellow), error (red)
+	 * @param 	{Enum} 			css_class 			*Optional* a CSS class name for the notification or empty string: info (white), hint (black), notice (blue), success (green), warning (yellow), error (pink), fail (red)
 	 * @param 	{Array-Obj} 	options 			*Optional* Extra Growl Properties:
 	 * 		{ // example of extra Options
 	 * 			before_open: 	() => {},

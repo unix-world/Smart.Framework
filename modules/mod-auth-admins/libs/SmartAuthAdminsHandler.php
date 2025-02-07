@@ -41,7 +41,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20250107
+ * @version 	v.20250128
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -57,7 +57,11 @@ final class SmartAuthAdminsHandler
 
 
 	//================================================================
-	public static function Authenticate(bool $enforce_https=false) : void {
+	public static function Authenticate() : void {
+
+		//--
+		// On FAILED Logins this method should STOP EXECUTION and provide the proper HTTP Status Message: ex: 401, 403, 429, ...
+		//--
 
 		//-- {{{SYNC-CHECK-AUTH-ADMINS-MODEL}}}
 		if((!\class_exists('\\SmartModelAuthAdmins')) || (!\is_subclass_of('\\SmartModelAuthAdmins', '\\SmartModDataModel\\AuthAdmins\\AbstractAuthAdmins'))) {
@@ -105,11 +109,10 @@ final class SmartAuthAdminsHandler
 		//--
 
 		//--
+		$enforce_https = false;
 		if(\defined('\\APP_AUTH_ADMIN_ENFORCE_HTTPS')) {
 			if(\APP_AUTH_ADMIN_ENFORCE_HTTPS !== false) {
 				$enforce_https = true;
-			} else {
-				$enforce_https = false;
 			} //end if else
 		} //end if
 		//--
@@ -740,16 +743,28 @@ final class SmartAuthAdminsHandler
 						//die(\Smart::escape_html($account_data['priv']));
 					} //end if
 					//--
-					\SmartAuth::set_login_data( // v.20231018
+					$passalgo = (int) \SmartAuth::ALGO_PASS_SMART_SAFE_SF_PASS;
+					if($is_swt_token_auth === true) {
+						$passalgo = (int) \SmartAuth::ALGO_PASS_SMART_SAFE_SWT_TOKEN;
+					} else if($is_stk_token_auth === true) {
+						$passalgo = (int) \SmartAuth::ALGO_PASS_SMART_SAFE_OPQ_TOKEN;
+					} //end if
+					//--
+					\SmartAuth::set_auth_data( // v.20250124
 						'SMART-ADMINS-AREA', // auth realm
 						(string) $auth_mode, // auth method
+						(int)    $passalgo, // pass algo
 						(string) $account_data['pass'], // auth password hash (will be stored as encrypted, in-memory)
-						(string) $account_data['id'], // auth ID (on backend must be set exact as the auth username)
 						(string) $account_data['id'], // auth user name
+						(string) $account_data['id'], // auth ID (on backend must be set exact as the auth username)
 						(string) $account_data['email'], // user email * Optional *
 						(string) \trim((string)\trim((string)$account_data['name_f']).' '.\trim((string)$account_data['name_l'])), // user full name (First Name + ' ' + Last name) * Optional *
 						(string) $account_data['priv'], // user privileges * Optional *
 						(string) $account_data['restrict'], // user restrictions * Optional *
+						(array)  [ // {{{SYNC-AUTH-KEYS}}}
+							'privkey' => (string) $modelAdmins->decryptPrivKey((string)$account_data['keys'], (string)$account_data['pass']), // user private key (will be stored as encrypted, in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
+							// TODO: store keys in a json to be able to store also pubkey and security key
+						], // keys
 						(int)    \Smart::format_number_int($account_data['quota'],'+'), // user quota in MB * Optional * ... zero, aka unlimited
 						[ // user metadata (array) ; may vary
 							'auth-safe' => (int)    $auth_safe,
@@ -763,10 +778,9 @@ final class SmartAuthAdminsHandler
 							'country' 	=> (string) $account_data['country'],
 							'phone' 	=> (string) $account_data['phone'],
 							'settings' 	=> (array)  \Smart::json_decode((string)$account_data['settings'], true, 7), // max 7 levels ; {{{SYNC-AUTH-METADATA-MAX-LEVELS}}}
-						],
-						(string) $modelAdmins->decryptPrivKey((string)$account_data['keys'], (string)$account_data['pass']), // user private key (will be stored as encrypted, in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
+						]
 					);
-					//die('<pre>'.\Smart::escape_html(\SmartUtils::pretty_print_var(\SmartAuth::get_login_data())).'</pre>');
+					//die('<pre>'.\Smart::escape_html(\SmartUtils::pretty_print_var(\SmartAuth::get_auth_data())).'</pre>');
 					//--
 					\SmartFrameworkRuntime::SingleUser_Mode_AuthBreakPoint();
 					//--
@@ -894,7 +908,7 @@ final class SmartAuthAdminsHandler
 		//--
 
 		//--
-		if(($logged_in !== true) OR (\SmartAuth::check_login() !== true)) { // IF NOT LOGGED IN
+		if(($logged_in !== true) OR (\SmartAuth::is_authenticated() !== true)) { // IF NOT LOGGED IN
 			//--
 			if($stopper_page === null) {
 				$stopper_page = (string) \SmartComponents::http_message_401_unauthorized(
@@ -1014,6 +1028,17 @@ final class SmartAuthAdminsHandler
 		} //end if
 		//--
 		return '';
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	public static function AuthLock() : void {
+		//--
+		\SmartAuth::lock_auth_data();
+		//--
+		return;
 		//--
 	} //END FUNCTION
 	//================================================================

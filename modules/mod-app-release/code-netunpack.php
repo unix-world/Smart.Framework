@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20250107
+ * @version 	v.20250207
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -197,6 +197,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			'APPCODEUNPACK_JS_SMART_DATE' 		=> 'lib/js/framework/src/date_utils.js',
 			'APPCODEUNPACK_JS_SMART_CRYPTO' 	=> 'lib/js/framework/src/crypt_utils.js',
 			'APPCODEUNPACK_JS_ALERTABLE' 		=> 'lib/js/jquery/jquery.alertable.js',
+			'APPCODEUNPACK_JS_WATCH' 			=> 'lib/js/jswclock/smart-watch.js',
 			'APPCODEUNPACK_JS_GRITTER' 			=> 'modules/mod-auth-admins/views/js/gritter/jquery.gritter.js',
 			'APPCODEUNPACK_JS_LOCAL_FX' 		=> 'modules/mod-app-release/appcodeunpack/appcodeunpack-functions.js',
 		];

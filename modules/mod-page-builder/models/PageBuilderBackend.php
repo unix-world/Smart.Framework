@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20250107
+	// v.20250128
 
 
 	private static $db = null;
@@ -64,8 +64,8 @@ final class PageBuilderBackend {
 				} //end if
 				//--
 				if((self::$db->check_if_table_exists('page_builder') != 1) OR (self::$db->check_if_table_exists('page_translations') != 1)) {
-					$sql = \SmartFileSystem::read('modules/mod-page-builder/models/sql/sqlite/page-builder-schema.sql');
-					if(!$sql) {
+					$sql = (string) \SmartFileSystem::read('modules/mod-page-builder/models/sql/sqlite/page-builder-schema.sql');
+					if((string)$sql == '') {
 						if(self::$db instanceof \SmartSQliteDb) {
 							self::$db->close();
 						} //end if
@@ -92,8 +92,8 @@ final class PageBuilderBackend {
 				return;
 			} //end if
 			if(\SmartPgsqlDb::check_if_schema_exists('smart_runtime') != 1) {
-				$sql = \SmartFileSystem::read('_sql/postgresql/init-smart-framework.sql');
-				if(!$sql) {
+				$sql = (string) \SmartFileSystem::read('_sql/postgresql/init-smart-framework.sql');
+				if((string)$sql == '') {
 					\Smart::raise_error(
 						__CLASS__.': PostgreSQL Init Schema SQL File does NOT Exists or is NOT Readable !',
 						'PageBuilder ERROR: DB Init Schema SQL File does NOT Exists or is NOT Readable (2)'
@@ -103,8 +103,8 @@ final class PageBuilderBackend {
 				\SmartPgsqlDb::write_data((string)$sql);
 			} //end if
 			if((\SmartPgsqlDb::check_if_schema_exists('web') != 1) OR (\SmartPgsqlDb::check_if_table_exists('page_builder', 'web') != 1) OR (\SmartPgsqlDb::check_if_table_exists('page_translations', 'web') != 1)) {
-				$sql = \SmartFileSystem::read('modules/mod-page-builder/models/sql/postgresql/page-builder-schema.sql');
-				if(!$sql) {
+				$sql = (string) \SmartFileSystem::read('modules/mod-page-builder/models/sql/postgresql/page-builder-schema.sql');
+				if((string)$sql == '') {
 					\Smart::raise_error(
 						__CLASS__.': PostgreSQL Schema SQL File does NOT Exists or is NOT Readable !',
 						'PageBuilder ERROR: DB Schema SQL File does NOT Exists or is NOT Readable (2)'

@@ -9,8 +9,8 @@ Since this is a simple plugin, the usage is simple too.
 First, add the jquery.idle.js to your document along with jQuery library:
 
 ```html
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-<script type="text/javascript" src="jquery.idle.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="jquery.idle.js"></script>
 ```
 
 Then, just call the function in the element that you want to track user idleness

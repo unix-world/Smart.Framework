@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: QUnit r.20250107 #
+# Smart.Framework.Modules: QUnit r.20250124 #
 
 // r.8.7 / smart.framework.v.8.7
 

@@ -26,12 +26,12 @@ if(!defined('SMART_PAGEBUILDER_HTML_VALIDATOR')) {
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// r.20220917
+	// r.20250124
 
 	public function Run() {
 
 		//--
-		if(SmartAuth::check_login() !== true) {
+		if(SmartAuth::is_authenticated() !== true) {
 			$this->PageViewSetCfg('error', 'PageBuilder Manage requires Authentication ! ...');
 			return 403;
 		} //end if

@@ -17,7 +17,7 @@ define('SMART_APP_MODULE_AUTH', true);
  * Admin Controller
  *
  * @ignore
- * @version v.20250112
+ * @version v.20250124
  *
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -25,7 +25,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 	public function Run() {
 
 		//--
-		if(SmartAuth::check_login() !== true) {
+		if(SmartAuth::is_authenticated() !== true) {
 			$this->PageViewSetCfg('error', 'OAuth2 Get.Token Requires Authentication !');
 			return 403;
 		} //end if

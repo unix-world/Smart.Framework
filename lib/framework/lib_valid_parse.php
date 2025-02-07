@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access      PUBLIC
  * @depends     classes: Smart, SmartUnicode
- * @version     v.20250107
+ * @version     v.20250207
  * @package     @Core:Extra
  *
  */
@@ -363,7 +363,7 @@ final class SmartValidator {
 			return '';
 		} //end if
 		//--
-		if(preg_match('/^[[:print:]]+$/', $y_disp)) { // mime types are only ISO-8859-1
+		if(preg_match((string)Smart::REGEX_ASCII_PRINTABLE_CHARACTERS, (string)$y_disp)) { // mime types are only ISO-8859-1
 			$disp = $y_disp;
 		} else {
 			$disp = '';
@@ -390,7 +390,7 @@ final class SmartValidator {
 			return '';
 		} //end if
 		//--
-		if(preg_match('/^[[:graph:]]+$/', $y_type)) { // mime types are only ISO-8859-1
+		if(preg_match((string)Smart::REGEX_ASCII_NOSPACE_CHARACTERS, (string)$y_type)) { // mime types are only ISO-8859-1
 			$type = $y_type;
 		} else {
 			$type = '';

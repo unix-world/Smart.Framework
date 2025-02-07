@@ -1,0 +1,42 @@
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/styles.mtpl.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/styles-account.mtpl.inc.htm!@@@]
+<style>
+h1, h2, h3, h4, h5, h6 {
+	display: inline;
+}
+div#clock {
+	cursor:help;
+	position: fixed;
+	top: 16px;
+	left: 87px;
+	opacity: 0.7;
+	z-index: 7788;
+}
+div#title {
+	position: sticky;
+	top: 0;
+	right:0;
+	text-align: center;
+	padding-left: 70px;
+	padding-bottom: 20px;
+	background: #2e2e2e;
+	border-bottom: 1px dashed #888888;
+	z-index: 4444;
+}
+div#title img {
+	display: inline-block;
+	margin-top: -16px;
+	margin-right: 22px;
+}
+div #menu {
+	margin-top: 10px;
+}
+div#app {
+	z-index: 17777;
+}
+</style>
+<script>const watchThemeDark = true; const watchCanvasScaleFactor = 0.5;</script>
+<script src="lib/js/jswclock/smart-watch.js"></script>
+<div id="clock">[@@@SUB-TEMPLATE:!lib/core/templates/canvas-clock.inc.htm!@@@]</div>
+<div id="title">[%%%IF:APP-LOGO:!=;%%%]<img height="48" src="[###APP-LOGO|html###]">[%%%/IF:APP-LOGO%%%]<h1>[###APP-TITLE|html###]</h1>[%%%IF:APP-MENU-HTML:!=;%%%]<div id="menu">[%%%|N%%%][###APP-MENU-HTML###][%%%|N%%%]</div>[%%%/IF:APP-MENU-HTML%%%]</div>
+<div id="app"><br>[:::MOD-AUTH-USERS-APP-HTML:::]<br></div>

@@ -25,7 +25,7 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 	public function Initialize() {
 
 		//--
-		$this->PageViewSetCfg('template-path', '@'); // set template path to this module: `modules/mod-samples/templates/`
+		$this->PageViewSetCfg('template-path', '@'); // set template path to this module: `modules/mod-helloworld/templates/`
 		$this->PageViewSetCfg('template-file', 'template-hello-world.htm'); // the template that this controller will use: `template-hello-world.htm`
 		//--
 

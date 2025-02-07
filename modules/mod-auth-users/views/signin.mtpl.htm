@@ -1,0 +1,44 @@
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/pin-login/jquery.pinlogin.css" media="all">
+<script src="lib/js/jquery/pin-login/jquery.pinlogin.js"></script>
+<script>
+const AuthFA2 = { digits: null };
+const display2FAZone = () => {
+	jQuery('#zone-fa2').show();
+	jQuery('#fld-user').prop('readonly', true);
+	jQuery('#fld-pass').prop('readonly', true);
+};
+const authSignInRequest = () => {
+	const user = smartJ$Utils.stringPureVal(jQuery('input#fld-user').val(), true);
+	const pass = smartJ$Utils.stringPureVal(jQuery('input#fld-pass').val(), true);
+	const url = '?page=auth-users.authorize&action=auth' + '&frm[user]=' + smartJ$Utils.escape_url(user) + '&frm[pass]=' + smartJ$Utils.escape_url(pass) + '&frm[2fa]=' + smartJ$Utils.escape_url(smartJ$Utils.stringPureVal(AuthFA2.digits || ''));
+	smartJ$Browser.SubmitFormByAjax(null, url, 'yes');
+};
+</script>
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/styles.mtpl.inc.htm!@@@]
+[%%%IF:IS-AUTHENTICATED:==1;%%%]
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/styles-account.mtpl.inc.htm!@@@]
+[%%%ELSE:IS-AUTHENTICATED%%%]
+<!-- account styles n/a -->
+[%%%/IF:IS-AUTHENTICATED%%%]
+<div class="sign-area">
+	<img height="64" alt="logo" src="modules/mod-auth-users/views/img/logo-auth.svg" style="opacity:0.88;">
+[%%%IF:IS-AUTHENTICATED:==1;%%%]
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/signed.mtpl.inc.htm!@@@]
+[%%%ELSE:IS-AUTHENTICATED%%%]
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/signin.mtpl.inc.htm!@@@]
+[%%%/IF:IS-AUTHENTICATED%%%]
+</div>
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/powered-by.mtpl.inc.htm!@@@]
+<script>
+(() => {
+	jQuery('#fa2-input').pinlogin({
+		autofocus: false,
+		hideinput: true,
+		delay: 75,
+		fields: 8,
+		complete: (digits) => {
+			AuthFA2.digits = digits;
+		},
+	});
+})();
+</script>

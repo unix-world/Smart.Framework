@@ -37,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry, SmartValidator, SmartParser ; optional-constants: SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20250112
+ * @version 	v.20250124
  * @package 	Application:Utils
  *
  */
@@ -291,6 +291,10 @@ final class SmartUtils {
 	// obfuscate an URL parameter using b64s encode
 	public static function url_obfs_encode(?string $y_val) : string {
 		//--
+		if((string)$y_val == '') {
+			return '';
+		} //end if
+		//--
 		return (string) Smart::b64s_enc((string)$y_val);
 		//--
 	} //END FUNCTION
@@ -301,7 +305,44 @@ final class SmartUtils {
 	// de-obfuscate an URL parameter using b64s strict decode + safe filter
 	public static function url_obfs_decode(?string $y_enc_val) : string {
 		//--
+		if((string)$y_enc_val == '') {
+			return '';
+		} //end if
+		//--
 		return (string) SmartFrameworkSecurity::FilterUnsafeString((string)Smart::b64s_dec((string)$y_enc_val, true)); // B64 STRICT
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// encrypt an URL parameter using 2F and app private key
+	public static function url_obfs_encrypt(?string $y_val) : string {
+		//--
+		if((string)$y_val == '') {
+			return '';
+		} //end if
+		//--
+		$enc = (string) SmartCipherCrypto::tf_encrypt((string)$y_val);
+		if(strpos((string)$enc, SmartCipherCrypto::SIGNATURE_2FISH_V1_DEFAULT) === 0) {
+			$enc = (string) substr((string)$enc, (int)strlen((string)SmartCipherCrypto::SIGNATURE_2FISH_V1_DEFAULT));
+		} //end if
+		//--
+		return (string) $enc;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// decrypt an URL parameter using 2F and app private key
+	public static function url_obfs_decrypt(?string $y_enc_val) : string {
+		//--
+		if((string)$y_enc_val == '') {
+			return '';
+		} //end if
+		//--
+		return (string) SmartCipherCrypto::tf_decrypt((string)SmartCipherCrypto::SIGNATURE_2FISH_V1_DEFAULT.$y_enc_val);
 		//--
 	} //END FUNCTION
 	//================================================================

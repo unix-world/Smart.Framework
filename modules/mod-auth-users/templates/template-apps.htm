@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!-- r.20250203 (auth:users:account:apps) -->
+<html>
+<head>
+[@@@SUB-TEMPLATE:!etc/templates/default/tpl-head.inc.htm!@@@]
+[@@@SUB-TEMPLATE:styles.inc.htm@@@]
+<style>
+html, body {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+div.area-menu {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 80px !important;
+	height: 100vh !important;
+	padding: 0 !important;
+	z-index: 5555;
+}
+div.area-app {
+	width: calc(100vw - 25px) !important;
+	min-height: 480px !important;
+	padding-top: 10px !important;
+	padding-left: 105px !important;
+	padding-right: 20px !important;
+	padding-bottom: 25px !important;
+}
+@media all and (max-height:479px) {
+	div.area-menu {
+		position: absolute !important;
+		min-height: 480px !important;
+	}
+}
+</style>
+</head>
+<body>
+[###HEADER###]
+<div id="apps-container">
+	<div class="ux-grid-row">
+		<div class="ux-grid-col area-menu">
+[###ASIDE###]
+		</div>
+		<div class="ux-grid-col area-app">
+[###MAIN###]
+		</div>
+	</div>
+</div>
+[###FOOTER###]
+[@@@SUB-TEMPLATE:!etc/templates/default/tpl-foot.inc.htm!@@@]
+</body>
+</html>

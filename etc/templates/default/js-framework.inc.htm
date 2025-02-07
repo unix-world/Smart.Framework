@@ -1,16 +1,12 @@
-<!-- Js Framework (Default) :: r.20221007 -->
+<!-- Js Framework (Default) :: r.20250124 -->
 [@@@SUB-TEMPLATE:!etc/templates/default/js-check.inc.htm!@@@]
 <script>
 const smartJ$Options = {
 	BrowserTest: {
 		isMobile: 'auto', // '[###CLIENT-IS-MOBILE|js###]'
 	},
-	ModalBox: {
-		CssOverlayOpacity: 0.8,
-	},
 	BrowserUtils: {
 		LanguageId: '[###LANG|js###]',
-		Charset: '[###CHARSET|js###]',
 		CookieLifeTime: [###CLIENT-UID-COOKIE-LIFETIME|int###],
 		CookieDomain: '[###CLIENT-UID-COOKIE-DOMAIN|js###]',
 		CookieSameSitePolicy: '[###CLIENT-UID-COOKIE-SAMESITE|js###]',
@@ -18,7 +14,6 @@ const smartJ$Options = {
 		NotificationDialogType: [%%%IF:SEMAPHORE:&*<dialog:alertable>;(88)%%%]'alertable'[%%%ELSE:SEMAPHORE(88)%%%]'auto'[%%%/IF:SEMAPHORE(88)%%%],
 		ModalBoxProtected: [%%%IF:APP-REALM:!=IDX;(87)%%%]true[%%%ELSE:APP-REALM(87)%%%]false[%%%/IF:APP-REALM(87)%%%],
 		NotifyLoadError: [%%%IF:APP-REALM:!=IDX;(87)%%%]true[%%%ELSE:APP-REALM(87)%%%]false[%%%/IF:APP-REALM(87)%%%],
-		CssOverlayOpacity: 0.8,
 	},
 };
 Object.freeze(smartJ$Options); // sec.

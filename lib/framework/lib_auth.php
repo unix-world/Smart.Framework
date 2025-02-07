@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartEnvironment, SmartCipherCrypto
- * @version 	v.20250118
+ * @version 	v.20250206
  * @package 	@Core:Authentication
  *
  */
@@ -60,20 +60,33 @@ final class SmartAuth {
 
 	// ::
 
-	public const DEFAULT_PRIVILEGES 	= '<super-admin>,<admin>'; // {{{SYNC-AUTH-DEFAULT-ADM-SUPER-PRIVS}}}
-	public const REGEX_VALID_PRIV_KEY 	= '/^([a-z]{1}[a-z0-9\-\:]{0,20}[a-z0-9]{1})$/'; // valid name for one privilege key from list of privileges ; a valid privilege key can have 2..22 characters and can contain only: `a-z`, `0-9`, `:` and `-` ; must start with `a-z` only ; must not end with `:` or `-`
+	public const ALGO_PASS_NONE 					=   0; // for tokens ...
+	public const ALGO_PASS_PLAIN 					=   1;
+	public const ALGO_PASS_SMART_SAFE_SF_PASS 		=  77;
+	public const ALGO_PASS_SMART_SAFE_ARGON_PASS 	=  78; // currently unsupported in PHP, supported just in Go lang
+	public const ALGO_PASS_SMART_SAFE_BCRYPT 		= 123;
+	public const ALGO_PASS_SMART_SAFE_OPQ_TOKEN 	= 204; // Opaque Token
+	public const ALGO_PASS_SMART_SAFE_WEB_TOKEN 	= 216; // Web (Signed) Token / JWT
+	public const ALGO_PASS_SMART_SAFE_SWT_TOKEN 	= 228; // SWT Tokens
+	public const ALGO_PASS_CUSTOM_TOKEN 			= 244; // other, custom implementations of token logic
+	public const ALGO_PASS_CUSTOM_HASH_PASS 		= 255; // other, custom implementations of pass hashing ; needs custom implementation
 
-	public const REGEX_SAFE_AUTH_EMAIL_ADDRESS 	= '/^[_a-z0-9\-\.]{1,41}@[a-z0-9\-\.]{3,30}$/'; // Safe Auth Email regex ; internet email@(subdomain.)domain.name ; max 72 ; practical
-	public const REGEX_SAFE_AUTH_USER_NAME 		= '/^[_a-z0-9\-\.@]{5,72}$/';  					// Safe Auth Username Regex ; cover boths above
+	public const DEFAULT_PRIVILEGES 				= '<super-admin>,<admin>'; 							// {{{SYNC-AUTH-DEFAULT-ADM-SUPER-PRIVS}}}
+	public const DEFAULT_RESTRICTIONS 				= ''; 												// {{{SYNC-AUTH-DEFAULT-ADM-SUPER-RESTR}}}
+	public const REGEX_VALID_PRIV_KEY 				= '/^([a-z]{1}[a-z0-9\-\:]{0,20}[a-z0-9]{1})$/'; 	// valid name for one privilege key from list of privileges ; a valid privilege key can have 2..22 characters and can contain only: `a-z`, `0-9`, `:` and `-` ; must start with `a-z` only ; must not end with `:` or `-`
 
+	public const REGEX_SAFE_AUTH_EMAIL_ADDRESS 		= '/^[_a-z0-9\-\.]{1,41}@[a-z0-9\-\.]{3,30}$/'; 	// Safe Auth Email regex ; internet email@(subdomain.)domain.name ; max 72 ; practical
+	public const REGEX_SAFE_AUTH_USER_NAME 			= '/^[_a-z0-9\-\.@]{5,72}$/';  						// Safe Auth Username Regex ; cover boths above
+	public const REGEX_VALID_JWT_SERIAL 			= '/^[A-Z0-9]{10}\-[A-Z0-9]{10}$/';
 
-	public const PASSWORD_BHASH_LENGTH 	= 60; 		// the length of PASSWORD_BCRYPT / cost=8 ; {{{SYNC-PASS-HASH-AUTH-LEN}}}
-	public const PASSWORD_BHASH_PREFIX 	= '$2y$08$'; // the prefix of PASSWORD_BCRYPT / cost=8 ; {{{SYNC-PASS-HASH-AUTH-PFX}}} ; PHP 5.3.7 and above uses $2y$
+	public const PASSWORD_BHASH_LENGTH 				= 60; 			// the length of PASSWORD_BCRYPT / cost=8 ; {{{SYNC-PASS-HASH-AUTH-LEN}}}
+	public const PASSWORD_BHASH_PREFIX 				= '$2y$08$'; 	// the prefix of PASSWORD_BCRYPT / cost=8 ; {{{SYNC-PASS-HASH-AUTH-PFX}}} ; PHP 5.3.7 and above uses $2y$
 
-	public const SWT_VERSION_PREFIX 	= 'SWT'; // {{{SYNC-AUTH-TOKEN-SWT}}}
-	public const SWT_VERSION_SUFFIX 	= 'v1.3';
-	public const SWT_VERSION_SIGNATURE 	= 'swt:1.3';
-	public const SWT_MAX_LIFETIME 		= 3600 * 24; // max 24 hours
+	public const SWT_VERSION_PREFIX 				= 'SWT'; 		// {{{SYNC-AUTH-TOKEN-SWT}}}
+	public const SWT_VERSION_SUFFIX 				= 'v1.3';
+	public const SWT_VERSION_SIGNATURE 				= 'swt:1.3';
+	public const SWT_MAX_LIFETIME 					= 3600 * 24; 	// max 24 hours
+
 
 	private static $AuthCompleted 	= false;	// prevent re-authentication, ... the results may be unpredictable !!
 	private static $AuthData 		= []; 		// register Auth Data
@@ -81,7 +94,38 @@ final class SmartAuth {
 
 	//================================================================
 	/**
-	 * Validate an Auth User Name
+	 * Validate an extended Auth User Name, ex: using email as username
+	 *
+	 * @param 	STRING 	$auth_user_name  	:: The Auth User Name to be validated ; max length is 25, can contain just: _ a-z 0-9 - . @
+	 *
+	 * @return 	BOOLEAN						:: TRUE if the username is valid or FALSE if not
+	 */
+	public static function validate_auth_ext_username(?string $auth_user_name) : bool { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
+		//--
+		$auth_user_name = (string) $auth_user_name;
+		//--
+		if(
+			((string)trim((string)$auth_user_name) == '') OR // must not be empty
+			((int)strlen((string)$auth_user_name) < 5) OR // min length is 5 characters
+			((int)strlen((string)$auth_user_name) > 72) OR // max length is 72 characters
+			(!preg_match((string)self::REGEX_SAFE_AUTH_USER_NAME, (string)$auth_user_name)) OR // may contain only _ a-z 0-9 - . @
+			(!preg_match((string)self::REGEX_SAFE_AUTH_EMAIL_ADDRESS, (string)$auth_user_name)) OR // must be in the format of email address
+			(strpos((string)$auth_user_name, '@@') !== false) OR // cannot contain 2 or more successive @
+			((string)substr((string)$auth_user_name, 0, 1) == '.') OR // cannot start with a . (dot)
+			((string)substr((string)$auth_user_name, -1, 1) == '.') // cannot end with a . (dot)
+		) {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Validate a standard Auth User Name
 	 *
 	 * @param 	STRING 	$auth_user_name  	:: The Auth User Name to be validated ; max length is 25, can contain just: a-z 0-9 .
 	 * @param 	BOOL 	$check_reasonable 	:: Check for reasonable length ; if FALSE, min length is 3 ; if TRUE, min length is 5
@@ -249,7 +293,11 @@ final class SmartAuth {
 			return false;
 		} //end if
 		//--
-		if(strpos((string)$passhash, (string)self::PASSWORD_BHASH_PREFIX) !== 0) { // {{{SYNC-PASS-HASH-AUTH-PFX}}}
+		if(
+			(strpos((string)$passhash, (string)self::PASSWORD_BHASH_PREFIX) !== 0)
+			AND
+			(strpos((string)$passhash, (string)strtr((string)self::PASSWORD_BHASH_PREFIX, ['$2y$' => '$2a$'])) !== 0)
+		) { // {{{SYNC-PASS-HASH-AUTH-PFX}}}
 			return false;
 		} //end if
 		//-- see: https://www.php.net/manual/en/function.crypt.php # CRYPT_BLOWFISH
@@ -291,7 +339,26 @@ final class SmartAuth {
 			return false;
 		} //end if
 		//--
+		if(strpos((string)$passhash, '$2a$') === 0) { // fix for the passwords hashed in golang
+			$passhash = (string) '$2y$'.trim((string)substr((string)$passhash, 4));
+		} //end if
+		//--
 		return (bool) password_verify((string)$plainpass, (string)$passhash);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Lock the (in-memory) Auth Login Data
+	 * This should prevent running Set Auth Data after certain waypoint in code
+	 */
+	public static function lock_auth_data() : void {
+		//--
+		self::$AuthCompleted = true;
+		//--
+		return;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -305,26 +372,27 @@ final class SmartAuth {
 	 *
 	 * @param 	STRING 			$y_realm 					:: *OPTIONAL* The user Authentication Realm(s)
 	 * @param 	ENUM 			$y_method 					:: *OPTIONAL* The authentication method used, as description only: HTTP-BASIC / OTHER / ...
-	 * @param 	STRING 			$y_hashpass					:: *OPTIONAL* The user login password hash or plain password ; for admin/task area it only supports the SmartHashCrypto::password() type pass hash (fixed, 128 characters long) and NOT the plain password ; for index area (and other areas) it may store either: the plain password (7..55 characters) or the pass hash (60..128 characters) ; is not recommended to store here the plain password ; however, it will be stored in memory as encrypted to avoid exposure
-	 * @param 	STRING 			$y_user_id 					:: The user (login) ID ; can be the Username or Email (on backend this should be always set with the same value as Username)
+	 * @param 	INTEGER 		$y_algo_pass 				:: The Pass (Hash) Algo
+	 * @param 	STRING 			$y_hashpass					:: The user login password hash or plain password ; for admin/task area it only supports the SmartHashCrypto::password() type pass hash (fixed, 128 characters long) and NOT the plain password ; for index area (and other areas) it may store either: the plain password (7..55 characters) or the pass hash (60..128 characters) ; is not recommended to store here the plain password ; however, it will be stored in memory as encrypted to avoid exposure
 	 * @param 	STRING 			$y_user_name				:: The user username ; Mandatory ; must be valid safe username
+	 * @param 	STRING 			$y_user_id 					:: The user (login) ID ; can be the Username or Email (on backend this should be always set with the same value as Username)
+	 * @param 	ARRAY 			$y_keys 					:: *OPTIONAL* The user Private Key (will be stored in memory as encrypted to avoid exposure)
 	 * @param 	STRING 			$y_user_email 				:: *OPTIONAL* The user Email ; if email is used as login ID this may be redundant !
 	 * @param 	STRING 			$y_user_fullname 			:: *OPTIONAL* The user Full Name (First Name + Last Name)
 	 * @param 	ARRAY/STRING 	$y_user_privileges_list 	:: *OPTIONAL* The user Privileges List as string '<priv-a>,<priv-b>,...' or array ['priv-a','priv-b'] that list all the current user privileges ; a privilege key must have 3..28 characters and can contain only: a-z -
 	 * @param   ARRAY/STRING 	$y_user_restrictions_list 	:: *OPTIONAL* The user Restrictions List as string '<restr-a>,<restr-b>,...' or array ['restr-a','restr-b'] that list all the current user restrictions ; a restriction key must have 3..28 characters and can contain only: a-z -
 	 * @param 	STRING 			$y_user_quota 				:: *OPTIONAL* The user (storage) Quota
 	 * @param 	ARRAY 			$y_user_metadata 			:: *OPTIONAL* The user metainfo, associative array with max 7 levels (sub-arrays must have no more than 6 sub-levels, can be either associative or not) ; Ex: [ 'some-key' => 101, 'another-key' => 'abc', '3rd-key' => true, '4th-key' => [0, 1, 2, 'a', 'b', 'c'], '5th-key' => [ 'x' => 'X', 'y' => 'y', 'z' => 'Z' ] ]
-	 * @param 	STRING 			$y_keys 					:: *OPTIONAL* The user Private Key (will be stored in memory as encrypted to avoid exposure)
 	 *
 	 * @return 	BOOLEAN										:: TRUE if all data is OK, FALSE if not or try to reauthenticate under the same execution (which is not allowed ; must be just once per execution)
 	 */
-	public static function set_login_data(?string $y_realm, ?string $y_method, ?string $y_hashpass, ?string $y_user_id, ?string $y_user_name, ?string $y_user_email='', ?string $y_user_fullname='', $y_user_privileges_list=['none','no-privilege'], $y_user_restrictions_list=['none','no-restriction'], int $y_user_quota=-1, array $y_user_metadata=[], ?string $y_keys='') : bool {
+	public static function set_auth_data(?string $y_realm, ?string $y_method, int $y_algo_pass, ?string $y_hashpass, ?string $y_user_name, ?string $y_user_id, ?string $y_user_email='', ?string $y_user_fullname='', $y_user_privileges_list=['none','no-privilege'], $y_user_restrictions_list=['none','no-restriction'], array $y_keys=[], int $y_user_quota=-1, array $y_user_metadata=[]) : bool {
 		//--
 		// IMPORTANT: $y_user_privileges_list and $y_user_restrictions_list can be STRING or ARRAY, do not cast !
-		// v.20231018
+		// v.20250128
 		//--
 		if(self::$AuthCompleted !== false) { // avoid to re-auth
-			Smart::log_warning(__METHOD__.' # Re-Authentication is not allowed ...');
+			Smart::log_warning(__METHOD__.' # Auth Data is Locked. You either called Auth Set Data method twice or called before the Auth Lock method ...');
 			return false;
 		} //end if
 		self::$AuthCompleted = true;
@@ -337,15 +405,22 @@ final class SmartAuth {
 		} //end if
 		//--
 		$y_user_id = (string) trim((string)$y_user_id); // validate the same way as username, except it can have also uppercase letters: ex: UUID from DB
-		if(((string)$y_user_id == '') OR (self::validate_auth_username((string)strtolower((string)$y_user_id), false) !== true)) {
+		if(((string)$y_user_id == '') OR (self::validate_auth_username((string)$y_user_id, false) !== true)) {
 			Smart::log_warning(__METHOD__.' # Invalid UserID ...');
 			return false;
 		} //end if
 		//--
 		$y_user_name = (string) trim((string)$y_user_name);
-		if(((string)$y_user_name == '') OR (self::validate_auth_username((string)$y_user_name, false) !== true)) {
-			Smart::log_warning(__METHOD__.' # Invalid UserName ...');
-			return false;
+		if(SmartEnvironment::isAdminArea() === false) { // index area
+			if(((string)$y_user_name == '') OR (self::validate_auth_ext_username((string)$y_user_name, false) !== true)) {
+				Smart::log_warning(__METHOD__.' # Invalid [I] UserName ...');
+				return false;
+			} //end if
+		} else { // admin / task area
+			if(((string)$y_user_name == '') OR (self::validate_auth_username((string)$y_user_name, false) !== true)) {
+				Smart::log_warning(__METHOD__.' # Invalid [A] UserName ...');
+				return false;
+			} //end if
 		} //end if
 		//--
 		if(SmartEnvironment::isAdminArea()) {
@@ -356,7 +431,82 @@ final class SmartAuth {
 		} //end if
 		//--
 		$y_hashpass = (string) trim((string)$y_hashpass);
-		if(SmartEnvironment::isAdminArea()) { // for the admin/task area, the only supported Pass Hash must be provided by SmartHashCrypto::password()
+		if(SmartEnvironment::isAdminArea() === false) { // index area
+			//--
+			switch((int)$y_algo_pass) { // {{{SYNC-AUTH-USERS-ALLOWED-ALGOS}}}
+				case self::ALGO_PASS_NONE:
+					return false; // cannot be authenticated
+					break;
+				case self::ALGO_PASS_PLAIN:
+					if(self::validate_auth_password((string)$plainPassword) !== true) {
+						Smart::log_warning(__METHOD__.' # Invalid [I] Area Password ('.(int)$y_algo_pass.') ...');
+						return false; // unsecure or empty
+					} //end if
+					break;
+				case self::ALGO_PASS_SMART_SAFE_SF_PASS:
+				case self::ALGO_PASS_SMART_SAFE_SWT_TOKEN: // the SWT works only with SF Pass, must have this kind of checks
+					if(
+						((int)strlen((string)$y_hashpass) != (int)SmartHashCrypto::PASSWORD_HASH_LENGTH) // {{{SYNC-AUTHADM-PASS-LENGTH}}}
+						OR
+						(SmartHashCrypto::validatepasshashformat((string)$y_hashpass) !== true) // {{{SYNC-AUTH-HASHPASS-FORMAT}}}
+					) {
+						Smart::log_warning(__METHOD__.' # Invalid [I] Area Pass Hash ('.(int)$y_algo_pass.') ...');
+						return false; // the length or pass hash format is invalid
+					} //end if
+					break;
+				case self::ALGO_PASS_SMART_SAFE_ARGON_PASS:
+					return false; // currently unsupported in PHP
+					break;
+				case self::ALGO_PASS_SMART_SAFE_BCRYPT:
+					if(
+						((int)strlen((string)$y_hashpass) != (int)self::PASSWORD_BHASH_LENGTH) // {{{SYNC-AUTHADM-PASS-LENGTH}}}
+						OR
+						(self::password_hash_validate_format((string)$y_hashpass) !== true) // {{{SYNC-AUTH-HASHPASS-FORMAT}}}
+					) {
+						Smart::log_warning(__METHOD__.' # Invalid [I] Area Pass Hash ('.(int)$y_algo_pass.') ...');
+						return false; // the length or pass hash format is invalid
+					} //end if
+					break;
+				case self::ALGO_PASS_SMART_SAFE_OPQ_TOKEN:
+				case self::ALGO_PASS_SMART_SAFE_WEB_TOKEN:
+				case self::ALGO_PASS_CUSTOM_TOKEN:
+					if( // just a general check for tokens
+						((int)strlen((string)$y_hashpass) < 42) // at least SF Opaque Tokens B58 ; {{{SYNC-MAX-AUTH-TOKEN-LENGTH}}} ;
+						OR
+						((int)strlen((string)$y_hashpass) > 3192) // the largest token supported ... more than this does not fit in HTTP Header or Cookie
+					) { // this must cover support for the supported password hash types but also the accepted length of the plain password
+						Smart::log_warning(__METHOD__.' # Invalid [I] Area Token ('.(int)$y_algo_pass.') ...');
+						return false; // the length or pass hash format is invalid
+					} //end if
+					break;
+				case self::ALGO_PASS_CUSTOM_HASH_PASS:
+					if( // just a general check for a supposed password hash ... it's custom, don't know how to validate the format of this hash
+						((int)strlen((string)$y_hashpass) < 42) // at least SHA-256 B62
+						OR
+						((int)strlen((string)$y_hashpass) > 128) // max SHA512 / SHA3-512
+					) { // this must cover support for the supported password hash types but also the accepted length of the plain password
+						Smart::log_warning(__METHOD__.' # Invalid [I] Area Pass Hash ('.(int)$y_algo_pass.') ...');
+						return false; // the length or pass hash format is invalid
+					} //end if
+					break;
+				default:
+					Smart::log_warning(__METHOD__.' # Invalid [I] Area Pass Algo ('.(int)$y_algo_pass.') ...');
+					return false; // unsupported
+			} //end switch
+			//--
+		} else { // for the admin/task area, the only supported Pass Hash must be provided by SmartHashCrypto::password()
+			//--
+			if(
+				((int)$y_algo_pass != (int)self::ALGO_PASS_SMART_SAFE_SF_PASS)
+				AND
+				((int)$y_algo_pass != (int)self::ALGO_PASS_SMART_SAFE_SWT_TOKEN)
+				AND
+				((int)$y_algo_pass != (int)self::ALGO_PASS_SMART_SAFE_OPQ_TOKEN)
+			) {
+				Smart::log_warning(__METHOD__.' # Invalid [A] Area Pass Algo ('.(int)$y_algo_pass.') ...');
+				return false; // can't handle other pass algos, needs Safe Pass necause of SWT ; SWT also contains it
+			} //end if
+			//--
 			if(
 				((int)strlen((string)$y_hashpass) != (int)SmartHashCrypto::PASSWORD_HASH_LENGTH) // {{{SYNC-AUTHADM-PASS-LENGTH}}}
 				OR
@@ -365,15 +515,7 @@ final class SmartAuth {
 				Smart::log_warning(__METHOD__.' # Invalid [A] Area Pass Hash ...');
 				return false; // the length or pass hash format is invalid
 			} //end if
-		} else { // for other areas, incl. index area
-			if( // support for hashes: SmartAuth:password_hash_create() / SmartHashCrypto::password() ; suppot for plain password too
-				((int)strlen((string)$y_hashpass) < 7) // {{{SYNC-AUTH-VALIDATE-PASSWORD-LEN}}}
-				OR
-				((int)strlen((string)$y_hashpass) > 128) // {{{SYNC-AUTH-PASS-HASH-LENGTH-SUPPORT}}}
-			) { // this must cover support for the supported password hash types but also the accepted length of the plain password
-				Smart::log_warning(__METHOD__.' # Invalid [I] Area Pass Hash or Plain Password ...');
-				return false; // the length or pass hash format is invalid
-			} //end if
+			//--
 		} //end if else
 		//--
 		$y_user_email = (string) trim((string)$y_user_email);
@@ -386,23 +528,38 @@ final class SmartAuth {
 		$y_user_restrictions_list = (string) Smart::array_to_list((array)$y_user_restrictions_list);
 		//--
 		$y_user_quota = Smart::format_number_int($y_user_quota); // can be also negative
+		if((int)$y_user_quota < -1) {
+			$y_user_quota = 0; // fix
+		} //end if
 		//--
 		$the_key = '#'.Smart::random_number(100000000000,999999999999).'#'; // must be at least 7 bytes, have 14 bytes
 		//--
 		$the_pass = (string) SmartCipherCrypto::encrypt((string)$y_hashpass, (string)$the_key, 'hash/sha3-224');
 		//--
-		$the_privkey = '';
-		if((string)trim((string)$y_hashpass) != '') {
-			$the_privkey = (string) trim((string)$y_keys);
-			if((string)$the_privkey != '') {
-				$the_privkey = (string) SmartCipherCrypto::bf_encrypt((string)$the_privkey, (string)$the_key);
-				if((string)trim((string)$the_privkey) == '') { // be sure is really empty
-					$the_privkey = '';
-				} //end if else
-			} else {
-				$the_privkey = '';
-			} //end if
+		$the_fa2secret = (string) trim((string)($y_keys['fa2sec'] ?? null));
+		if((string)$the_fa2secret != '') {
+			$the_fa2secret = (string) SmartCipherCrypto::encrypt((string)$the_fa2secret, (string)$the_key, 'hash/sha3-256');
+			if((string)trim((string)$the_fa2secret) == '') { // be sure is really empty
+				$the_fa2secret = '';
+			} //end if else
 		} //end if
+		//--
+		$the_securitykey = (string) trim((string)($y_keys['seckey'] ?? null));
+		if((string)$the_securitykey != '') {
+			$the_securitykey = (string) SmartCipherCrypto::bf_encrypt((string)$the_securitykey, (string)$the_key);
+			if((string)trim((string)$the_securitykey) == '') { // be sure is really empty
+				$the_securitykey = '';
+			} //end if else
+		} //end if
+		//--
+		$the_privkey = (string) trim((string)($y_keys['privkey'] ?? null));
+		if((string)$the_privkey != '') {
+			$the_privkey = (string) SmartCipherCrypto::tf_encrypt((string)$the_privkey, (string)$the_key);
+			if((string)trim((string)$the_privkey) == '') { // be sure is really empty
+				$the_privkey = '';
+			} //end if else
+		} //end if
+		$the_pubkey = (string) trim((string)($y_keys['pubkey'] ?? null));
 		//--
 		if(Smart::array_type_test($y_user_metadata) != 2) { // requires an associative array
 			$y_user_metadata = []; // reset, must be associative
@@ -412,36 +569,29 @@ final class SmartAuth {
 			$y_user_metadata = []; // reset, must be array ; maybe it was not or had more than 7 levels ...
 		} //end if
 		//--
-
-		//--
-		$id = (string) trim((string)(self::$AuthData['AUTH-ID'] ?? null));
-		if((string)$id = '') {
-			return '';
+		if((string)trim((string)$y_user_id) == '') { // this is mandatory, redundant check
+			return false;
 		} //end if
 		//--
-
+		self::$AuthData['AUTH-METHOD'] 			= (string) $y_method;
+		self::$AuthData['AUTH-REALM'] 			= (string) $y_realm;
+		self::$AuthData['AUTH-ID'] 				= (string) $y_user_id; 		// auth id ; unique ; for the backend this must be always = AUTH-USERNAME ; on frontend (custom development) it can be set as: AUTH-USERNAME or USER-EMAIL depending on needs
+		self::$AuthData['AUTH-USERNAME'] 		= (string) $y_user_name; 	// the auth username ; unique
+		self::$AuthData['AUTH-PASSHASH'] 		= (string) $the_pass; 		// the hash of the plain pass
+		self::$AuthData['AUTH-PASSALGO'] 		= (int)    $y_algo_pass;
+		self::$AuthData['USER-EMAIL'] 			= (string) $y_user_email;
+		self::$AuthData['USER-FULL-NAME'] 		= (string) $y_user_fullname;
+		self::$AuthData['USER-PRIVILEGES'] 		= (string) $y_user_privileges_list;
+		self::$AuthData['USER-RESTRICTIONS'] 	= (string) $y_user_restrictions_list;
+		self::$AuthData['USER-2FA-SECRET'] 		= (string) $the_fa2secret;
+		self::$AuthData['USER-SECKEY'] 			= (string) $the_securitykey;
+		self::$AuthData['USER-PRIVKEY'] 		= (string) $the_privkey;
+		self::$AuthData['USER-PUBKEY'] 			= (string) $the_pubkey;
+		self::$AuthData['USER-QUOTA'] 			= (int)    $y_user_quota;
+		self::$AuthData['USER-METADATA'] 		= (array)  $y_user_metadata;
+		self::$AuthData['SESS-RAND-KEY'] 		= (string) $the_key;
 		//--
-		if((string)$y_user_id != '') {
-			//--
-			self::$AuthData['AUTH-METHOD'] 			= (string) $y_method;
-			self::$AuthData['AUTH-REALM'] 			= (string) $y_realm;
-			self::$AuthData['AUTH-ID'] 				= (string) $y_user_id; 		// auth id ; unique ; for the backend this must be always = AUTH-USERNAME ; on frontend (custom development) it can be set as: AUTH-USERNAME or USER-EMAIL depending on needs
-			self::$AuthData['AUTH-USERNAME'] 		= (string) $y_user_name; 	// the auth username ; unique
-			self::$AuthData['AUTH-PASSHASH'] 		= (string) $the_pass; 		// the hash of the plain pass
-			self::$AuthData['USER-EMAIL'] 			= (string) $y_user_email;
-			self::$AuthData['USER-FULL-NAME'] 		= (string) $y_user_fullname;
-			self::$AuthData['USER-PRIVILEGES'] 		= (string) $y_user_privileges_list;
-			self::$AuthData['USER-RESTRICTIONS'] 	= (string) $y_user_restrictions_list;
-			self::$AuthData['USER-METADATA'] 		= (array)  $y_user_metadata;
-			self::$AuthData['USER-PRIVKEY'] 		= (string) $the_privkey;
-			self::$AuthData['USER-QUOTA'] 			= (int)    $y_user_quota;
-			self::$AuthData['SESS-RAND-KEY'] 		= (string) $the_key;
-			//--
-			return true;
-			//--
-		} //end if
-		//--
-		return false;
+		return true;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -453,7 +603,7 @@ final class SmartAuth {
 	 *
 	 * @return 	BOOLEAN		:: TRUE if current user is Logged-in, FALSE if not
 	 */
-	public static function check_login() : bool {
+	public static function is_authenticated() : bool {
 		//--
 		$logged_in = false;
 		//--
@@ -463,7 +613,11 @@ final class SmartAuth {
 					if((string)trim((string)self::$AuthData['AUTH-USERNAME']) != '') {
 						if(array_key_exists('AUTH-PASSHASH', self::$AuthData)) {
 							if((string)trim((string)self::$AuthData['AUTH-PASSHASH']) != '') {
-								$logged_in = true;
+								if(array_key_exists('AUTH-PASSALGO', self::$AuthData)) {
+									if(((int)self::$AuthData['AUTH-PASSALGO'] >= 1) && ((int)self::$AuthData['AUTH-PASSALGO'] <= 255)) {
+										$logged_in = true;
+									} //end if
+								} //end if
 							} //end if
 						} //end if
 					} //end if
@@ -479,29 +633,34 @@ final class SmartAuth {
 
 	//================================================================
 	/**
-	 * Get the (in-memory) Auth Login Data
+	 * Get the (in-memory) Auth Auth Data
 	 *
 	 * @return 	ARRAY		:: a complete array containing all the meta-data of the current auth user
 	 */
-	public static function get_login_data(bool $y_skip_sensitive=false) : array {
+	public static function get_auth_data(bool $y_skip_sensitive=false) : array {
 		//--
 		return [
+			'status:auth:ok' 		=> (bool)   self::is_authenticated(),
 			'auth:area' 			=> (string) self::get_auth_area(),
 			'auth:method' 			=> (string) self::get_auth_method(),
 			'auth:realm' 			=> (string) self::get_auth_realm(),
 			'auth:id' 				=> (string) self::get_auth_id(),
 			'auth:username' 		=> (string) self::get_auth_username(),
-			'auth:passhash' 		=> (string) ($y_skip_sensitive ? '********[Sensitive:Protected]********' : self::get_auth_passhash()),
+			'auth:passhash' 		=> (string) ((self::$AuthData['AUTH-PASSHASH'] ?? null) ? ($y_skip_sensitive ? '********[Sensitive:Protected]********' : self::get_auth_passhash()) : ''),
+			'auth:passalgo' 		=> (int)    self::get_auth_passalgo(),
+			'auth:passalgo:name' 	=> (string) self::get_auth_passalgo_name(),
 			'user:email' 			=> (string) self::get_user_email(),
 			'user:full-name' 		=> (string) self::get_user_fullname(),
 			'user:privileges' 		=> (string) self::get_user_privileges(),
 			'user:arr-privileges' 	=> (array)  self::get_user_arr_privileges(),
 			'user:restrictions' 	=> (string) self::get_user_restrictions(),
 			'user:arr-restrictions' => (array)  self::get_user_arr_restrictions(),
-			'user:metadata' 		=> (array)  self::get_user_metadata(),
-			'user:privkey' 			=> (string) ($y_skip_sensitive ? '........[Sensitive:Protected]........' : self::get_user_privkey()),
+			'user:fa2secret' 		=> (string) ((self::$AuthData['USER-2FA-SECRET'] ?? null)  ? ($y_skip_sensitive ? '........[Sensitive:Protected]........' : self::get_user_fa2secret()) : ''),
+			'user:seckey' 			=> (string) ((self::$AuthData['USER-SECKEY'] ?? null)  ? ($y_skip_sensitive ? '........[Sensitive:Protected]........' : self::get_user_seckey()) : ''),
+			'user:privkey' 			=> (string) ((self::$AuthData['USER-PRIVKEY'] ?? null) ? ($y_skip_sensitive ? '........[Sensitive:Protected]........' : self::get_user_privkey()) : ''),
+			'user:pubkey' 			=> (string) self::get_user_pubkey(),
 			'user:quota' 			=> (int)    self::get_user_quota(),
-			'status:auth:ok' 		=> (bool)   self::check_login(),
+			'user:metadata' 		=> (array)  self::get_user_metadata(),
 		];
 		//--
 	} //END FUNCTION
@@ -610,6 +769,80 @@ final class SmartAuth {
 
 	//================================================================
 	/**
+	 * Get the pass algo
+	 *
+	 * @return 	INT		:: The pass algo or -1 or -2 if invalid or does not exists
+	 */
+	public static function get_auth_passalgo() : int {
+		//--
+		if(!array_key_exists('AUTH-PASSALGO', self::$AuthData)) {
+			return -1;
+		} //end if
+		//--
+		if(!is_int(self::$AuthData['AUTH-PASSALGO'])) {
+			return -2;
+		} //end if
+		//--
+		return (int) self::$AuthData['AUTH-PASSALGO'];
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get the pass algo name
+	 *
+	 * @return 	STRING		:: The pass algo name or Unknown
+	 */
+	public static function get_auth_passalgo_name() : string {
+		//--
+		$algo = (int) self::get_auth_passalgo();
+		//--
+		$name = '?';
+		switch((int)$algo) { // {{{SYNC-AUTH-USERS-ALLOWED-ALGOS}}}
+			case self::ALGO_PASS_NONE:
+				$name = 'None';
+				break;
+			case self::ALGO_PASS_PLAIN:
+				$name = 'Plain';
+				break;
+			case self::ALGO_PASS_SMART_SAFE_SF_PASS:
+				$name = 'SafePass.Smart';
+				break;
+			case self::ALGO_PASS_SMART_SAFE_ARGON_PASS:
+				$name = 'SafePass.Smart.Argon';
+				break;
+			case self::ALGO_PASS_SMART_SAFE_BCRYPT:
+				$name = 'BCrypt';
+				break;
+			case self::ALGO_PASS_SMART_SAFE_OPQ_TOKEN:
+				$name = 'Token.Opaque';
+				break;
+			case self::ALGO_PASS_SMART_SAFE_WEB_TOKEN:
+				$name = 'Token.Signed';
+				break;
+			case self::ALGO_PASS_SMART_SAFE_SWT_TOKEN:
+				$name = 'Token.SWT';
+				break;
+			case self::ALGO_PASS_CUSTOM_TOKEN:
+				$name = 'Custom.Token';
+				break;
+			case self::ALGO_PASS_CUSTOM_HASH_PASS:
+				$name = 'Custom.Pass.Hash';
+				break;
+			default:
+				$name = 'Unknown';
+		} //end switch
+		//--
+		return (string) $name;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
 	 * Get the current user email from the (in-memory) Auth Login Data
 	 *
 	 * @return 	STRING		:: returns the user login email or an empty string if not set
@@ -617,6 +850,46 @@ final class SmartAuth {
 	public static function get_user_email() : string {
 		//--
 		return (string) (self::$AuthData['USER-EMAIL'] ?? null);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get the auth user (safe) stored 2fa-secret from (in-memory)
+	 *
+	 * @return 	STRING		:: The plain fa2-secret if was set and valid or empty string
+	 */
+	public static function get_user_fa2secret() : string {
+		//--
+		if((!array_key_exists('USER-2FA-SECRET', self::$AuthData)) OR (!array_key_exists('SESS-RAND-KEY', self::$AuthData))) {
+			return ''; // no fa2-secret or not key
+		} elseif((string)trim((string)self::$AuthData['USER-2FA-SECRET']) == '') {
+			return ''; // empty fa2-secret
+		} //end if else
+		//--
+		return (string) SmartCipherCrypto::decrypt((string)self::$AuthData['USER-2FA-SECRET'], (string)self::$AuthData['SESS-RAND-KEY'], 'hash/sha3-256');
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get the auth user (safe) stored security-key from (in-memory)
+	 *
+	 * @return 	STRING		:: The plain security-key if was set and valid or empty string
+	 */
+	public static function get_user_seckey() : string {
+		//--
+		if((!array_key_exists('USER-SECKEY', self::$AuthData)) OR (!array_key_exists('SESS-RAND-KEY', self::$AuthData))) {
+			return ''; // no sec-key or not key
+		} elseif((string)trim((string)self::$AuthData['USER-SECKEY']) == '') {
+			return ''; // empty sec-key
+		} //end if else
+		//--
+		return (string) SmartCipherCrypto::bf_decrypt((string)self::$AuthData['USER-SECKEY'], (string)self::$AuthData['SESS-RAND-KEY']);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -636,7 +909,21 @@ final class SmartAuth {
 			return ''; // empty priv-key
 		} //end if else
 		//--
-		return (string) SmartCipherCrypto::bf_decrypt((string)self::$AuthData['USER-PRIVKEY'], (string)self::$AuthData['SESS-RAND-KEY']);
+		return (string) SmartCipherCrypto::tf_decrypt((string)self::$AuthData['USER-PRIVKEY'], (string)self::$AuthData['SESS-RAND-KEY']);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get the auth user (safe) stored public-key from (in-memory)
+	 *
+	 * @return 	STRING		:: The plain public-key if was set and valid or empty string
+	 */
+	public static function get_user_pubkey() : string {
+		//--
+		return (string) trim((string)(self::$AuthData['USER-PUBKEY'] ?? null));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -803,7 +1090,9 @@ final class SmartAuth {
 			OR
 			(strpos((string)$y_key_to_validate, '::') !== false) // cannot contain 2 or more successive colons
 		) {
-			Smart::log_notice(__METHOD__.' # Invalid Privilege Key: `'.$y_key_to_validate.'`');
+			if(SmartEnvironment::ifDebug()) {
+				Smart::log_notice(__METHOD__.' # Invalid Privilege Key: `'.$y_key_to_validate.'`'); // when users are creating tokens this may output too much if they use invalid privileges ; suppress this output if not debug
+			} //end if
 			return false;
 		} //end if
 		//--
@@ -821,11 +1110,12 @@ final class SmartAuth {
 	 */
 	public static function get_user_quota() : int {
 		//--
-		$login_quota = -1;
-		//--
+		$login_quota = 0;
 		if(array_key_exists('USER-QUOTA', self::$AuthData)) {
-			if((int)self::$AuthData['USER-QUOTA'] >= 0) {
+			if((int)self::$AuthData['USER-QUOTA'] > 0) {
 				$login_quota = (int) self::$AuthData['USER-QUOTA'];
+			} elseif((int)self::$AuthData['USER-QUOTA'] < 0) {
+				$login_quota = -1;
 			} //end if
 		} //end if
 		//--
@@ -860,7 +1150,7 @@ final class SmartAuth {
 	 *
 	 * @return 	STRING					:: returns a string with the safe encrypted privacy-key or empty string if was empty
 	 */
-	public static function encrypt_privkey(?string $y_pkey, ?string $y_secret) : string {
+	public static function encrypt_sensitive_data(?string $y_pkey, ?string $y_secret) : string {
 		//--
 		if((string)trim((string)$y_pkey) == '') {
 			return '';
@@ -887,7 +1177,7 @@ final class SmartAuth {
 	 *
 	 * @return 	STRING					:: returns a string with the privacy-key (decrypted, if any, and if valid) which was supposed to be provided as encrypted
 	 */
-	public static function decrypt_privkey(?string $y_pkey, ?string $y_secret) : string {
+	public static function decrypt_sensitive_data(?string $y_pkey, ?string $y_secret) : string {
 		//--
 		if((string)trim((string)$y_pkey) == '') {
 			return '';
@@ -1140,7 +1430,7 @@ final class SmartAuth {
 		if((string)$arr['d'] != '') {
 			$arr['d'] = (string) SmartUnicode::utf8_to_iso((string)$arr['d']); // safety
 		} //end if
-		if(preg_match((string)SmartValidator::regex_stringvalidation_expression('date-time-tzofs'), (string)$arr['d'])) {// validate date by regex
+		if(preg_match((string)SmartValidator::regex_stringvalidation_expression('date-time-tzofs'), (string)$arr['d'])) { // validate date by regex
 			$dtnow = (string) gmdate('Y-m-d H:i:s O');
 			$dtswt = (string) gmdate('Y-m-d H:i:s O', (int)strtotime((string)$arr['d'])); // be sure is a date, and UTC formatted with +0000
 			$dtmax = (string) gmdate('Y-m-d H:i:s O', (int)strtotime('+ 1 day'));
@@ -1537,18 +1827,20 @@ final class SmartAuth {
 	 * @param 	STRING 	$issuer 				:: The issuer, usually as host:port ; must match what is the other server expecting ...
 	 * @param 	INT		$expire 				:: The expiration time in minutes from now ; 1..525600
 	 * @param 	ARRAY 	$privs 					:: Privileges List   [ priv1,  priv2, ... ]  (cannot be empty ! must have at least one entry to be validated)
-	 * @param 	ARRAY 	$privs_arr 				:: Restrictions List [ restr1, restr2, ... ] (cannot be empty ! must have at least one entry to be validated)
+	 * @param 	ARRAY 	$restr 					:: Restrictions List [ restr1, restr2, ... ] (cannot be empty ! must have at least one entry to be validated)
+	 * @param 	STRING 	$xtras 					:: JWT Extras Definition for Xtras validations ; Default is Empty ; Example: 'ApiKey.Virtual'
 	 * @param 	INT 	$encrypt 				:: DEFAULT 0 = plain ; 1 = BlowFish-448:CBC ; 2 = TwoFish-256:CBC ; 3 = ThreeFish-1024:CBC algo ; all other values are invalid ; for encryption will use the private app key
 	 *
 	 * @return 	ARRAY							:: array of strings as: [ 'error' => 'error if any or empty', 'token' => '...' ]
 	 */
-	public static function jwt_token_create(string $algo, string $user, string $ipaddr, string $area, string $issuer, int $expire, array $privs, array $restr, int $encrypt=0) : array {
+	public static function jwt_token_create(string $algo, string $user, string $ipaddr, string $area, string $issuer, int $expire, array $privs, array $restr, string $xtras='', int $encrypt=0) : array {
 		//--
 		$jwt = [
 			'error' 		=> '?', // error or empty
 			'type' 			=> 'JWT',
 			'algo' 			=> '',
 			'serial' 		=> '',
+			'sign' 			=> '',
 			'iplist' 		=> '',
 			'area' 			=> '',
 			'user' 			=> '',
@@ -1659,13 +1951,15 @@ final class SmartAuth {
 			$jwt['error'] = 'Area is Empty';
 			return (array) $jwt;
 		} //end if
-		if(((int)strlen((string)$area) < 4) || ((int)strlen((string)$area) > 18) || ((bool)preg_match('/^[A-Z0-9\-]{4,18}$/', (string)$area) !== true)) { // disallow dot ; allow just max 18 here, the rest is reserved for SmartGo as prefix for this ; {{{SYNC-AUTH-EXT-AREA-CHECK}}}
-			$jwt['error'] = 'Area is Invalid';
-			return (array) $jwt;
-		} //end if
-		if((string)$area == '[DEFAULT]') { // disallow, this is reserved for SmartGo
+		if((string)$area == '[DEFAULT]') { // disallow, this is reserved for SmartGo, and if have to be set, must be set as `@`
 			$jwt['error'] = 'The [DEFAULT] Area is Disallowed';
 			return (array) $jwt;
+		} //end if
+		if((string)$area != '@') {
+			if(((int)strlen((string)$area) < 4) || ((int)strlen((string)$area) > 18) || ((bool)preg_match('/^[A-Z0-9\-]{4,18}$/', (string)$area) !== true)) { // disallow dot ; allow just max 18 here, the rest is reserved for SmartGo as prefix for this ; {{{SYNC-AUTH-EXT-AREA-CHECK}}}
+				$jwt['error'] = 'Area is Invalid';
+				return (array) $jwt;
+			} //end if
 		} //end if
 		//--
 		$expire = (int) $expire; // minutes ; must be between 1..525600 minutes
@@ -1678,21 +1972,29 @@ final class SmartAuth {
 			return (array) $jwt;
 		} //end if
 		//--
-		$privs = (array) self::safe_arr_privileges_or_restrictions((array)$privs, true);
-		$privs = (string) Smart::array_to_list((array)$privs);
-		$privs = (string) str_replace(' ', '', (string)$privs);
-		if((int)strlen((string)$privs) > 50) {
-			$jwt['error'] = 'Privileges are OverSized';
-			return (array) $jwt;
-		} //end if
+		if((int)Smart::array_size($privs) > 0) {
+			$privs = (array) self::safe_arr_privileges_or_restrictions((array)$privs, true);
+			$privs = (string) Smart::array_to_list((array)$privs);
+			$privs = (string) str_replace(' ', '', (string)$privs);
+			if((int)strlen((string)$privs) > 50) {
+				$jwt['error'] = 'Privileges are OverSized';
+				return (array) $jwt;
+			} //end if
+		} else {
+			$privs = '@';
+		} //end if else
 		//--
-		$restr = (array) self::safe_arr_privileges_or_restrictions((array)$restr, true);
-		$restr = (string) Smart::array_to_list((array)$restr);
-		$restr = (string) str_replace(' ', '', (string)$restr);
-		if((int)strlen((string)$privs) > 50) {
-			$jwt['error'] = 'Restrictions are OverSized';
-			return (array) $jwt;
-		} //end if
+		if((int)Smart::array_size($restr) > 0) {
+			$restr = (array) self::safe_arr_privileges_or_restrictions((array)$restr, true);
+			$restr = (string) Smart::array_to_list((array)$restr);
+			$restr = (string) str_replace(' ', '', (string)$restr);
+			if((int)strlen((string)$privs) > 50) {
+				$jwt['error'] = 'Restrictions are OverSized';
+				return (array) $jwt;
+			} //end if
+		} else {
+			$restr = '@';
+		} //end if else
 		//--
 		$usrKey = (string) SMART_FRAMEWORK_SECURITY_KEY.chr(0).SmartHashCrypto::crc32b((string)$user."\f".SMART_FRAMEWORK_SECURITY_KEY, false); // make a personalized secret key for the user
 		//--
@@ -1702,10 +2004,10 @@ final class SmartAuth {
 			return (array) $jwt;
 		} //end if
 		//--
-		$issuedAt  = (int) time();
+		$issuedAt  = (int) time(); // {{{SYNC-SMART-JWT-UTC-TIME}}} ; unix time is fixed, does not depend on UTC
 		$expiresAt = (int) ((int)$issuedAt + (int)((int)$expire * 60));
 		//--
-		$serial = (string) Smart::uuid_10_seq().'-'.Smart::uuid_10_str();
+		$serial = (string) Smart::uuid_10_seq().'-'.Smart::uuid_10_str(); // {{{SYNC-JWT-VALID-SERIAL}}}
 		//--
 		$iplist = '';
 		$ipaddr = (string) trim((string)$ipaddr);
@@ -1727,7 +2029,10 @@ final class SmartAuth {
 			$iplist = '<'.$ipaddr.'>';
 		} //end if
 		//--
-		$xtras = 'ApiKey.Virtual'; // mandatory
+		$xtras = (string) trim((string)$xtras);
+		if((string)$xtras == '') {
+			$xtras = '-';
+		} //end if
 		//--
 		$audience = [
 			(string) 'I:'.$iplist, // ip list of allowed addresses as `<ip1>,<ip2>` or `<ip>` or wildcard *
@@ -1768,7 +2073,7 @@ final class SmartAuth {
 		if((string)$edAlgo == 'ed25519') {
 			$edSignature = (array) SmartHashCrypto::ed25519_sign((string)$token, (string)$safeKey);
 			if((string)($edSignature['error'] ?? null) != '') {
-				$jwt['error'] = 'The algo: `'.$edAlgo.'` Failed: # '.$edSignature['error'];
+				$jwt['error'] = 'JWT Sign Failed: algo `'.$edAlgo.'` ERR: # '.$edSignature['error'];
 				return (array) $jwt;
 			} //end if
 			$sign = (string) trim((string)($edSignature['signature'] ?? null)); // b64
@@ -1776,7 +2081,7 @@ final class SmartAuth {
 			$sign = (string) trim((string)SmartHashCrypto::hmac((string)$hmacAlgo, (string)$safeKey, (string)$token, true)); // b64
 		} //end if else
 		if((string)$sign == '') {
-			$jwt['error'] = 'Invalid JWT Signature: Empty';
+			$jwt['error'] = 'JWT Sign Failed: Empty';
 			return (array) $jwt;
 		} //end if
 		$sign = (string) Smart::b64_to_b64s((string)$sign, false);
@@ -1797,15 +2102,27 @@ final class SmartAuth {
 			switch((int)$encrypt) {
 				case 1: // BF
 					$token = (string) SmartCipherCrypto::bf_encrypt((string)strrev((string)$token), (string)SMART_FRAMEWORK_SECURITY_KEY);
+					if((string)trim((string)$token) == '') {
+						$jwt['error'] = 'BF Encryption Failed';
+						return (array) $jwt;
+					} //end if
 					$token = (string) 'ejwt.1f;'.substr((string)$token, (int)strlen((string)SmartCipherCrypto::SIGNATURE_BFISH_V3));
 					break;
 				case 2: // 2F
 					$token = (string) SmartCipherCrypto::tf_encrypt((string)strrev((string)$token), (string)SMART_FRAMEWORK_SECURITY_KEY);
+					if((string)trim((string)$token) == '') {
+						$jwt['error'] = '2F Encryption Failed';
+						return (array) $jwt;
+					} //end if
 					$token = (string) 'ejwt.2f;'.substr((string)$token, (int)strlen((string)SmartCipherCrypto::SIGNATURE_2FISH_V1_DEFAULT));
 					break;
 				case 3: // 3F
 				default:
 					$token = (string) SmartCipherCrypto::t3f_encrypt((string)strrev((string)$token), (string)SMART_FRAMEWORK_SECURITY_KEY);
+					if((string)trim((string)$token) == '') {
+						$jwt['error'] = '3F Encryption Failed';
+						return (array) $jwt;
+					} //end if
 					$token = (string) 'ejwt.3f;'.substr((string)$token, (int)strlen((string)SmartCipherCrypto::SIGNATURE_3FISH_1K_V1_DEFAULT));
 			} //end switch
 			//--
@@ -1820,9 +2137,16 @@ final class SmartAuth {
 			//--
 		} //end if
 		//--
+		$valid = (array) self::jwt_token_validate((string)$algo, (string)$issuer, (string)$token, (string)$ipaddr);
+		if((string)($valid['error'] ?? null) != '') {
+			$jwt['error'] = 'JWT Validation Failed, ERR: '.($valid['error'] ?? null);
+			return (array) $jwt;
+		} //end if
+		//--
 		$jwt['error'] 	= ''; // clear
 		$jwt['algo'] 	= (string) $algo;
 		$jwt['serial'] 	= (string) $serial;
+		$jwt['sign'] 	= (string) $sign;
 		$jwt['iplist'] 	= (string) $iplist;
 		$jwt['area'] 	= (string) $area;
 		$jwt['user'] 	= (string) $user;
@@ -1834,9 +2158,475 @@ final class SmartAuth {
 		$jwt['token'] 	= (string) $token;
 		$jwt['#bytes#'] = (int)    strlen((string)$token);
 		//--
-		// $encrypt
-		//--
 		return (array) $jwt;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Validate a JWT Web Token
+	 *
+	 * If this method returns an error (message), validation of the JWT Token validation has failed
+	 *
+	 * IMPORTANT:
+	 * - the IP list restriction is verified by this method and does validate if the current provided client's IP is valid and is in the allowed list provided by the token
+	 * - if the Token does not provide a valid IP list, token will be not validated, an error will be returned
+	 * - if the IP list is valid but the current visitor IP is not in this list, a validation error will be returned by this method
+	 *
+	 * NOTICE:
+	 * - the Privileges list provided by this method (as the list of privileges available in the token) needs to be INTERSECTED (array intersect, to avoid privilege escalations) with the account's privileges to result the list of account allowed privileges !
+	 * - and empty Privileges list should not be allowed !
+	 *
+	 * This is a hidden functionality that is not intended to be used directly ...
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param 	STRING 	$algo 		:: The JWT Token Algo
+	 * @param 	STRING 	$issuer 	:: The JWT Token Issuer, ussually as basedom:port
+	 * @param 	STRING 	$token 		:: The JWT Token String
+	 * @param 	STRING 	$client_ip 	:: The current client IP Address to be compared and validated with the Token (if token contain an IP Bind) ; must be the current visitor's IP IPv4 or IPv6 for the token is validated for
+	 *
+	 * @return 	ARRAY				:: array of strings as: [ 'error' => 'error if any or empty', 'serial' => 'xxx-xxx', 'user-name' => '...', 'area' => '...', 'ip-list' => '<>,<>|*', 'priv' => '<>,<>|@', 'restr' => '<>,<>|@', 'xtras' => '...', 'json-arr' => [ 'head' => [...], 'body' => [...], 'signature' => 'B64' ] ]
+	 */
+	public static function jwt_token_validate(string $algo, string $issuer, ?string $token, ?string $client_ip) {
+		//--
+		$valid = [
+			'error' 		=> '?', 	// error or empty
+			'serial' 		=> '', 		// serial ID
+			'user-name' 	=> '',  	// auth user name
+			'area' 			=> '', 		// auth area
+			'ip-list' 		=> '', 		// allowed IPs
+			'priv' 			=> '',  	// privileges
+			'restr' 		=> '',  	// restrictions
+			'xtras' 		=> '', 		// JWT Xtras
+			'sign' 			=> '', 		// token signature
+			'token' 		=> '', 		// plain token (even if encrypted)
+			'json-arr' 		=> [ 		// the token json, array
+				'valid' 	=> false,
+				'sign-ok' 	=> false,
+				'head' 		=> [],
+				'body' 		=> [],
+			],
+		];
+		//--
+		if(!defined('SMART_FRAMEWORK_SECURITY_KEY')) {
+			$valid['error'] = 'Security Key is Undefined';
+			return (array) $valid;
+		} //end if
+		if((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) == '') {
+			$valid['error'] = 'Security Key is Empty';
+			return (array) $valid;
+		} //end if
+		//--
+		$algo = (string) trim((string)$algo);
+		$hmacAlgo = '';
+		$edAlgo = '';
+		$dKeyLen = 64; // {{{SYNC-JWT-HS-KEY-LEN}}}
+		switch((string)$algo) {
+			//-- general purpose
+			case 'HS224':  // sha224
+				$hmacAlgo = 'sha224';
+				break;
+			case 'H3S224': // sha3-224
+				$hmacAlgo = 'sha3-224';
+				break;
+			case 'H3S256': // sha3-256
+				$hmacAlgo = 'sha3-256';
+				break;
+			//-- safe, accepted by SmartGo
+			case 'HS384':  // sha384
+				$hmacAlgo = 'sha384';
+				break;
+			case 'H3S384': // sha3-384
+				$hmacAlgo = 'sha3-384';
+				break;
+			case 'H3S512': // sha3-512
+				$hmacAlgo = 'sha3-512';
+				break;
+			case 'Ed25519': // Ed25519
+				$edAlgo = 'ed25519';
+				$dKeyLen = 32;
+				break;
+			default:
+				$valid['error'] = 'Invalid algo: `'.$algo.'`';
+				return (array) $valid;
+		} //end switch
+		//--
+		$issuer = (string) trim((string)$issuer);
+		if((string)$issuer == '') {
+			$valid['error'] = 'Issuer is Empty';
+			return (array) $valid;
+		} //end if
+		//--
+		$token = (string) trim((string)$token);
+		if((string)$token == '') {
+			$valid['error'] = 'Token is Empty';
+			return (array) $valid;
+		} //end if
+		//--
+		if(
+			((int)strlen((string)$token) < 128) 			// {{{SYNC-AUTH-JWT-MIN-ALLOWED-LEN}}} ; min size, for plain or encrypted JWT
+			||
+			((int)strlen((string)$token) > (int)(1280 * 2)) // {{{SYNC-AUTH-JWT-MAX-ALLOWED-LEN}}} ; max size x 2, for plain or allow encrypted JWT
+		) {
+			$valid['error'] = 'Invalid Encrypted Token Length';
+			return (array) $valid;
+		} //end if
+		//--
+		if(strpos((string)$token, 'ejwt.3f;') === 0) { // if starts with this, it is encrypted
+			$token = (string) trim((string)substr((string)$token, 8));
+			if((string)$token != '') {
+				$token = (string) SmartCipherCrypto::t3f_decrypt((string)SmartCipherCrypto::SIGNATURE_3FISH_1K_V1_DEFAULT.$token, (string)SMART_FRAMEWORK_SECURITY_KEY);
+				if((string)$token != '') {
+					$token = (string) strrev((string)$token);
+				} //end if
+			} //end if
+			if((string)$token == '') {
+				$valid['error'] = 'Token 3F Decryption Failed';
+				return (array) $valid;
+			} //end if
+		} else if(strpos((string)$token, 'ejwt.2f;') === 0) { // if starts with this, it is encrypted
+			$token = (string) trim((string)substr((string)$token, 8));
+			if((string)$token != '') {
+				$token = (string) SmartCipherCrypto::tf_decrypt((string)SmartCipherCrypto::SIGNATURE_2FISH_V1_DEFAULT.$token, (string)SMART_FRAMEWORK_SECURITY_KEY);
+				if((string)$token != '') {
+					$token = (string) strrev((string)$token);
+				} //end if
+			} //end if
+			if((string)$token == '') {
+				$valid['error'] = 'Token 2F Decryption Failed';
+				return (array) $valid;
+			} //end if
+		} else if(strpos((string)$token, 'ejwt.1f;') === 0) { // if starts with this, it is encrypted
+			$token = (string) trim((string)substr((string)$token, 8));
+			if((string)$token != '') {
+				$token = (string) SmartCipherCrypto::bf_decrypt((string)SmartCipherCrypto::SIGNATURE_BFISH_V3.$token, (string)SMART_FRAMEWORK_SECURITY_KEY);
+				if((string)$token != '') {
+					$token = (string) strrev((string)$token);
+				} //end if
+			} //end if
+			if((string)$token == '') {
+				$valid['error'] = 'Token BF Decryption Failed';
+				return (array) $valid;
+			} //end if
+		} //end if
+		//--
+		if(
+			((int)strlen((string)$token) < 128)  // {{{SYNC-AUTH-JWT-MIN-ALLOWED-LEN}}} ; min size, for plain JWT
+			||
+			((int)strlen((string)$token) > 1280) // {{{SYNC-AUTH-JWT-MAX-ALLOWED-LEN}}} ; max size, for plain JWT
+		) {
+			$valid['error'] = 'Invalid Token Length';
+			return (array) $valid;
+		} //end if
+		//--
+		if(self::jwt_valid_format((string)$token) !== true) {
+			$valid['error'] = 'Token format is Invalid';
+			return (array) $valid;
+		} //end if
+		//--
+		$arr = (array) explode('.', (string)$token, 3); // {{{SYNC-EXPLODE-DOT-JWT}}}
+		if((int)Smart::array_size($arr) != 3) {  // {{{SYNC-EXPLODE-DOT-JWT-PARTS}}}
+			$valid['error'] = 'Token parts are Invalid';
+			return (array) $valid;
+		} //end if
+		//-- remove signature, before decode, needed for later checks
+		$token = (string) $arr[0].'.'.$arr[1];
+		$signature = (string) Smart::b64s_dec((string)$arr[2], true);
+		//--
+		$arr[0] = Smart::json_decode((string)Smart::b64s_dec((string)$arr[0], true)); // mixed ; B64 STRICT
+		if((int)Smart::array_size($arr[0]) <= 0) {
+			$valid['error'] = 'JWT head is Invalid';
+			return (array) $valid;
+		} //end if
+		//-- verify type, must be JWT
+		if((string)($arr[0]['typ'] ?? null) != 'JWT') {
+			$valid['error'] = 'JWT head type is Invalid';
+			return (array) $valid;
+		} //end if
+		//-- verify algo, must match with what is expected
+		if((string)($arr[0]['alg'] ?? null) != (string)$algo) {
+			$valid['error'] = 'JWT head algo is Invalid';
+			return (array) $valid;
+		} //end if
+		//--
+		$arr[1] = Smart::json_decode((string)Smart::b64s_dec((string)$arr[1], true)); // mixed ; B64 STRICT
+		if((int)Smart::array_size($arr[1]) <= 0) {
+			$valid['error'] = 'JWT body is Invalid';
+			return (array) $valid;
+		} //end if
+		//-- verify issuer, must match the expected one
+		$arr[1]['iss'] = (string) trim((string)$arr[1]['iss']);
+		if((string)$arr[1]['iss'] == '') {
+			$valid['error'] = 'JWT Issuer is Empty';
+			return (array) $valid;
+		} //end if
+		if(((int)strlen((string)$arr[1]['iss']) < 7) || ((int)strlen((string)$arr[1]['iss']) > 69)) {
+			$valid['error'] = 'JWT Issuer is Invalid';
+			return (array) $valid;
+		} //end if
+		if((string)$arr[1]['iss'] != (string)$issuer) {
+			$valid['error'] = 'JWT Issuer does not match';
+			return (array) $valid;
+		} //end if
+		//-- verify issued (created) time
+		$arr[1]['iat'] = (int) intval($arr[1]['iat'] ?? null);
+		if((int)$arr[1]['iat'] <= 0) {
+			$valid['error'] = 'JWT IssuedAt is Zero or Empty';
+			return (array) $valid;
+		} //end if
+		//-- verify expiration time
+		$arr[1]['exp'] = (int) intval($arr[1]['exp'] ?? null);
+		if((int)$arr[1]['exp'] <= 0) {
+			$valid['error'] = 'JWT ExpiresAt is Zero or Empty';
+			return (array) $valid;
+		} //end if
+		//-- verify if expired
+		if((int)$arr[1]['exp'] <= (int)time()) { // {{{SYNC-SMART-JWT-UTC-TIME}}} ; unix time is fixed, does not depend on UTC
+			$valid['error'] = 'JWT is Expired';
+			return (array) $valid;
+		} //end if
+		//-- verify expiration time vs. issued time
+		if((int)$arr[1]['exp'] <= (int)$arr[1]['iat']) {
+			$valid['error'] = 'JWT ExpiresAt must be greater than IssuedAt';
+			return (array) $valid;
+		} //end if
+		//-- verify serial
+		$arr[1]['jti'] = (string) trim((string)$arr[1]['jti']);
+		if((string)$arr[1]['jti'] == '') {
+			$valid['error'] = 'JWT Serial is Empty';
+			return (array) $valid;
+		} //end if
+		if((int)strlen((string)$arr[1]['jti']) != 21) {
+			$valid['error'] = 'JWT Serial is Invalid';
+			return (array) $valid;
+		} //end if
+		if(!preg_match((string)self::REGEX_VALID_JWT_SERIAL, (string)$arr[1]['jti'])) { // {{{SYNC-JWT-VALID-SERIAL}}}
+			$valid['error'] = 'JWT Serial format is Invalid';
+			return (array) $valid;
+		} //end if
+		//-- verify user
+		$user = (string) trim((string)($arr[1]['usr'] ?? null));
+		if((string)$user == '') {
+			$valid['error'] = 'JWT UserName is Empty';
+			return (array) $valid;
+		} //end if
+		if(((int)strlen((string)$user) < 5) || ((int)strlen((string)$user) > 72) || ((bool)preg_match((string)self::REGEX_SAFE_AUTH_USER_NAME, (string)$user) !== true)) {
+			$valid['error'] = 'JWT UserName is Invalid';
+			return (array) $valid;
+		} //end if
+		//-- verify audience
+		if((int)Smart::array_size($arr[1]['aud']) != 5) {
+			$valid['error'] = 'JWT Audience length is Invalid';
+			return (array) $valid;
+		} //end if
+		if((int)Smart::array_type_test($arr[1]['aud']) != 1) {
+			$valid['error'] = 'JWT Audience format is Invalid';
+			return (array) $valid;
+		} //end if
+		$arr[1]['aud'][0] = (string) trim((string)$arr[1]['aud'][0]);
+		$arr[1]['aud'][1] = (string) trim((string)$arr[1]['aud'][1]);
+		$arr[1]['aud'][2] = (string) trim((string)$arr[1]['aud'][2]);
+		$arr[1]['aud'][3] = (string) trim((string)$arr[1]['aud'][3]);
+		$arr[1]['aud'][4] = (string) trim((string)$arr[1]['aud'][4]);
+		if(((string)$arr[1]['aud'][0] == '') || (strpos((string)$arr[1]['aud'][0], 'I:') === false) || ((int)strlen((string)$arr[1]['aud'][0]) < 3) || ((int)strlen((string)$arr[1]['aud'][0]) > 255)) {
+			$valid['error'] = 'JWT Audience is Invalid: I';
+			return (array) $valid;
+		} //end if
+		if(((string)$arr[1]['aud'][1] == '') || (strpos((string)$arr[1]['aud'][1], 'A:') === false) || ((int)strlen((string)$arr[1]['aud'][1]) < 3) || ((int)strlen((string)$arr[1]['aud'][1]) > 255)) {
+			$valid['error'] = 'JWT Audience is Invalid: A';
+			return (array) $valid;
+		} //end if
+		if(((string)$arr[1]['aud'][2] == '') || (strpos((string)$arr[1]['aud'][2], 'P:') === false) || ((int)strlen((string)$arr[1]['aud'][2]) < 3) || ((int)strlen((string)$arr[1]['aud'][2]) > 255)) {
+			$valid['error'] = 'JWT Audience is Invalid: P';
+			return (array) $valid;
+		} //end if
+		if(((string)$arr[1]['aud'][3] == '') || (strpos((string)$arr[1]['aud'][3], 'R:') === false) || ((int)strlen((string)$arr[1]['aud'][3]) < 3) || ((int)strlen((string)$arr[1]['aud'][3]) > 255)) {
+			$valid['error'] = 'JWT Audience is Invalid: R';
+			return (array) $valid;
+		} //end if
+		if(((string)$arr[1]['aud'][4] == '') || (strpos((string)$arr[1]['aud'][4], 'X:') === false) || ((int)strlen((string)$arr[1]['aud'][4]) < 3) || ((int)strlen((string)$arr[1]['aud'][4]) > 512)) { // this can be up to 512, can be json
+			$valid['error'] = 'JWT Audience is Invalid: X';
+			return (array) $valid;
+		} //end if
+		if((int)strlen((string)$arr[1]['aud'][0]) == 3) {
+			if((string)$arr[1]['aud'][0] != 'I:*') {
+				$valid['error'] = 'JWT Audience is Wrong: I';
+				return (array) $valid;
+			} //end if
+		} //end if
+		if((int)strlen((string)$arr[1]['aud'][1]) == 3) {
+			if((string)$arr[1]['aud'][1] != 'A:@') {
+				$valid['error'] = 'JWT Audience is Wrong: A';
+				return (array) $valid;
+			} //end if
+		} //end if
+		if((int)strlen((string)$arr[1]['aud'][2]) == 3) {
+			if((string)$arr[1]['aud'][2] != 'P:@') {
+				$valid['error'] = 'JWT Audience is Wrong: P';
+				return (array) $valid;
+			} //end if
+		} //end if
+		if((int)strlen((string)$arr[1]['aud'][3]) == 3) {
+			if((string)$arr[1]['aud'][3] != 'R:@') {
+				$valid['error'] = 'JWT Audience is Wrong: R';
+				return (array) $valid;
+			} //end if
+		} //end if
+		// do not check for jwtAudience.Xtras ; may contain: - / + ...
+		$iplist = (string) trim((string)substr((string)$arr[1]['aud'][0], 2));
+		if((string)$iplist == '') {
+			$valid['error'] = 'JWT Audience IP List is Empty';
+			return (array) $valid;
+		} //end if
+		$area = (string) trim((string)substr((string)$arr[1]['aud'][1], 2));
+		if((string)$area == '') {
+			$valid['error'] = 'JWT Audience Area is Empty';
+			return (array) $valid;
+		} //end if
+		if((string)$area == '[DEFAULT]') { // disallow, this is reserved for SmartGo, and if have to be set, must be set as `@`
+			$valid['error'] = 'The [DEFAULT] Area is Disallowed';
+			return (array) $valid;
+		} //end if
+		if((string)$area != '@') {
+			if(((int)strlen((string)$area) < 4) || ((int)strlen((string)$area) > 18) || ((bool)preg_match('/^[A-Z0-9\-]{4,18}$/', (string)$area) !== true)) { // disallow dot ; allow just max 18 here, the rest is reserved for SmartGo as prefix for this ; {{{SYNC-AUTH-EXT-AREA-CHECK}}}
+				$valid['error'] = 'Area is Invalid';
+				return (array) $valid;
+			} //end if
+		} //end if
+		$privs = (string) trim((string)substr((string)$arr[1]['aud'][2], 2));
+		if((string)$privs == '') {
+			$valid['error'] = 'JWT Audience Privileges List is Empty';
+			return (array) $valid;
+		} //end if
+		if((string)$privs != '@') {
+			$arrPrivs = (array) self::safe_arr_privileges_or_restrictions((string)$privs, true);
+			if((int)Smart::array_size($arrPrivs) <= 0) {
+				$valid['error'] = 'JWT Audience Privileges List is Invalid';
+				return (array) $valid;
+			} //end if
+			$privs = (string) Smart::array_to_list((array)$arrPrivs);
+			$privs = (string) str_replace(' ', '', (string)$privs);
+			$arrPrivs = null; // free
+			if((int)strlen((string)$privs) > 50) {
+				$valid['error'] = 'JWT Audience Privileges List is OverSized';
+				return (array) $valid;
+			} //end if
+		} //end if
+		$restr = (string) trim((string)substr((string)$arr[1]['aud'][3], 2));
+		if((string)$restr == '') {
+			$valid['error'] = 'JWT Audience Restrictions List is Empty';
+			return (array) $valid;
+		} //end if
+		if((string)$restr != '@') {
+			$arrRestr = (array) self::safe_arr_privileges_or_restrictions((string)$restr, true);
+			if((int)Smart::array_size($arrRestr) <= 0) {
+				$valid['error'] = 'JWT Audience Restrictions List is Invalid';
+				return (array) $valid;
+			} //end if
+			$restr = (string) Smart::array_to_list((array)$arrRestr);
+			$restr = (string) str_replace(' ', '', (string)$restr);
+			$arrRestr = null; // free
+			if((int)strlen((string)$restr) > 50) {
+				$valid['error'] = 'JWT Audience Restrictions List is OverSized';
+				return (array) $valid;
+			} //end if
+		} //end if
+		$xtras = (string) trim((string)substr((string)$arr[1]['aud'][4], 2));
+		//-- verify ip
+		$ipaddr = (string) trim((string)$client_ip);
+		if((string)$ipaddr == '') {
+			$valid['error'] = 'IP Address to verify is Empty';
+			return (array) $valid;
+		} //end if
+		if((string)$ipaddr != '*') { // if not wildcard must be valid ip
+			if((string)trim((string)SmartValidator::validate_filter_ip_address((string)$ipaddr)) == '') { // if not valid IP address
+				$valid['error'] = 'IP Address to verify is Invalid';
+				return (array) $valid;
+			} //end if
+			$ipaddr = (string) trim((string)Smart::ip_addr_compress((string)$ipaddr)); // {{{SYNC-IPV6-STORE-SHORTEST-POSSIBLE}}} ; IPV6 addresses may vary .. find a standard form, ex: shortest
+			if((string)$ipaddr == '') {
+				$valid['error'] = 'IP Address compression Failed for the to verify';
+				return (array) $valid;
+			} //end if
+		} //end if
+		if((string)$arr[1]['aud'][0] != 'I:*') { // check if it is not wildcard ; if wildcard match any
+			if((string)$ipaddr == '*') { // wildcard
+				$valid['error'] = 'JWT IP Address does not match: *';
+				return (array) $valid;
+			} else { // must be valid IP
+				if(strpos(($arr[1]['aud'][0] ?? null), '<'.$ipaddr.'>') === false) {
+					$valid['error'] = 'JWT IP Address does not match';
+					return (array) $valid;
+				} //end if
+			} //end if else
+		} //end if
+		//-- verify subject + checksum
+		$checksum = (string) Smart::b64s_enc((string)chr(0).$user.chr(8).$arr[1]['jti'].chr(7).$arr[1]['exp']."\v".$arr[1]['iat']."\f".$arr[1]['iss'].chr(0).implode("\u{FFFD}", (array)$arr[1]['aud']).chr(8).SMART_FRAMEWORK_SECURITY_KEY.chr(0));
+		$subject = (string) SmartHashCrypto::crc32b((string)$checksum, true).'-'.SmartHashCrypto::crc32b((string)strrev((string)$checksum), true);
+		$arr[1]['sub'] = (string) trim((string)$arr[1]['sub']);
+		if((string)$arr[1]['sub'] == '') {
+			$valid['error'] = 'JWT Subject is Empty';
+			return (array) $valid;
+		} //end if
+		if((string)$arr[1]['sub'] != (string)$subject) {
+			$valid['error'] = 'JWT Subject is Invalid';
+			return (array) $valid;
+		} //end if
+		//--
+		$usrKey = (string) SMART_FRAMEWORK_SECURITY_KEY.chr(0).SmartHashCrypto::crc32b((string)$user."\f".SMART_FRAMEWORK_SECURITY_KEY, false); // make a personalized secret key for the user
+		$safeKey = (string) SmartHashCrypto::pbkdf2DerivedB92Key((string)$usrKey, $user.'#'.$issuer, (int)$dKeyLen, (int)SmartHashCrypto::DERIVE_CENTITER_TK, 'sha3-512'); // b92
+		if((int)strlen((string)$safeKey) != (int)$dKeyLen) {
+			$valid['error'] = 'Invalid Derived Key Length';
+			return (array) $valid;
+		} //end if
+		//-- validate signature
+		$sign = '';
+		if((string)$edAlgo == 'ed25519') {
+			$edSignature = (array) SmartHashCrypto::ed25519_sign((string)$token, (string)$safeKey);
+			if((string)($edSignature['error'] ?? null) != '') {
+				$valid['error'] = 'JWT Sign Failed: algo `'.$edAlgo.'` ERR: # '.$edSignature['error'];
+				return (array) $valid;
+			} //end if
+			$sign = (string) trim((string)($edSignature['signature'] ?? null)); // b64
+			if(SmartHashCrypto::ed25519_verify_sign((string)$signature, (string)$token, (string)Smart::b64s_dec((string)($edSignature['public-key'] ?? null), true)) !== true) {
+				$valid['error'] = 'JWT Signature verification failed';
+				return (array) $valid;
+			} //end if
+		} else {
+			$sign = (string) trim((string)SmartHashCrypto::hmac((string)$hmacAlgo, (string)$safeKey, (string)$token, true)); // b64
+		} //end if else
+		if((string)$sign == '') {
+			$valid['error'] = 'JWT Sign Failed: Empty';
+			return (array) $valid;
+		} //end if
+		$sign = (string) Smart::b64_to_b64s((string)$sign, false);
+		if((string)$sign != (string)$arr[2]) {
+			$valid['error'] = 'JWT Signature does not match';
+			return (array) $valid;
+		} //end if
+		//--
+		$b64usign = (string) Smart::b64s_enc((string)$signature, false);
+		//--
+		$valid['error'] 	= ''; // clear err
+		$valid['serial'] 	= (string) ($arr[1]['jti'] ?? null);
+		$valid['user-name'] = (string) $user;
+		$valid['area'] 		= (string) $area;
+		$valid['ip-list'] 	= (string) $iplist;
+		$valid['priv']  	= (string) $privs;
+		$valid['restr'] 	= (string) $restr;
+		$valid['xtras'] 	= (string) $xtras;
+		$valid['sign'] 		= (string) $b64usign;
+		$valid['token'] 	= (string) $token.'.'.$b64usign; // this is the token, but if encrypted it is the decrypted plain version
+		$valid['json-arr']['valid'] 	= true;
+		$valid['json-arr']['sign-ok'] 	= true;
+		$valid['json-arr']['head'] 		= (array)  $arr[0];
+		$valid['json-arr']['body'] 		= (array)  $arr[1];
+		//--
+		return (array) $valid;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1918,8 +2708,8 @@ final class SmartAuth {
 			//--
 			$jwtsign = '';
 			//--
-			$jwtToken = (array) explode('.', (string)$jwtToken, 3);
-			if((int)Smart::array_size($jwtToken) == 3) {
+			$jwtToken = (array) explode('.', (string)$jwtToken, 3); // {{{SYNC-EXPLODE-DOT-JWT}}}
+			if((int)Smart::array_size($jwtToken) == 3) {  // {{{SYNC-EXPLODE-DOT-JWT-PARTS}}}
 				$jwtsign = (string) trim((string)end($jwtToken));
 				array_pop($jwtToken); // remove last element, that is the binary signature
 			} //end if

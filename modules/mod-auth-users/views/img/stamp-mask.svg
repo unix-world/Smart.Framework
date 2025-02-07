@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 142 142" width="128" height="128" id="stamp-mask">
+	<g id="g1">
+		<path id="p1" style="fill:#dddddd;fill-opacity:1;fill-rule:evenodd;stroke:none" d="M 25,0 C 25,13.807119 13.807119,25 0,25 L 0,46 C 13.807119,46 25,57.192881 25,71 25,84.807119 13.807119,96 0,96 l 0,21 c 13.807119,0 25,11.19288 25,25 l 21,0 c 0,-13.80712 11.192881,-25 25,-25 13.807119,0 25,11.19288 25,25 l 21,0 c 0,-13.80712 11.19288,-25 25,-25 l 0,-21 c -13.80712,0 -25,-11.192881 -25,-25 0,-13.807119 11.19288,-25 25,-25 l 0,-21 C 128.19288,25 117,13.807119 117,0 L 96,0 C 96,13.807119 84.807119,25 71,25 57.192881,25 46,13.807119 46,0 L 25,0 z"/>
+		<path id="p2" style="fill:none;stroke:#eeeeee;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:2, 1;stroke-dashoffset:0" d="m 35.848848,-12.466359 0,171.863599"/>
+		<path id="p3" style="fill:none;stroke:#eeeeee;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:2, 1;stroke-dashoffset:0" d="m 107.01935,-11.939171 0,170.282031"/>
+		<path id="p4" style="fill:none;stroke:#eeeeee;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:2, 1;stroke-dashoffset:0" d="m -10.543779,36.562212 167.118899,0"/>
+		<path id="p5" style="fill:none;stroke:#eeeeee;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:2, 1;stroke-dashoffset:0" d="m -11.598157,105.09677 c 166.591707,0 167.118897,0 167.118897,0"/>
+	</g>
+</svg>

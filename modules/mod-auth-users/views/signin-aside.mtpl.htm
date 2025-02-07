@@ -1,0 +1,17 @@
+[%%%IF:CAPTCHA-HTML:!=;%%%]
+<div style="margin-top:10px;">
+	<center>
+	<div class="ux-grid-row">
+		<div class="ux-grid-col s12">
+			<i class="sfi sfi-lg sfi-circle-right"></i> &nbsp; <h6 style="display:inline;">Captcha is required for Sign-In using email/password.</h6>
+		</div>
+		<div class="ux-grid-col s12">
+			<div style="display:inline-block;">[###CAPTCHA-HTML###]</div>
+		</div>
+	</div>
+	</center>
+</div>
+[%%%ELSE:CAPTCHA-HTML%%%]
+<!-- no captcha -->
+[%%%/IF:CAPTCHA-HTML%%%]
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/signin-aside.mtpl.inc.htm!@@@]

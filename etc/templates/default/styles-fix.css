@@ -1,0 +1,29 @@
+
+/* ------------------------------------------------ CSS3, Styles Fix START :: r.20250124 */
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: normal;
+}
+.ux-button {
+	font-weight: normal !important;
+}
+.ux-button-super {
+	font-size: 1rem !important;
+}
+.simple_tabs_active, .simple_tabs_inactive {
+	font-weight: normal !important;
+}
+div#operation_display,   div.operation_display,
+div#operation_result,    div.operation_result,
+div#operation_info,      div.operation_info,
+div#operation_notice,    div.operation_notice,
+div#operation_important, div.operation_important,
+div#operation_hint,      div.operation_hint,
+div#operation_question,  div.operation_question,
+div#operation_success,   div.operation_success,
+div#operation_warn,      div.operation_warn,
+div#operation_error,     div.operation_error {
+	font-weight: normal !important;
+}
+
+/* ------------------------------------------------ Base Styles Fix END */

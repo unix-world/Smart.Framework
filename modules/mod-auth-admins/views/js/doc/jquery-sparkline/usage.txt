@@ -16,10 +16,10 @@ Here's a simple web page that will display some sparklines:
 	"http://www.w3.org/TR/html4/strict.dtd">
 <head>
 
-	<script type="text/javascript" src="jquery.js"></script>
-	<script type="text/javascript" src="jquery.sparkline.js"></script>
+	<script src="jquery.js"></script>
+	<script src="jquery.sparkline.js"></script>
 
-	<script type="text/javascript">
+	<script>
 	$(function() {
 		/** This code runs when everything has been loaded on the page */
 		/* Inline sparklines take their values from the contents of the tag */
@@ -72,7 +72,7 @@ Values can either be an array of numbers or "html" which causes the values to be
 <span class="sparklines">1,2,3,4,5,4,3,2,1</span>
 <span id="ticker"">Loading..</span>
 
-<script type="text/javascript">
+<script>
 $('.sparklines').sparkline('html');
 $('#ticker').sparkline([1,2,3,4,5,4,3,2,1]);
 </script>
@@ -93,7 +93,7 @@ If necessary, options can be passed as attributes on each tag. This requires set
 <span class="sparklines" sparkType="bar" sparkBarColor="green"><!-- 1,2,3,4,3,2,1 --></span>
 <span class="sparklines" sparkType="bar" sparkBarColor="red"><!-- 1,2,3,4,3,2,1 --></span>
 
-<script type="text/javascript">
+<script>
 $('.sparklines').sparkline('html', { enableTagOptions: true });
 </script>
 

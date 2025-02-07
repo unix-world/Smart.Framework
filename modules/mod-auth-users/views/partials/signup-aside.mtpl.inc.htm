@@ -1,0 +1,128 @@
+<style>
+div.area-aside {
+	background-color: #2A497E !important;
+	padding-top:   10px !important;
+	padding-left:  50px !important;
+	padding-right: 25px !important;
+}
+div.area-aside hr {
+	border-top: 1px dashed #4B77BE !important;
+}
+div#signup-container h1,
+div#signup-container h2,
+div#signup-container h3,
+div#signup-container h4,
+div#signup-container h5,
+div#signup-container h6 {
+	display: inline !important;
+}
+span.idp-name {
+	font-weight: bold;
+}
+</style>
+<div id="signup-container">
+	<div class="ux-grid-row">
+		<div class="ux-grid-col s12">
+			<h2>[###TXT-REG-TITLE|html###]</h2>
+		</div>
+		<div class="ux-grid-col s12" style="text-align:right; color:#5C88CF;">
+			<h3><i>[###WEBSITE-NAME|html###]</i></h3>
+		</div>
+	</div>
+	<hr>
+	<div class="ux-grid-row" style="color:#5C88CF;">
+		<div class="ux-grid-col s12">
+			<i class="sfi sfi-xl sfi-hammer2"></i> &nbsp; <h4>Acknowledge</h4>
+		</div>
+		<div class="ux-grid-col s12">
+			<div>By registering an account on this website you confirm you have read and agree with all the terms and conditions of the service.</div>
+		</div>
+	</div>
+	<hr>
+	<br>
+	<div class="ux-grid-row">
+		<div class="ux-grid-col s12">
+			<i class="sfi sfi-xl sfi-user-plus" style="color:#ED2559;"></i> &nbsp; <h4>Sign-Up using email and password (standard):</h4>
+		</div>
+		<div class="ux-grid-col s12" style="color:#5C88CF;">
+			<div>Provide a valid email address and a secure password of minimum 8 characters.</div>
+		</div>
+	</div>
+[%%%IF:CAPTCHA-HTML:!=;%%%]
+	<div class="ux-grid-row">
+		<div class="ux-grid-col s12" style="color:#ED2559;">
+			<i class="sfi sfi-lg sfi-circle-right"></i> &nbsp; <h6>Security step, Required: solve the Captcha before Sign-Up with this option.</h6>
+		</div>
+		<div class="ux-grid-col s12">
+			<div style="display:inline-block;">[###CAPTCHA-HTML###]</div>
+		</div>
+	</div>
+[%%%ELSE:CAPTCHA-HTML%%%]
+	<!-- no captcha -->
+[%%%/IF:CAPTCHA-HTML%%%]
+[%%%IF:AUTH-PLUGINS:@>0;%%%]
+	<div class="ux-grid-row">
+		<div class="ux-grid-col s12">
+			<i class="sfi sfi-xl sfi-envelop" style="color:#5C88CF;"></i> &nbsp; <h5>An Activation Link will be sent by email after the registration.</h5>
+		</div>
+		<div class="ux-grid-col s12" style="color:#5C88CF;">
+			<div>You need to activate your account before your first login (click on the activation link you will get by email).</div>
+			<div><i>This is a necessary step, for your protection, to ensure that nobody else may use your email address to register, except you, security is important.</i></div>
+			<div>Be sure to check your Spam, if the email does not get in few minutes into your Inbox.</div>
+		</div>
+	</div>
+	<br>
+	<hr>
+	<br>
+	<div class="ux-grid-row">
+		<div class="ux-grid-col s12">
+			<i class="sfi sfi-xl sfi-user-plus" style="color:#ED2559;"></i> &nbsp; <h4>Sign-Up using SSO (Single-Sign-On):</h4>
+			<br>
+			<i class="sfi sfi-xl sfi-power" style="color:#5C88CF;"></i> &nbsp; <h5>No activation is required. No password. Based on single use tokens.</h5>
+		</div>
+		<div class="ux-grid-col s12" style="color:#5C88CF;">
+			<div>
+				SSO Sign-Up is using some well-known federated identity service provider services that may exchange your verified identity with this website.
+				<br>
+				Choose and click one of SSO Identity Providers:
+				<!-- auth:plugins -->[%%%LOOP:AUTH-PLUGINS%%%]<!-- auth:plugin `[###AUTH-PLUGINS.ID|html###]` --><span class="idp-name">[###AUTH-PLUGINS.NAME|html###]</span>[%%%IF:AUTH-PLUGINS.-_INDEX_-:<###AUTH-PLUGINS.-_MAXSIZE_-###;%%%], [%%%ELSE:AUTH-PLUGINS.-_INDEX_-%%%].[%%%/IF:AUTH-PLUGINS.-_INDEX_-%%%][%%%/LOOP:AUTH-PLUGINS%%%]<!-- /auth:plugins -->
+			</div>
+			<div><i>If you have multiple identities, using different email addresses on different providers, be sure you pick-up the same provider each time, otherwise if the email address provided by the SSO identity provider is different than the one you have used to open your account on this website, you will land into a separated account namespace.</i></div>
+		</div>
+	</div>
+[%%%ELSE:AUTH-PLUGINS%%%]
+	<!-- Auth Plugins: N/A -->
+[%%%/IF:AUTH-PLUGINS%%%]
+[%%%IF:IS-FA2-AVAILABLE:==1;%%%]
+	<br>
+	<hr>
+	<br>
+	<div class="ux-grid-row">
+		<div class="ux-grid-col s12"[%%%IF:IS-FA2-REQUIRED:!=1;%%%] style="color:#5C88CF;"[%%%/IF:IS-FA2-REQUIRED%%%]>
+			<i class="sfi sfi-xl sfi-clock"></i> &nbsp; <h4>2FA - Two Factor Authentication</h4>
+		</div>
+		<div class="ux-grid-col s12" style="color:#5C88CF;">
+			<div>With 2FA (2-Step Verification), you can add an extra layer of security to your account. After your first login, from your account, you can enable the 2FA security option.</div>
+			<div>Enabling 2FA on your account will require on each Sign-In an extra 8-digit code provided by a 2FA compatible mobile application, where the 2FA code will be installed, such as Google Authenticator or FreeOTP. The 2FA option can also be disabled anytime, if you enabled it.</div>
+		</div>
+	</div>
+[%%%ELSE:IS-FA2-AVAILABLE%%%]
+	<!-- no fa2 -->
+[%%%/IF:IS-FA2-AVAILABLE%%%]
+	<br>
+	<hr>
+	<br>
+	<div class="ux-grid-row" style="color:#5C88CF;">
+		<div class="ux-grid-col s12">
+			<i class="sfi sfi-xl sfi-shield"></i> &nbsp; <h4>Security and Data Protection</h4>
+		</div>
+		<div class="ux-grid-col s12">
+			<div>Nobody except you can access your data. All your sensitive data will be stored as encrypted, using strong encryption, post-quantum safe algorithms.</div>
+			<div>Also, your digital signed data will be preserved safe without modifications. Each account is provided with a unique digital signature.</div>
+			<div>All the passwords are encrypted into an irreversible format using the highest security standards. Security is important to you and us.</div>
+		</div>
+	</div>
+	<br>
+	<hr>
+</div>
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/powered-by-unicorn.mtpl.inc.htm!@@@]

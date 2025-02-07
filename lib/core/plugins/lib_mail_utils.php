@@ -42,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20250107
+ * @version 	v.20250129
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -198,30 +198,22 @@ final class SmartMailerUtils {
 		//------------
 		if(function_exists('getmxrr')) {
 			if((string)$safedom != '') {
-				@getmxrr($safedom, $tmp_arr); // getmxrr is available also on Windows platforms since PHP 5.3
+				@getmxrr((string)$safedom, $tmp_arr); // getmxrr is available also on Windows platforms since PHP 5.3
 			} else {
 				$msg .= 'WARNING: Empty Safe Domain Name (after-conversion) for: '.$domain;
 			} //end if
 		} else {
-			$msg .= 'WARNING: PHP getmxrr is not implemented on this platform ...';
+			$msg .= 'WARNING: PHP getmxrr is not available ...';
 		} //end if
 		//------------
-		if((int)Smart::array_size($tmp_arr) <= 0) {
-			//-- ERR
+		if((int)Smart::array_size($tmp_arr) <= 0) { // ERR
 			$msg .= 'WARNING: No MX Records found for Domain \''.$safedom.'\''."\n";
-			//--
 		} else {
-			//--
 			$msg .= 'List of available MX Servers for Domain \''.$safedom.'\':'."\n";
-			//--
 			for($m=0; $m<Smart::array_size($tmp_arr); $m++) {
-				//--
 				$msg .= ' -> '.$tmp_arr[$m]."\n";
-				//--
 			} //end for
-			//--
 			$msg .= "\n";
-			//--
 		} //end if else
 		//------------
 		$msg .= '[Checking mail address: \''.$email.'\']'."\n";
@@ -257,8 +249,8 @@ final class SmartMailerUtils {
 				//--
 			} //end if else
 			//--
-			if($i >= 5) {
-				break; // do not check more than 5 servers
+			if($i >= 3) {
+				break; // do not check more than 3 servers
 			} //end if
 			//--
 		} //end for
@@ -316,6 +308,17 @@ final class SmartMailerUtils {
 		//-- fix: detect encrypted password and decrypt
 		if(isset($def_mail_cfg['auth-password'])) {
 			if(is_array($def_mail_cfg['auth-password'])) {
+				//--
+				if(isset($def_mail_cfg['auth-password']['oauth2'])) {
+					if((int)Smart::array_size($def_mail_cfg['auth-password']['oauth2']) <= 0) {
+						return -3; // invalid oauth2 settings
+					} //end if
+					$def_mail_cfg['auth-password'] = [
+						'callable'  => [ 'SmartMailerOauth2', 'getTokenPass' ],
+						'params' 	=> (array) $def_mail_cfg['auth-password']['oauth2'],
+					];
+				} //end if
+				//--
 				if(
 					isset($def_mail_cfg['auth-password']['encrypted'])
 					AND
@@ -358,6 +361,7 @@ final class SmartMailerUtils {
 					Smart::log_warning(__METHOD__.' # Invalid definition for config value: sendmail.auth-password !');
 					return -1;
 				} //end if
+				//--
 			} //end if
 		} //end if
 		//--
@@ -430,6 +434,7 @@ final class SmartMailerUtils {
 				'server-port',
 				'server-ssl',
 				'server-cafile',
+				'server-secure',
 				'auth-user',
 				'auth-password',
 				'auth-mode',
@@ -450,6 +455,7 @@ final class SmartMailerUtils {
 			'server_port' 			=> (string) $mail_config['server-port'],
 			'server_sslmode' 		=> (string) $mail_config['server-ssl'],
 			'server_cafile' 		=> (string) $mail_config['server-cafile'],
+			'server_secure' 		=> (bool)   $mail_config['server-secure'], // optional, just for SMTP
 			'server_auth_user' 		=> (string) $mail_config['auth-user'], // optional, just for SMTP
 			'server_auth_pass' 		=> (string) $mail_config['auth-password'], // optional, just for SMTP
 			'server_auth_mode' 		=> (string) $mail_config['auth-mode'], // optional, just for SMTP (auth mode)
@@ -576,6 +582,7 @@ final class SmartMailerUtils {
 				'server_port',
 				'server_sslmode',
 				'server_cafile',
+				'server_secure',
 				'server_auth_user',
 				'server_auth_pass',
 				'server_auth_mode',
@@ -599,6 +606,7 @@ final class SmartMailerUtils {
 		$server_port 		= (string) trim((string)$y_server_settings['server_port']);
 		$server_sslmode 	= (string) trim((string)$y_server_settings['server_sslmode']);
 		$server_cafile 		= (string) trim((string)$y_server_settings['server_cafile']);
+		$server_secure 		= (bool)   $y_server_settings['server_secure'];
 		$server_user 		= (string) trim((string)$y_server_settings['server_auth_user']);
 		$server_pass 		= (string) trim((string)$y_server_settings['server_auth_pass']);
 		$server_modeauth 	= (string) trim((string)$y_server_settings['server_auth_mode']);
@@ -617,6 +625,7 @@ final class SmartMailerUtils {
 
 		//-- mail send class init
 		$mail = new SmartMailerSend();
+		$mail->smtp_securemode = (bool) $server_secure;
 		$mail->usealways_b64 = (bool) $usealways_b64;
 		$mail->use_min_enc_subj = (bool) $use_min_enc_subj;
 		$mail->use_antispam_rules = (bool) $use_antispam_rules;
@@ -985,7 +994,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20250107
+ * @version 	v.20250129
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -1260,7 +1269,7 @@ final class SmartMailerMimeParser {
 		$the_message_eml = (string) trim((string)$msg_decode_arr['message-file']);
 		$the_part_id = (string) trim((string)$msg_decode_arr['message-part']);
 		//--
-//$the_message_eml = 'tmp/test-emails/test_uxm_multi_mimes.eml'; // EMAIL TEST FILE ... (uncomment for tests) ; {{{SYNC-TEST-EMAIL-FILE}}}
+		//$the_message_eml = 'tmp/test-emails/test_uxm_multi_mimes.eml'; // EMAIL TEST FILE ... (uncomment for tests) ; {{{SYNC-TEST-EMAIL-FILE}}}
 		//--
 
 		//--
@@ -1373,33 +1382,33 @@ final class SmartMailerMimeParser {
 				$priority_img = '';
 				if((string)$y_msg_type == 'apple-note') {
 					$tmp_ittl = (string) ucwords((string)str_replace('-', ' ', $y_msg_type)).' / UUID: '.$head['message-uid'];
-					$priority_img = '<img src="lib/core/plugins/img/email/note.svg" align="left" alt="'.Smart::escape_html($tmp_ittl).'" title="'.Smart::escape_html($tmp_ittl).'">';
+					$priority_img = '<img src="lib/core/plugins/img/email/note.svg" align="left" alt="'.Smart::escape_html((string)$tmp_ittl).'" title="'.Smart::escape_html((string)$tmp_ittl).'">';
 				} else {
 					$tmp_ittl = ' / Message-ID: '.$head['message-id'];
 					switch((string)$head['priority']) {
 						case '1': // high
-							$priority_img = '<img src="lib/core/plugins/img/email/priority-high.svg" align="left" alt="High Priority'.Smart::escape_html($tmp_ittl).'" title="High Priority'.Smart::escape_html($tmp_ittl).'">';
+							$priority_img = '<img src="lib/core/plugins/img/email/priority-high.svg" align="left" alt="High Priority'.Smart::escape_html((string)$tmp_ittl).'" title="High Priority'.Smart::escape_html((string)$tmp_ittl).'">';
 							break;
 						case '5': // low
-							$priority_img = '<img src="lib/core/plugins/img/email/priority-low.svg" align="left" alt="Low Priority'.Smart::escape_html($tmp_ittl).'" title="Low Priority'.Smart::escape_html($tmp_ittl).'">';
+							$priority_img = '<img src="lib/core/plugins/img/email/priority-low.svg" align="left" alt="Low Priority'.Smart::escape_html((string)$tmp_ittl).'" title="Low Priority'.Smart::escape_html((string)$tmp_ittl).'">';
 							break;
 						case '3': // medium
 						default:
 							//$priority_img = '';
-							$priority_img = '<img src="lib/core/plugins/img/email/priority-normal.svg" align="left" alt="Normal Priority'.Smart::escape_html($tmp_ittl).'" title="Normal Priority'.Smart::escape_html($tmp_ittl).'">';
+							$priority_img = '<img src="lib/core/plugins/img/email/priority-normal.svg" align="left" alt="Normal Priority'.Smart::escape_html((string)$tmp_ittl).'" title="Normal Priority'.Smart::escape_html((string)$tmp_ittl).'">';
 					} //end switch
 				} //end if
 				$tmp_ittl = '';
 				//--
 				if((string)$skip_part_linking != 'yes') { // avoid display the print link when only a part is displayed ; print view is HTML so need no mimetype
-					$out .= '<a href="'.self::mime_link((string)$y_ctrl_key, (string)$the_message_eml, (string)$the_part_id, (string)$y_link, '', '', 'print').'" target="'.Smart::escape_html($y_target).'__mimepart" data-smart="open.popup">'.'<img align="right" src="lib/core/plugins/img/email/print-view.svg" title="Print View" alt="Print View">'.'</a>';
+					$out .= '<a href="'.self::mime_link((string)$y_ctrl_key, (string)$the_message_eml, (string)$the_part_id, (string)$y_link, '', '', 'print').'" target="'.Smart::escape_html((string)$y_target).'__mimepart" data-smart="open.popup">'.'<img align="right" src="lib/core/plugins/img/email/print-view.svg" title="Print View" alt="Print View">'.'</a>';
 				} //end if
 				//--
 				switch((string)$y_show_headers) {
 					case 'subject':
 						//--
 						if((string)$head['subject'] != '[?]') {
-							$out .= '<h1 style="display:inline-block!important; line-height:16px;"><span style="font-size:1.25rem;">'.Smart::escape_html($head['subject']).'</span></h1><br>';
+							$out .= '<h1 style="display:inline-block!important; line-height:16px;"><span style="font-size:1.25rem;">'.Smart::escape_html((string)$head['subject']).'</span></h1><br>';
 						} //end if
 						//--
 						break;
@@ -1407,7 +1416,7 @@ final class SmartMailerMimeParser {
 					default:
 						//--
 						if((string)$head['subject'] != '[?]') {
-							$out .= '<h1 style="display:inline-block!important; line-height:16px;">'.$priority_img.'<span style="font-size:1.25rem;">&nbsp;&nbsp;'.Smart::escape_html($head['subject']).'</span></h1><hr>';
+							$out .= '<h1 style="display:inline-block!important; line-height:16px;">'.$priority_img.'<span style="font-size:1.25rem;">&nbsp;&nbsp;'.Smart::escape_html((string)$head['subject']).'</span></h1><hr>';
 						} //end if
 						//--
 						if((string)$head['date'] != '(?)') {
@@ -1416,12 +1425,12 @@ final class SmartMailerMimeParser {
 						//--
 						if((string)$y_msg_type == 'apple-note') {
 							//--
-							$out .= '<span style="font-size:1rem;"><b>Notes.Author:</b> '.Smart::escape_html($head['from_addr']).((((string)$head['from_addr'] != (string)$head['from_name']) && ((string)trim((string)$head['from_name']) != '')) ? ' &nbsp; <i>'.Smart::escape_html($head['from_name']).'</i>' : '').'</span><br>';
+							$out .= '<span style="font-size:1rem;"><b>Notes.Author:</b> '.Smart::escape_html((string)$head['from_addr']).((((string)$head['from_addr'] != (string)$head['from_name']) && ((string)trim((string)$head['from_name']) != '')) ? ' &nbsp; <i>'.Smart::escape_html((string)$head['from_name']).'</i>' : '').'</span><br>';
 							//--
 						} else {
 							//--
-							$out .= '<span style="font-size:1rem;"><b>From:</b> '.Smart::escape_html($head['from_addr']).' &nbsp; <i>'.Smart::escape_html($head['from_name']).'</i>'.'</span><br>';
-							$out .= '<span style="font-size:1rem;"><b>To:</b> '.Smart::escape_html($head['to_addr']).' &nbsp; <i>'.Smart::escape_html($head['to_name']).'</i>'.'</span><br>';
+							$out .= '<span style="font-size:1rem;"><b>From:</b> '.Smart::escape_html((string)$head['from_addr']).' &nbsp; <i>'.Smart::escape_html((string)$head['from_name']).'</i>'.'</span><br>';
+							$out .= '<span style="font-size:1rem;"><b>To:</b> '.Smart::escape_html((string)$head['to_addr']).' &nbsp; <i>'.Smart::escape_html((string)$head['to_name']).'</i>'.'</span><br>';
 							//--
 							if((string)$head['cc_addr'] != '') {
 								$out .= '<span style="font-size:1rem;"><b>Cc:</b> ';
@@ -1433,14 +1442,14 @@ final class SmartMailerMimeParser {
 										$out .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.Smart::escape_html((string)trim((string)$arr_cc_addr[$z])).' &nbsp; <i>'.Smart::escape_html((string)trim((string)(isset($arr_cc_name[$z]) ? $arr_cc_name[$z] : ''))).'</i>';
 									} //end for
 								} else {
-									$out .= Smart::escape_html($head['cc_addr']).' &nbsp; <i>'.Smart::escape_html($head['cc_name']).'</i>';
+									$out .= Smart::escape_html((string)$head['cc_addr']).' &nbsp; <i>'.Smart::escape_html((string)$head['cc_name']).'</i>';
 								} //end if else
 								$out .= '</span><br>';
 							} //end if
 							//--
 							if((string)$head['bcc_addr'] != '') {
 								$out .= '<span style="font-size:1rem;"><b>Bcc:</b> ';
-								$out .= Smart::escape_html($head['bcc_addr']).' &nbsp; <i>'.Smart::escape_html($head['bcc_name']).'</i>';
+								$out .= Smart::escape_html((string)$head['bcc_addr']).' &nbsp; <i>'.Smart::escape_html((string)$head['bcc_name']).'</i>';
 								$out .= '</span><br>';
 							} //end if
 							//--
@@ -1503,7 +1512,7 @@ final class SmartMailerMimeParser {
 				//--
 			} else {
 				//--
-				$out .= '<div style="text-align:right; color:#999999; font-size:0.625rem;">'.Smart::escape_html($head['subject']).' // '.'MIME Part ID : <i>'.Smart::escape_html($the_part_id).'</i></div>';
+				$out .= '<div style="text-align:right; color:#999999; font-size:0.625rem;">'.Smart::escape_html((string)$head['subject']).' // '.'MIME Part ID : <i>'.Smart::escape_html((string)$the_part_id).'</i></div>';
 				//--
 			} //end if
 			//-- print text bodies
@@ -1667,7 +1676,7 @@ final class SmartMailerMimeParser {
 									// display nothing
 								} else {
 									if((string)$val['@smart-log'] != '') {
-										$out .= '<div align="right">'.'<span title="'.Smart::escape_html($val['@smart-log']).'">&nbsp;</span>'.$tmp_link_pre.'<img src="lib/core/plugins/img/email/mime-log-part.svg" alt="Message Send Log" title="Message Send Log">'.$tmp_link_pst.'</div>';
+										$out .= '<div align="right">'.'<span title="'.Smart::escape_html((string)$val['@smart-log']).'">&nbsp;</span>'.$tmp_link_pre.'<img src="lib/core/plugins/img/email/mime-log-part.svg" alt="Message Send Log" title="Message Send Log">'.$tmp_link_pst.'</div>';
 									} else {
 										$out .= '<div align="right">'.'<span title="'.'~'.Smart::escape_html(Smart::format_number_dec($skips[$key], 0, '.', ',').'%').'">&nbsp;</span>'.$tmp_link_pre.'<img src="lib/core/plugins/img/email/mime-alt-part.svg" alt="Alternative Mime Part" title="Alternative Mime Part">'.$tmp_link_pst.'</div>';
 									} //end if else
@@ -1928,7 +1937,7 @@ final class SmartMailerMimeParser {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartCipherCrypto, SmartHttpUtils, SmartHttpClient, SmartAuth, SmartUtils
- * @version 	v.20250107
+ * @version 	v.20250129
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -2016,6 +2025,7 @@ final class SmartMailerOauth2 {
 					(array)  [ 'oauth2' ] // only oauth2 privilege
 				);
 				if($swt_token['error'] !== '') {
+					Smart::log_warning(__METHOD__.' # SWT ERR: '.$swt_token['error']);
 					return '';
 				} //end if
 				$authUser = (string) SmartHttpUtils::AUTH_USER_BEARER;
@@ -2025,10 +2035,17 @@ final class SmartMailerOauth2 {
 				if(strpos((string)$url, 'https://') !== 0) { // allow just on HTTPS ; tokens cannot be exposed on http, it is unsafe
 					return '';
 				} //end if
-				if((string)strtolower((string)$params['user']) != 'bearer') {
-					return '';
-				} //end if
-				$authUser = (string) SmartHttpUtils::AUTH_USER_BEARER;
+				$authUser = (string) strtoupper((string)$params['user']);
+				switch((string)$authUser) {
+					case SmartHttpUtils::AUTH_USER_BEARER:
+					case SmartHttpUtils::AUTH_USER_APIKEY:
+					case SmartHttpUtils::AUTH_USER_TOKEN:
+					case SmartHttpUtils::AUTH_USER_RAW:
+						break;
+					default:
+						Smart::log_warning(__METHOD__.' # Token Invalid UserName: '.$authUser);
+						return '';
+				} //end switch
 				$authPass = (string) trim((string)SmartCipherCrypto::tf_decrypt((string)$params['pass'], '', true)); // TF or BF with fallback ; it is tokem can be trimmed
 				if((string)$authPass == '') {
 					return '';

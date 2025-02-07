@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20250107 s.20250107.2358
+// [AppCodeUnpack / APP] v.20250207 s.20250207.2358
 // (c) 2008-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -94,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) : voi
 final class AppCodeUnpack {
 
 	// ::
-	// v.20250107
+	// v.20250207
 
-	private const APPCODEUNPACK_VERSION = 's.20250107.2358';
+	private const APPCODEUNPACK_VERSION = 's.20250207.2358';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
@@ -118,6 +118,12 @@ final class AppCodeUnpack {
 		} //end if
 		//--
 		self::prompt401Auth((string)APP_AUTH_ADMIN_USERNAME, (string)APP_AUTH_ADMIN_PLAIN_PASSWORD);
+		SmartAuth::lock_auth_data(); // disallow authentication after this point
+		if(SmartAuth::is_authenticated() !== true) {
+			self::raiseXXXError(403, ' # Unpack Requires Authentication');
+			die(__METHOD__.' # Unpack Requires Authentication');
+			return null;
+		} //end if
 		//--
 		$action = (string) trim((string)SmartFrameworkRegistry::getRequestVar('action', '', 'string'));
 		$err = false;
@@ -950,7 +956,7 @@ final class AppCodeUnpack {
 				'APPCODEUNPACK_BASE_STYLES', 'APPCODEUNPACK_TOOLKIT_STYLES', 'APPCODEUNPACK_NOTIFICATION_STYLES', 'APPCODEUNPACK_LOCAL_STYLES',
 				'APPCODEUNPACK_JS_JQUERY', 'APPCODEUNPACK_JS_SMART_UTILS', 'APPCODEUNPACK_JS_SMART_DATE', 'APPCODEUNPACK_JS_SMART_CRYPTO',
 				'APPCODEUNPACK_CSS_GRITTER', 'APPCODEUNPACK_JS_GRITTER', 'APPCODEUNPACK_CSS_ALERTABLE', 'APPCODEUNPACK_JS_ALERTABLE',
-				'APPCODEUNPACK_HTML_WATCH',
+				'APPCODEUNPACK_JS_WATCH', 'APPCODEUNPACK_HTML_WATCH',
 				'APPCODEUNPACK_LOGO_SVG', 'APPCODEUNPACK_LOGO_APACHE_SVG', 'APPCODEUNPACK_LOGO_PHP_SVG', 'APPCODEUNPACK_LOGO_NETARCH_SVG',
 				'APPCODEUNPACK_LOGO_SF_SVG', 'APPCODEUNPACK_LOADING_SVG',
 				'APPCODEUNPACK_CSS_LOCAL_FX', 'APPCODEUNPACK_JS_LOCAL_FX',
@@ -1051,30 +1057,34 @@ final class AppCodeUnpack {
 				if((string)\trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY) != '') {
 					$priv_keys = (string) \trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY);
 					if((string)$priv_keys != '') {
-						$priv_keys = (string) \SmartAuth::decrypt_privkey((string)$priv_keys, (string)$hash_of_pass);
+						$priv_keys = (string) \SmartAuth::decrypt_sensitive_data((string)$priv_keys, (string)$hash_of_pass);
 					} //end if
 				} //end if
 			} //end if
 			//--
 			$hash_of_pass = (string) SmartHashCrypto::password((string)$_SERVER['PHP_AUTH_PW'], (string)$_SERVER['PHP_AUTH_USER']);
 			//--
-			SmartAuth::set_login_data( // v.20231018
-				'APPCODEUNPACK-AREA', 						// auth realm
-				'HTTP-BASIC', 								// auth method {{{SYNC-AUTH-METHODS-NAME}}}
-				(string) $hash_of_pass, 					// auth password hash (will be stored as encrypted, in-memory)
-				(string) $_SERVER['PHP_AUTH_USER'], 		// auth ID (on backend must be set exact as the auth username)
-				(string) $_SERVER['PHP_AUTH_USER'], 		// auth user name
-				'superadmin@appcodeunpack', 				// user email * Optional *
-				'Super Admin', 								// user full name (First Name + ' ' + Last name) * Optional *
-				(array) $privileges, 						// user privileges * Optional *
-				(array)  [ 'def-account', 'account' ], 		// user restrictions ; {{{SYNC-AUTH-RESTRICTIONS}}} ; {{{SYNC-DEF-ACC-EDIT-RESTRICTION}}} ; {{{SYNC-ACC-NO-EDIT-RESTRICTION}}}
-				0, 											// user quota in MB * Optional * ... zero, aka unlimited
-				[ 											// user metadata (array) ; may vary
+			SmartAuth::set_auth_data( // v.20250128
+				'APPCODEUNPACK-AREA', 								// auth realm
+				'HTTP-BASIC', 										// auth method {{{SYNC-AUTH-METHODS-NAME}}}
+				(int)    \SmartAuth::ALGO_PASS_SMART_SAFE_SF_PASS,  // pass algo
+				(string) $hash_of_pass, 							// auth password hash (will be stored as encrypted, in-memory)
+				(string) $_SERVER['PHP_AUTH_USER'], 				// auth user name
+				(string) $_SERVER['PHP_AUTH_USER'], 				// auth ID (on backend must be set exact as the auth username)
+				'', 												// user email * Optional *
+				'Super Admin', 										// user full name (First Name + ' ' + Last name) * Optional *
+				(array) $privileges, 								// user privileges * Optional *
+				(array)  [ 'def-account', 'account' ], 				// user restrictions ; {{{SYNC-AUTH-RESTRICTIONS}}} ; {{{SYNC-DEF-ACC-EDIT-RESTRICTION}}} ; {{{SYNC-ACC-NO-EDIT-RESTRICTION}}}
+				(array)  [ // {{{SYNC-AUTH-KEYS}}}
+					'privkey' => (string) $priv_keys 				// user private key (will be stored as encrypted, in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
+					// TODO: have also a private or security key ?
+				],
+				0, 													// user quota in MB * Optional * ... zero, aka unlimited
+				[ 													// user metadata (array) ; may vary
 					'auth-safe' => 1,
 					'name_f' 	=> 'Super',
 					'name_l' 	=> 'Admin',
-				],
-				(string) $priv_keys 						// user private key (will be stored as encrypted, in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
+				]
 			);
 			//--
 		} else {
@@ -1188,8 +1198,12 @@ final class AppCodeUnpack {
 
 	private static function renderErrorTPL(?string $title, ?string $msg_txt, ?string $extmsg_txt='', ?string $ext_html='') : string {
 		//--
+		if(!defined('APPCODEUNPACK_HTML_ERRTPL')) {
+			return '{#EMPTY-APPCODEUNPACK-ERRTPL#}';
+		} //end if
+		//--
 		return (string) SmartMarkersTemplating::render_template(
-			(string) (defined('APPCODEUNPACK_HTML_ERRTPL') ? APPCODEUNPACK_HTML_ERRTPL : '{#EMPTY-APPCODEUNPACK-ERRTPL#}'),
+			(string) APPCODEUNPACK_HTML_ERRTPL,
 			[
 				'SCRIPT' 				=> (string) self::APPCODEUNPACK_SCRIPT,
 				'CHARSET' 				=> (string) (defined('SMART_FRAMEWORK_CHARSET') ? SMART_FRAMEWORK_CHARSET : ''),
@@ -1209,12 +1223,16 @@ final class AppCodeUnpack {
 
 	private static function renderTPL(?string $title, ?string $main, bool $loader=false) : string {
 		//--
+		if(!defined('APPCODEUNPACK_HTML_TPL')) {
+			return '{#EMPTY-APPCODEUNPACK-TPL#}';
+		} //end if
+		//--
 		$name_prefix = 'AppRelease';
 		$name_suffix = 'CodeUnPack';
 		$name_all = (string) $name_prefix.'.'.$name_suffix;
 		//--
 		$out = (string) SmartMarkersTemplating::render_template(
-			(string) (defined('APPCODEUNPACK_HTML_TPL') ? APPCODEUNPACK_HTML_TPL : '{#EMPTY-APPCODEUNPACK-TPL#}'),
+			(string) APPCODEUNPACK_HTML_TPL,
 			[
 				'REALPATH-CRR' 			=> (string) rtrim((string)Smart::real_path('./'), '/').'/{%-APP-ID-%}/',
 				'SCRIPT' 				=> (string) self::APPCODEUNPACK_SCRIPT,
@@ -1239,6 +1257,7 @@ final class AppCodeUnpack {
 				'JS-ALERTABLE' 			=> (string) (defined('APPCODEUNPACK_JS_ALERTABLE') ? APPCODEUNPACK_JS_ALERTABLE : ''),
 				'CSS-APPCODEUNPACK' 	=> (string) (defined('APPCODEUNPACK_CSS_LOCAL_FX') ? APPCODEUNPACK_CSS_LOCAL_FX : ''),
 				'JS-APPCODEUNPACK' 		=> (string) (defined('APPCODEUNPACK_JS_LOCAL_FX') ? APPCODEUNPACK_JS_LOCAL_FX : ''),
+				'JS-WATCH' 				=> (string) (defined('APPCODEUNPACK_JS_WATCH') ? APPCODEUNPACK_JS_WATCH : ''),
 				'APPCODEUNPACK-SVG' 	=> (string) (defined('APPCODEUNPACK_LOGO_SVG') ? APPCODEUNPACK_LOGO_SVG : ''),
 				'APACHE-SVG' 			=> (string) (defined('APPCODEUNPACK_LOGO_APACHE_SVG') ? APPCODEUNPACK_LOGO_APACHE_SVG : ''),
 				'APACHE-VER' 			=> (string) apache_get_version(),

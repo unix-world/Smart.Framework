@@ -40,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20250107
+ * @version 	v.20250129
  * @package 	Plugins:Mailer
  *
  */
@@ -318,6 +318,12 @@ final class SmartMailerSend {
 	 */
 	public $smtp_modeauth;
 
+	/**
+	 * If set to TRUE will allow just SSL / TLS Strict Secure Mode with all (default) verifications. Enabling this will work just with valid certificates (not self-signed).
+	 * @var BOOLEAN
+	 * @default false
+	 */
+	public $smtp_securemode;
 
 	//-- store the encoded message
 
@@ -470,6 +476,7 @@ final class SmartMailerSend {
 				} //end if
 				//--
 				$smtp = new SmartMailerSmtpClient();
+				$smtp->securemode = (bool) $this->smtp_securemode;
 				//--
 				if($this->debuglevel > 0) {
 					$smtp->debug = true;
@@ -750,7 +757,6 @@ final class SmartMailerSend {
 		$this->log = '';
 		//--
 		$this->smtp_helo = '';
-		$this->smtp = '';
 		$this->smtp_server = '';
 		$this->smtp_port = '25';
 		$this->smtp_ssl = '';
@@ -1054,7 +1060,7 @@ final class SmartMailerSend {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20250107
+ * @version 	v.20250129
  * @package 	Plugins:Mailer
  *
  */
@@ -1064,6 +1070,12 @@ final class SmartMailerSmtpClient {
 
 
 	//===============================================
+	/**
+	 * If set to TRUE will allow just SSL / TLS Strict Secure Mode with all (default) verifications. Enabling this will work just with valid certificates (not self-signed).
+	 * @var BOOLEAN
+	 * @default false
+	 */
+	public $securemode;
 	//--
 	/**
 	 * @var INTEGER+
@@ -1118,6 +1130,8 @@ final class SmartMailerSmtpClient {
 	 */
 	private $authmec = '';
 	//--
+
+	private $txtsecurestrictmode = '';
 	//===============================================
 
 
@@ -1262,6 +1276,8 @@ final class SmartMailerSmtpClient {
 		//--
 
 		//--
+		$this->txtsecurestrictmode = '';
+		//--
 		//$sock = @fsockopen($protocol.$server, $port, $errno, $errstr, $this->timeout);
 		$stream_context = @stream_context_create();
 		if(((string)$protocol != '') OR ($start_tls === true)) {
@@ -1280,11 +1296,19 @@ final class SmartMailerSmtpClient {
 			} //end if
 			//--
 			@stream_context_set_option($stream_context, 'ssl', 'ciphers', 				(string)SMART_FRAMEWORK_SSL_CIPHERS); // allow only high ciphers
-			@stream_context_set_option($stream_context, 'ssl', 'verify_host', 			(bool)SMART_FRAMEWORK_SSL_VFY_HOST); // allways must be set to true !
-			@stream_context_set_option($stream_context, 'ssl', 'verify_peer', 			(bool)SMART_FRAMEWORK_SSL_VFY_PEER); // this may fail with some CAs
-			@stream_context_set_option($stream_context, 'ssl', 'verify_peer_name', 		(bool)SMART_FRAMEWORK_SSL_VFY_PEER_NAME); // allow also wildcard names *
-			@stream_context_set_option($stream_context, 'ssl', 'allow_self_signed', 	(bool)SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED); // must allow self-signed certificates but verified above
+			if($this->securemode === true) { // if true, all the below values must be as default
+				$this->txtsecurestrictmode = 'SMTP:StrictSecureMode:ON:Use:Defaults';
+			} else {
+				$this->txtsecurestrictmode = 'SMTP:StrictSecureMode:OFF:Use:Config';
+				@stream_context_set_option($stream_context, 'ssl', 'verify_host', 		(bool)SMART_FRAMEWORK_SSL_VFY_HOST); // allways must be set to true !
+				@stream_context_set_option($stream_context, 'ssl', 'verify_peer', 		(bool)SMART_FRAMEWORK_SSL_VFY_PEER); // this may fail with some CAs
+				@stream_context_set_option($stream_context, 'ssl', 'verify_peer_name', 	(bool)SMART_FRAMEWORK_SSL_VFY_PEER_NAME); // allow also wildcard names *
+				@stream_context_set_option($stream_context, 'ssl', 'allow_self_signed', (bool)SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED); // must allow self-signed certificates but verified above
+			} //end if else
 			@stream_context_set_option($stream_context, 'ssl', 'disable_compression', 	(bool)SMART_FRAMEWORK_SSL_DISABLE_COMPRESS); // help mitigate the CRIME attack vector
+			//--
+			//Smart::log_notice(__METHOD__.' # '.$this->txtsecurestrictmode);
+			$this->log .= '[INF] Secure Strict Mode: '.$this->txtsecurestrictmode."\n";
 			//--
 		} //end if else
 		//--

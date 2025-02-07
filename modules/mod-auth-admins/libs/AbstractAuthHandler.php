@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * DEPENDS classes: 	Smart, SmartAuth, SmartEnvironment, SmartUtils, \SmartModExtLib\AuthAdmins\AuthProviderHttp
  * DEPENDS constants: 	SMART_FRAMEWORK_SECURITY_KEY
  *
- * @version 	v.20250118
+ * @version 	v.20250205
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -902,11 +902,18 @@ abstract class AbstractAuthHandler {
 	 *
 	 * RETURN: BOOL ; if TRUE, the 2FA is VALID ; otherwise is INVALID
 	 */
-	final protected static function isAuth2FAValid(string $auth_user_name, bool $use_2fa, string $valid_2fa_pin_token='') : bool {
+	final protected static function isAuth2FAValid(string $auth_user_name, bool $use_2fa, string $valid_2fa_pin_token) : bool {
 		//--
 		if(!\defined('\\SMART_FRAMEWORK_SECURITY_KEY')) {
 			return false; // this is required to proceed further
 		} //end if
+		//--
+		if(\SmartEnvironment::is2FAEnabled() !== true) {
+			return false;
+		} //end if
+	//	if(\SmartEnvironment::is2FARequired() !== true) {
+	//		return false;
+	//	} //end if
 		//--
 		$auth_user_name = (string) \trim((string)$auth_user_name);
 		if((string)$auth_user_name == '') {
@@ -980,7 +987,7 @@ abstract class AbstractAuthHandler {
 						//--
 						\SmartUtils::unset_cookie((string)self::AUTH_2FA_COOKIE_NAME); // req. to be sure change policy to: None
 						//--
-						// IMPORTANT: this cookie is ploicy None / optional HTTPS only ;
+						// IMPORTANT: this cookie is policy None / optional HTTPS only ;
 						// but is still safe since the value of this cookie is a safe hash based on current visitor IP and Signature
 						// so it does not make any importance if leaked on 3rd party websites
 						// the reasons of being set with cookie policy None is to work in protected iframes even with Firefox and other modern browsers

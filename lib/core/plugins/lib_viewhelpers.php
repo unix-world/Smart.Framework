@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20250107
+ * @version 	v.20250205
  * @package 	Application:Plugins:ViewComponents
  *
  */
@@ -1093,7 +1093,7 @@ final class SmartViewHtmlHelpers {
 	 * - if OK: and redirect URL have been provided, the replace div is not handled
 	 * - if ERROR: no replace div or redirect is handled
 	 *
-	 * @param 	$y_status 					OK / ERROR
+	 * @param 	$y_status 					OK / INFO / HINT / NOTICE / WARN / ERROR / FAIL
 	 * @param 	$y_title 					Dialog Title
 	 * @param 	$y_message 					Dialog Message (Optional in the case of Success)
 	 * @param 	$y_redirect_url 			**OPTIONAL** URL to redirect on either Success or Error
@@ -1109,11 +1109,28 @@ final class SmartViewHtmlHelpers {
 		//--
 		$translator_core_messages = SmartTextTranslations::getTranslator('@core', 'messages'); // OK.rev2
 		//--
+		$y_status = (string) strtoupper((string)trim((string)$y_status));
+		//--
+		switch((string)$y_status) {
+			case 'OK':
+			case 'INFO':
+			case 'HINT':
+			case 'NOTICE':
+			case 'WARN':
+			case 'WARNING':
+			case 'ERR':
+			case 'ERROR':
+			case 'FAIL':
+			case 'FAILED':
+			case 'FATAL':
+				break;
+			case '':
+				$y_status = 'UNKNOWN'; // cannot be empty ...
+		} //end switch
+		//--
 		if((string)$y_status == 'OK') {
-			$y_status = 'OK';
 			$button_text = $translator_core_messages->text('ok');
 		} else {
-			$y_status = 'ERROR';
 			$button_text = $translator_core_messages->text('cancel');
 		} //end if else
 		//--

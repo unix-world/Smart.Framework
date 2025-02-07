@@ -30,7 +30,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @ignore
  *
  * @depends     classes: Smart, SmartAuth
- * @version 	v.20250107
+ * @version 	v.20250128
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -581,7 +581,7 @@ final class AuthTokens {
 			return '';
 		} //end if
 		//--
-		return (string) \SmartAuth::encrypt_privkey(
+		return (string) \SmartAuth::encrypt_sensitive_data(
 			(string) $b64s_token,
 			(string) $hashpass.\chr(0).$secret
 		);
@@ -637,7 +637,7 @@ final class AuthTokens {
 			return '';
 		} //end if
 		//--
-		return (string) \SmartAuth::decrypt_privkey( // b64s token
+		return (string) \SmartAuth::decrypt_sensitive_data( // b64s token
 			(string) $enc_token,
 			(string) $hashpass.\chr(0).$secret
 		);

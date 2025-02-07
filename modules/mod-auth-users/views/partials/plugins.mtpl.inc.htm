@@ -1,0 +1,11 @@
+[%%%IF:AUTH-PLUGINS:@>0;%%%]
+	<hr>
+	<div class="ux-control-group">
+		<div class="auth-plugins-txt"><i class="sfi sfi-question" style="cursor:help;" title="[###TXT-HINT-PLUGINS-SIGNIN|html###]"></i> &nbsp; [###TXT-PLUGINS-SIGNIN|html###]</div>
+		<div class="auth-plugins-btns">
+	<!-- auth:plugins -->[%%%|N%%%][%%%LOOP:AUTH-PLUGINS%%%][%%%|T%%%][%%%|T%%%]<!-- auth:plugin `[###AUTH-PLUGINS.ID|html###]` --> <button class="btn-auth-plugin" id="btn-auth-ext-[###AUTH-PLUGINS.ID|htmid|html###]" title="[###TXT-PLUGIN-SIGNIN|html###] [###AUTH-PLUGINS.NAME|html###]" onclick="self.location = '[###AUTH-PLUGINS.URL|js|html###]'; return false;"><img width="32" height="32" src="data:image/svg+xml,[###AUTH-PLUGINS.SVG|url|html###]"></button>[%%%|N%%%][%%%/LOOP:AUTH-PLUGINS%%%][%%%|T%%%]<!-- /auth:plugins -->
+		</div>
+	</div>
+[%%%ELSE:AUTH-PLUGINS%%%]
+	<!-- Auth Plugins: N/A -->
+[%%%/IF:AUTH-PLUGINS%%%]

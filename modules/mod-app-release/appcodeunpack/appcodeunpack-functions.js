@@ -2,7 +2,7 @@
 // AppJs Local Functions
 // (c) 2008-present unix-world.org
 // License: BSD
-// v.20250107
+// v.20250207
 
 // DEPENDS: smartJ$Utils, smartJ$Date, smartJ$CryptoHash, smartJ$CipherCrypto, jQuery
 
@@ -196,11 +196,12 @@ const AppJs = new class{constructor(){ // STATIC CLASS, ES6
 		const ajax = AjaxRequestByURL(url, 'POST', 'json', data);
 		if(ajax === null) {
 			_p$.error(_N$, _m$, 'ERR: Null XHR Object !');
-			displayGrowl('Submit ERROR', '<h3>XHR Object is NULL ! See the javascript console for more details ...</h3>', 0, true, 'red');
+			displayGrowl('Submit ERROR', '<h3>XHR Object is NULL ! See the javascript console for more details ...</h3>', 0, true, 'fatal');
 			return;
 		}
 		ajax.done((msg) => {
-			if((typeof(msg) == 'object') && (msg.hasOwnProperty('completed')) && (msg.completed == 'DONE') && (msg.hasOwnProperty('status')) && ((msg.status == 'OK') || (msg.status == 'ERROR')) && (msg.hasOwnProperty('title')) && (msg.title != null) && (msg.hasOwnProperty('message')) && (msg.message != null)) {
+			if((typeof(msg) == 'object') && (msg.hasOwnProperty('completed')) && (msg.completed === 'DONE') && (msg.hasOwnProperty('status')) && (msg.status != null) && (msg.hasOwnProperty('title')) && (msg.title != null) && (msg.hasOwnProperty('message')) && (msg.message != null)) {
+				msg.status = _Utils$.stringPureVal(msg.status, true).toUpperCase();
 				if(msg.status == 'OK') {
 					_Utils$.evalJsFxCode(
 						_m$ + ' (1)',
@@ -215,8 +216,32 @@ const AppJs = new class{constructor(){ // STATIC CLASS, ES6
 							}
 						)
 					);
-					displayGrowl(_Utils$.escape_html(msg.title), '<h5>' + _Utils$.nl2br(_Utils$.escape_html(msg.message)) + '</h5>', 2500, false, 'green');
+					displayGrowl(_Utils$.escape_html(msg.title), '<h5>' + _Utils$.nl2br(_Utils$.escape_html(msg.message)) + '</h5>', 2500, false, 'success');
 				} else {
+					let growlClass = ''; // UNKNOWN
+					switch(msg.status) {
+						case 'INFO':
+							growlClass = 'info';
+							break;
+						case 'HINT':
+							growlClass = 'hint';
+							break;
+						case 'NOTICE':
+							growlClass = 'notice';
+							break;
+						case 'WARN':
+						case 'WARNING':
+							growlClass = 'warning';
+							break;
+						case 'ERR':
+						case 'ERROR':
+							growlClass = 'error';
+							break;
+						case 'FAIL':
+						case 'FAILED':
+							growlClass = 'fail';
+							break;
+					} //end switch
 					_Utils$.evalJsFxCode(
 						_m$ + ' (2)',
 						(typeof(everrcode) === 'function' ?
@@ -230,11 +255,11 @@ const AppJs = new class{constructor(){ // STATIC CLASS, ES6
 							}
 						)
 					);
-					displayGrowl('FAIL # ' + _Utils$.escape_html(msg.title), '<h4>' + _Utils$.nl2br(_Utils$.escape_html(msg.message)) + '</h4>', 0, true, 'pink');
+					displayGrowl('FAIL # ' + _Utils$.escape_html(msg.title), '<h4>' + _Utils$.nl2br(_Utils$.escape_html(msg.message)) + '</h4>', 0, true, growlClass);
 				}
 			} else {
-				_p$.warn(_N$, _m$, 'WARN: Invalid Data Object Format');
-				displayGrowl('POST ERROR', '<h3>Invalid Submit Response: Unexpected Data Object Format</h3>', 0, true, 'red');
+				_p$.warn(_N$, _m$, 'ERR: Invalid Data Object Format');
+				displayGrowl('POST ERROR', '<h3>Invalid Submit Response: Unexpected Data Object Format</h3>', 0, true, 'fail');
 				_Utils$.evalJsFxCode(
 					_m$ + ' (3)',
 					(typeof(evfailcode) === 'function' ?
@@ -321,11 +346,12 @@ const AppJs = new class{constructor(){ // STATIC CLASS, ES6
 		const ajax = AjaxRequestByTheForm(the_form_id, url);
 		if(ajax === null) {
 			_p$.error(_N$, _m$, 'ERR: Null XHR Object !');
-			displayGrowl('Form POST ERROR', '<h3>XHR Object is NULL ! See the javascript console for more details ...</h3>', 0, true, 'red');
+			displayGrowl('Form POST ERROR', '<h3>XHR Object is NULL ! See the javascript console for more details ...</h3>', 0, true, 'fatal');
 			return;
 		}
 		ajax.done((msg) => {
-			if((typeof(msg) == 'object') && (msg.hasOwnProperty('completed')) && (msg.completed == 'DONE') && (msg.hasOwnProperty('status')) && ((msg.status == 'OK') || (msg.status == 'ERROR')) && (msg.hasOwnProperty('title')) && (msg.title != null) && (msg.hasOwnProperty('message')) && (msg.message != null)) {
+			if((typeof(msg) == 'object') && (msg.hasOwnProperty('completed')) && (msg.completed === 'DONE') && (msg.hasOwnProperty('status')) && (msg.status != null) && (msg.hasOwnProperty('title')) && (msg.title != null) && (msg.hasOwnProperty('message')) && (msg.message != null)) {
+				msg.status = _Utils$.stringPureVal(msg.status, true).toUpperCase();
 				if(msg.status == 'OK') {
 					_Utils$.evalJsFxCode(
 						_m$ + ' (1)',
@@ -340,8 +366,32 @@ const AppJs = new class{constructor(){ // STATIC CLASS, ES6
 							}
 						)
 					);
-					displayGrowl(_Utils$.escape_html(msg.title), '<h5>' + _Utils$.nl2br(_Utils$.escape_html(msg.message)) + '</h5>', 2500, false, 'green');
+					displayGrowl(_Utils$.escape_html(msg.title), '<h5>' + _Utils$.nl2br(_Utils$.escape_html(msg.message)) + '</h5>', 2500, false, 'success');
 				} else {
+					let growlClass = ''; // UNKNOWN
+					switch(msg.status) {
+						case 'INFO':
+							growlClass = 'info';
+							break;
+						case 'HINT':
+							growlClass = 'hint';
+							break;
+						case 'NOTICE':
+							growlClass = 'notice';
+							break;
+						case 'WARN':
+						case 'WARNING':
+							growlClass = 'warning';
+							break;
+						case 'ERR':
+						case 'ERROR':
+							growlClass = 'error';
+							break;
+						case 'FAIL':
+						case 'FAILED':
+							growlClass = 'fail';
+							break;
+					} //end switch
 					_Utils$.evalJsFxCode(
 						_m$ + ' (2)',
 						(typeof(everrcode) === 'function' ?
@@ -355,11 +405,11 @@ const AppJs = new class{constructor(){ // STATIC CLASS, ES6
 							}
 						)
 					);
-					displayGrowl('FAIL # ' + _Utils$.escape_html(msg.title), '<h4>' + _Utils$.nl2br(_Utils$.escape_html(msg.message)) + '</h4>', 0, true, 'pink');
+					displayGrowl('FAIL # ' + _Utils$.escape_html(msg.title), '<h4>' + _Utils$.nl2br(_Utils$.escape_html(msg.message)) + '</h4>', 0, true, growlClass);
 				}
 			} else {
-				_p$.warn(_N$, _m$, 'WARN: Invalid Data Object Format');
-				displayGrowl('Form POST ERROR', '<h3>Invalid Form Submit Response: Unexpected Data Object Format</h3>', 0, true, 'red');
+				_p$.warn(_N$, _m$, 'ERR: Invalid Data Object Format');
+				displayGrowl('Form POST ERROR', '<h3>Invalid Form Submit Response: Unexpected Data Object Format</h3>', 0, true, 'fail');
 				_Utils$.evalJsFxCode(
 					_m$ + ' (3)',
 					(typeof(evfailcode) === 'function' ?

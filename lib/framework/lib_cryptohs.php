@@ -45,7 +45,7 @@ if((!function_exists('hash_algos')) OR (!function_exists('hash_hmac_algos'))) {
  *
  * @access      PUBLIC
  * @depends     PHP hash_algos() / hash() ; classes: Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE
- * @version     v.20250107
+ * @version     v.20250203
  * @package     @Core:Crypto
  *
  */
@@ -53,14 +53,14 @@ final class SmartHashCrypto {
 
 	// ::
 
-	public const PASSWORD_PLAIN_MIN_LENGTH = 7;
-	public const PASSWORD_PLAIN_MAX_LENGTH = 55;
-	public const PASSWORD_HASH_LENGTH = 128; // fixed length ; {{{SYNC-AUTHADM-PASS-LENGTH}}} ; if lower then padd to right with * ; {{{SYNC-AUTHADM-PASS-PADD}}}
+	public const PASSWORD_PLAIN_MIN_LENGTH =   7;
+	public const PASSWORD_PLAIN_MAX_LENGTH =  55;
+	public const PASSWORD_HASH_LENGTH      = 128; // fixed length ; {{{SYNC-AUTHADM-PASS-LENGTH}}} ; if lower then padd to right with * ; {{{SYNC-AUTHADM-PASS-PADD}}}
 	public const PASSWORD_PREFIX_VERSION = '$fPv3.7!'; // {{{SYNC-AUTHADM-PASS-PREFIX}}}
 
-	public const DERIVE_MIN_KLEN = 3; // this can be a valid auth id, of which min size is 3
-	public const DERIVE_MAX_KLEN = 4096;
-	public const DERIVE_PREKEY_LEN = 80;
+	public const DERIVE_MIN_KLEN  =    1; // because it is used also in js for inputs this have to be the lowest as 1 (non empty minimal characters validated)
+	public const DERIVE_MAX_KLEN  = 4096;
+	public const DERIVE_PREKEY_LEN  = 80;
 	public const DERIVE_CENTITER_TK = 88;
 	public const DERIVE_CENTITER_EK = 87;
 	public const DERIVE_CENTITER_EV = 78;
@@ -884,7 +884,10 @@ final class SmartHashCrypto {
 
 
 	//==============================================================
-	public static function ed25519_sign(string $message, ?string $secret) : array {
+	public static function ed25519_sign(string $message, string $secret) : array {
+		//--
+		// to verify with a private key just create a signature of the message with the secret and compare strings with the private signature if match
+		// to verify with a public key use the ed25519_verify_sign() method
 		//--
 		$data = [
 			'error' 		=> '?',
@@ -896,12 +899,24 @@ final class SmartHashCrypto {
 			'encoding' 		=> 'Base64'
 		];
 		//--
-		if(!function_exists('sodium_crypto_sign_seed_keypair')) {
+		if(
+			(!function_exists('sodium_crypto_sign_keypair'))
+			||
+			(!function_exists('sodium_crypto_sign_seed_keypair'))
+			||
+			(!function_exists('sodium_crypto_sign_secretkey'))
+			||
+			(!function_exists('sodium_crypto_sign_publickey_from_secretkey'))
+			||
+			(!function_exists('sodium_crypto_sign_publickey'))
+			||
+			(!function_exists('sodium_crypto_sign_detached'))
+		) {
 			$data['error'] = 'PHP Sodium Extension is missing';
 			return (array) $data;
 		} //end if
 		//--
-		if((string)$message == '') {
+		if((string)$message == '') { // do not trim !
 			$data['error'] = 'Message is Empty';
 			return (array) $data;
 		} //end if
@@ -941,6 +956,10 @@ final class SmartHashCrypto {
 			$data['error'] = 'Private Key generation Failed: Empty';
 			return (array) $data;
 		} //end if
+		if((int)strlen((string)$privateKey) != 64) { // SODIUM_CRYPTO_SIGN_BYTES
+			$data['error'] = 'Private Key generation Failed: Invalid Length';
+			return (array) $data;
+		} //end if
 		//--
 		$publicKey = '';
 		try {
@@ -955,6 +974,10 @@ final class SmartHashCrypto {
 		} //end try catch
 		if((string)$publicKey == '') {
 			$data['error'] = 'Public Key generation Failed: Empty';
+			return (array) $data;
+		} //end if
+		if((int)strlen((string)$publicKey) != 32) { // SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES
+			$data['error'] = 'Public Key generation Failed: Invalid Length';
 			return (array) $data;
 		} //end if
 		//--
@@ -975,6 +998,48 @@ final class SmartHashCrypto {
 		$data['public-key'] 	= (string) Smart::b64_enc((string)$publicKey);
 		$data['signature'] 		= (string) Smart::b64_enc((string)$signature);
 		return (array) $data;
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	public static function ed25519_verify_sign(string $signature, string $message, string $public_key) : bool {
+		//--
+		if(!function_exists('sodium_crypto_sign_verify_detached')) {
+			return false;
+		} //end if
+		//--
+		if((string)$message == '') { // do not trim !
+			return false;
+		} //end if
+		//--
+		if((string)$signature == '') { // do not trim !
+			return false;
+		} //end if
+		if((int)strlen((string)$signature) != 64) { // SODIUM_CRYPTO_SIGN_BYTES
+			return false;
+		} //end if
+		//--
+		if((string)$public_key == '') { // do not trim !
+			return false;
+		} //end if
+		if((int)strlen((string)$public_key) != 32) { // SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES
+			return false;
+		} //end if
+		//--
+		$ok = false;
+		try {
+			$ok = sodium_crypto_sign_verify_detached((string)$signature, (string)$message, (string)$public_key); // do not cast, it is a security risk, will be checked below if === TRUE
+		} catch(Exception $e) {
+			$ok = false;
+			Smart::log_warning(__METHOD__.' # Signature Check Failed with Error: # '.$e->getMessage());
+		} //end try catch
+		if($ok === true) {
+			return true;
+		} //end if
+		//--
+		return false;
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -1100,7 +1165,7 @@ final class SmartHashCrypto {
  *
  * @access      PUBLIC
  * @depends     classes: Smart
- * @version     v.20250107
+ * @version     v.20250203
  * @package     @Core:Crypto
  *
  */
@@ -1398,100 +1463,6 @@ final class SmartHashPoly1305 {
 
 
 } //END CLASS
-
-//=====================================================================================
-//===================================================================================== CLASS END
-//=====================================================================================
-
-
-//=====================================================================================
-//===================================================================================== CLASS START
-//=====================================================================================
-
-/**
- * Class Smart.Framework CSRF
- * A Safety Handler against Cross-Site Request Forgery (CSRF)
- *
- * <code>
- * // Usage example:
- * SmartCsrf::some_method_of_this_class(...);
- * </code>
- *
- * @usage 		static object: Class::method() - This class provides only STATIC methods
- * @hints 		This is generally intended for advanced usage !
- *
- * @depends 	Smart, SmartHashCrypto
- *
- * @version 	v.20250107
- * @package 	Application
- *
- */
-final class SmartCsrf {
-
-	// ::
-
-
-	//==============================================================
-	// this is intended to store in a private session ; if need to be exposed in a cookie (public) it have to be encrypted, ex: Blowfish !
-	public static function newPrivateKey() : string {
-		//--
-		return (string) Smart::uuid_35(); // case sensitive
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-	//==============================================================
-	// returns a public key hash that can be public exposed, it is just a one-way hash, safe
-	public static function getPublicKey(string $privKey, string $secret) : string {
-		//--
-		$privKey = (string) trim((string)$privKey); // the unencrypted private key
-		if((string)$privKey == '') {
-			return '';
-		} //end if
-		//--
-		if((string)trim((string)$secret) == '') { // a secret
-			return '';
-		} //end if
-		//--
-		return SmartHashCrypto::checksum((string)$secret.chr(0).$privKey); // B62, SHA3-384
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-	//==============================================================
-	// will check if the keys match
-	public static function verifyKeys(string $pubKey, string $privKey, string $secret) : bool {
-		//--
-		$pubKey = (string) trim((string)$pubKey);
-		$privKey = (string) trim((string)$privKey);
-		//--
-		$ok = false;
-		//--
-		if(
-			((string)$pubKey != '')
-			AND
-			((string)$privKey != '')
-			AND
-			((string)trim((string)$secret) != '')
-		) {
-			//--
-			if((string)$pubKey === (string)self::getPublicKey((string)$privKey, (string)$secret)) {
-				$ok = true;
-			} //end if
-			//--
-		} //end if
-		//--
-		return (bool) $ok;
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-
-} //END CLASS
-
 
 //=====================================================================================
 //===================================================================================== CLASS END

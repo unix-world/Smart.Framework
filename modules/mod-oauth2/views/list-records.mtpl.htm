@@ -1,4 +1,4 @@
-<!-- View: list-records v.20250112 -->
+<!-- View: list-records v.20250129 -->
 [@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-uix.inc.htm!@@@]
 [@@@SUB-TEMPLATE:partials/styles.mtpl.htm@@@]
 <style>
@@ -72,14 +72,14 @@
 	<button type="button" class="ux-button ux-button-primary" style="margin-left:50px;" onClick="smartJ$Browser.PopUpLink('[###ACTIONS-URL|js|html###]new-form', 'oauth2_list_mod'); return false;"> Register New OAuth2 API &nbsp; <i class="sfi sfi-plus"></i></button>
 </form>
 <br>
-<script type="text/javascript">
+<script>
 	const itemURL = '[###ACTIONS-URL|js###]';
 	const IdOfGrid = 'OAuth2ListGrid';
 	const TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', itemURL+'list', 'oauth2_list_tbl', 'id', 'ASC', '', 'filtering');
 </script>
 <div id="OAuth2ListNavPager"></div>
 <form class="ux-form"><div id="OAuth2ListGrid" class="slickgrid-table" style="font-size:10px; width:100%; min-width:1024px; height:10px;"></div></form>
-<script type="text/javascript">
+<script>
 jQuery(() => {
 
 	// Column Formatters

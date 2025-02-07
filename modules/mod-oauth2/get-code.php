@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_AREA', 'INDEX'); // INDEX, ADMIN, SHARED
  * Index Controller
  *
  * @ignore
- * @version v.20250112
+ * @version v.20250126
  *
  */
 final class SmartAppIndexController extends SmartAbstractAppController {
@@ -70,23 +70,36 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 
 		//--
 		$vars = (array) $this->RequestVarsGet();
+		if(array_key_exists('page', (array)$vars)) {
+			unset($vars['page']); // this should not be displayed, it is SF internally only
+		} //end if
 		//--
 		if(
 			(!isset($vars['code']))
+			OR
+			(!Smart::is_nscalar($vars['code']))
 			OR
 			((string)trim((string)$vars['code']) == '')
 		) {
 			$this->PageViewSetErrorStatus(400, 'OAuth2 Code Exchange: Code parameter is empty or not provided ...');
 			return;
 		} //end if else
-		//--
 		$code = (string) trim((string)$vars['code']);
 		//--
+		if(
+			(!isset($vars['state']))
+			OR
+			(!Smart::is_nscalar($vars['state']))
+			OR
+			((string)trim((string)$vars['state']) == '')
+		) {
+			$this->PageViewSetErrorStatus(400, 'OAuth2 State Exchange: Code parameter is empty or not provided ...');
+			return;
+		} //end if else
 		$state = (string) trim((string)($vars['state'] ?? null));
 		//--
-		unset($vars['code']); // this is displayed separately
-		unset($vars['state']);
-		unset($vars['page']); // this should not be displayed, it is SF internally only
+		unset($vars['code']);  // this is displayed separately
+		unset($vars['state']); // hide
 		//--
 		$vars = Smart::json_decode((string)Smart::json_encode((array)$vars, false, true, false), true); // safety: max levels as default, this comes from GET/POST, will be limited there ; limiting here will log unwanted json encode/decode warnings
 		if(!is_array($vars)) {

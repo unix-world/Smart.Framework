@@ -1,5 +1,20 @@
-<!-- v.20250107 -->
+<!-- v.20250122 -->
 [@@@SUB-TEMPLATE:acc-styles-form.mtpl.inc.htm@@@]
+<script>
+const disable2FAConfirm = () => {
+	const accId = '[###ID|js###]';
+	smartJ$Browser.ConfirmDialog(
+		'<h5>Are you sure to <span style="color:#FF3300;">DISABLE 2FA</span> for the selected account ?</h5><h6 style="color:#778899;"><i>Account&nbsp;ID</i>: `<span style="color:#FF5500;">' + smartJ$Utils.escape_html(accId) + '</span>`</h6><br><h5>Please confirm !<br><i>After disabling 2FA the account security is lowered ...</i></h5>',
+		() => {
+			smartJ$Browser.SubmitFormByAjax(null, '[###ACTIONS-URL|js|html###]disable-2fa-confirm&id=' + smartJ$Utils.escape_url(accId), 'yes');
+		},
+		'Disable 2FA for selected Account',
+		null,
+		null,
+		'alertable'
+	);
+};
+</script>
 <center><div><table><tr><td>
 	<form id="edit_form" name="edit_form" class="ux-form ux-form-aligned" onSubmit="return false;">
 		<legend><h1>[%%%IF:VIEW-ONLY:==yes;%%%]Display[%%%ELSE:VIEW-ONLY%%%]Edit[%%%/IF:VIEW-ONLY%%%] Account</h1></legend><br>
@@ -25,14 +40,17 @@
 			<label>Password</label>
 			<a href="[###ACTIONS-URL|html###]change-pass-form&id=[###ID|url|html###]" class="ux-button ux-button-dark ux-button-small"><i class="sfi sfi-key"></i> &nbsp; Change Password</a>
 		</div>
-		[%%%IF:ENABLED-2FA:==1;%%%]
+		[%%%IF:SHOW-2FA:==1;%%%]
 		[%%%IF:SELF-FA2:==yes;%%%]
-		<div class="ux-control-group" style="min-height:152px;">
-			<label>2FA Key[%%%IF:2FA-KEY:!=;%%%][%%%IF:2FA-TEST-TK:!=;%%%]<br><br><span style="cursor:help; color:#DDDDDD;" title="Test Token: [###2FA-TEST-TK|html###] ; Date: [###2FA-TEST-DATE|html###] ; Key: [###2FA-KEY|html###]"><i class="sfi sfi-clock sfi-xl"></i></span>[%%%/IF:2FA-TEST-TK%%%][%%%/IF:2FA-KEY%%%]</label>
-			<div style="display:inline-block; font-size:0.875rem;">[%%%IF:2FA-KEY:!=;%%%][%%%IF:2FA-BARCODE:!=;%%%]<span id="2fa-logo" style="cursor:cell; color:#DDDDDD;" title="Click to reveal the QRCode" onclick="jQuery('#2fa-logo').hide(); jQuery('#2fa-qr').show();"><i class="sfi sfi-qrcode sfi-5x"></i></span><img id="2fa-qr" style="display:none; cursor:cell;" src="data:image/svg+xml,[###2FA-BARCODE|url###]" title="[###2FA-URL|html###]" onclick="jQuery('#2fa-logo').show(); jQuery('#2fa-qr').hide();">[%%%/IF:2FA-BARCODE%%%][%%%ELSE:2FA-KEY%%%]<button class="ux-button ux-button-regular" onClick="self.location = '[###ACTIONS-URL|js|html###]enable-2fa-form&id=[###ID|js|html###]'; return false;"><i class="sfi sfi-qrcode"></i> &nbsp; Enable Two-Factor Authentication</button>[%%%/IF:2FA-KEY%%%]</div>
+		<div class="ux-control-group"[%%%IF:2FA-KEY:!=;%%%][%%%IF:2FA-BARCODE:!=;%%%] style="min-height:200px;"[%%%/IF:2FA-BARCODE%%%][%%%/IF:2FA-KEY%%%]>
+			<label>2FA Key[%%%IF:2FA-KEY:!=;%%%][%%%IF:2FA-TEST-TK:!=;%%%]<br><br><br><span style="cursor:help; color:#DDDDDD;" title="Test Token: [###2FA-TEST-TK|html###] ; Date: [###2FA-TEST-DATE|html###] ; Key: [###2FA-KEY|html###]"><i class="sfi sfi-clock sfi-xl"></i></span>[%%%/IF:2FA-TEST-TK%%%][%%%/IF:2FA-KEY%%%]</label>
+			<div style="display:inline-block; font-size:0.875rem;">
+				[%%%IF:2FA-DB-KEY:==1;%%%]<button class="ux-button ux-button-highlight" onClick="disable2FAConfirm(); return false;"><i class="sfi sfi-qrcode"></i> &nbsp; Disable Two-Factor Authentication</button>[%%%ELSE:2FA-DB-KEY%%%]<button class="ux-button ux-button-regular" onClick="self.location = '[###ACTIONS-URL|js|html###]enable-2fa-form&id=[###ID|js|html###]'; return false;"><i class="sfi sfi-qrcode"></i> &nbsp; Enable Two-Factor Authentication</button>[%%%/IF:2FA-DB-KEY%%%]
+				[%%%IF:2FA-KEY:!=;%%%][%%%IF:2FA-BARCODE:!=;%%%]<br><span id="2fa-logo" style="cursor:cell; color:#DDDDDD;" title="Click to reveal the QRCode" onclick="jQuery('#2fa-logo').hide(); jQuery('#2fa-qr').show();"><i class="sfi sfi-qrcode sfi-5x"></i></span><img id="2fa-qr" style="display:none; cursor:cell; margin-top:10px;" src="data:image/svg+xml,[###2FA-BARCODE|url###]" title="[###2FA-URL|html###]" onclick="jQuery('#2fa-logo').show(); jQuery('#2fa-qr').hide();">[%%%/IF:2FA-BARCODE%%%][%%%/IF:2FA-KEY%%%]
+			</div>
 		</div>
 		[%%%/IF:SELF-FA2%%%]
-		[%%%/IF:ENABLED-2FA%%%]
+		[%%%/IF:SHOW-2FA%%%]
 		[%%%IF:ENABLED-TOKENS:==1;%%%]
 		<div class="ux-control-group">
 			<label>Tokens</label>

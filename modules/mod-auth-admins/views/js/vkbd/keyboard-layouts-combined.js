@@ -1,7 +1,7 @@
 /* jQuery Virtual Keyboard - Original Layouts */
 /*
  * To use:
- *  Point to this js file into your page header: <script src="layouts/albanian.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/albanian.js"></script>
  *  Initialize the keyboard using: jQuery('input').keyboard({ layout: 'albanian-qwertz' });
  *
  * To do: add combos appropriate to the Albanian language
@@ -76,7 +76,7 @@ jQuery.keyboard.layouts['albanian-qwerty'] = {
  * contains layout: 'arabic-azerty', 'arabic-qwerty-1', 'arabic-qwerty-2', 'arabic-qwerty-3', 'arabic-qwerty-4'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/arabic.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/arabic.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'arabic-azerty' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -256,7 +256,7 @@ jQuery.keyboard.layouts['arabic-qwerty-4'] = {
  * contains layout: 'belarusian-qwerty'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/belarusian.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/belarusian.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'belarusian-qwerty' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -300,7 +300,7 @@ jQuery.keyboard.layouts['belarusian-qwerty'] = {
  * contains layout: 'bengali-qwerty-1' & 'bengali-qwerty-2'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/bengali.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/bengali.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'bengali-qwerty-1' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -378,7 +378,7 @@ jQuery.keyboard.layouts['bengali-qwerty-2'] = {
  * contains layout: 'bulgarian-qwerty'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/belarusian.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/belarusian.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'bulgarian-qwerty' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -466,7 +466,7 @@ jQuery.keyboard.layouts['burmese'] = {
  * contains layout: 'catalan-qwerty'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/catalan.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/catalan.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'catalan-qwerty' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -510,7 +510,7 @@ jQuery.keyboard.layouts['catalan-qwerty'] = {
 * contains layout: 'chinese'
 *
 * To use:
-*  Point to this js file into your page header: <script src="layouts/chinese.js" type="text/javascript"></script>
+*  Point to this js file into your page header: <script src="layouts/chinese.js"></script>
 *  Initialize the keyboard using: $('input').keyboard({ layout: 'chinese' });
 *
 * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -552,7 +552,7 @@ jQuery.keyboard.layouts['chinese'] = {
  * contains layout: 'danish-qwerty'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/danish.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/danish.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'danish-qwerty' });
  *
  * license for this file: WTFPL
@@ -624,7 +624,7 @@ jQuery.keyboard.layouts['ethiopic'] = {
  * contains layout: french-azerty-1 and 'french-azerty-2'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/french.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/french.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'french-azerty-1' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -734,7 +734,7 @@ jQuery.keyboard.layouts['french-bepo-V1.0rc2'] = {
  * contains layout: 'german-qwertz-1' & 'german-qwertz-2'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/german.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/german.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'german-qwertz-1' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -798,7 +798,7 @@ jQuery.keyboard.layouts['german-qwertz-2'] = {
  * contains layout: 'hebrew-qwerty'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/hebrew.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/hebrew.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'hebrew-qwerty' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -835,7 +835,7 @@ jQuery.keyboard.layouts['hebrew-qwerty'] = {
 * contains layout: 'hindi'
 *
 * To use:
-*  Point to this js file into your page header: <script src="layouts/hindi.js" type="text/javascript"></script>
+*  Point to this js file into your page header: <script src="layouts/hindi.js"></script>
 *  Initialize the keyboard using: $('input').keyboard({ layout: 'hindi' });
 *
 * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -879,7 +879,7 @@ jQuery.keyboard.layouts['hindi'] = {
  * contains layout: 'hungarian-qwertz-1' & 'hungarian-qwertz-2'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/hungarian.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/hungarian.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'hungarian-qwerty-2' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -943,7 +943,7 @@ jQuery.keyboard.layouts['hungarian-qwertz-2'] = {
  * contains layout: 'hungariansi-qwertz-1' & 'hungariansi-qwertz-2'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/hungarianansi.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/hungarianansi.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'hungarianansi-qwerty-2' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -1006,7 +1006,7 @@ jQuery.keyboard.layouts['hungarianansi-qwertz-2'] = {
  * contains layouts for: 'japanese-kana' & 'japanese-qwerty'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/japanese.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/japanese.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'japanese-kana' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -1095,7 +1095,7 @@ jQuery.keyboard.layouts['japanese-qwerty'] = {
  * contains layout: 'latvian-qwerty'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/latvian.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/latvian.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'latvian-qwerty' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -1137,7 +1137,7 @@ jQuery.keyboard.layouts['latvian-qwerty'] = {
 * contains layout: 'mongolian'
 *
 * To use:
-*  Point to this js file into your page header: <script src="layouts/mongolian.js" type="text/javascript"></script>
+*  Point to this js file into your page header: <script src="layouts/mongolian.js"></script>
 *  Initialize the keyboard using: $('input').keyboard({ layout: 'mongolian' });
 *
 * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -1180,7 +1180,7 @@ jQuery.keyboard.layouts['mongolian'] = {
 * translate by Majid Ramezani -> majid.r830@gmail.com
 * ---------------------------------------------------------------------------------------------------------
 * To use:
-*  Point to this js file into your page header: <script src="layouts/persian.js" type="text/javascript"></script>
+*  Point to this js file into your page header: <script src="layouts/persian.js"></script>
 *  Initialize the keyboard using: $('input').keyboard({ layout: 'Persian' });
 *  in select add - > "Persian (Farsi), persian, Persian",
 *
@@ -1225,7 +1225,7 @@ jQuery.keyboard.layouts['Persian'] = {
  * Author: Piotr Roznicki
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/polish.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/polish.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'polish-qwerty' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -1261,7 +1261,7 @@ jQuery.keyboard.layouts['polish-qwerty'] = {
  * contains layout: 'portuguese-qwerty'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/portuguese-pt.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/portuguese-pt.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'portuguese-pt' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -1312,7 +1312,7 @@ jQuery.keyboard.layouts['portuguese-qwerty'] = {
  * contains layout: Romanian National Standard SR 13392:2004
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/romanian.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/romanian.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'romanian' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -1358,7 +1358,7 @@ jQuery.keyboard.layouts['romanian'] = {
  * contains layout: 'russian-qwerty' & 'russian-mac'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/russian.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/russian.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'russian-qwerty' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -1435,7 +1435,7 @@ jQuery.keyboard.layouts["russian-mac"] = {
  * contains layout: 'sr-Cyrl' & 'sr'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/russian.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/russian.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'russian-qwerty' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -1567,7 +1567,7 @@ jQuery.keyboard.layouts["sr-mac"] = {
  * contains layouts: 'spanish-qwerty' and 'spanish-qwerty-sp'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/spanish.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/spanish.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'spanish-qwerty' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -1645,7 +1645,7 @@ jQuery.keyboard.layouts['spanish-qwerty-sp'] = {
  * contains layout: 'swedish-qwerty' & 'swedish-dvorak'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/scandinavian.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/scandinavian.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'swedish-qwerty' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -1709,7 +1709,7 @@ jQuery.keyboard.layouts['swedish-dvorak'] = {
  * contains layout: 'tamil-qwerty'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/tamil.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/tamil.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'tamil-tamil99-mod' });
  *
  * Copyright 2013, Muthiah Annamalai
@@ -1770,7 +1770,7 @@ jQuery.keyboard.layouts['tamil-tamil99-mod'] = {
  * contains layout: 'thai-qwerty'
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/thai.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/thai.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'thai-qwerty' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -1816,7 +1816,7 @@ jQuery.keyboard.layouts['thai-qwerty'] = {
  * Contributor   Baris Aydinoglu
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/turkish.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/turkish.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'turkish-q' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference
@@ -1881,7 +1881,7 @@ jQuery.keyboard.layouts['turkish-f'] = {
  * Vinh Can Code: tbvinh@gmail.com
  *
  * To use:
- *  Point to this js file into your page header: <script src="layouts/vietnamese.js" type="text/javascript"></script>
+ *  Point to this js file into your page header: <script src="layouts/vietnamese.js"></script>
  *  Initialize the keyboard using: $('input').keyboard({ layout: 'vietnamese-qwerty' });
  *
  * license for this file: WTFPL, unless the source layout site has a problem with me using them as a reference

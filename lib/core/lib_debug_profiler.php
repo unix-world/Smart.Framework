@@ -29,7 +29,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  *
  * @depends 	css: tpl-highlight.css ; classes: Smart, SmartComponents
- * @version 	v.20250107
+ * @version 	v.20250124
  * @package 	Application:Development
  *
  */
@@ -211,8 +211,8 @@ final class SmartDebugProfiler {
 				} else {
 					$arr['php-session'] = (string) Smart::b64_enc(Smart::seryalize(''));
 				} //end if else
-				if(SmartAuth::check_login() === true) {
-					$arr['auth-data'] = array('is_auth' => true, 'login_data' => (array)SmartAuth::get_login_data(), '#login-pass-hash#', SmartAuth::get_auth_passhash());
+				if(SmartAuth::is_authenticated() === true) {
+					$arr['auth-data'] = array('is_auth' => true, 'login_data' => (array)SmartAuth::get_auth_data(), '#login-pass-hash#', SmartAuth::get_auth_passhash());
 				} else {
 					$arr['auth-data'] = array('is_auth' => false, 'login_data' => []);
 				} //end if else

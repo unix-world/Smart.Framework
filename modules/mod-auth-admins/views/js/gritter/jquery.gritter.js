@@ -8,7 +8,8 @@
  *
  * Version: 1.7.4.8
  *
- * fixes by unixman r.20220920:
+ * (c) 2021-present unix-world.org
+ * fixes by unixman r.20250205:
  * 		- jQuery 3.5.0 ready (fixed XHTML Tags)
  * 		- added support for translateCssClasses
  *
@@ -41,22 +42,22 @@
 		class_name = class_name.replace('toast-', '');
 		class_name = class_name.replace('gritter-', '');
 		switch(class_name) {
-			case 'dark': // gritter
-			case 'black': // std
-			case 'darknote': // std
-				class_name = 'gritter-dark';
-				break;
-			case 'neutral': // gritter
-			case 'white': // std
-			case 'notice': // std
-				class_name = 'gritter-neutral';
-				break;
 			case 'summer': // std
 			case 'light': // gritter, std
 				class_name = 'gritter-light';
 				break;
-			case 'blue': // gritter
+			case 'neutral': // gritter
+			case 'white': // std
 			case 'info': // std
+				class_name = 'gritter-neutral';
+				break;
+			case 'dark': // gritter
+			case 'black': // std
+			case 'hint': // std
+				class_name = 'gritter-dark';
+				break;
+			case 'blue': // gritter
+			case 'notice': // std
 				class_name = 'gritter-blue';
 				break;
 			case 'green': // gritter
@@ -67,16 +68,21 @@
 			case 'warning': // std
 				class_name = 'gritter-yellow';
 				break;
-			case 'red': // gritter
-			case 'error': // std
-				class_name = 'gritter-red';
-				break;
 			case 'pink': // gritter
 			case 'colored': // std
+			case 'error': // std
 				class_name = 'gritter-pink';
 				break;
-			default:
-				class_name = ''; // gritter default
+			case 'red': // gritter
+			case 'fail': // std
+			case 'fatal': // std
+				class_name = 'gritter-red';
+				break;
+			case '': // gritter default
+				class_name = '';
+				break;
+			default: // invalid, map to fatal
+				class_name = 'gritter-red';
 		}
 		return String(class_name);
 	}

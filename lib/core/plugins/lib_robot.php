@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: SmartUnicode, Smart, SmartDetectImages, SmartUtils, SmartEnvironment, SmartFrameworkSecurity, SmartFrameworkRegistry
- * @version 	v.20250107
+ * @version 	v.20250124
  * @package 	Application:Plugins:Network:HTTP
  *
  */
@@ -437,7 +437,7 @@ final class SmartRobot {
 						if(
 							(SmartEnvironment::isAdminArea() === true) // should be adm/task area only !
 							AND
-							(SmartAuth::check_login() === true) // is logged in
+							(SmartAuth::is_authenticated() === true) // is logged in
 							AND // {{{SYNC-ROBOT-AUTH-SELF-BEARER}}}
 							(strpos((string)SmartAuth::get_auth_method(), 'AUTH:HTTP-') === 0) // Auth Method Should start with `AUTH:HTTP-` that can be Basic or Auth Bearer
 							AND

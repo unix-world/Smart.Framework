@@ -454,7 +454,7 @@ nav.ux-navbar li > a:only-child::after {
 	<div id="logo" style="display:flex; align-items:center;">
 		<span style="line-height:50px;">
 						&#9776;
-			
+
 		</span>
 		<span style="margin-left:10px;">Smart.Framework : Javascript Documentation</span>
 	</div>
@@ -463,7 +463,7 @@ nav.ux-navbar li > a:only-child::after {
 		<ul class="menu">
 		<li><a href="index.html#Package--SfJavascriptCore-" title="return to Index">return to Index</a></li>
 	</ul>
-	
+
 </nav>
 <!-- skip logo -->
 <!-- class r.20220331 -->
@@ -705,11 +705,11 @@ Date Utils class for Javascript</div><br>
 		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
 		<li><span class="doc-version"><b>Version:</b> 20220907</span></li>
 		<li><b>Usage:</b> smartJ$Date.method();</li>
-		
-		
-		
+
+
+
 		<li><b>Depends:</b> smartJ$Utils</li>
-		
+
 	</ul>
 </div>
 <!-- Methods -->
@@ -720,242 +720,242 @@ Date Utils class for Javascript</div><br>
 <!-- methods r.20210414 -->
 <div class="doc-container" id="Method--createSafeDate">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>createSafeDate</b></span>&nbsp;=&nbsp;(
-	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`year` Parameter">year</span></b></span>, 
-	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`month` Parameter">month</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`year` Parameter">year</span></b></span>,
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`month` Parameter">month</span></b></span>,
 	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`day` Parameter">day</span></b></span>
-	
+
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
 	<div class="doc-method-ret-params">
-	
-	
+
+
 			@return: {Object} Normalized Date Object as: { year: YYYY, month: 1..12, day: 1..31 }<br>
-	
-	
-	
+
+
+
 	@param: {Integer} year The Raw Year: YYYY<br>
 	@param: {Integer} month The Raw Month: 1..12 ; if wrong will fix ahead or behind<br>
 	@param: {Integer} day The Raw Day: 1..31 ; if wrong will fix ahead or behind<br>
-	
-	
+
+
 	</div>
 			<div class="doc-method-comments">Create a Safe Date Object</div>
-	
-	
+
+
 </div>
 <div class="doc-container" id="Method--standardizeDate">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>standardizeDate</b></span>&nbsp;(
 	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>
-	
+
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
 	<div class="doc-method-ret-params">
-	
-	
+
+
 			@return: {Object} Normalized Date Object as: { year: YYYY, month: 1..12, day: 1..31 }<br>
-	
-	
-	
+
+
+
 	@param: {Object} date The instanceof Date() or the Raw Date Object that need to be safe fixed as { year: YYYY, month: 1..12, day: 1..31 }<br>
-	
-	
+
+
 	</div>
 			<div class="doc-method-comments">Normalize a Date Object</div>
-	
-	
+
+
 </div>
 <div class="doc-container" id="Method--getIsoDate">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getIsoDate</b></span>&nbsp;(
-	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>, 
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>,
 	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`withTime` Parameter">withTime</span></b></span>
-	
+
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-	
-	
+
+
 			@return: {String} Normalized Date String as: YYYY-MM-DD or YYYY-MM-DD HH:ii:ss<br>
-	
-	
-	
+
+
+
 	@param: {Object} date The Raw Date Object as { year: YYYY, month: 1..12, day: 1..31 }<br>
 	@param: {Boolean} withTime If TRUE will use the date as provided, without any normalization and will return in addition: HH:ii:ss<br>
-	
-	
+
+
 	</div>
 			<div class="doc-method-comments">Get a Date Object as ISO</div>
-	
-	
+
+
 </div>
 <div class="doc-container" id="Method--calculateDaysOffset">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>calculateDaysOffset</b></span>&nbsp;(
-	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`sdate1` Parameter">sdate1</span></b></span>, 
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`sdate1` Parameter">sdate1</span></b></span>,
 	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`sdate2` Parameter">sdate2</span></b></span>
-	
+
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
 	<div class="doc-method-ret-params">
-	
-	
+
+
 			@return: {Integer} The Date Offset in seconds between sdate1 and sdate2 as: sdate2 - sdate1<br>
-	
-	
-	
+
+
+
 	@param: {Object} sdate1 Normalized Date #1 Object as: { year: YYYY, month: MM, day: DD }<br>
 	@param: {Object} sdate2 Normalized Date #2 Object as: { year: YYYY, month: MM, day: DD }<br>
-	
-	
+
+
 	</div>
 			<div class="doc-method-comments">Calculate Days Offset between two dates</div>
-	
-	
+
+
 </div>
 <div class="doc-container" id="Method--calculateMonthsOffset">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>calculateMonthsOffset</b></span>&nbsp;=&nbsp;(
-	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`sdate1` Parameter">sdate1</span></b></span>, 
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`sdate1` Parameter">sdate1</span></b></span>,
 	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`sdate2` Parameter">sdate2</span></b></span>
-	
+
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
 	<div class="doc-method-ret-params">
-	
-	
+
+
 			@return: {Integer} The Date Offset in seconds between sdate1 and sdate2 as: sdate2 - sdate1<br>
-	
-	
-	
+
+
+
 	@param: {Object} sdate1 Normalized Date #1 Object as: { year: YYYY, month: MM, day: DD }<br>
 	@param: {Object} sdate2 Normalized Date #2 Object as: { year: YYYY, month: MM, day: DD }<br>
-	
-	
+
+
 	</div>
 			<div class="doc-method-comments">Calculate Months Offset between two dates</div>
-	
-	
+
+
 </div>
 <div class="doc-container" id="Method--addYears">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>addYears</b></span>&nbsp;(
-	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>, 
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>,
 	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`years` Parameter">years</span></b></span>
-	
+
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
 	<div class="doc-method-ret-params">
-	
-	
+
+
 			@return: {Object} Normalized Date Object as: { year: YYYY, month: MM, day: DD }<br>
-	
-	
-	
+
+
+
 	@param: {Object} date The Raw Date Object as { year: YYYY, month: 1..12, day: 1..31 }<br>
 	@param: {Integer} years The number of Years to add or substract<br>
-	
-	
+
+
 	</div>
 			<div class="doc-method-comments">Add Years to a Date Object</div>
-	
-	
+
+
 </div>
 <div class="doc-container" id="Method--addMonths">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>addMonths</b></span>&nbsp;(
-	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>, 
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>,
 	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`months` Parameter">months</span></b></span>
-	
+
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
 	<div class="doc-method-ret-params">
-	
-	
+
+
 			@return: {Object} Normalized Date Object as: { year: YYYY, month: MM, day: DD }<br>
-	
-	
-	
+
+
+
 	@param: {Object} date The Raw Date Object as { year: YYYY, month: 1..12, day: 1..31 }<br>
 	@param: {Integer} months The number Months to add or substract<br>
-	
-	
+
+
 	</div>
 			<div class="doc-method-comments">Add Months to a Date Object</div>
-	
-	
+
+
 </div>
 <div class="doc-container" id="Method--addDays">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>addDays</b></span>&nbsp;(
-	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>, 
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>,
 	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`days` Parameter">days</span></b></span>
-	
+
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
 	<div class="doc-method-ret-params">
-	
-	
+
+
 			@return: {Object} Normalized Date Object as: { year: YYYY, month: MM, day: DD }<br>
-	
-	
-	
+
+
+
 	@param: {Object} date The Raw Date Object as { year: YYYY, month: 1..12, day: 1..31 }<br>
 	@param: {Integer} days The number Days to add or substract<br>
-	
-	
+
+
 	</div>
 			<div class="doc-method-comments">Add Days to a Date Object</div>
-	
-	
+
+
 </div>
 <div class="doc-container" id="Method--isLeapYear">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isLeapYear</b></span>&nbsp;(
 	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`year` Parameter">year</span></b></span>
-	
+
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
-	
-	
+
+
 			@return: {Boolean} TRUE if the Year is Leap or FALSE if is Not Leap<br>
-	
-	
-	
+
+
+
 	@param: {Integer} year The Year to be tested<br>
-	
-	
+
+
 	</div>
 			<div class="doc-method-comments">Test if the given Year is a Leap Year or not</div>
-	
-	
+
+
 </div>
 <div class="doc-container" id="Method--daysInMonth">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>daysInMonth</b></span>&nbsp;(
-	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`year` Parameter">year</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`year` Parameter">year</span></b></span>,
 	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`month` Parameter">month</span></b></span>
-	
+
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
 	<div class="doc-method-ret-params">
-	
-	
+
+
 			@return: {Integer} the Number of Days in the tested month as: 28, 29, 30 or 31<br>
-	
-	
-	
+
+
+
 	@param: {Integer} year The Year to be tested<br>
 	@param: {Integer} month The Month to be tested<br>
-	
-	
+
+
 	</div>
 			<div class="doc-method-comments">Get the Number Of Days in a specific Month of the given Year</div>
-	
-	
+
+
 </div>
 <div class="doc-container" id="Method--formatDate">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>formatDate</b></span>&nbsp;(
-	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`format` Parameter">format</span></b></span>, 
-	<i>{Date}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`format` Parameter">format</span></b></span>,
+	<i>{Date}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>,
 	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`settings` Parameter">settings</span></b></span>
-	
+
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
 			@hint: It is similar with jQueryUI formatDate<br>
-	
-	
+
+
 			@return: {String} The date in the above format<br>
-	
-	
-	
+
+
+
 	@param: {String} format The desired format of the date<br>
 	@param: {Date} date The date value to format, from Date() object<br>
 	@param: {Object} settings Attributes include: dayNamesShort string[7] - abbreviated names of the days from Sunday (optional) ; dayNames string[7] - names of the days from Sunday (optional) ; monthNamesShort string[12] - abbreviated names of the months (optional) ; monthNames string[12] - names of the months (optional)<br>
-	
-	
+
+
 	</div>
 			<div class="doc-method-comments">Format a date object into a string value.<br>
 The format can be combinations of the following:<br>
@@ -974,27 +974,27 @@ yy - year (four digit) ;<br>
 ! - Windows ticks (100ns since 01/01/0001) ;<br>
 &quot;...&quot; - literal text ;<br>
 '' - single quote ;</div>
-	
-	
+
+
 </div>
 <div class="doc-container" id="Method--determineDate">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>determineDate</b></span>&nbsp;(
-	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>, 
+	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>,
 	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`defaultDate` Parameter">defaultDate</span></b></span>
-	
+
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Mixed}
 	<div class="doc-method-ret-params">
 			@hint: It is similar with jQueryUI determineDate<br>
-	
-	
+
+
 			@return: {Mixed} A Date object or null if fails to validate expression<br>
-	
-	
-	
+
+
+
 	@param: {Mixed} date The Date object or date relative expression to the defaultDate<br>
 	@param: {Mixed} defaultDate *Optional* null (for today) or a Date object / timestamp as default (selected) date to be used for relative expressions<br>
-	
-	
+
+
 	</div>
 			<div class="doc-method-comments">Determine a date by a Date object or Expression<br>
 Valid date objects or expressions:<br>
@@ -1002,28 +1002,28 @@ new Date(1937, 1 - 1, 1) 	:: a date in the past, as object ;<br>
 '-1y -1m -1d' 				:: a date in the past as relative expression to the defaultDate ;<br>
 new Date(2037, 12 - 1, 31) 	:: a date in the future as object ;<br>
 '1y 1m 1d' 					:: a date in the future as relative expression to the defaultDate ;</div>
-	
-	
+
+
 </div>
-<div class="doc-container" id="Method--prettySecondsToDHMS">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>prettySecondsToDHMS</b></span>&nbsp;(
+<div class="doc-container" id="Method--prettySecondsHFmt">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>prettySecondsHFmt</b></span>&nbsp;(
 	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`numSec` Parameter">numSec</span></b></span>
-	
+
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-	
-	
+
+
 			@return: {String} The pretty formated time as: '4 Days, 16 Hours, 28 Minutes, 7 Seconds'<br>
-	
-	
-	
+
+
+
 	@param: {Integer} numSec The number of seconds to convert<br>
-	
-	
+
+
 	</div>
 			<div class="doc-method-comments">Convert the number of seconds (unixtime) into Pretty Format: Days, Hours, Minutes, Seconds</div>
-	
-	
+
+
 </div>
 
 <!-- Properties -->
@@ -1125,45 +1125,45 @@ function smartHandleDocSelector(obj) {
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
 						<option value="Method--createSafeDate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;createSafeDate()</option>
-			
+
 						<option value="Method--standardizeDate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;standardizeDate()</option>
-			
+
 						<option value="Method--getIsoDate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getIsoDate()</option>
-			
+
 						<option value="Method--calculateDaysOffset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;calculateDaysOffset()</option>
-			
+
 						<option value="Method--calculateMonthsOffset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;calculateMonthsOffset()</option>
-			
+
 						<option value="Method--addYears"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addYears()</option>
-			
+
 						<option value="Method--addMonths"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addMonths()</option>
-			
+
 						<option value="Method--addDays"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addDays()</option>
-			
+
 						<option value="Method--isLeapYear"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isLeapYear()</option>
-			
+
 						<option value="Method--daysInMonth"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;daysInMonth()</option>
-			
+
 						<option value="Method--formatDate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;formatDate()</option>
-			
+
 						<option value="Method--determineDate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;determineDate()</option>
-			
-						<option value="Method--prettySecondsToDHMS"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;prettySecondsToDHMS()</option>
-			
-			
+
+						<option value="Method--prettySecondsHFmt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;prettySecondsHFmt()</option>
+
+
 		</optgroup>
 		<optgroup label="Class Properties">
 			<option value="Properties--Summary-">Properties list</option>
-			
+
 		</optgroup>
 		<optgroup label="Class Constants">
 			<option value="Constants--Summary-">Constants list</option>
-			
+
 		</optgroup>
 				<optgroup label="Class Sample code">
 			<option value="SAMPLE--Code-">Sample code</option>
 		</optgroup>
-		
+
 	</select>
 </div>
 <!-- summary-selectjs r.20210420 -->

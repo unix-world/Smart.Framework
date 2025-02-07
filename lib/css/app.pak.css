@@ -9,7 +9,7 @@
 
 /*
 License: BSD
-	extended by unixman, (stable.20241223), (c) 2015-present unix-world.org
+	extended by unixman, (stable.20250131), (c) 2015-present unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */
@@ -1904,6 +1904,114 @@ nav.ux-navbar.navbar-black a:hover {
 	color: #000000;
 }
 
+/** SideBar Menu (by Unixman) **/
+
+.ux-sidebar {
+	background-color: #3B4250;
+}
+.ux-sidebar label *,
+.ux-sidenav a {
+	color: #FEFEFE;
+}
+.ux-sidenav li:before,
+.ux-sidenav li:hover a {
+	color: #3B4250;
+}
+.ux-sidenav li:hover,
+.ux-sidenav li:hover:before {
+	background-color: #FEFEFE;
+}
+.ux-sidenav li:before {
+	position: absolute;
+	left: -0.925rem;
+	top: 0;
+	width: 0.925rem;
+	height: 100%;
+	content: '';
+	z-index: 1;
+	transition: background 400ms;
+}
+.ux-sidenav ul {
+	margin-top: 5px;
+	margin-right: 0;
+	margin-bottom: 0;
+	margin-left: 0;
+	padding: 0;
+	list-style: none;
+}
+.ux-sidenav li {
+	position: relative;
+	clear: both;
+	width: 100%;
+	padding: 0;
+	transition: background 400ms;
+}
+.ux-sidenav li a {
+	display: flex;
+	margin-left: 17px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-size: 1.25rem;
+}
+.ux-sidenav a {
+	align-items: center;
+	width: 100%;
+	text-decoration: none;
+	transition: color 400ms;
+}
+.ux-sidenav a span {
+	position: relative;
+	display: block;
+	z-index: 0;
+	text-indent: -20em;
+	visibility: hidden;
+	white-space: nowrap;
+	transition: text-indent 400ms ease-in-out;
+}
+.ux-sidebar {
+	width: 80px;
+	min-height: 240px;
+	z-index: 1;
+	transition: width 400ms;
+}
+.ux-sidebar label {
+	display: inline-block;
+	margin-top: 10px;
+	margin-left: 17px;
+	z-index: -2;
+}
+.ux-sidebar input[type=checkbox] {
+	cursor: context-menu;
+	display: inline-block;
+	height: 80px;
+	width: 100%;
+	margin-left: 0;
+	margin-top: -70px;
+	margin-bottom: 5px;
+	opacity: 0;
+	z-index: -1;
+}
+.ux-sidebar input[type=checkbox]:hover {
+}
+.ux-sidebar:hover,
+.ux-sidebar:has(> input[type=checkbox]:checked) {
+	min-width: 220px;
+	max-width: 380px;
+}
+.ux-sidebar:has(> input[type=checkbox]:checked) label * {
+	opacity: 0.2;
+}
+.ux-sidebar:hover .ux-sidenav li span {
+	transition-delay: 25ms;
+}
+.ux-sidebar:hover .ux-sidenav span,
+.ux-sidebar:has(> input[type=checkbox]:checked) .ux-sidenav span {
+	text-indent: 15px;
+	visibility: visible;
+}
+
 /*** Tabs (by Unixman) ***/
 
 .ux-tab-area {
@@ -2213,7 +2321,7 @@ nav.ux-navbar.navbar-black a:hover {
 
 /*
 License: BSD
-	extended by unixman (stable.20241223), (c) 2015-present unix-world.org
+	extended by unixman (stable.20250131), (c) 2015-present unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */

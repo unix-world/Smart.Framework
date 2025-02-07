@@ -23,7 +23,7 @@ define('SMART_APP_MODULE_REALM_AUTH', 'SMART-ADMINS-AREA'); // if set will check
  */
 abstract class AbstractAdminLoginsController extends SmartAbstractAppController {
 
-	// v.20250112
+	// v.20250203
 
 
 	public function Initialize() {
@@ -38,7 +38,7 @@ abstract class AbstractAdminLoginsController extends SmartAbstractAppController 
 	public function Run() { // (OUTPUTS: HTML/JSON)
 
 		//-- {{{SYNC-AUTH-ADMINS-PRE-CHECKS}}}
-		if(SmartAuth::check_login() !== true) {
+		if(SmartAuth::is_authenticated() !== true) {
 			$this->PageViewSetCfg('error', 'Auth Admins Login Requires Authentication ! ...');
 			return 403;
 		} //end if
@@ -63,7 +63,7 @@ abstract class AbstractAdminLoginsController extends SmartAbstractAppController 
 		//--
 
 		//--
-		$action = $this->RequestVarGet('action', '', 'string');
+		$action = (string) $this->RequestVarGet('action', '', 'string');
 		//--
 
 		switch((string)$action) {

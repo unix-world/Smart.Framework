@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: AppRelease r.20250107 #
+# Smart.Framework.Modules: AppRelease r.20250207 #
 
 // r.8.7 / smart.framework.v.8.7
 

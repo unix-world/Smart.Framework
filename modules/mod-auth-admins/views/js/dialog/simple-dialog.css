@@ -1,11 +1,11 @@
 /*
  * jQuery Simple Dialog (SmartLightUI)
- * (c) 2015-2023 unix-world.org
+ * (c) 2015-present unix-world.org
  * License: BSD
- * v.20230123
+ * v.20250124
  */
 
-/* Overlay */
+/* Overlay {{{SYNC-OVERLAY}}} */
 #simpledialog-overlay, .simpledialog-overlay {
 	display: none;
 	position: fixed;
@@ -14,8 +14,8 @@
 	width: 1px;
 	height: 1px;
 	z-index: 1;
-/*	opacity: 0.55; */
-	background: rgba(238, 238, 238, 0.7);
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(1px);
 }
 
 /* Container */

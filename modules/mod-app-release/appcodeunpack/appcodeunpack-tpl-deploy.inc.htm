@@ -1,4 +1,4 @@
-<!-- deploy form v.20250107 -->
+<!-- deploy form v.20250207 -->
 <form name="unpack-form" id="unpack-form" method="post" enctype="multipart/form-data" action="#" onsubmit="return false;">
 <div class="boxTable greyTable">
 	<table width="width:100%;">
@@ -74,7 +74,7 @@ const hideCurrentForm = () => {
 								'<h4>' + AppJs.escape_html(crrIsoDate) + '</h4><h5>UUID:&nbsp;`' + AppJs.escape_html(AppJs.createUUID(crrIsoDate)) + '`</h5>' + '<pre>' + AppJs.escape_html(msg.message) + '</pre>',
 								0,
 								true,
-								'info',
+								'notice',
 								{
 									before_close: () => {
 										setTimeout(() => {

@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250107
+ * @version 	v.20250128
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -37,9 +37,19 @@ interface AuthHandlerInterface {
 	/**
 	 * Auth Handler Authenticate
 	 * THIS MUST BE EXTENDED TO HANDLE AN AUTHENTICATION METHOD
-	 * RETURN: VOID ; On FAILED Logins this method should STOP EXECUTION and provide the proper HTTP Status Message: ex: 401, 403, 429, ...
+	 * RETURN: VOID
 	 */
-	public static function Authenticate(bool $enforce_https=false) : void;
+	public static function Authenticate() : void;
+	//=====
+
+
+	//=====
+	/**
+	 * Auth Handler AuthLock
+	 * THIS MUST BE EXTENDED TO LOCK AUTHENTICATION AFTER THE Authenticate has been called
+	 * RETURN: VOID
+	 */
+	public static function AuthLock() : void;
 	//=====
 
 

@@ -1,0 +1,60 @@
+<style>
+div#display-area,
+div#loader-area {
+	font-size: 1rem;
+}
+div#display-area {
+	max-width: 700px;
+}
+div#loader-img-area {
+	min-height: 32px;
+}
+div#loader-text-area {
+	margin-top: 15px;
+	text-wrap: balance;
+	word-break: keep-all;
+	hyphens: none;
+}
+div#loader-area .signout-error {
+	color: #ED2559 !important;
+	font-weight: bold;
+}
+div#loader-btn-area {
+	display: none;
+}
+</style>
+<div><center>
+	<img height="64" alt="logo" src="modules/mod-auth-users/views/img/logo-auth.svg" style="opacity:0.88; margin-top:10px;">
+	<div id="display-area">
+		<h1>[###TXT-TITLE|html###]</h1>
+		<div id="loader-area">
+			<div id="loader-img-area"><img id="loader-img" src="lib/framework/img/loading-bars.svg"></div>
+			<hr>
+			<div id="loader-text-area">[###TXT-WAIT|html###]</div>
+			<br>
+			<div id="loader-btn-area">
+				<a class="ux-button ux-button-dark" href="[###URL-REDIR|html###]">[###TXT-BTN-REDIR|html###]</a>
+			</div>
+		</div>
+	</div>
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/powered-by.mtpl.inc.htm!@@@]
+</center></div>
+<script>
+const signOutRedirect = () => {
+	const isError = [###IS-ERROR|bool###];
+	const signOutMessage = '[###TXT-SIGNOUT|js###]';
+	const redirectUrl = '[###URL-REDIR|js###]';
+	const $loader = jQuery('div#loader-text-area');
+	$loader.empty().text(signOutMessage);
+	if(!!isError) {
+		$loader.addClass('signout-error');
+		jQuery('div#loader-btn-area').show();
+		jQuery('img#loader-img').attr('src', 'lib/framework/img/sign-crit-warn.svg');
+	} else {
+		setTimeout(() => { self.location = redirectUrl; }, 1500);
+	}
+}
+</script>
+<script>
+setTimeout(() => { signOutRedirect(); }, 1500);
+</script>

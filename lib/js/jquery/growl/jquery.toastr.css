@@ -1,5 +1,5 @@
 /*
- * Toastr v.3.1.7.2
+ * Toastr v.3.1.7.3
  * (c) 2021-2023 unix-world.org
  *
  * Based on Toastr v.2.1.1
@@ -13,8 +13,8 @@
  */
 
 /*
-// (c) 2021-2023 unix-world.org
-// fixes by unixman r.20231028:
+// (c) 2021-present unix-world.org
+// fixes by unixman r.20250205:
 // 	* Added renders: darknote, notice
 //	* Change the color theme
 */
@@ -209,18 +209,6 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 	color: #FFFFFF;
 }
 
-.toast-notice,
-.toast-notice * {
-	background: #FFFFFF;
-}
-.toast-notice > .toast-progress {
-	background: #778888;
-}
-.toast-notice,
-.toast-notice * {
-	color: #555555;
-}
-
 .toast-light,
 .toast-light * {
 	background: #E9EDCA;
@@ -235,13 +223,25 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 
 .toast-info,
 .toast-info * {
-	background: #4D5774;
+	background: #FFFFFF;
 }
 .toast-info > .toast-progress {
-	background: #FFFFFF;
+	background: #778888;
 }
 .toast-info,
 .toast-info * {
+	color: #555555;
+}
+
+.toast-notice,
+.toast-notice * {
+	background: #4D5774;
+}
+.toast-notice > .toast-progress {
+	background: #FFFFFF;
+}
+.toast-notice,
+.toast-notice * {
 	color: #FFFFFF;
 }
 

@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @hint This abstract controller can be used to build a DAV Service / CardDAV over the Admin Middleware service
  *
- * @version		20250107
+ * @version		20250124
  * @package 	development:modules:Webdav
  *
  */
@@ -86,7 +86,7 @@ abstract class ControllerAdmCardDavFs extends \SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		if(\SmartAuth::check_login() !== true) {
+		if(\SmartAuth::is_authenticated() !== true) {
 			\http_response_code(500);
 			echo \SmartComponents::http_message_500_internalerror('FATAL ERROR @ CardDAV: Authentication required but not detected !');
 			return;

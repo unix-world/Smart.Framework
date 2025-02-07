@@ -1,8 +1,8 @@
 
 // jQuery Simple Dialog (SmartLightUI)
-// (c) 2015-2023 unix-world.org
+// (c) 2015-present unix-world.org
 // License: BSD
-// v.20230123
+// v.20250124
 
 // DEPENDS: jQuery, smartJ$Utils
 // REQUIRES-CSS: simple-dialog.css

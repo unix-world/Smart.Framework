@@ -1,62 +1,60 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>JSONEditor | Basic usage</title>
-  <link rel="stylesheet" type="text/css" href="../jsoneditor.css">
-  <script type="text/javascript" src="../jsoneditor.js"></script>
-  <style type="text/css">
-    #jsoneditor {
-      width: 500px;
-    }
-  </style>
+	<meta charset="utf-8">
+	<title>JSONEditor | Basic usage</title>
+	<link rel="stylesheet" type="text/css" href="../jsoneditor.css">
+	<script src="../jsoneditor.js"></script>
+	<style type="text/css">
+		#jsoneditor {
+			width: 500px;
+		}
+	</style>
 </head>
 <body>
-  <p>
-    In this example:
-  </p>
-  <ul>
-    <li>the field <code>_id</code> and its value are read-only</li>
-    <li>the field <code>name</code> is read-only but has an editable value</li>
-    <li>the field <code>age</code> and its value are editable</li>
-  </ul>
+	<p>
+		In this example:
+	</p>
+	<ul>
+		<li>the field <code>_id</code> and its value are read-only</li>
+		<li>the field <code>name</code> is read-only but has an editable value</li>
+		<li>the field <code>age</code> and its value are editable</li>
+	</ul>
+	<div id="jsoneditor"></div>
+	<script>
+		var container = document.getElementById('jsoneditor');
 
-  <div id="jsoneditor"></div>
+		var options = {
+			editable: function (node) {
+				// node is an object like:
+				//   {
+				//     field: 'FIELD',
+				//     value: 'VALUE',
+				//     path: ['PATH', 'TO', 'NODE']
+				//   }
+				switch (node.field) {
+					case '_id':
+						return false;
 
-  <script type="text/javascript" >
-    var container = document.getElementById('jsoneditor');
+					case 'name':
+						return {
+							field: false,
+							value: true
+						};
 
-    var options = {
-      editable: function (node) {
-        // node is an object like:
-        //   {
-        //     field: 'FIELD',
-        //     value: 'VALUE',
-        //     path: ['PATH', 'TO', 'NODE']
-        //   }
-        switch (node.field) {
-          case '_id':
-            return false;
+					default:
+						return true;
+				}
+			}
+		};
 
-          case 'name':
-            return {
-              field: false,
-              value: true
-            };
+		var json = {
+			_id: 123456,
+			name: 'John',
+			age: 32
+		};
 
-          default:
-            return true;
-        }
-      }
-    };
-
-    var json = {
-      _id: 123456,
-      name: 'John',
-      age: 32
-    };
-
-    var editor = new JSONEditor(container, options, json);
-  </script>
+		var editor = new JSONEditor(container, options, json);
+	</script>
 </body>
 </html>

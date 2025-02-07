@@ -1,4 +1,4 @@
-<!-- CSS APP (default) :: r.20220913 -->
+<!-- CSS APP (default) :: r.20250124 -->
 [%%%COMMENT%%%] Hint: css with fonts speedup loading page: replace the attribute 'media="all"' for link tag with: 'media="none" onload="if(media!='all'){media='all';}"' [%%%/COMMENT%%%]
 <!-- Font -->
 [%%%IF:SEMAPHORE:&*<load:font:serif>;(16)%%%]
@@ -15,6 +15,12 @@
 [%%%/IF:SEMAPHORE(16)%%%]
 <!-- Default Styles -->
 <link rel="stylesheet" type="text/css" href="etc/templates/default/styles.css?[###RELEASE-HASH|url|html###]" media="all">
+[%%%IF:SEMAPHORE:&*<styles:dark>;(18)%%%]
+<!-- Dark Styles -->
+<link rel="stylesheet" type="text/css" href="etc/templates/default/styles-dark.css" media="all">
+[%%%ELSE:SEMAPHORE(18)%%%]
+<!-- No Dark Styles -->
+[%%%/IF:SEMAPHORE(18)%%%]
 <!-- SF-Icons Css -->
 <link rel="stylesheet" type="text/css" href="lib/css/toolkit/sf-icons.css?[###RELEASE-HASH|url|html###]" media="all">
 [%%%IF:APP-REALM:==ADM;(87)%%%]
@@ -32,4 +38,6 @@
 <!-- App Plugins Css (pak) -->
 <link rel="stylesheet" type="text/css" href="lib/core/plugins/css/app.pak.css?[###RELEASE-HASH|url|html###]" media="all">
 [%%%/IF:APP-REALM(87)%%%]
+<!-- Fix Styles -->
+<link rel="stylesheet" type="text/css" href="etc/templates/default/styles-fix.css" media="all">
 <!-- # -->

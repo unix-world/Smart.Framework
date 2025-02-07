@@ -29,7 +29,7 @@ if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) {
  */
 class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmCardDavFs {
 
-	// v.20250107
+	// v.20250124
 
 	public function Run() {
 
@@ -42,7 +42,7 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmCardDa
 		//--
 
 		//--
-		if(SmartAuth::check_login() !== true) {
+		if(SmartAuth::is_authenticated() !== true) {
 			http_response_code(403);
 			echo SmartComponents::http_message_403_forbidden('ERROR: CardDAV Invalid Auth ...');
 			return;

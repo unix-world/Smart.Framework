@@ -2,8 +2,8 @@ How To Use
 
 Step 1: together with JQuery, include jquery.simplePagination.js in your page:
 
-<script type="text/javascript" src="path_to/jquery.js"></script>
-<script type="text/javascript" src="path_to/jquery.simplePagination.js"></script>
+<script src="path_to/jquery.js"></script>
+<script src="path_to/jquery.simplePagination.js"></script>
 
 JQuery 1.7.2 or later is recommended. Older versions might work as well, but they are not tested.
 

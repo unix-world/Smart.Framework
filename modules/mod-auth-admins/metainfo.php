@@ -11,19 +11,19 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_AREA', 'ADMIN');
+define('SMART_APP_MODULE_AREA', 'SHARED');
 define('SMART_APP_MODULE_AUTH', true);
-define('SMART_APP_MODULE_REALM_AUTH', 'SMART-ADMINS-AREA'); // if set will check the login realm
 
 // [PHP8]
 
-/**
- * Admin Controller
- * @ignore
- */
+
+class SmartAppIndexController extends SmartAppAdminController {}
+
+class SmartAppTaskController  extends SmartAppAdminController {}
+
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20250112
+	// v.20250206
 
 
 	public function Initialize() {
@@ -39,8 +39,13 @@ class SmartAppAdminController extends SmartAbstractAppController {
 	public function Run() { // (OUTPUTS: HTML)
 
 		//--
-		if(SmartAuth::check_login() !== true) {
-			$this->PageViewSetCfg('error', 'Auth Admins MetaInfo Requires Authentication ! ...');
+		if(SmartAuth::is_authenticated() !== true) {
+			$this->PageViewSetCfg('error', 'This Area Requires Authentication ! ...');
+			return 403;
+		} //end if
+		//--
+		if(SmartAuth::test_login_privilege('super-admin') !== true) { // if not superadmin
+			$this->PageViewSetCfg('error', 'This Area Requires Super-Admin Privileges ! ...');
 			return 403;
 		} //end if
 		//--
@@ -105,7 +110,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		$metainfo[] = '';
-		$metainfo[] = 'Auth Data: `'.SmartUtils::pretty_print_var((array)SmartAuth::get_login_data(true)).'`';
+		$metainfo[] = 'Auth Data: `'.SmartUtils::pretty_print_var((array)SmartAuth::get_auth_data(true)).'`';
 		//--
 
 		//--
