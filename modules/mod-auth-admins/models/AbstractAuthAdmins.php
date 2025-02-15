@@ -30,7 +30,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 abstract class AbstractAuthAdmins {
 
 	// ->
-	// v.20250205
+	// v.20250207
 
 	public const MAX_TOKENS_PER_ACCOUNT = 25;
 

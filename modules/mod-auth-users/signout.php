@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_AREA', 'INDEX'); // INDEX, ADMIN, TASK, SHARED
 
 final class SmartAppIndexController extends SmartAbstractAppController {
 
-	// r.20250205
+	// r.20250207
 
 	public function Initialize() {
 

@@ -39,7 +39,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @ignore
  *
  * @depends     PHP classes: Smart, SmartHashCrypto, SmartQR2DBarcode
- * @version 	v.20250205
+ * @version 	v.20250207
  * @package 	development:modules:AuthAdmins
  *
  */

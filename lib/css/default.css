@@ -1,5 +1,5 @@
 
-/* -- CSS Start :: Smart.Framework / Default :: r.20250124 -- */
+/* -- CSS Start :: Smart.Framework / Default :: r.20250207 -- */
 
 * {
 	font-family: 'IBM Plex Sans', 'Noto Sans', arial, sans-serif;
@@ -115,7 +115,7 @@ svg {
 
 hr {
 	border: none 0;
-	border-top: 1px solid #EEEEEE;
+	border-top: 1px dashed #EEEEEE;
 	height: 1px;
 }
 

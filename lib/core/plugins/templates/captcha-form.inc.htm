@@ -1,4 +1,4 @@
-<!-- Partial Template: Plugins.CaptchaForm r.20250203 ; Form: [###CAPTCHA-FORM|html###] ; Seed: [###CAPTCHA-RAND|html###] -->
+<!-- Partial Template: Plugins.CaptchaForm r.20250214 ; Form: [###CAPTCHA-FORM|html###] ; Seed: [###CAPTCHA-RAND|html###] -->
 [%%%IF:ALL-REQUIREMENTS:==yes;%%%]
 <!-- Sf.Icons --><link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/css/toolkit/sf-icons.css?[###RELEASE-HASH|url|html###]">
 <!-- jQuery --><script src="[###BASE-URL|html###]lib/js/jquery/jquery.js?[###RELEASE-HASH|url|html###]"></script><script>jQuery.ajaxSetup({ timeout: 0, cache: false });</script><script src="[###BASE-URL|html###]lib/js/jquery/jquery.smart.compat.js?[###RELEASE-HASH|url|html###]"></script>
@@ -18,8 +18,8 @@ const smartJ$Options = {
 		NotifyLoadError: true,
 	},
 };
-Object.freeze(smartJ$Options); // sec.
-window.smartJ$Options = smartJ$Options; // g-exp.
+Object.freeze(smartJ$Options);
+window.smartJ$Options = smartJ$Options;
 </script>
 <script src="[###BASE-URL|html###]lib/js/framework/smart-framework.pak.js?[###RELEASE-HASH|url|html###]"></script>
 <!-- # -->
@@ -51,7 +51,7 @@ jQuery(() => {
 	}
 
 	[###CAPTCHA-JS-EXPORTS###]
-	const mutation$Observer = (t, k) => c$d(k, u$.b64Dec(t));
+	const mutation$Observer = (t, k) => c$d(k, '' + (4/2) + 'f' + (16**2) + '.v' + (2/2) + '!' + t);
 	const event$Observer = window.smartCaptchaInputHandler.eventObserver;
 	const pointer$Observer = window.smartCaptchaInputHandler.pointerObserver;
 	const get$DhKx = window.smartCaptchaInputHandler.getDhKx;
@@ -88,25 +88,28 @@ jQuery(() => {
 	};
 	Object.freeze(Smart$Captcha$Options);
 
-	window.smartCaptchaFormHandler.handleForm(
-		'[###CAPTCHA-FORM|js###]',
-		Smart$Captcha$Options,
-		u$,
-		d$,
-		z$,
-		h$,
-		c$e,
-		c$d,
-		b$,
-		s$,
-		dhkx$KE,
-		get$DhKx,
-		data$Handler,
-		mutation$Observer,
-		event$Observer,
-		pointer$Observer,
-		'[###CAPTCHA-CHKSUM|js###]'
-	);
+	setTimeout(() => {
+		window.smartCaptchaFormHandler.handleForm(
+			'[###CAPTCHA-FORM|js###]',
+			Smart$Captcha$Options,
+			u$,
+			a$,
+			d$,
+			z$,
+			h$,
+			c$e,
+			c$d,
+			b$,
+			s$,
+			dhkx$KE,
+			get$DhKx,
+			data$Handler,
+			mutation$Observer,
+			event$Observer,
+			pointer$Observer,
+			'[###CAPTCHA-CHKSUM|js###]'
+		)
+	}, 700);
 
 });
 </script>

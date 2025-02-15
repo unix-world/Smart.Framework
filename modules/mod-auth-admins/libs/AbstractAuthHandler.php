@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * DEPENDS classes: 	Smart, SmartAuth, SmartEnvironment, SmartUtils, \SmartModExtLib\AuthAdmins\AuthProviderHttp
  * DEPENDS constants: 	SMART_FRAMEWORK_SECURITY_KEY
  *
- * @version 	v.20250205
+ * @version 	v.20250207
  * @package 	development:modules:AuthAdmins
  *
  */

@@ -24,7 +24,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * Generate ASCII (art) captchas.
  * This version contains many changes and optimizations from the original work.
  * @author unixman
- * @copyright (c) 2021 unix-world.org
+ * @copyright (c) 2021-present unix-world.org
  * @license: BSD
  *
  * Original work: ASCII Captcha, https://github.com/bohnelang/ascii_captcha # head.20210317
@@ -47,7 +47,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart
- * @version 	v.20250107
+ * @version 	v.20250214
  * @package 	development:Captcha
  */
 final class SmartAsciiCaptcha {
@@ -199,7 +199,7 @@ final class SmartAsciiCaptcha {
 		//--
 		return (array) [
 			'code' 	=> (string) strtoupper((string)$code),
-			'html' 	=> (string) '<div><div class="Smart-Captcha-AsciiArt" style="border:1px solid #E7E7E7; display:inline-block!important; padding:0!important; padding-left:5px; padding-right:5px;"><pre style="margin:3px!important; padding:0!important; font-weight:bold!important; font-size:'.(float)$size.'rem!important; line-height:'.(float)$size.'rem!important;">'."\n".self::renderHtml((string)$ascii, (bool)$greyscale, (float)$size)."\n".'</pre></div></div>',
+			'html' 	=> (string) '<div><div class="Smart-Captcha-AsciiArt" style="border:1px solid #E7E7E7; display:inline-block!important; padding:0!important; padding-left:5px; padding-right:5px;"><pre style="margin:3px!important; padding:0!important; font-weight:bold!important; font-size:'.(float)$size.'rem!important; line-height:'.(float)$size.'rem!important; background:#FFFFFF!important;">'."\n".self::renderHtml((string)$ascii, (bool)$greyscale)."\n".'</pre></div></div>',
 		];
 		//--
 	} //END FUNCTION
@@ -264,13 +264,7 @@ final class SmartAsciiCaptcha {
 	} //END FUNCTION
 
 
-	private static function renderHtml(string $asciiart, bool $greyscale, float $size) : string {
-		//--
-		if((float)$size < 0.250) { // {{{SYNC-ASCII-CAPTCHA-FONT-MIN}}}
-			$size = 0.250;
-		} elseif((float)$size > 0.750) { // {{{SYNC-ASCII-CAPTCHA-FONT-MAX}}}
-			$size = 0.750;
-		} //end if
+	private static function renderHtml(string $asciiart, bool $greyscale) : string {
 		//--
 		$ret = '';
 		//--
@@ -297,7 +291,7 @@ final class SmartAsciiCaptcha {
 				$cols = (string) sprintf('%x%x%x', (int)$fsr, (int)$fsg, (int)$fsb);
 				$colw = (string) sprintf('%x%x%x', (int)$fwr, (int)$fwg, (int)$fwb);
 				//--
-				$ret .= '<span style="background:#FFFFFF!important; color:#'.Smart::escape_html((string)(((string)$c === (string)self::CAPTCHA_GLYPHS_CHR) ? $cols : $colw)).'!important; font-size:'.(float)$size.'rem!important; line-height:'.(float)$size.'rem!important;">'.Smart::escape_html((string)self::CAPTCHA_GLYPHS_RPL).'</span>';
+				$ret .= '<span style="color:#'.Smart::escape_html((string)(((string)$c === (string)self::CAPTCHA_GLYPHS_CHR) ? $cols : $colw)).'!important;">'.Smart::escape_html((string)self::CAPTCHA_GLYPHS_RPL).'</span>';
 				//--
 			} //end if else
 			//--

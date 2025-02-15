@@ -285,14 +285,14 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 								);
 								if((int)$success != 1) {
 									$status = 'FAIL';
-									$message = 'Account Authorization Failed: 504';
+									$message = 'Account Authorization Failed: 505';
 								} //end if
 							} //end if
 							//--
 							if((string)$message == '') {
 								if(\SmartModExtLib\AuthUsers\AuthCookie::setJwtCookie((string)$jwt['token']) !== true) {
 									$status = 'NOTICE';
-									$message = 'Authorization Cookie Failed: 505';
+									$message = 'Authorization Cookie Failed: 506';
 									$redirect = (string) \SmartModExtLib\AuthUsers\Utils::AUTH_USERS_URL_ACCOUNT;
 								} //end if
 							} //end if

@@ -18,13 +18,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // [PHP8]
 
 //--
-// gzencode / gzdecode (rfc1952) is the gzip compatible algorithm which uses CRC32 minimal checksums (a bit safer and faster than ADLER32)
-//--
-if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
-	@http_response_code(500);
-	die('ERROR: The PHP ZLIB Extension (gzencode/gzdecode) is required for Smart.Framework / Lib Utils');
-} //end if
-//--
 // optional-constant: SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER
 //--
 
@@ -226,7 +219,7 @@ final class SmartCache {
  * @internal
  *
  * @depends 	classes: Smart
- * @version 	v.20250107
+ * @version 	v.20250214
  * @package 	development:Application
  *
  */
@@ -597,45 +590,15 @@ abstract class SmartAbstractPersistentCache {
 	 * Use this function to store any type of variables: numbers, strings or arrays in a safe encoded + compressed format.
 	 * By default the variable will be: encoded (serialized as Json), compressed (gzencode/6/gzip) and finally B64-Encoded.
 	 *
-	 * @param MIXED 	$y_var			The Variable to be encoded + compressed
+	 * @param MIXED 	$data			The Variable to be encoded + compressed
 	 *
 	 * @return STRING	Returns the safe serialized + compressed variable content
 	 */
-	final public static function varCompress($y_var) : string {
+	final public static function varCompress($data) : string {
 		//--
 		// $y_var is MIXED TYPE, DO NOT CAST !!
 		//--
-		$raw_data = (string) Smart::seryalize($y_var);
-		$y_var = ''; // free mem
-		if((string)$raw_data == '') {
-			return '';
-		} //end if
-		$crc32b = (string) SmartHashCrypto::crc32b((string)$raw_data, true); // b36
-		//-- compress
-		$arch_data = @gzencode((string)$raw_data, -1, FORCE_GZIP); // don't make it string, may return false ; -1 = default compression of the zlib library is used which is 6
-		//-- check for possible zlib-pack errors
-		if(($arch_data === false) OR ((string)$arch_data == '')) {
-			Smart::log_warning('SmartPersistentCache / Cache Variable Compress :: Zlib GZ-Encode ERROR ! ...');
-			return '';
-		} //end if
-		$len_data = (int) strlen((string)$raw_data);
-		$raw_data = null; // free mem
-		$len_arch = (int) strlen((string)$arch_data);
-		if(((int)$len_data > 0) AND ((int)$len_arch > 0)) {
-			$ratio = (float) ((int)$len_data / (int)$len_arch); // division by zero is checked above as $out not to be empty!
-		} else {
-			$ratio = 0;
-		} //end if
-		if((float)$ratio <= 0) { // check for empty input / output !
-			Smart::log_warning('SmartPersistentCache / Cache Variable Compress :: ZLib Data Ratio is zero ! ...');
-			return '';
-		} //end if
-		if((float)$ratio > 32768) { // check for this bug in ZLib {{{SYNC-GZ-ARCHIVE-ERR-CHECK}}}
-			Smart::log_warning('SmartPersistentCache / Cache Variable Compress :: ZLib Data Ratio is higher than 32768 ! ...');
-			return '';
-		} //end if
-		//--
-		return (string) Smart::b64_enc((string)$arch_data).'#'.$crc32b;
+		return (string) SmartGZip::compress((string)Smart::seryalize($data));
 		//--
 	} //END FUNCTION
 
@@ -646,48 +609,18 @@ abstract class SmartAbstractPersistentCache {
 	 * Use this function to retrieve any type of variables: numbers, strings or arrays that were previous safe encoded + compressed.
 	 * By default the variable will be: B64-Decoded, uncompressed (gzdecode) and finally decoded (unserialized from Json).
 	 *
-	 * @param STRING 	$y_cache_arch_var		The compressed + encoded variable
+	 * @param STRING 	$data			The compressed + encoded variable
 	 *
 	 * @return MIXED	Returns the original restored type and value of that variable
 	 */
-	final public static function varUncompress(?string $y_cache_arch_var) { // : MIXED OUTPUT, DO NOT CAST !
+	final public static function varUncompress(?string $data) { // : MIXED OUTPUT, DO NOT CAST !
 		//--
-		$y_cache_arch_var = (string) trim((string)$y_cache_arch_var);
-		//--
-		if((string)$y_cache_arch_var == '') {
-			return null; // no data to unarchive, return empty string
-		} //end if
-		//--
-		$arr = (array) explode('#', (string)$y_cache_arch_var, 2);
-		$y_cache_arch_var = null; // free mem
-		$arch_data = (string) trim((string)($arr[0] ?? null));
-		$crc32b = (string) trim((string)($arr[1] ?? null));
-		//--
-		if(
-			((string)$arch_data == '') // empty arch
-			OR
-			((string)$crc32b == '') // no crc32b
-		) {
-			return null; // no data to unarchive or no checksum
-		} //end if
-		//--
-		$arch_data = Smart::b64_dec((string)$arch_data, true); // STRICT ! don't make it string, may return null
-		if(($arch_data === null) OR ((string)trim((string)$arch_data) == '')) { // use trim, the deflated string can't contain only spaces
-			Smart::log_warning('SmartPersistentCache / Cache Variable Decompress :: Empty Data after B64-Decode ! ...');
-			return null; // something went wrong after b64 decoding ...
-		} //end if
-		//--
-		$arch_data = @gzdecode((string)$arch_data); // don't make it string, may return false
-		if(($arch_data === false) OR ((string)trim((string)$arch_data) == '')) { // use trim, the string before unseryalize can't contain only spaces
-			Smart::log_warning('SmartPersistentCache / Cache Variable Decompress :: Empty Data after Zlib GZ-Decode ! ...');
+		$data = SmartGZip::uncompress((string)$data);
+		if($data === null) {
 			return null;
 		} //end if
 		//--
-		if((string)$crc32b !== (string)SmartHashCrypto::crc32b((string)$arch_data, true)) { // b36
-			return null; // crc32b does not match
-		} //end if
-		//--
-		return Smart::unseryalize((string)$arch_data); // mixed
+		return Smart::unseryalize((string)$data); // mixed
 		//--
 	} //END FUNCTION
 

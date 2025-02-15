@@ -28,8 +28,11 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @depends
  * @depends
  *
- * @version 	v.20250205
- * @package 	modules:AuthUsers
+ * @access 		private
+ * @internal
+ *
+ * @version 	v.20250207
+ * @package 	AuthUsers
  *
  */
 final class Auth2FA {

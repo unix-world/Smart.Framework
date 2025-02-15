@@ -23,7 +23,7 @@ define('SMART_APP_MODULE_REALM_AUTH', 'SMART-ADMINS-AREA'); // if set will check
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20250124
+	// v.20250207
 
 	// TODO:
 	// 	* Edit: support to bind to a specific IP address list, for extra security
@@ -35,6 +35,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 	public function Initialize() {
 		//--
 		$this->PageViewSetCfg('template-path', '@'); // set template path to this module
+		$this->PageViewSetCfg('template-file', 'template.htm');
 		//--
 		return true;
 		//--

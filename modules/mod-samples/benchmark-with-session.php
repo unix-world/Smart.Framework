@@ -35,7 +35,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		$semaphores = [];
 		$semaphores[] = 'skip:unveil-js';
-		$this->PageViewSetVar('semaphore', (string) Smart::array_to_list($semaphores));
+		$this->PageViewSetVar('semaphore', (string)Smart::array_to_list($semaphores));
 		//--
 		return true;
 		//--

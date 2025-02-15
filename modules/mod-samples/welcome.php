@@ -36,6 +36,9 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		$rand = (int) rand(0,2);
 		//--
 		$semaphores = [];
+		if(rand(0,10) > 5) {
+			$semaphores[] = 'styles:dark';
+		} //end if
 	//	$semaphores[] = 'skip:js-ui';
 		if((int)$rand == 1) {
 			$semaphores[] = 'load:searchterm-highlight-js';
@@ -50,7 +53,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 	//	$semaphores[] = 'skip:unveil-js';
 		//--
-		$this->PageViewSetVar('semaphore', (string) Smart::array_to_list($semaphores));
+		$this->PageViewSetVar('semaphore', (string)Smart::array_to_list($semaphores));
 		//--
 	} //END FUNCTION
 

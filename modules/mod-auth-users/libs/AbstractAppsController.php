@@ -15,7 +15,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 abstract class AbstractAppsController extends \SmartModExtLib\AuthUsers\AbstractAccountController {
 
-	// r.20250205
+	// r.20250207
 
 	protected string $title = 'Apps`n`Dashboard';
 	protected string $logo = ''; // optional

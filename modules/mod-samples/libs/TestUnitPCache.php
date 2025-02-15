@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20231029
+ * @version 	v.20250214
  *
  */
 final class TestUnitPCache {
@@ -462,8 +462,8 @@ final class TestUnitPCache {
 			//--
 			while(\strlen((string)$out) < (8388608 + $vlen)) {
 				$randomizer = (string) '#'.\Smart::random_number().'#'."\n";
-				$testfile = \SmartUtils::data_archive((string)$randomizer.$testsrcfile);
-				if(\SmartHashCrypto::sha1((string)\SmartUtils::data_unarchive((string)$testfile)) !== \SmartHashCrypto::sha1((string)$randomizer.$testsrcfile)) {
+				$testfile = (string) \SmartZLib::dataArchive((string)$randomizer.$testsrcfile);
+				if(\SmartHashCrypto::sha1((string)\SmartZLib::dataUnarchive((string)$testfile)) !== \SmartHashCrypto::sha1((string)$randomizer.$testsrcfile)) {
 					\Smart::log_warning('Data Unarchive Failed for Pack Test Archive ...');
 					return 'Data Unarchive Failed for Pack Test Archive !';
 				} //end if

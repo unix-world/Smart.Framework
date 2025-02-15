@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @version 	v.20250107
+ * @version 	v.20250207
  * @package 	development:modules:AuthAdmins
  *
  */

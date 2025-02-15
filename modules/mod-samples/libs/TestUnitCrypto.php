@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250118
+ * @version 	v.20250214
  *
  */
 final class TestUnitCrypto {
@@ -122,6 +122,55 @@ final class TestUnitCrypto {
 			$err_misc[] = 'TestUnit FAILED # PHP Bin/Hex, Hex/Bin conversions test';
 		} //end if
 		//--
+
+		//--
+		$snapTxt = 'Hi, this is Snappy! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Smart スマート // Cloud Application Platform クラウドアプリケーションプラットフォーム';
+		$snapB64 = 'sy1!;8wHwTEhpLCB0aGlzIGlzIFNuYXBweSEgTG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQsIGNvbnNlY3RldHVyIGFkaXBpc2NpbmcgZWxpdC4g4jkA8EhTbWFydCDjgrnjg57jg7zjg4ggLy8gQ2xvdWQgQXBwbGljYXRpb24gUGxhdGZvcm0g44Kv44Op44Km44OJ44Ki44OX44Oq44KxAT0ggrfjg6fjg7PjARVIqeODg-ODiOODleOCqeODvOODoA;0bv2zax';
+		//--
+		$snapArch = (string) \SmartSnappy::compress((string)$snapTxt);
+		if((string)$snapArch !== (string)$snapB64) {
+			$err_misc[] = 'TestUnit FAILED # PHP Snap Archive B64';
+		} //end if
+		//--
+		$snapUnarch = (string) \SmartSnappy::uncompress((string)$snapArch);
+		if(
+			((string)$snapUnarch !== (string)$snapTxt)
+			OR
+			((string)\SmartHashCrypto::sh3a512((string)$snapUnarch) !== (string)\SmartHashCrypto::sh3a512((string)$snapTxt))
+			OR
+			((string)\SmartHashCrypto::sha384((string)$snapUnarch) !== (string)\SmartHashCrypto::sha384((string)$snapTxt))
+		) {
+			$err_misc[] = 'TestUnit FAILED # PHP Snap UnArchive B64';
+		} //end if
+		//--
+		$snapGoB64 = 'sy1!;8wHwTEhpLCB0aGlzIGlzIFNuYXBweSEgTG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQsIGNvbnNlY3RldHVyIGFkaXBpc2NpbmcgZWxpdC4g4jkA8FVTbWFydCDjgrnjg57jg7zjg4ggLy8gQ2xvdWQgQXBwbGljYXRpb24gUGxhdGZvcm0g44Kv44Op44Km44OJ44Ki44OX44Oq44Kx44O844K344On44Oz4wEVSKnjg4Pjg4jjg5Xjgqnjg7zjg6A;0bv2zax';
+		$snapUnarch = (string) \SmartSnappy::uncompress((string)$snapGoB64);
+		if(
+			((string)$snapUnarch !== (string)$snapTxt)
+			OR
+			((string)\SmartHashCrypto::sh3a512((string)$snapUnarch) !== (string)\SmartHashCrypto::sh3a512((string)$snapTxt))
+			OR
+			((string)\SmartHashCrypto::sha384((string)$snapUnarch) !== (string)\SmartHashCrypto::sha384((string)$snapTxt))
+		) {
+			$err_misc[] = 'TestUnit FAILED # PHP Snap UnArchive (Go) B64';
+		} //end if
+		//--
+		$snapUniversalB64 = 'sy1!;hQHwTEhpLCB0aGlzIGlzIFNuYXBweSEgTG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQsIGNvbnNlY3RldHVyIGFkaXBpc2NpbmcgZWxpdC4g3jkA;03gi1yj';
+		$snapUniversalTxt = 'Hi, this is Snappy! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+		$snapArch = (string) \SmartSnappy::compress((string)$snapUniversalTxt);
+		if((string)$snapArch !== (string)$snapUniversalB64) {
+			$err_misc[] = 'TestUnit FAILED # PHP Snap Archive (Cross) B64';
+		} //end if
+		$snapUnarch = (string) \SmartSnappy::uncompress((string)$snapArch);
+		if(
+			((string)$snapUnarch !== (string)$snapUniversalTxt)
+			OR
+			((string)\SmartHashCrypto::sh3a512((string)$snapUnarch) !== (string)\SmartHashCrypto::sh3a512((string)$snapUniversalTxt))
+			OR
+			((string)\SmartHashCrypto::sha384((string)$snapUnarch) !== (string)\SmartHashCrypto::sha384((string)$snapUniversalTxt))
+		) {
+			$err_misc[] = 'TestUnit FAILED # PHP Snap UnArchive (Cross) B64';
+		} //end if
 
 		//--
 		$test_key = (string) 'TestUnit // This is a test key for Crypto Cipher ...'.'!$'.SMART_FRAMEWORK_SECURITY_KEY.'#'.time().'#'.microtime(true).'::'.$unicode_text;
@@ -619,6 +668,9 @@ final class TestUnitCrypto {
 				'BASE-CONV-DEC-TESTS' 				=> (array)  $arr_test_dec_bases,
 				'BASE-CONV-STR' 					=> (string) $test_base_str,
 				//--
+				'SNAP-TXT' 							=> (string) $snapUniversalTxt,
+				'SNAP-B64' 							=> (string) $snapUniversalB64,
+				//--
 				'THREEFISH_TF_BF-ENCRYPTED' 		=> (string) $t3ffb_enc,
 				'THREEFISH_TF_BF-DECRYPTED' 		=> (string) $t3ffb_dec,
 				'THREEFISH_TF_BF-NORND-ENCRYPTED' 	=> (string) $t3ffb_nornd_enc,
@@ -663,7 +715,7 @@ final class TestUnitCrypto {
 				'IMG-SIGN' 							=> 'lib/framework/img/sign-info.svg',
 				'IMG-CHECK' 						=> 'modules/mod-samples/libs/templates/testunit/img/test-crypto.svg',
 				'TXT-MAIN-HTML' 					=> '<span style="color:#83B953;">Test OK: PHP / Javascript Cryptography.</span>',
-				'TXT-INFO-HTML' 					=> '<h2><span style="color:#333333;"><span style="color:#83B953;">All</span> the SmartFramework Cryptography <span style="color:#83B953;">Tests PASSED on both PHP&nbsp;&amp;&nbsp;Javascript</span>:</span></h2>'.'<span style="font-size:14px;">'.\Smart::nl_2_br(\Smart::escape_html("===== CRYPTO / TESTS: ===== \n * Unicode support / UTF-8 \n * JS-Escape \n * SHA3-512 \n * SHA3-384 \n * SHA3-256 \n * SHA3-224 \n * SHA512 \n * SHA384 \n * SHA256 \n * SHA224 \n * SHA1 \n * MD5 \n * CRC32B \n * Base64: Encode / Decode \n * Base[32, 36, 58, 62, 64s, 85, 92]: Encode / Decode \n * Bin2Hex / Hex2Bin \n * Threefish.1024+Twofish.256+Blowfish.448.CBC (v1): Encrypt / Decrypt (** PHP only) \n * Threefish.1024.CBC (v1): Encrypt / Decrypt (** PHP only) \n * Twofish.256+Blowfish.448.CBC (v1): Encrypt / Decrypt (** PHP only) \n * Twofish.256.CBC (v1): Encrypt / Decrypt \n * Blowfish.448.CBC (v3): Encrypt / Decrypt \n * Blowfish.448.CBC (v2): Decrypt only \n * Blowfish.384.CBC (v1): Decrypt only \n * Dynamic: Encrypt / Decrypt (** Only for PHP: ".\Smart::escape_html((string)\SmartCipherCrypto::algo()).") \n ===== END TESTS ... =====")).'</span>',
+				'TXT-INFO-HTML' 					=> '<h2><span style="color:#333333;"><span style="color:#83B953;">All</span> the SmartFramework Cryptography <span style="color:#83B953;">Tests PASSED on both PHP&nbsp;&amp;&nbsp;Javascript</span>:</span></h2>'.'<span style="font-size:14px;">'.\Smart::nl_2_br(\Smart::escape_html("===== CRYPTO / TESTS: ===== \n * Unicode support / UTF-8 \n * JS-Escape \n * SHA3-512 \n * SHA3-384 \n * SHA3-256 \n * SHA3-224 \n * SHA512 \n * SHA384 \n * SHA256 \n * SHA224 \n * SHA1 \n * MD5 \n * CRC32B \n * Base64: Encode / Decode \n * Base[32, 36, 58, 62, 64s, 85, 92]: Encode / Decode \n * Bin2Hex / Hex2Bin \n * Snappy: Compress / Uncompress \n * Threefish.1024+Twofish.256+Blowfish.448.CBC (v1): Encrypt / Decrypt (** PHP only) \n * Threefish.1024.CBC (v1): Encrypt / Decrypt (** PHP only) \n * Twofish.256+Blowfish.448.CBC (v1): Encrypt / Decrypt (** PHP only) \n * Twofish.256.CBC (v1): Encrypt / Decrypt \n * Blowfish.448.CBC (v3): Encrypt / Decrypt \n * Blowfish.448.CBC (v2): Decrypt only \n * Blowfish.384.CBC (v1): Decrypt only \n * Dynamic: Encrypt / Decrypt (** Only for PHP: ".\Smart::escape_html((string)\SmartCipherCrypto::algo()).") \n ===== END TESTS ... =====")).'</span>',
 				'TEST-INFO' 						=> (string) 'Crypto Test Suite for SmartFramework: PHP + Javascript'
 				//--
 			]

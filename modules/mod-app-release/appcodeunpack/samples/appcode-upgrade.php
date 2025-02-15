@@ -14,7 +14,7 @@ if(!defined('APPCODEPACK_APP_ID')) { // this must be defined in the first line o
 //-----------------------------------------------------
 
 //=====
-// AppCodePack Upgrade Script, v.20221219
+// AppCodePack Upgrade Script, v.20250207
 //=====
 
 //--

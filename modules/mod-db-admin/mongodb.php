@@ -15,7 +15,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 /**
  * Admin Area Controller
- * @version 20250203
+ * @version 20250207
  * @ignore
  *
  * @requires define('SMART_FRAMEWORK_DB_ADMIN_ALLOW', true); // set in config-admin.php
@@ -32,6 +32,11 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 		$this->PageViewSetCfg('template-file', 'template.htm');
+		//--
+		$semaphores = [];
+		$semaphores[] = 'styles:dark';
+		$this->PageViewSetVar('semaphore', (string)Smart::array_to_list($semaphores));
+		//--
 		return true;
 		//--
 	} //END FUNCTION

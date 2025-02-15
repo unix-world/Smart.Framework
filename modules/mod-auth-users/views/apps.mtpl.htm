@@ -8,7 +8,7 @@ div#clock {
 	cursor:help;
 	position: fixed;
 	top: 16px;
-	left: 87px;
+	left: 107px;
 	opacity: 0.7;
 	z-index: 7788;
 }
@@ -19,7 +19,8 @@ div#title {
 	text-align: center;
 	padding-left: 70px;
 	padding-bottom: 20px;
-	background: #2e2e2e;
+	background: #2E2E2E;
+	color: #FFFFFF;
 	border-bottom: 1px dashed #888888;
 	z-index: 4444;
 }
@@ -33,6 +34,12 @@ div #menu {
 }
 div#app {
 	z-index: 17777;
+}
+@media (prefers-color-scheme: light) {
+	div#title {
+		background: #FFFFFF;
+		color: #2E2E2E;
+	}
 }
 </style>
 <script>const watchThemeDark = true; const watchCanvasScaleFactor = 0.5;</script>

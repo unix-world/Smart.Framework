@@ -15,12 +15,6 @@
 [%%%/IF:SEMAPHORE(16)%%%]
 <!-- Default Styles -->
 <link rel="stylesheet" type="text/css" href="etc/templates/default/styles.css?[###RELEASE-HASH|url|html###]" media="all">
-[%%%IF:SEMAPHORE:&*<styles:dark>;(18)%%%]
-<!-- Dark Styles -->
-<link rel="stylesheet" type="text/css" href="etc/templates/default/styles-dark.css" media="all">
-[%%%ELSE:SEMAPHORE(18)%%%]
-<!-- No Dark Styles -->
-[%%%/IF:SEMAPHORE(18)%%%]
 <!-- SF-Icons Css -->
 <link rel="stylesheet" type="text/css" href="lib/css/toolkit/sf-icons.css?[###RELEASE-HASH|url|html###]" media="all">
 [%%%IF:APP-REALM:==ADM;(87)%%%]
@@ -40,4 +34,10 @@
 [%%%/IF:APP-REALM(87)%%%]
 <!-- Fix Styles -->
 <link rel="stylesheet" type="text/css" href="etc/templates/default/styles-fix.css" media="all">
+[%%%IF:SEMAPHORE:&*<styles:dark>;(18)%%%]
+<!-- Dark Styles -->
+<link rel="stylesheet" type="text/css" href="etc/templates/default/styles-dark.css" media="all">
+[%%%ELSE:SEMAPHORE(18)%%%]
+<!-- No Dark Styles -->
+[%%%/IF:SEMAPHORE(18)%%%]
 <!-- # -->

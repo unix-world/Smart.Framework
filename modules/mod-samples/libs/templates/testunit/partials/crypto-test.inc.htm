@@ -1,4 +1,4 @@
-<!-- Partial Template: TestUnit.Partials.CryptoTest r.20250118 -->
+<!-- Partial Template: TestUnit.Partials.CryptoTest r.20250214 -->
 <style>
 div.crypto-test-results {
 	white-space: nowrap !important;
@@ -45,6 +45,8 @@ Base64@Encoded:&nbsp;<span id="base64enc-string" style="color:#666699;">[###BASE
 Base64@Decoded:&nbsp;<span id="base64dec-string" style="color:#FF5500;">[###BASE64-DECODED|html###]</span><br>
 Bin2Hex@Encoded:&nbsp;<span id="bin2hex-encoded" style="color:#444477;">[###BIN2HEX-ENCODED|html###]</span><br>
 Hex2Bin@Decoded:&nbsp;<span id="hex2bin-decoded" style="color:#FF5500;">[###HEX2BIN-DECODED|html###]</span><br>
+SnapTxt:&nbsp;<span id="snap-txt" style="color:#778888">[###SNAP-TXT|html###]</span><br>
+SnapArchB64:&nbsp;<span id="snap-b64" style="color:#778888">[###SNAP-B64|html###]</span><br>
 <input type="hidden" id="threefish_tf_bf-key" value="[###THREEFISH_TF_BF-KEY|html###]">
 Threefish+Twofish+Blowfish@Encrypted:&nbsp;<span id="threefish_tf_bf-random-encrypted" style="color:#66AA00;">[###THREEFISH_TF_BF-ENCRYPTED|html###]</span><br>
 Threefish+Twofish+Blowfish@Decrypted:&nbsp;<span id="threefish_tf_bf-random-decrypted" style="color:#FF5500;">[###THREEFISH_TF_BF-DECRYPTED|html###]</span><br>
@@ -127,6 +129,22 @@ DynamicCipher@Algo:&nbsp;<span style="color:#CCCCCC;">PHP:[###CUSTOMCRYPT-ALGO|h
 		} //end if
 	} else {
 		msgAlert('Test ERROR: Tests misc Errors is not array !');
+	} //end if
+	//--
+	const snapTxt = '[###SNAP-TXT|js###]';
+	const snapB64 = smartJ$ArchSnappy.compress(snapTxt);
+	const snapDec = smartJ$ArchSnappy.uncompress(snapB64);
+	if(snapDec !== snapTxt) {
+		msgAlert('ERROR: Snap Unarchive Failed ...');
+		the_error++;
+	} //end if
+	if(snapDec !== $('#snap-txt').text()) {
+		msgAlert('ERROR: Snap Unarchive JS is Differen than PHP ...');
+		the_error++;
+	} //end if
+	if(snapB64 !== $('#snap-b64').text()) {
+		msgAlert('ERROR: Snap Archive JS is Differen than PHP ...');
+		the_error++;
 	} //end if
 	//--
 	const unicodeText = $('#unicode-string').text();

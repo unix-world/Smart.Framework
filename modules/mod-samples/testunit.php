@@ -348,6 +348,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$main = '';
 				$semaphores[] = 'load:code-highlight-js';
 			//	if(rand(0,1) == 1) {
+			//		$semaphores[] = 'styles:dark';
 			//		$semaphores[] = 'theme:dark'; // {{{SYNC-DEMO-UI-THEME}}}
 			//	} else {
 					$semaphores[] = 'theme:light'; // {{{SYNC-DEMO-UI-THEME}}}

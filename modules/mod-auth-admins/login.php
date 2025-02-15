@@ -23,7 +23,7 @@ define('SMART_APP_MODULE_REALM_AUTH', 'SMART-ADMINS-AREA'); // if set will check
  */
 abstract class AbstractAdminLoginsController extends SmartAbstractAppController {
 
-	// v.20250203
+	// v.20250207
 
 
 	public function Initialize() {

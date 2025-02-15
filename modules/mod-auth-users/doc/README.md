@@ -1,5 +1,5 @@
 
-# Using the Smart AuthUsers Module for Smart.Framework, rev.20250203
+# Using the Smart AuthUsers Module for Smart.Framework, rev.20250207
 
 ## required settings in etc/config.php
 ```php

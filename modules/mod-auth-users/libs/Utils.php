@@ -1,5 +1,5 @@
 <?php
-// Class: \SmartModExtLib\AuthUsers\Utils
+// PHP Auth Users Utils for Smart.Framework
 // (c) 2008-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -27,7 +27,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //--
 
 /**
- * Class: AuthUsers Utils
+ * Class: \SmartModExtLib\AuthUsers\Utils
+ * AuthUsers Utils
  *
  * Passwords:
  * It disallows the usage of Plain Passwords by default ; to enable this set this constant in configs: const SMART_FRAMEWORK_AUTH_USERS_ALLOW_UNSAFE_PASSWORDS = true;
@@ -38,7 +39,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250206
+ * @version 	v.20250207
  * @package 	AuthUsers
  *
  */

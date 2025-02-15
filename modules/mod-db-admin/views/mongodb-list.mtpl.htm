@@ -21,7 +21,14 @@ jQuery(() => {
 <script src="lib/js/jquery/jsonview/jquery.json-viewer.js"></script>
 <link href="lib/js/jquery/jsonview/jquery.json-viewer.css" type="text/css" rel="stylesheet">
 <style type="text/css">
+.separator-json {
+	color: #ED2559;
+}
+.jsoneditor {
+	background: #FEFEFE;
+}
 .record-area {
+	background: #EDEDED;
 	border: 1px solid #EEEEEE;
 	padding: 0.25rem 1rem;
 	margin: 0;
@@ -44,7 +51,6 @@ jQuery(() => {
 	letter-spacing: 0.0625rem;
 }
 .query-builder {
-	background: #FEFEFE;
 	padding: 5px;
 	margin: 0;
 	margin-top: 5px;
@@ -53,7 +59,7 @@ jQuery(() => {
 #query-error {
 	display: block;
 	margin-top: 7px;
-	color: #ED2839 !important;
+	color: #ED2559 !important;
 	font-weight: bold !important;
 	white-space: pre !important;
 }
@@ -69,6 +75,7 @@ label {
 	font-weight: bold;
 }
 #indexes-info {
+	color: #555555;
 	background: #FCFCFC;
 	border: 1px solid #ECECEC;
 	padding: 5px;
@@ -283,8 +290,8 @@ const handleButtonShowJson = () => {
 }
 [%%%/IF:QMODE%%%]
 </script>
-<img src="lib/core/img/db/mongodb-logo.svg" width="48" height="48" align="right" style="margin-right:5px; cursor:help;" title="MongoDB Server @ `[###HOST|html###]:[###PORT|html###]` # Version: `[###SRV-VERSION|html###]` # PHP-EXT: `[###CLI-VERSION|html###]`">
-<div style="margin-bottom:10px; margin-top:10px;"><div style="display:inline-block; margin-bottom:20px; font-size:1.5rem; font-weight:bold;"><span style="color:#778899;">MongoDB :: </span>Database:&nbsp;<span style="color:#5E6885; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|int###]">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection:&nbsp;</div>[@@@SUB-TEMPLATE:partials/mongodb-collections.mtpl.inc.htm@@@] <a href="[###PAGE-URL|html###]" class="ux-button ux-button-small ux-button-alt ux-button-spacing"><i style="color:#444444;" class="sfi sfi-loop"></i>&nbsp;&nbsp;Refresh</a> <a class="ux-button ux-button-small ux-button-primary ux-button-spacing" data-smart="open.modal" href="[###URL-NEW-RECORD|html###]" title="Insert New Record"><i class="sfi sfi-plus"></i>&nbsp;&nbsp;New&nbsp;Record</a> <a class="ux-button ux-button-special ux-button-small ux-button-spacing" data-smart="open.modal" href="[###URL-DROP-COLLECTION|html###]" title="Drop Collection and Delete All Records"><i class="sfi sfi-bin"></i>&nbsp;&nbsp;Drop&nbsp;Collection</a></div>
+<img src="lib/core/img/db/mongodb-logo.svg" width="48" height="48" align="right" style="background:#FFFFFF; margin-right:5px; cursor:help;" title="MongoDB Server @ `[###HOST|html###]:[###PORT|html###]` # Version: `[###SRV-VERSION|html###]` # PHP-EXT: `[###CLI-VERSION|html###]`">
+<div style="margin-bottom:10px; margin-top:10px;"><div style="display:inline-block; margin-bottom:20px; font-size:1.5rem; font-weight:bold;"><span style="color:#778899;">MongoDB :: </span><span style="color:#778888;">Database:</span>&nbsp;<span style="cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|int###]">[###DATABASE|html###]</span> <span style="color:#ED2559;">@</span> <span style="color:#778888;">Collection:</span>&nbsp;</div>[@@@SUB-TEMPLATE:partials/mongodb-collections.mtpl.inc.htm@@@] <a href="[###PAGE-URL|html###]" class="ux-button ux-button-small ux-button-alt ux-button-spacing"><i style="color:#444444;" class="sfi sfi-loop"></i>&nbsp;&nbsp;Refresh</a> <a class="ux-button ux-button-small ux-button-primary ux-button-spacing" data-smart="open.modal" href="[###URL-NEW-RECORD|html###]" title="Insert New Record"><i class="sfi sfi-plus"></i>&nbsp;&nbsp;New&nbsp;Record</a> <a class="ux-button ux-button-special ux-button-small ux-button-spacing" data-smart="open.modal" href="[###URL-DROP-COLLECTION|html###]" title="Drop Collection and Delete All Records"><i class="sfi sfi-bin"></i>&nbsp;&nbsp;Drop&nbsp;Collection</a></div>
 <div class="query-builder">
 	<table width="96%">
 		<tr valign="middle">
@@ -292,7 +299,7 @@ const handleButtonShowJson = () => {
 				<b>_id:</b> <input id="filter-_id" name="filter[_id]" type="text" maxlength="255" class="ux-field" value="[###FILTER-ID_|html###]" style="width:70%" placeholder="Filter by UID"> <button class="ux-button ux-button-small ux-button-details" onClick="handleButtonSelectById();" title="Find One Record by UID"><i class="sfi sfi-filter"></i>&nbsp;&nbsp;Find&nbsp;Record</button>
 			</td>
 			<td align="right" width="50%">
-				<div style="display:inline-block; border:1px solid #EEEEEE; color:#AAAAAA; font-weight:bold; letter-spacing: 0.125rem; padding-left:5px; padding-right:5px;">mongodb://<span style="color:#FFAA00;">[###HOST|html###]</span>:<span style="color:#FFAA00;">[###PORT|html###]</span>/<span style="color:#61B000;">[###DATABASE|html###]</span>.<span style="color:#ED2838;">[###COLLECTION|html###]</span>&nbsp;#&nbsp;<span style="color:##666699; cursor:help;" title="[###COLL-TOT-SIZE-BYTES|html###] Bytes">[###COLL-TOT-SIZE-PRETTY|html###]</span></div>
+				<div style="display:inline-block; border:1px solid #778888; color:#AAAAAA; font-weight:bold; letter-spacing: 0.125rem; padding-left:5px; padding-right:5px;">mongodb://<span style="color:#FFAA00;">[###HOST|html###]</span>:<span style="color:#FFAA00;">[###PORT|html###]</span>/<span style="color:#61B000;">[###DATABASE|html###]</span>.<span style="color:#ED2838;">[###COLLECTION|html###]</span>&nbsp;#&nbsp;<span style="color:##666699; cursor:help;" title="[###COLL-TOT-SIZE-BYTES|html###] Bytes">[###COLL-TOT-SIZE-PRETTY|html###]</span></div>
 			</td>
 		</tr>
 	</table>
@@ -407,7 +414,7 @@ const toggleWrap = ($el, $btn) => {
 		<a title="Edit Record #[###RECORDS.-NUM|int###]" class="ux-button ux-button-xsmall ux-button-highlight" href="[###URL-EDIT-RECORD|html###][###RECORDS._ID|url|html###]" data-smart="open.modal"><i class="sfi sfi-pencil2"></i></a>
 		[%%%/IF:QFORMAT%%%]
 		<button title="Wrap ON/OFF - Display Record #[###RECORDS.-NUM|int###]" class="ux-button ux-button-xsmall ux-button-secondary" onClick="toggleWrap($(this).parent().find('code'), $(this));"><i class="sfi sfi-infinite"></i></button>
-		<span style="font-weight:bold;"><span class="json-key">UUID</span>&nbsp;:&nbsp;<span class="json-string" title="Record UID">[###RECORDS._ID|html###]</span></span>
+		<span style="font-weight:bold;"><span class="json-key">UUID</span>&nbsp;<span class="separator-json">:</span>&nbsp;<span class="json-string" title="Record UID">[###RECORDS._ID|html###]</span></span>
 		<br>
 		<code id="json-renderer" class="json-render-area" data-id="[###RECORDS._ID|html###]" data-json="[###RECORDS.-JSON|json|html###]"></code>
 	</div>

@@ -27,7 +27,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * Generate SVG (vector graphics) captchas.
  * This version contains many changes and optimizations from the original work.
  * @author unixman
- * @copyright (c) 2019-2021 unix-world.org
+ * @copyright (c) 2018-present unix-world.org
  * @license: BSD
  *
  * Original work: SVG Captcha, https://github.com/NikolaiT/SVG-Captcha # head.20191215
@@ -73,7 +73,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartMarkersTemplating, SmartSvgCaptchaPoint ; constants: SMART_FRAMEWORK_SECURITY_KEY
- * @version 	v.20250203
+ * @version 	v.20250214
  * @package 	development:Captcha
  */
 final class SmartSVGCaptcha {
@@ -1848,7 +1848,7 @@ final class SmartSVGCaptcha {
  * @access 		private
  * @internal
  *
- * @version 	v.20250203
+ * @version 	v.20250214
  *
  */
 final class SmartSvgCaptchaPoint {

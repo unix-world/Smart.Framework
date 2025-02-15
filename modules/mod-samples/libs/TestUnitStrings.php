@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20231207
+ * @version 	v.20250214
  *
  */
 final class TestUnitStrings {
@@ -432,10 +432,10 @@ final class TestUnitStrings {
 			$the_test = 'Data: Archive / Unarchive (v3)';
 			$tests[] = $the_test;
 			$testPhpArchDataV3 = 'HclNDoIwEEDhw3CBoZ3OwFbwJ2lqCBSVJVhKE4kCCxM5vYTdy/vwSZ4FKXICMGVgyXsTkqfdxPYoZdw8JkeKMcp0VRuZ4E1GbTvX5mVHdzcwuUkV37U/Hx76Mlx19wMQufkU4LMmNLYDtZTV/D72QzwGG07o8z8='."\n".'[SFZ.20231031/B64.ZLibRaw.hex]'."\n".'(5uWtdgv2ICZ71xLMEKSYXxPMEL8Yamlx3losdn)';
-			if((string)\SmartUtils::data_unarchive((string)$testPhpArchDataV3) !== (string)$lorem_iso_text) {
+			if((string)\SmartZLib::dataUnarchive((string)$testPhpArchDataV3) !== (string)$lorem_iso_text) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
-			if((string)\SmartUtils::data_unarchive((string)\SmartUtils::data_archive((string)$arch_text)) !== (string)$arch_text) {
+			if((string)\SmartZLib::dataUnarchive((string)\SmartZLib::dataArchive((string)$arch_text)) !== (string)$arch_text) {
 				$err = 'ERROR: '.$the_test.' FAILED ...'.' ['.$the_random_unicode_text.']'; // too long to include all, the rest is fixed text ; include just the random part
 			} //end if
 		} //end if
@@ -444,7 +444,7 @@ final class TestUnitStrings {
 			$the_test = 'Data: Unarchive (v2)';
 			$tests[] = $the_test;
 			$testPhpArchDataV2 = 'Hcm5DcNADETRYtTAmscMGSs0HBkqgHv1X4IEZR//2cCmwDGlWbJR+TYMG6/J85C0xz+YcNpxfv/XTxzH6qymQ8khMStZKxlhHrLQZ+MuM4rVzmRGN/FUdV+aO2T0Gw=='."\n".'SFZ.20210818/B64.ZLibRaw.hex';
-			if((string)\SmartUtils::data_unarchive((string)$testPhpArchDataV2) !== (string)$lorem_iso_text) {
+			if((string)\SmartZLib::dataUnarchive((string)$testPhpArchDataV2) !== (string)$lorem_iso_text) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -453,7 +453,7 @@ final class TestUnitStrings {
 			$the_test = 'Data: Unarchive (v1)';
 			$tests[] = $the_test;
 			$testPhpArchDataV1 = 'HclBDkBAEETRw1hLplupZimDSMRKHMD06Psfgdj9/IfM1ZQ9Z00YLVlnfxNc+Zt+j6Phc+HM3tDkbcn7eR3tuU3SDKGhjwrCUaM4i6dbS7r9qRgEdIsq6i8='."\n".'PHP.SF.151129/B64.ZLibRaw.HEX';
-			if((string)\SmartUtils::data_unarchive((string)$testPhpArchDataV1) !== (string)$lorem_iso_text) {
+			if((string)\SmartZLib::dataUnarchive((string)$testPhpArchDataV1) !== (string)$lorem_iso_text) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if

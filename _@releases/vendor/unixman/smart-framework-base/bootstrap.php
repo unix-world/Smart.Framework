@@ -3,7 +3,7 @@
 // bootstrap/autoload Smart.Framework base classes for Vendor/Composer
 // license: BSD
 // (c) 2022-present unix-world.org
-// r.20250105.2358
+// r.20250214.2358
 
 // ####### DO NOT MODIFY THIS FILE. IT WILL BE REWRITTEN ON ANY UPDATE OF vendor/unixman/smart-framework-base
 // how to install: `php composer.phar require unixman/smart-framework-base @dev`
@@ -129,7 +129,7 @@ const SMART_SOFTWARE_SQLDB_FATAL_ERR = true; // If set to false will throw \EXCE
 const SMART_SOFTWARE_MKTPL_DEBUG_LEN = 0; // If set will use this TPL Debug Length (255..524280) ; If not set will use default: 512
 const SMART_FRAMEWORK_DEBUG_MODE = false; // enable debug mode
 
-const SMART_FRAMEWORK_SSL_MODE =  				'tls';		// SSL/TLS Mode: tls | tls:1.1 | tls:1.2
+const SMART_FRAMEWORK_SSL_MODE =  				'tls';		// SSL/TLS Mode: tls | tls:1.1 | tls:1.2 | tls:1.3
 const SMART_FRAMEWORK_SSL_CIPHERS = 			'HIGH';		// SSL/TLS Context Ciphers: ciphers ; default: 'HIGH' ; generally allow only high ciphers
 const SMART_FRAMEWORK_SSL_VFY_HOST = 			true;		// SSL/TLS Context Verify Host: verify_host ; default: true
 const SMART_FRAMEWORK_SSL_VFY_PEER = 			false;		// SSL/TLS Context Verify Peer: verify_peer ; default: false ; this may fail with some CAs
@@ -159,23 +159,32 @@ function autoload__SmartFrameworkVendorBase($classname) {
 		case 'SmartFileSysUtils':
 			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/lib_smart.php'); // smart (base) core + filesysutils
 			break;
-		case 'SmartCache':
-		case 'SmartAbstractPersistentCache':
-		case 'SmartPersistentCache': // *ONLY* if SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER === false, otherwise must load a derived persistent cache class such as 'redis' or 'mongodb', later, in configs
-			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/lib_caching.php'); // smart cache (non-persistent + abstract persistent)
-			break;
 		case 'SmartHashPoly1305':
 		case 'SmartHashCrypto':
-		case 'SmartCsrf':
 			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/lib_cryptohs.php'); // smart crypto (utils) hash
 			break;
+		case 'SmartCsrf':
 		case 'SmartDhKx':
+		case 'SmartCryptoCiphersThreefishCBC':
 		case 'SmartCryptoCiphersTwofishCBC':
 		case 'SmartCryptoCiphersBlowfishCBC':
 		case 'SmartCryptoCiphersOpenSSL':
 		case 'SmartCryptoCiphersHashCryptOFB':
 		case 'SmartCipherCrypto':
 			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/lib_cryptoas.php'); // smart crypto (utils) symmetric and asymmetric
+			break;
+		case 'SmartZLib':
+		case 'SmartGZip':
+		case 'SnappyUtils':
+		case 'SnappyCompressor':
+		case 'SnappyDecompressor':
+		case 'SmartSnappy':
+			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/lib_archive.php'); // smart archive compress/uncompress support
+			break;
+		case 'SmartCache':
+		case 'SmartAbstractPersistentCache':
+		case 'SmartPersistentCache': // *ONLY* if SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER === false, otherwise must load a derived persistent cache class such as 'redis' or 'mongodb', later, in configs
+			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/lib_caching.php'); // smart cache (non-persistent + abstract persistent)
 			break;
 		case 'SmartMarkersTemplating':
 			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/lib_templating.php'); // smart markers templating engine

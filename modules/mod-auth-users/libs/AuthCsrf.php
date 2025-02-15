@@ -24,8 +24,11 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Class: \SmartModExtLib\AuthUsers\AuthCsrf
  * Manages the Auth Csrf Keys
  *
- * @version 	v.20250203
- * @package 	modules:AuthUsers
+ * @access 		private
+ * @internal
+ *
+ * @version 	v.20250207
+ * @package 	AuthUsers
  *
  */
 final class AuthCsrf {

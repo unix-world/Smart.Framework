@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class AuthUsersFrontend {
 
 	// ::
-	// v.20250206
+	// v.20250207
 
 
 	private static $db = null;
@@ -157,7 +157,7 @@ final class AuthUsersFrontend {
 	public static function getAccountByEmail(?string $email) : array {
 		//--
 		$email = (string) \strtolower((string)\trim((string)$email));
-		if(((string)$email == '') || (\strpos((string)$email, '@') === false) || ((int)\strlen((string)$email) > 72)) {
+		if(((string)$email == '') || (\strpos((string)$email, '@') === false) || ((int)\strlen((string)$email) < 5) || ((int)\strlen((string)$email) > 72)) {
 			return []; // early return
 		} //end if
 		//--
@@ -200,7 +200,7 @@ final class AuthUsersFrontend {
 			$federated = true;
 		} //end if
 		//-- {{{SYNC-AUTH-USERS-DB-KEYS-MAX-LEN}}}
-		$keys = [ 'email' => 72 ];
+		$keys = [ 'email' => [ 5, 72 ] ];
 		if($federated === true) {
 			$keys['name'] = 129;
 			$keys['authlog'] = 8192;
@@ -270,10 +270,14 @@ final class AuthUsersFrontend {
 			return -1;
 		} //end if
 		//--
-		$keys = [ 'email' => 72, 'jwtserial' => 21, 'jwtsignature' => 255, 'authlog' => 8192 ]; // {{{SYNC-AUTH-USERS-DB-KEYS-MAX-LEN}}}
+		$keys = [ 'email' => [ 5, 72 ], 'jwtserial' => [ 21, 21 ], 'jwtsignature' => [ 22, 255], 'authlog' => 8192 ]; // {{{SYNC-AUTH-USERS-DB-KEYS-MAX-LEN}}}
 		$validate = (int) self::validateDataByKeys((array)$keys, (array)$data);
 		if($validate !== 0) {
 			return (int) $validate;
+		} //end if
+		//--
+		if((string)\trim((string)$data['authlog']) == '') {
+			unset($data['authlog']); // required when this method is called after federated login
 		} //end if
 		//--
 		if(\strpos((string)$data['email'], '@') === false) {
@@ -331,23 +335,20 @@ final class AuthUsersFrontend {
 			return -1;
 		} //end if
 		//--
-		$keys = [ 'email' => 72, 'name' => 129, 'jwtserial' => 21, 'jwtsignature' => 255, 'authlog' => 8192 ]; // {{{SYNC-AUTH-USERS-DB-KEYS-MAX-LEN}}}
+		$keys = [ 'email' => [ 5, 72 ], 'name' => 129, 'authlog' => 8192 ]; // {{{SYNC-AUTH-USERS-DB-KEYS-MAX-LEN}}}
 		$validate = (int) self::validateDataByKeys((array)$keys, (array)$data);
 		if($validate !== 0) {
 			return (int) $validate;
 		} //end if
 		//--
-		if(((string)\trim((string)$data['email']) == '') OR (\strpos((string)$data['email'], '@') === false)) {
+		if((string)\trim((string)$data['email']) == '') {
 			return -2;
 		} //end if
-		if(((string)\trim((string)$data['jwtsignature']) == '') OR (!\preg_match((string)\Smart::REGEX_SAFE_B64U_STR, (string)$data['jwtsignature']))) {
+		if(\strpos((string)$data['email'], '@') === false) {
 			return -3;
 		} //end if
-		if((int)\strlen((string)$data['jwtserial']) != 21) {
+		if(\SmartAuth::validate_auth_ext_username((string)$data['email']) !== true) {
 			return -4;
-		} //end if
-		if(!\preg_match((string)\SmartAuth::REGEX_VALID_JWT_SERIAL, (string)$data['jwtserial'])) { // {{{SYNC-JWT-VALID-SERIAL}}}
-			return -5;
 		} //end if
 		//--
 		$exists = (array) self::getAccountByEmail((string)$data['email']);
@@ -359,8 +360,11 @@ final class AuthUsersFrontend {
 			$exists = (array) self::getAccountByEmail((string)$data['email']);
 		} //end if
 		//--
-		if(((int)\Smart::array_size($exists) <= 0) OR ((string)$data['email'] !== (string)($exists['email'] ?? null))) {
-			return -6; // account does not exists or wrong account selected ; or the creation above may have failed if the account was not already existing
+		if((int)\Smart::array_size($exists) <= 0) {
+			return -5; // account does not exists ; or the creation above may have failed if the account was not already existing
+		} //end if
+		if((string)$data['email'] !== (string)($exists['email'] ?? null)) {
+			return -6; // wrong account selected
 		} //end if
 		unset($data['email']); // exclude this from update
 		//--
@@ -395,40 +399,46 @@ final class AuthUsersFrontend {
 	private static function validateDataByKeys(array $keys, array $data) : int { // 0 if OK ; -51..-59 if fails
 		//--
 		if((int)\Smart::array_size($keys) <= 0) {
-			return -51;
+			return -50;
 		} //end if
 		if((int)\Smart::array_type_test($keys) != 2) { // associative
-			return -52;
+			return -51;
 		} //end if
 		//--
 		if((int)\Smart::array_size($data) <= 0) {
-			return -53;
+			return -52;
 		} //end if
 		if((int)\Smart::array_type_test($data) != 2) { // associative
-			return -54;
+			return -53;
 		} //end if
 		//--
 		foreach($keys as $key => $val) {
 			if(!\array_key_exists((string)$key, (array)$data)) {
-				return -55;
+				return -54;
 			} //end if
 			$data[(string)$key] =(string) \trim((string)$data[(string)$key]);
 			if((string)$data[(string)$key] == '') {
-				return -56;
+				return -55;
 			} //end if
 			if(\is_array($val)) {
 				if((int)\strlen((string)$data[(string)$key]) < (int)($val[0] ?? null)) {
-					return -57;
+					return -56;
 				} //end if
 				if((int)\strlen((string)$data[(string)$key]) > (int)($val[1] ?? null)) {
-					return -58;
+					return -57;
 				} //end if
 			} else {
 				if((int)\strlen((string)$data[(string)$key]) > (int)$val) {
-					return -59;
+					return -58;
 				} //end if
 			} //end if else
 		} //end for
+		//--
+		foreach($data as $key => $val) {
+			if(!\array_key_exists((string)$key, (array)$keys)) {
+				return -59;
+			} //end if
+		} //end if
 		//--
 		return 0; // must not return 1 to conflict by mistake with the caller methods OK code
 		//--

@@ -17,7 +17,7 @@ define('SMART_APP_MODULE_AUTH', true);
 
 final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractAppsController {
 
-	// r.20250203
+	// r.20250207
 
 	protected string $title = 'Apps and Dashboard';
 	protected string $logo = ''; // optional

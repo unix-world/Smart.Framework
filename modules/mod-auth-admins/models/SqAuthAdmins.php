@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 abstract class SqAuthAdmins extends \SmartModDataModel\AuthAdmins\AbstractAuthAdmins {
 
 	// ->
-	// v.20250122
+	// v.20250207
 
 	private $db;
 	private $dbFile;
@@ -1056,7 +1056,7 @@ abstract class SqAuthAdmins extends \SmartModDataModel\AuthAdmins\AbstractAuthAd
 			$this->db->write_data('BEGIN');
 			$this->db->create_table( // {{{SYNC-TABLE-AUTH_TEMPLATE}}}
 				'authtokens',
-				"-- #START: table schema: authtokens @ 20250107
+				"-- #START: table schema: authtokens @ 20250207
 				`id` character varying(25) NOT NULL,
 				`active` smallint DEFAULT 0 NOT NULL,
 				`expires` bigint DEFAULT 0 NOT NULL,
@@ -1098,7 +1098,7 @@ $ipadr = (string) $this->db->escape_str((string)\SmartUtils::get_ip_client());
 $passlen = (int) \SmartHashCrypto::PASSWORD_HASH_LENGTH;
 //-- {{{SYNC-ADMINS-ACCOUNT-DATA-STRUCTURE}}}
 $schema = <<<SQL
--- #START: tables schema: _smartframework_metadata / admins @ 20250107
+-- #START: tables schema: _smartframework_metadata / admins @ 20250207
 INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('version@auth-admins', '{$version}');
 INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('init-ip@auth-admins', '{$ipadr}');
 CREATE TABLE 'admins' (

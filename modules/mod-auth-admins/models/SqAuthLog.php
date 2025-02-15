@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 abstract class SqAuthLog extends \SmartModDataModel\AuthAdmins\AbstractAuthLog {
 
 	// ->
-	// v.20250107
+	// v.20250207
 
 	private $db;
 	private $dbFile;
@@ -306,7 +306,7 @@ abstract class SqAuthLog extends \SmartModDataModel\AuthAdmins\AbstractAuthLog {
 			$this->db->write_data('BEGIN');
 			$this->db->create_table( // {{{SYNC-TABLE-AUTH_TEMPLATE}}}
 				'authfail',
-				"-- #START: table schema: authfail @ 20250107
+				"-- #START: table schema: authfail @ 20250207
 	`id` character varying(15) PRIMARY KEY NOT NULL,
 	`auth_id` character varying(25) NOT NULL,
 	`ip_addr` character varying(39) NOT NULL,
@@ -340,7 +340,7 @@ abstract class SqAuthLog extends \SmartModDataModel\AuthAdmins\AbstractAuthLog {
 $version = (string) $this->db->escape_str((string)\SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.\SMART_FRAMEWORK_RELEASE_VERSION);
 $dbtag = (string) $this->db->escape_str((string)$this->dbDate);
 $schema = <<<SQL
--- #START: tables schema: _smartframework_metadata / authlog @ 20250107
+-- #START: tables schema: _smartframework_metadata / authlog @ 20250207
 INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('version@auth-authlog', '{$version}');
 INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('tag@auth-authlog', '{$dbtag}');
 CREATE TABLE 'authlog' (

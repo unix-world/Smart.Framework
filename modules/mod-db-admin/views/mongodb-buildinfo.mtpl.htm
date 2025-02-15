@@ -2,6 +2,7 @@
 <link rel="stylesheet" href="lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css">
 <style>
 #build-info {
+	color: #444444;
 	background: #FEFEFE;
 	border: 1px solid #EEEEEE;
 	padding: 10px;
@@ -26,8 +27,8 @@ function selectCollection() {
 	self.location = String(theListLocation);
 }
 </script>
-<img src="lib/core/img/db/mongodb-logo.svg" width="48" height="48" align="right" style="margin-right:5px; cursor:help;" title="MongoDB Server @ `[###HOST|html###]:[###PORT|html###]` # Version: `[###SRV-VERSION|html###]` # PHP-EXT: `[###CLI-VERSION|html###]`">
-<h4 style="margin-bottom:10px; margin-top:10px;"><span style="color:#778899;">MongoDB :: </span> Database:&nbsp;<span style="color:#4D5774">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Server: <span style="color:#FFAA00">[###HOST|html###]:[###PORT|html###]</span></h4>
+<img src="lib/core/img/db/mongodb-logo.svg" width="48" height="48" align="right" style="background:#FFFFFF; margin-right:5px; cursor:help;" title="MongoDB Server @ `[###HOST|html###]:[###PORT|html###]` # Version: `[###SRV-VERSION|html###]` # PHP-EXT: `[###CLI-VERSION|html###]`">
+<h4 style="margin-bottom:10px; margin-top:10px;"><span style="color:#778899;">MongoDB :: </span> <span style="color:#778888;">Database:</span>&nbsp;<span style="cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|int###]">[###DATABASE|html###]</span> <span style="color:#ED2559;">@</span> <span style="color:#778888;">Server:</span> <span style="color:#FFCC00">[###HOST|html###]:[###PORT|html###]</span></h4>
 <div style="font-size:1.125rem;"><b>Existing&nbsp;Collections:</b>&nbsp;[@@@SUB-TEMPLATE:partials/mongodb-collections.mtpl.inc.htm@@@] <a href="[###PAGE-LIST-URL|html###]" class="ux-button ux-button-small ux-button-spacing"><i style="color:#444444;" class="sfi sfi-loop2"></i> &nbsp; Reload</a><a class="ux-button ux-button-primary ux-button-small ux-button-spacing" href="[###URL-NEW-COLLECTION|html###]" data-smart="open.modal"><i class="sfi sfi-folder-plus"></i> &nbsp; Create New Collection</a></div>
 <br>
 <div id="build-info">

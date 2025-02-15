@@ -49,7 +49,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartEnvironment, SmartUnicode, SmartFileSysUtils ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS, SMART_SOFTWARE_MKTPL_DEBUG_LEN (optional)
- * @version 	v.20250126
+ * @version 	v.20250214
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -220,7 +220,7 @@ final class SmartMarkersTemplating {
 		$arr = [];
 		foreach((array)$y_arr_vars as $key => $val) {
 			if(Smart::is_nscalar($val)) {
-				$key = (string) trim((string)$key);
+				$key = (string) strtoupper((string)trim((string)$key));
 				if((string)$key != '') {
 					//-- {{{SYNC-TPL-EXPR-PLACEHOLDER}}}
 					$valid = preg_match('/^[A-Z0-9_\-]+$/', (string)$key); // returns 1 if the pattern matches given subject, 0 if it does not, or false on failure
@@ -229,7 +229,7 @@ final class SmartMarkersTemplating {
 					} //end if
 					//-- #end sync
 					if($valid) {
-						$arr[(string)'[:::'.strtoupper((string)$key).':::]'] = (string) $val;
+						$arr[(string)'[:::'.$key.':::]'] = (string) $val;
 					} //end if
 				} //end if
 			} //end if

@@ -1,5 +1,5 @@
 
--- START :: PostgreSQL: Web/AuthUsers :: r.20250128 # smart.framework.v.8.7 ###
+-- START :: PostgreSQL: Web/AuthUsers :: r.20250207 # smart.framework.v.8.7 ###
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -51,10 +51,12 @@ CREATE TABLE web.auth_users (
     CONSTRAINT web__auth_users__chk__email CHECK (((length((email)::text) >= 5) AND (length((email)::text) <= 72))),
     CONSTRAINT web__auth_users__chk__passalgo CHECK (((passalgo >= 0) AND (passalgo <= 255))),
     CONSTRAINT web__auth_users__chk__password CHECK (((length((password)::text) = 0) OR ((length((password)::text) >= 60) AND (length((password)::text) <= 128)))),
-    CONSTRAINT web__auth_users__chk__quota CHECK ((quota >= '-1'::integer))
+    CONSTRAINT web__auth_users__chk__quota CHECK ((quota >= '-1'::integer)),
+    CONSTRAINT web__auth_users__chk__jwtserial CHECK (((length((jwtserial)::text) = 0) OR (length((jwtserial)::text) = 21))),
+    CONSTRAINT web__auth_users__chk__jwtsignature CHECK (((length((jwtsignature)::text) = 0) OR (length((jwtsignature)::text) >= 22)))
 );
 
-COMMENT ON TABLE  web.auth_users              IS 'Web - Auth Users (Accounts) v.2025.01.28';
+COMMENT ON TABLE  web.auth_users              IS 'Web - Auth Users (Accounts) v.2025.02.07';
 COMMENT ON COLUMN web.auth_users.id           IS 'Unique ID :: STRING(21) ; as UUID.seq-UUID.num ; ex: XYZABC028W-0243756788';
 COMMENT ON COLUMN web.auth_users.registered   IS 'Account Registration Date and Time: YYYY-MM-DD HH:II:SS';
 COMMENT ON COLUMN web.auth_users.status       IS 'Account Status :: SMALLINT(0..255) as UINT8 ; 0 = Not Verified ; 1 = Verified ; 2..255 custom ...';

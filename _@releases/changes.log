@@ -2,12 +2,18 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+February 14, 2025
+	* refactoring ZLib and GZip methods under lib archive
+	* Snappy compress/uncompress for PHP and Javascript
+	* smart Captcha bug fix under Chrome + refactoring with Snappy ; 500% speed optimization on loads
+
 February 07, 2025
 	* mod Auth Users WIP
 	* watch clock export as js lib
 	* CSRF improvements in  security level
 	* captcha fixes
 	* minor optimizations
+	* rafactoring dark styles
 
 January 24, 2025
 	* refactored Lib Auth

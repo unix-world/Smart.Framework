@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Plugins / Markdown :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* Smart.Markdown.parser # v.2.2.8-r.20241210 */
+/* Smart.Markdown.parser # v.2.2.8-r.20250207 */
 
 /* ----------------------------- */
 
@@ -27,21 +27,26 @@
 /* Helpers */
 .markdown hr {
 	border: none 0;
-	border-top: 1px solid #F2F2F2;
+	border-top: 1px dashed #F2F2F2;
 	height: 1px;
 }
 
 /* Links */
-.markdown a,
-.markdown a:link,
-.markdown a:visited {
+.markdown a, .markdown a:link, .markdown a:visited {
+	color: #3367C2;
 	border-bottom: none;
 	text-decoration: underline #DDDDDD;
-	color: #0164C7;
+	text-decoration-color: #DDDDDD;
+	text-decoration-thickness: 1px;
+	text-decoration-skip-ink: auto;
 }
 .markdown a:hover {
+	color: #3367C2;
+	border-bottom: none;
 	text-decoration: underline #4D5774;
-	color: #3B4250;
+	text-decoration-color: #4D5774;
+	text-decoration-thickness: 1px;
+	text-decoration-skip-ink: auto;
 }
 
 /* Lists */
@@ -89,22 +94,27 @@
 .markdown table.stripped tr:nth-child(even) td,
 .markdown table tr:nth-child(even) td.stripped {
 	background: #FEFEFE;
+	color: #444444;
 }
 .markdown table.stripped tr:nth-child(odd) td,
 .markdown table tr:nth-child(odd) td.stripped {
 	background: #F9F9F9;
+	color: #444444;
 }
 .markdown table.stripped tr:hover td,
 .markdown table tr:hover td.stripped {
 	background: #F5F5F5;
+	color: #444444;
 }
 .markdown table.stripped th,
 .markdown table th.stripped {
 	background: #F5F5F5;
+	color: #444444;
 }
 .markdown table.stripped tr:hover th,
 .markdown table tr:hover th.stripped {
 	background: #FEFEFE;
+	color: #444444;
 }
 
 .markdown table.bordered tr,
@@ -136,6 +146,7 @@
 
 /* Quote, BlockQuote */
 .markdown blockquote {
+	color: #444444;
 	background: #F9F9F9;
 	border-left: 10px solid #CCCCCC;
 	margin: 20px 10px;
@@ -170,9 +181,8 @@
 /* Pre, Code */
 .markdown pre {
 	font-size: inherit;
-	border: 1px solid #F7F7F7;
 	background: #FBFBFB;
-	color: #111111;
+	color: #222222;
 	padding: 3px;
 /*	white-space: pre; */
 	white-space: pre-wrap;
@@ -199,7 +209,7 @@
 	font-size: inherit;
 	display: inline !important;
 	background: #DDDDEE;
-	color: #111111;
+	color: #222222;
 	padding: 0;
 	padding-left: 4px;
 	padding-right: 4px;
