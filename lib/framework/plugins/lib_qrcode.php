@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart
- * @version 	v.20250107
+ * @version 	v.20250312
  * @package 	Plugins:Barcodes
  */
 final class SmartQR2DBarcode {
@@ -52,7 +52,8 @@ final class SmartQR2DBarcode {
 	private $mode = ''; // can be: L, M, Q, H
 	private $type = 'QR';
 	private $options = [
-		'cs' => '#FFFFFF', // color of background
+		'bc' => '#FFFFFF', // color of background
+		'cs' => '#FFFFFF', // color of background points
 		'cm' => '#333333', // color of modules
 		'sf' => 3,
 		'wq' => 1, // spacing around qrcode

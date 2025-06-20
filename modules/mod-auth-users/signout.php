@@ -16,9 +16,23 @@ define('SMART_APP_MODULE_AREA', 'INDEX'); // INDEX, ADMIN, TASK, SHARED
 
 final class SmartAppIndexController extends SmartAbstractAppController {
 
-	// r.20250207
+	// r.20250620
+
+	private ?object $translator = null;
 
 	public function Initialize() {
+
+		//--
+		if(!defined('SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS') OR (SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS !== true)) {
+			$this->PageViewSetErrorStatus(503, 'Mod Auth Users is NOT Enabled ...');
+			return false;
+		} //end if
+		//--
+		if(\SmartModExtLib\AuthUsers\Utils::isValidRequestUri() !== true) {
+			$this->PageViewSetErrorStatus(404, 'Auth Users cannot handle a Custom Request URI');
+			return false;
+		} //end if
+		//--
 
 		//--
 		if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
@@ -30,13 +44,23 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		if(SmartEnvironment::isAdminArea() !== false) {
 			Smart::log_warning(__METHOD__.' # ERR: Controller cannot run under Admin area');
-			$this->PageViewSetErrorStatus(500, 'ERROR: This Abstract Controller must run inside Index Area');
+			$this->PageViewSetErrorStatus(502, 'ERROR: This Controller must run inside Index Area');
 			return false;
 		} //end if
 		//--
 
 		//--
 		// This must not return 403 if authenticated or not, to be able to safe logout in any weird situation that may happen
+		//--
+
+		//--
+		if($this->translator === null) {
+			$this->translator = \SmartTextTranslations::getTranslator('mod-auth-users', 'auth-users');
+			if($this->translator === null) {
+				$this->PageViewSetErrorStatus(500, 'Mod Auth Users Translator is Missing !');
+				return false;
+			} //end if
+		} //end if
 		//--
 
 		//--
@@ -65,22 +89,22 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 	public function Run() {
 
 		//--
-		$title = 'Sign-Out of Your Account';
+		$title = (string) $this->translator->text('sign-out');
 		//--
 
 		//--
-		$waitmsg = 'You do Not Appear to be Signed-In ...';
-		$message = 'All Authentication Data have been Cleared ...';
+		$waitmsg = (string) $this->translator->text('sign-out-ttl-x');
+		$message = (string) $this->translator->text('sign-out-msg-x');
 		//--
 		if(SmartAuth::is_authenticated() === true) {
-			$waitmsg = 'You will be signed out of your account ...';
-			$message = 'You have been Signed-Out your account ...';
+			$waitmsg = (string) $this->translator->text('sign-out-ttl');
+			$message = (string) $this->translator->text('sign-out-msg');
 		} //end if
 
 		//--
 		$isOk = \SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
 		if($isOk !== true) {
-			$message = 'Sign out Failed ! Please contact the website administrator.';
+			$message = (string) $this->translator->text('sign-out-fail');
 		} //end if
 		//--
 
@@ -100,7 +124,7 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 					'TXT-TITLE' 	=> (string) $title,
 					'TXT-WAIT' 		=> (string) $waitmsg,
 					'TXT-SIGNOUT' 	=> (string) $message,
-					'TXT-BTN-REDIR' => 'Return to the Sign-In Page',
+					'TXT-BTN-REDIR' => (string) $this->translator->text('sign-out-return'),
 					'URL-REDIR' 	=> (string) \SmartModExtLib\AuthUsers\Utils::AUTH_USERS_URL_SIGNIN,
 				]
 			)

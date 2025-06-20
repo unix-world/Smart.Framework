@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: SmartUnicode, Smart, SmartFileSysUtils, SmartDetectImages
- * @version 	v.20250107
+ * @version 	v.20250307
  * @package 	Plugins:Mailer
  *
  */
@@ -68,7 +68,7 @@ final class SmartMailerMimeDecode {
 	private $last_cid;
 	private $cycle;
 	//-- set
-	private $local_charset = 'ISO-8859-1';
+	private $local_charset = 'ISO-8859-1'; // The charset ; ISO-8859-1 or UTF-8
 	//--
 
 	//-- a restricted list with the allowed charsets used for implicit detection (for explicit detection any charset can be used) ; using a restricted list is a safety measure against malformed or broken strings ; ex: avoid a broken UTF-8 string to be detected as GB18030 if contains weird characters
@@ -823,7 +823,7 @@ final class SmartMailerMimeDecode {
  * @internal
  *
  * @depends 	classes: Smart, SmartUnicode, SmartMailerNotes
- * @version 	v.20250107
+ * @version 	v.20250307
  *
  */
 final class SmartMailerMimeExtract {
@@ -833,7 +833,7 @@ final class SmartMailerMimeExtract {
 
 	//================================================================
 		//--
-		private $charset = 'ISO-8859-1';	// The charset
+		private $charset = 'ISO-8859-1';	// The charset ; ISO-8859-1 or UTF-8
 		//--
 		private $_header;					// The header part of the input 				:: @var string
 		private $_body;						// The body part of the input 					:: @var string
@@ -1087,8 +1087,8 @@ final class SmartMailerMimeExtract {
 						$body .= 'Mime-Version: 1.0'."\r\n";
 						$body .= 'From: <mail.decode@smart.framework>'."\r\n";
 						$body .= 'To: <mail.display@smart.framework>'."\r\n";
-						$body .= 'Subject: Decrypt Errors for mime part type ('.Smart::normalize_spaces($content_type['value'].' / '.$content_transfer_encoding['value']).')'."\r\n";
-						$body .= 'Date: '.Smart::normalize_spaces(date('D, d M Y H:i:s O'))."\r\n";
+						$body .= 'Subject: Decrypt Errors for mime part type ('.Smart::normalize_spaces((string)$content_type['value'].' / '.$content_transfer_encoding['value']).')'."\r\n";
+						$body .= 'Date: '.Smart::normalize_spaces((string)date('D, d M Y H:i:s O'))."\r\n";
 						$body .= 'Content-Type: multipart/mixed; boundary="'.$newboundary.'"'."\r\n";
 						$body .= "\r\n";
 						$body .= 'This is a Smart.Framework re-encrypted multi-part apple/note in MIME format to display decrypt errors.'."\r\n";

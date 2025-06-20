@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20250124
+ * @version 	v.20250301
  * @package 	development:modules:PageBuilder
  *
  */
@@ -203,7 +203,11 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		//-- check auth
 		if($arr['auth'] > 0) { // if auth > 0, req. to be logged in
 			if(\SmartAuth::is_authenticated() !== true) {
-				$this->PageViewSetErrorStatus(403, 'Authentication Required');
+				if(!\defined('\\SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS') OR (\SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS !== true)) {
+					$this->PageViewSetErrorStatus(403, 'Authentication Required / Not Available');
+				} else {
+					$this->PageViewSetErrorStatus(401, 'Authentication Required');
+				} //end if else
 				return; // auth required
 			} //end if
 		} //end if

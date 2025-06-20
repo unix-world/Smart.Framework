@@ -17,10 +17,19 @@ define('SMART_APP_MODULE_AUTH', true);
 
 final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractAppsController {
 
-	// r.20250207
+	// r.20250620
 
-	protected string $title = 'Apps and Dashboard';
+	// SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS 	is verified by Initialize() in AbstractAppsController via AbstractAccountController
+	// Custom request URI Restriction 			is verified by Initialize() in AbstractAppsController via AbstractAccountController
+
 	protected string $logo = ''; // optional
+
+
+	protected function setAppTitle() : string {
+		//--
+		return (string) $this->translator->text('apps-and-dashboard');
+		//--
+	} //END FUNCTION
 
 
 	protected function setAppMenuHtml() : string { // optional, can be used to extend the app menu
@@ -31,18 +40,20 @@ final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractAp
 
 
 	public function Run() {
-
 		//--
 		$this->PageViewSetVars([
-			'main' 		=> (string) SmartMarkersTemplating::render_placeholder_tpl(
+			'main' => (string) SmartMarkersTemplating::render_placeholder_tpl(
 				(string) $this->PageViewGetVar('main'),
 				[
-					'MOD-AUTH-USERS-APP-HTML' => 'abc',
+					'MOD-AUTH-USERS-APP-HTML' => (string) SmartMarkersTemplating::render_file_template(
+						(string) $this->ControllerGetParam('module-view-path').'partials/apps-dashboard.mtpl.inc.htm',
+						[
+						]
+					),
 				]
 			)
 		]);
 		//--
-
 	} //END FUNCTION
 
 

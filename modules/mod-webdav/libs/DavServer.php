@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavServer {
 
 	// ::
-	// v.20250107
+	// v.20250307
 
 	const DAV_RESOURCE_TYPE_COLLECTION 		= 'collection';
 	const DAV_RESOURCE_TYPE_NONCOLLECTION 	= 'noncollection';
@@ -187,8 +187,8 @@ final class DavServer {
 						'IS-ROOT' 				=> (string) ($sett_is_root ? 'yes' : 'no'),
 						'DAV-RESOURCE-TYPE' 	=> (string) ($val['dav-resource-type'] ?? null),
 						'DAV-REQUEST-PATH' 		=> (string) ($val['dav-request-path']  ?? null),
-						'DATE-CREATION' 		=> (string) \gmdate('D, d M Y H:i:s O', (int)($val['date-creation-timestamp'] ?? null)),
-						'DATE-MODIFIED' 		=> (string) \gmdate('D, d M Y H:i:s O', (int)($val['date-modified-timestamp'] ?? null)),
+						'DATE-CREATION' 		=> (string) \gmdate('D, d M Y H:i:s', (int)($val['date-creation-timestamp'] ?? null)).' +0000',
+						'DATE-MODIFIED' 		=> (string) \gmdate('D, d M Y H:i:s', (int)($val['date-modified-timestamp'] ?? null)).' +0000',
 						'SIZE-BYTES' 			=> (int)    ($val['size-bytes'] ?? null),
 						'MIME-TYPE' 			=> (string) ($val['mime-type'] ?? null),
 						'E-TAG' 				=> (string) ($val['etag-hash'] ?? null),

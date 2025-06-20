@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: SmartUnicode, Smart, SmartDetectImages, SmartUtils, SmartEnvironment, SmartFrameworkSecurity, SmartFrameworkRegistry
- * @version 	v.20250124
+ * @version 	v.20250221
  * @package 	Application:Plugins:Network:HTTP
  *
  */
@@ -434,6 +434,8 @@ final class SmartRobot {
 						//--
 						$cookies = (array) SmartFrameworkRegistry::getCookieVars(); // safe (same protocol, host, port, path, script) ; these are needed for mail-decode/pdf and maybe others (because there is some extra cookie token in mail utils, but this may change anytime ...) ; it is unpredictable to know which cookies to be sent only, send them all
 						//--
+						// TODO: implement SWT also for [I] area
+						//--
 						if(
 							(SmartEnvironment::isAdminArea() === true) // should be adm/task area only !
 							AND
@@ -470,7 +472,7 @@ final class SmartRobot {
 								$auth_name = (string) SmartHttpUtils::AUTH_USER_BEARER; // {{{SYNC-ROBOT-AUTH-SELF-BEARER}}}
 								$auth_pass = (string) $swt_token['token'];
 							} else {
-								Smart::log_notice(__METHOD__.' # SWT Token Creation Failed with ERROR: '.$swt_token['error']);
+								Smart::log_warning(__METHOD__.' # SWT Token Creation Failed with ERROR: '.$swt_token['error']);
 							} //end if else
 							//--
 						} //end if

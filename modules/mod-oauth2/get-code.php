@@ -12,14 +12,10 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 
 define('SMART_APP_MODULE_AREA', 'INDEX'); // INDEX, ADMIN, SHARED
 
-/**
- * Index Controller
- *
- * @ignore
- * @version v.20250126
- *
- */
+
 final class SmartAppIndexController extends SmartAbstractAppController {
+
+	// v.20250218
 
 	public function Run() {
 

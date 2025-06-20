@@ -1,7 +1,7 @@
 
 // oauth2 :: formRecord Handler
 // (c) 2023-present unix-world.org
-// v.20250116
+// v.20250218
 
 const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 	'use strict';

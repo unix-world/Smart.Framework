@@ -16,15 +16,156 @@ define('SMART_APP_MODULE_AREA', 'INDEX'); // INDEX
 
 final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractSignController {
 
-	// r.20250207
+	// r.20250620
+
+	// SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS 	is verified by Initialize() in AbstractSignController
+	// Custom request URI Restriction 			is verified by Initialize() in AbstractSignController
 
 	public function Run() {
 
+		// this controller can operate ONLY on master server
+
 		//--
-		$isRegisterCaptchaEnabled = (bool) \SmartModExtLib\AuthUsers\Utils::isAuthRegisterCaptchaEnabled();
+		if(SmartAuth::is_cluster_master_auth() !== true) {
+			$this->PageViewSetErrorStatus(502, 'Not an Auth Cluster Master Server');
+			return;
+		} //end if
+		//--
+
+		//--
+		$token = (string) trim((string)$this->RequestVarGet('token', '', 'string'));
+		$hash  = (string) trim((string)$this->RequestVarGet('hash',  '', 'string')); // this is optional
+		//--
+		if((string)$token != '') {
+			//--
+			$vfyRegToken = (array) \SmartModExtLib\AuthUsers\AuthRegister::tokenValidate((string)$token); // validate without hash, just for display, hash is optional here
+			if($vfyRegToken['err'] !== 0) {
+				$errCodeReg = '#['.$vfyRegToken['err'].']';
+				if($vfyRegToken['err'] === 120) {
+					$errCodeReg = 'Token is either expired or has been already used #[120]';
+				} //end if
+				$vfyRegToken = []; // reset
+				$this->PageViewSetErrorStatus(403, 'User Account Registration Error, Invalid Token: '.$errCodeReg);
+				return;
+			} //end if
+			//--
+			if((int)Smart::array_size($vfyRegToken) > 0) {
+				return (int) $this->displayRegistration((string)$token, (array)$vfyRegToken, (string)$hash);
+			} //end if
+			//--
+		} //end if
+		//--
+
+		//--
+		return (int) $this->displaySignUp();
+		//--
+
+	} //END FUNCTION
+
+
+	private function displayRegistration(string $token, array $vfyRegToken, string $hash) : int {
+
+		//--
+		$token = (string) trim((string)$token);
+		if((string)$token == '') {
+			Smart::log_warning(__METHOD__.' # User Account Registration: Token is Empty');
+			return 500;
+		} //end if
+		//--
+		if((int)Smart::array_size($vfyRegToken) <= 0) {
+			Smart::log_warning(__METHOD__.' # User Account Registration: Data is Empty');
+			return 500;
+		} //end if
+		if($vfyRegToken['err'] !== 0) {
+			Smart::log_warning(__METHOD__.' # User Account Registration, Token is Invalid: '.$vfyRegToken['err']);
+			return 500;
+		} //end if
+		//--
+		if((int)Smart::array_size($vfyRegToken['token']) <= 0) {
+			Smart::log_warning(__METHOD__.' # User Account Registration: Data Token is Empty');
+			return 500;
+		} //end if
+		//--
+		$email = (string) trim((string)$vfyRegToken['token']['e']);
+		//--
+
+		//--
+		$this->PageViewSetVars([
+			'title' 	=> (string) $this->translator->text('sign-up-reg'),
+			'main' 		=> (string) SmartMarkersTemplating::render_file_template(
+				(string) $this->ControllerGetParam('module-view-path').'register.mtpl.htm',
+				[
+					//--
+					'URL-PREFIX-MASTER' 		=> (string) \SmartModExtLib\AuthUsers\AuthClusterUser::getAuthClusterUrlPrefixMaster(),
+					'URL-PREFIX-LOCAL' 			=> (string) \SmartModExtLib\AuthUsers\AuthClusterUser::getAuthClusterUrlPrefixLocal(),
+					//--
+					'URL-HOME' 					=> (string) SmartUtils::get_server_current_url(),
+					'WEBSITE-NAME' 				=> (string) Smart::get_from_config('app.info-url', 'string'),
+					'IS-AUTHENTICATED' 			=> (int)    (SmartAuth::is_authenticated() === true) ? 1 : 0,
+					'AUTH-USERNAME' 			=> (string) SmartAuth::get_auth_username() ?: $email,
+					//--
+					'TXT-REGISTER-IP-RESTRICT' 	=> (string) $this->translator->text('sign-up-ip-restr'),
+					'IS-REGISTER-IP-RESTRICTED' => (string) ((\SmartModExtLib\AuthUsers\AuthRegister::isRegistrationRestrictedByIp() === true) ? 'yes' : 'no'),
+					//--
+					'TXT-REGISTER-TITLE' 		=> (string) $this->translator->text('sign-up-reg-activate'),
+					'TXT-LNK-HOME-PAGE' 		=> (string) $this->translator->text('homepage'),
+					'TXT-BTN-SIGNUP-DEFAULT' 	=> (string) $this->translator->text('sign-up'),
+					//--
+					'TXT-REGISTER-CODE' 		=> (string) $this->translator->text('sign-up-reg-code'),
+					'TXT-CODE-HASH' 			=> (string) $this->translator->text('sign-up-reg-code-hint'),
+					'TXT-BTN-ACTIVATE-DEFAULT' 	=> (string) $this->translator->text('sign-up-reg-a-btn'),
+					'TXT-BTN-ACTIVATE' 			=> (string) $this->translator->text('sign-up-reg-a-btn-hint'),
+					//--
+					'REGISTRATION-CODE' 		=> (string) $hash,
+					'REGISTRATION-TOKEN' 		=> (string) $token,
+					//--
+					'TXT-SIGNED-TITLE' 			=> (string) $this->translator->text('signed-up-info'),
+					'TXT-SIGNOUT' 				=> (string) $this->translator->text('btn-signout'),
+					'TXT-BTN-ACCOUNT' 			=> (string) $this->translator->text('btn-account-display'),
+					'TXT-BTN-SETTINGS' 			=> (string) $this->translator->text('btn-account-settings'),
+					'CURRENT-ACTION' 			=> (string) $this->ControllerGetParam('action'),
+					'TXT-APPS' 					=> (string) $this->translator->text('apps-and-dashboard'),
+					//--
+				]
+			),
+			'aside' 	=> (string) SmartMarkersTemplating::render_file_template(
+				(string)$this->ControllerGetParam('module-view-path').'register-aside.mtpl.htm',
+				[
+					//--
+					'WEBSITE-NAME' 				=> (string) Smart::get_from_config('app.info-url', 'string'),
+					'IS-AUTHENTICATED' 			=> (int)    (SmartAuth::is_authenticated() === true) ? 1 : 0,
+					'AUTH-USERNAME' 			=> (string) SmartAuth::get_auth_username() ?: $email,
+					//--
+					'TXT-REG-TITLE' 			=> (string) $this->translator->text('sign-up-reg-a-ttl'),
+					//--
+					'TXT-REG-ACTIVATE-TTL'		=> (string) $this->translator->text('sign-up-reg-a-head'),
+					'TXT-REG-ACTIVATE-DESC' 	=> (string) $this->translator->text('sign-up-reg-a-head-desc'),
+					//--
+					'TXT-REG-ACTIV-CODE-TTL' 	=> (string) $this->translator->text('sign-up-reg-a-step1'),
+					'TXT-REG-ACTIV-CODE-DESC' 	=> (string) $this->translator->text('sign-up-reg-a-step1-desc'),
+					//--
+					'TXT-REG-ACTIV-EMAIL' 		=> (string) $this->translator->text('sign-up-reg-a-step2'),
+					'TXT-REG-ACTIV-HINT' 		=> (string) $this->translator->text('sign-up-reg-a-step2-desc'),
+					'TXT-REG-ACTIV-SECURITY' 	=> (string) $this->translator->text('sign-up-reg-safety'),
+					//--
+				]
+			),
+		]);
+		//--
+
+		//--
+		return 200;
+		//--
+
+	} //END FUNCTION
+
+
+	private function displaySignUp() : int {
+
+		//--
 		$captchaHtmlCode = '';
 		if(SmartAuth::is_authenticated() !== true) {
-			if($isRegisterCaptchaEnabled !== false) { // if register captcha was not explicit disabled
+			if(\SmartModExtLib\AuthUsers\Utils::isAuthRegisterCaptchaEnabled() !== false) { // if register captcha was not explicit disabled
 				$captchaHtmlCode = (string) \SmartModExtLib\AuthUsers\Utils::drawAuthUsersCaptchaHtml();
 			} //end if
 		} //end if
@@ -41,39 +182,46 @@ final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractSi
 
 		//--
 		$this->PageViewSetVars([
-			'title' 	=> 'Sign-Up',
+			'title' 	=> (string) $this->translator->text('sign-up'),
 			'main' 		=> (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'signup.mtpl.htm',
 				[
 					//--
+					'URL-PREFIX-MASTER' 		=> (string) \SmartModExtLib\AuthUsers\AuthClusterUser::getAuthClusterUrlPrefixMaster(),
+					'URL-PREFIX-LOCAL' 			=> (string) \SmartModExtLib\AuthUsers\AuthClusterUser::getAuthClusterUrlPrefixLocal(),
+					//--
+					'URL-HOME' 					=> (string) SmartUtils::get_server_current_url(),
 					'WEBSITE-NAME' 				=> (string) Smart::get_from_config('app.info-url', 'string'),
 					'IS-AUTHENTICATED' 			=> (int)    (SmartAuth::is_authenticated() === true) ? 1 : 0,
 					'AUTH-USERNAME' 			=> (string) SmartAuth::get_auth_username(),
 					//--
-					'TXT-SIGNUP-TITLE' 			=> 'Register a New Account',
-					'TXT-EMAIL-ADDRESS' 		=> 'Your Email Address',
-					'TXT-PASSWORD' 				=> 'Your Password',
-					'TXT-RE-PASSWORD' 			=> 'Re-Type Your Password',
-					'TXT-BTN-SIGNIN' 			=> 'If you already have an account, click here to Sign-In',
-					'TXT-BTN-SIGNUP' 			=> 'Enter your Email and Password, Re-Type your Password and click this button, for Sign-Up (will create a New Account)',
-					'TXT-BTN-RECOVERY' 			=> 'If you forgot your password click this button, for Password Recovery',
+					'TXT-REGISTER-IP-RESTRICT' 	=> (string) $this->translator->text('sign-up-ip-restr'),
+					'IS-REGISTER-IP-RESTRICTED' => (string) ((\SmartModExtLib\AuthUsers\AuthRegister::isRegistrationRestrictedByIp() === true) ? 'yes' : 'no'),
 					//--
-					'TXT-BTN-SIGNUP-DEFAULT' 	=> 'Sign-Up',
-					'TXT-BTN-SIGNIN-DEFAULT' 	=> 'Already have an Account ?',
-					'TXT-BTN-PASSWORD-RESET' 	=> 'Forgot Your Password ?',
-					'TXT-LNK-TROUBLE-SIGNUP' 	=> 'Sign-Up Troubles ? Read the instructions.',
+					'TXT-SIGNUP-TITLE' 			=> (string) $this->translator->text('sign-up'),
+					'TXT-EMAIL-ADDRESS' 		=> (string) $this->translator->text('auth-email'),
+					'TXT-PASSWORD' 				=> (string) $this->translator->text('auth-password'),
+					'TXT-RE-PASSWORD' 			=> (string) $this->translator->text('auth-repassword'),
+					'TXT-BTN-SIGNIN' 			=> (string) $this->translator->text('hint-signin'),
+					'TXT-BTN-SIGNUP' 			=> (string) $this->translator->text('hint-btn-signup'),
+					'TXT-BTN-RECOVERY' 			=> (string) $this->translator->text('hint-recovery'),
 					//--
-					'TXT-PLUGINS-SIGNIN' 		=> 'or use SSO, easy Sign-Up with',
-					'TXT-HINT-PLUGINS-SIGNIN' 	=> 'Simple and secure Authentication, without passwords. Select by click a SSO identity provider from below to Authenticate using Single-Sign-On. If you have multiple identities, using different email addresses on different providers, be sure you pick-up the same provider each time, otherwise you will be landing in a different account namespace.',
-					'TXT-PLUGIN-SIGNIN' 		=> 'Sign-Up with',
+					'TXT-BTN-SIGNUP-DEFAULT' 	=> (string) $this->translator->text('btn-signup'),
+					'TXT-BTN-SIGNIN-DEFAULT' 	=> (string) $this->translator->text('btn-signup-already'),
+					'TXT-BTN-PASSWORD-RESET' 	=> (string) $this->translator->text('sign-recovery'),
+					'TXT-LNK-HOME-PAGE' 		=> (string) $this->translator->text('homepage'),
+					//--
+					'TXT-PLUGINS-SIGNIN' 		=> (string) $this->translator->text('sign-in-sso'),
+					'TXT-HINT-PLUGINS-SIGNIN' 	=> (string) $this->translator->text('sign-up-with-hint'),
+					'TXT-PLUGIN-SIGNIN' 		=> (string) $this->translator->text('sign-up-with'),
 					'AUTH-PLUGINS' 				=> (array)  $authPlugins,
 					//--
-					'TXT-SIGNED-TITLE' 			=> 'Your Sign-Up Info',
-					'TXT-SIGNOUT' 				=> 'Sign-Out',
-					'TXT-BTN-ACCOUNT' 			=> 'Display Your Account',
-					'TXT-BTN-SETTINGS' 			=> 'Your Account Settings',
+					'TXT-SIGNED-TITLE' 			=> (string) $this->translator->text('signed-up-info'),
+					'TXT-SIGNOUT' 				=> (string) $this->translator->text('btn-signout'),
+					'TXT-BTN-ACCOUNT' 			=> (string) $this->translator->text('btn-account-display'),
+					'TXT-BTN-SETTINGS' 			=> (string) $this->translator->text('btn-account-settings'),
 					'CURRENT-ACTION' 			=> (string) $this->ControllerGetParam('action'),
-					'TXT-APPS' 					=> 'Apps and Dashboard',
+					'TXT-APPS' 					=> (string) $this->translator->text('apps-and-dashboard'),
 					//--
 				]
 			),
@@ -85,17 +233,43 @@ final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractSi
 					'IS-AUTHENTICATED' 			=> (int)    (SmartAuth::is_authenticated() === true) ? 1 : 0,
 					'AUTH-USERNAME' 			=> (string) SmartAuth::get_auth_username(),
 					//--
-					'IS-CAPTCHA-ENABLED' 		=> (string) (($isRegisterCaptchaEnabled !== false) ? 'yes' : 'no'),
 					'CAPTCHA-HTML' 				=> (string) $captchaHtmlCode,
+					'TXT-CAPTCHA-HINT' 			=> (string) $this->translator->text('sign-up-reg-captcha-hint'),
+					//--
 					'IS-FA2-AVAILABLE' 			=> (bool)   $is2FAEnabled,
 					'IS-FA2-REQUIRED' 			=> (bool)   $is2FARequired,
 					//--
-					'TXT-REG-TITLE' 			=> 'New Account Registration',
 					'AUTH-PLUGINS' 				=> (array)  $authPlugins,
+					//--
+					'TXT-REG-TITLE' 			=> (string) $this->translator->text('sign-up-title'),
+					//--
+					'TXT-REG-ACKNOWLEDGE' 		=> (string) $this->translator->text('sign-up-reg-head'),
+					'TXT-REG-HEADLINE' 			=> (string) $this->translator->text('sign-up-reg-head-desc'),
+					//--
+					'TXT-REG-STD-TTL' 			=> (string) $this->translator->text('sign-up-reg-step1'),
+					'TXT-REG-STD-VALID-EMAIL' 	=> (string) $this->translator->text('sign-up-reg-step1-desc'),
+					'TXT-REG-STD-EMAIL-MSG' 	=> (string) $this->translator->text('sign-up-reg-step1-1'),
+					'TXT-REG-STD-ACTIVATE' 		=> (string) $this->translator->text('sign-up-reg-step1-1-desc'),
+					'TXT-REG-STD-SECURITY' 		=> (string) $this->translator->text('sign-up-reg-safety'),
+					//--
+					'TXT-REG-SSO-TTL' 			=> (string) $this->translator->text('sign-up-reg-step2'),
+					'TXT-REG-SSO-NO-ACTIVATE' 	=> (string) $this->translator->text('sign-up-reg-step2-1'),
+					'TXT-REG-SSO-PROVIDERS' 	=> (string) $this->translator->text('sign-up-reg-step2-1-desc'),
+					'TXT-REG-SSO-IDENTITIES' 	=> (string) $this->translator->text('sign-up-reg-step2-1-hint'),
+					//--
+					'TXT-REG-2FA-TTL' 			=> (string) $this->translator->text('sign-up-reg-step3'),
+					'TXT-REG-2FA-DESC' 			=> (string) $this->translator->text('sign-up-reg-step3-desc'),
+					//--
+					'TXT-REG-SEC-TTL' 			=> (string) $this->translator->text('sign-up-reg-step4'),
+					'TXT-REG-SEC-DESC' 			=> (string) $this->translator->text('sign-up-reg-step4-desc'),
 					//--
 				]
 			),
 		]);
+		//--
+
+		//--
+		return 200;
 		//--
 
 	} //END FUNCTION

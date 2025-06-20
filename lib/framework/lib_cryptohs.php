@@ -45,7 +45,7 @@ if((!function_exists('hash_algos')) OR (!function_exists('hash_hmac_algos'))) {
  *
  * @access      PUBLIC
  * @depends     PHP hash_algos() / hash() ; classes: Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE
- * @version     v.20250203
+ * @version     v.20250218
  * @package     @Core:Crypto
  *
  */
@@ -71,6 +71,7 @@ final class SmartHashCrypto {
 	public const SALT_SUFFIX = 'スマート フレームワーク';
 
 	private static $cache = [];
+
 
 
 	//==============================================================
@@ -316,6 +317,45 @@ final class SmartHashCrypto {
 		} else {
 			return false;
 		} //end if else
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Function: Return a Safe Suffix for various usage, based on SF Security Key
+	 * This is only for internal use such as db suffix
+	 * Never expose this on a public URL or other public place !
+	 * This should remain secret for security purposes ...
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @return STRING 				A crc32b based on SHA512-B64 hashed composed key
+	 */
+	public static function safesuffix(string $area) : string {
+		//--
+		if((!defined('SMART_FRAMEWORK_SECURITY_KEY')) OR ((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) == '')) {
+			Smart::raise_error(__METHOD__.' SMART_FRAMEWORK_SECURITY_KEY is not defined or empty !');
+			return '';
+		} //end if
+		//--
+		$area = (string) trim((string)$area);
+		if((string)$area == '') {
+			Smart::raise_error(__METHOD__.' Area is empty !');
+			return '';
+		} //end if
+		//--
+		$key = (string) $area."\r".self::SALT_PREFIX."\t".self::SALT_SEPARATOR."\n".self::SALT_SUFFIX."\r".SMART_FRAMEWORK_SECURITY_KEY;
+		//--
+		$h256 = (string) self::sha256((string)$key, true);
+		$h512 = (string) self::sha512((string)$key, true);
+		//--
+		$crc1 = (string) strrev((string)self::crc32b((string)$h512, true));
+		$crc2 = (string) self::crc32b((string)strrev((string)$h256), true);
+		//--
+		return (string) strtolower((string)$crc1.'-'.$crc2);
 		//--
 	} //END FUNCTION
 	//==============================================================

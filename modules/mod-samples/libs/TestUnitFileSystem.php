@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20231119
+ * @version 	v.20250217
  *
  */
 final class TestUnitFileSystem {
@@ -67,8 +67,8 @@ final class TestUnitFileSystem {
 		//--
 		$test_string = '#START#'."\n".'グッド'."\n".'SmartFramework/Test/FileSystem'."\n".\time()."\n".\SMART_FRAMEWORK_HTACCESS_NOINDEXING.\SMART_FRAMEWORK_HTACCESS_FORBIDDEN.\SMART_FRAMEWORK_HTACCESS_NOEXECUTION."\n".'#END#';
 		$test_str_cksum = \SmartHashCrypto::sha512((string)$test_string);
-		$long_prefixed  = \SmartFileSysUtils::prefixedUuid40B16Path((string)\sha1((string)\time()));
-		$short_prefixed = \SmartFileSysUtils::prefixedUuid10B36Path((string)\Smart::uuid_10_seq());
+		$long_prefixed  = \SmartFileSysUtils::prefixedUidPath((string)\sha1((string)\time()), 3);
+		$short_prefixed = \SmartFileSysUtils::prefixedUidPath((string)\Smart::uuid_10_seq(), 2);
 		//--
 		$the_base_folder = 'tmp/tests/';
 		$the_sufx_folder = 'Folder1';

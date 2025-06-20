@@ -9,7 +9,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 	@http_response_code(500);
 	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
-//-----------------------------------------------------
+//----------------------------------------------------- r.20250307
 
 //--------------------------------------- Templates and Home Page
 $configs['app']['index-domain'] 					= 'localhost.local'; 		// index domain as yourdomain.ext
@@ -20,7 +20,8 @@ $configs['app']['index-template-file'] 				= 'template.htm';			// default index 
 //---------------------------------------
 
 //--------------------------------------- OTHER SPECIAL SETTINGS :: DO NOT MODIFY IF YOU DON'T KNOW WHAT YOU ARE DOING, really ... ; this is for customizing the 4xx-5xx response pages only !
-//define('SMART_FRAMEWORK_CUSTOM_ERR_PAGES', 'modules/mod-samples/error-pages/'); // `` or custom path to error pages: 400.php ... 507.php ; if this is enabled will serve customized responses for 4xx/5xx HTTP Status Codes ; you can customize any of 4xx/5xx or all ...
+//define('SMART_FRAMEWORK_CUSTOM_ERR_PAGES',    'modules/mod-samples/error-pages/');    // `` or path to custom error pages: 400.php ... 507.php ; if this is enabled will serve customized responses for 4xx/5xx HTTP Status Codes ; you can customize any of 4xx/5xx or all ...
+//define('SMART_FRAMEWORK_CUSTOM_ERR_PAGE_401', 'modules/mod-auth-users/error-pages/'); // `` or path to custom error 401 page
 //---------------------------------------
 
 // end of php code

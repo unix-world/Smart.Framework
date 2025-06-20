@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqOauth2 {
 
 	// ->
-	// v.20250114
+	// v.20250218
 
 	private $db;
 	private $userId;
@@ -41,29 +41,23 @@ final class SqOauth2 {
 			return;
 		} //end if
 		//--
+		if(\SmartAuth::is_authenticated() !== true) {
+			\Smart::raise_error(__METHOD__.' # requires an Authentication !');
+			return;
+		} //end if
+		//--
 		$this->userId = (string) \trim((string)\SmartAuth::get_auth_id());
 		if((string)$this->userId == '') {
 			\Smart::raise_error(__METHOD__.' # requires an Authenticated User !');
 			return;
 		} //end if
 		//--
-		$areaPfx = \Smart::safe_username((string)\SmartEnvironment::getArea()); // {{{SYNC-OAUTH2-AREA-PFX}}}
-		if((string)\trim((string)$areaPfx) == '') {
-			\Smart::raise_error(__METHOD__.' # Invalid Area Prefix `'.$areaPfx.'`');
+		$db_pfx = (string) \SmartAuth::get_user_prefixed_path_by_area_and_auth_id();
+		if((string)\trim((string)$db_pfx) == '') {
+			\Smart::raise_error(__METHOD__.' # Failed to get a valid Authenticated UserName Valid Path !');
 			return;
 		} //end if
-		//--
-		$db_pfx = (string) \Smart::safe_username((string)$this->userId);
-		if(
-			((string)\trim((string)$db_pfx) == '')
-			OR
-			((int)\strlen((string)$db_pfx) < 3)
-		) {
-			\Smart::raise_error(__METHOD__.' # Failed to get a valid Authenticated UserName !');
-			return;
-		} //end if
-		$db_pfx = (string) \substr((string)$db_pfx, 0, 1).'/'.$db_pfx;
-		$db_path = '#db/'.$areaPfx.'/'.$db_pfx.'/oauth2-'.\sha1((string)\SMART_FRAMEWORK_SECURITY_KEY).'.sqlite';
+		$db_path = '#db/'.$db_pfx.'/oauth2-'.\SmartHashCrypto::safesuffix('Mod.OAuth2').'.sqlite';
 		if(!\SmartFileSysUtils::checkIfSafePath((string)$db_path, true, true)) {
 			\Smart::raise_error(__METHOD__.' # DB Path is UNSAFE !');
 			return;
@@ -172,7 +166,7 @@ final class SqOauth2 {
 				// OK, CUSTOM
 				break;
 			case 'active':
-			case 'admin':
+			case 'account':
 			case 'created':
 			case 'modified':
 				// OK, STD
@@ -296,7 +290,7 @@ final class SqOauth2 {
 		//--
 		$data['errs'] = 0;
 		$data['active'] = 1;
-		$data['admin'] = (string) $this->userId;
+		$data['account'] = (string) $this->userId;
 		//--
 		$data['id'] = (string) \trim((string)$arr_data['id']);
 		if((\strlen((string)$data['id']) < 5) OR (\strlen((string)$data['id']) > 127)) {
@@ -723,10 +717,10 @@ final class SqOauth2 {
 
 
 	private function dbDefaultSchema() { // {{{SYNC-TABLE-OAUTH2_TEMPLATE}}}
-//-- default schema ; default user: APP_OAUTH2_ADMIN_USERNAME ; default pass: APP_OAUTH2_ADMIN_PASSWORD
+//--
 $version = (string) $this->db->escape_str((string)\SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.\SMART_FRAMEWORK_RELEASE_VERSION);
 $schema = <<<SQL
--- #START: tables schema: _smartframework_metadata / admins @ 20250107
+-- #START: tables schema: _smartframework_metadata / oauth2 @ 20250218
 INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('version@oauth2', '{$version}');
 CREATE TABLE 'oauth2_data' (
 	`id` character varying(127) PRIMARY KEY NOT NULL,
@@ -746,7 +740,7 @@ CREATE TABLE 'oauth2_data' (
 	`description` text DEFAULT '' NOT NULL,
 	`logs` text DEFAULT '' NOT NULL,
 	`errs` smallint DEFAULT 0 NOT NULL,
-	`admin` character varying(25) DEFAULT '' NOT NULL,
+	`account` character varying(25) DEFAULT '' NOT NULL,
 	`modified` integer DEFAULT 0 NOT NULL,
 	`created` integer DEFAULT 0 NOT NULL
 );
@@ -755,7 +749,7 @@ CREATE INDEX 'oauth2_data_active' ON `oauth2_data` (`active`);
 CREATE INDEX 'oauth2_data_access_expire_seconds' ON `oauth2_data` (`access_expire_seconds` ASC);
 CREATE INDEX 'oauth2_data_access_expire_time' ON `oauth2_data` (`access_expire_time` ASC);
 CREATE INDEX 'oauth2_data_errs' ON `oauth2_data` (`errs`);
-CREATE INDEX 'oauth2_data_admin' ON `oauth2_data` (`admin`);
+CREATE INDEX 'oauth2_data_account' ON `oauth2_data` (`account`);
 CREATE INDEX 'oauth2_data_modif' ON `oauth2_data` (`modified`);
 CREATE INDEX 'oauth2_data_created' ON `oauth2_data` (`created`);
 SQL;

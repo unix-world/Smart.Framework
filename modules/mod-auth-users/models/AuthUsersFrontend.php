@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class AuthUsersFrontend {
 
 	// ::
-	// v.20250207
+	// v.20250619
 
 
 	private static $db = null;
@@ -119,6 +119,9 @@ final class AuthUsersFrontend {
 	} //END FUNCTION
 
 
+	//-------- [ACCOUNT: READ]
+
+
 	public static function getAccountById(?string $id) : array {
 		//--
 		$id = (string) \trim((string)$id);
@@ -184,11 +187,52 @@ final class AuthUsersFrontend {
 	} //END FUNCTION
 
 
+	//-------- [ACCOUNT: CREATE / LOGIN]
+
+
+	public static function canRegisterAccount(?string $email) : bool {
+		//--
+		$email = (string) \strtolower((string)\trim((string)$email));
+		if(((string)$email == '') || (\strpos((string)$email, '@') === false) || ((int)\strlen((string)$email) < 5) || ((int)\strlen((string)$email) > 72)) {
+			return false; // early return
+		} //end if
+		//--
+		if((string)self::dbType() == 'pgsql') {
+			$arr = (array) \SmartPgsqlDb::read_asdata(
+				'SELECT "email" FROM "web"."auth_users" WHERE ("email" = $1) LIMIT 1 OFFSET 0',
+				[
+					(string) $email
+				]
+			);
+		} elseif((string)self::dbType() == 'sqlite') {
+			$arr = (array) self::$db->read_asdata(
+				'SELECT `email` FROM `auth_users` WHERE (`email` = ?) LIMIT 1 OFFSET 0',
+				[
+					(string) $email
+				]
+			);
+		} else {
+			return false;
+		} //end if else
+		//--
+		if((int)\Smart::array_size($arr) > 0) {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //enD FUNCTION
+
+
 	public static function createAccount(array $data, string $provider='@') : int { // 1 = OK ; 0 if not written ; -1..-n other are error codes
+		//--
+		if((int)\Smart::array_size($data) <= 0) {
+			return -1;
+		} //end if
 		//--
 		$provider = (string) \strtolower((string)\trim((string)$provider));
 		if((string)$provider == '') {
-			return -1;
+			return -2;
 		} //end if
 		//--
 		$federated = false;
@@ -205,42 +249,75 @@ final class AuthUsersFrontend {
 			$keys['name'] = 129;
 			$keys['authlog'] = 8192;
 		} else {
-			$keys['password'] = [
-				(int) \SmartHashCrypto::PASSWORD_PLAIN_MIN_LENGTH, // min
-				(int) \SmartHashCrypto::PASSWORD_PLAIN_MAX_LENGTH, // max
-			];
+			$keys['password'] = (int) \SmartAuth::PASSWORD_BHASH_LENGTH;
 		} //end if else
 		$validate = (int) self::validateDataByKeys((array)$keys, (array)$data);
 		if($validate !== 0) {
 			return (int) $validate;
 		} //end if
-		if(\SmartAuth::validate_auth_ext_username((string)$data['email']) !== true) {
-			return -1;
-		} //end if
-		if($federated !== true) {
-			if(\SmartAuth::validate_auth_password((string)$data['password']) !== true) {
-				return -2;
-			} //end if
-		} //end if
-		if((int)\Smart::array_size($data) <= 0) {
+		$data['email'] = (string) \strtolower((string)\trim((string)$data['email'])); // just in case
+		if( // {{{SYNC-AUTH-USERS-EMAIL-AS-USERNAME-SAFE-VALIDATION}}}
+			((string)$data['email'] == '')
+			OR
+			((int)\strlen((string)$data['email']) < 5)
+			OR
+			((int)\strlen((string)$data['email']) > 72)
+			OR
+			(\strpos((string)$data['email'], '@') == false)
+			OR
+			(\SmartAuth::validate_auth_ext_username((string)$data['email']) !== true)
+		) {
+			\Smart::log_warning(__METHOD__.' # Account Creation Failed, Provider['.$provider.']: Invalid Email Address: `'.$data['email'].'`');
 			return -3;
 		} //end if
+		if($federated === true) {
+			//--
+			// for federated account creation: generate a random password to be able to use SWT inter-server auth
+			//--
+			$plainRandPass = (string) \Smart::base_from_hex_convert((string)\SmartHashCrypto::sh3a224((string)\random_bytes(32)), 92);
+			//\Smart::log_notice(__METHOD__.' # Random Pass: '.$plainRandPass);
+			$data['password'] = (string) \trim((string)\SmartHashCrypto::password((string)$plainRandPass, (string)$data['email']));
+			//--
+			if(
+				((int)\strlen((string)$data['password']) != (int)\SmartHashCrypto::PASSWORD_HASH_LENGTH) // {{{SYNC-AUTHADM-PASS-LENGTH}}}
+				OR
+				(\SmartHashCrypto::validatepasshashformat((string)$data['password']) !== true) // {{{SYNC-AUTH-HASHPASS-FORMAT}}}
+			) {
+				\Smart::log_warning(__METHOD__.' # Federated Account Creation Random Password Hash Failed, is Invalid: ['.$data['password'].']');
+				$data['password'] = ''; // reset (is invalid), and log above
+			} else {
+				$data['passalgo'] = (int) \SmartAuth::ALGO_PASS_SMART_SAFE_SF_PASS;
+			} //end if else
+			//--
+			$data['name'] = (string) \trim((string)$data['name']); // just in case
+			//--
+		} else {
+			//--
+			// for non-federated account creation expects a pass hash using: \SmartAuth::password_hash_create((string)$plainPass)
+			//--
+			if(
+				((int)\strlen((string)$data['password']) != (int)\SmartAuth::PASSWORD_BHASH_LENGTH) // {{{SYNC-PASS-HASH-AUTH-LEN}}}
+				OR
+				(\SmartAuth::password_hash_validate_format((string)$data['password']) !== true) // {{{SYNC-PASS-HASH-AUTH-FORMAT}}}
+			) {
+				\Smart::log_warning(__METHOD__.' # Account Creation Password Hash is Invalid: ['.$data['password'].']');
+				return -4;
+			} //end if
+			//--
+			$data['passalgo'] = (int) \SmartAuth::ALGO_PASS_SMART_SAFE_BCRYPT;
+			//--
+		} //end if
 		//--
-		$data['id'] = (string) \Smart::uuid_10_seq().'-'.\Smart::uuid_10_num();
+		$data['id'] = (string) \strrev((string)\Smart::uuid_10_seq()).'-'.\Smart::uuid_10_num(); // use strrev of prefix to better distribute user path by prefix
 		$data['registered'] = (string) \date('Y-m-d H:i:s');
 		$data['ipaddr'] = (string) \SmartUtils::get_ip_client();
 		if($federated === true) {
 			$data['allowfed'] = '<'.$provider.'>'; // on account creation bind federated login to the one that created the account to avoid security issues ; later user can edit this from his profile and can enable others or all ; or if user set a login password can disable federated at all
 		} else {
 			$data['allowfed'] = ''; // for normal login set by default federated to empty to disallow federated login ; user can enable them from his account thereafter
-			$data['password'] = (string) \SmartAuth::password_hash_create((string)$data['password']);
-			if((string)\trim((string)$data['password']) == '') {
-				return -4; // password hash creation failed
-			} //end if
-			$data['passalgo'] = (int) \SmartAuth::ALGO_PASS_SMART_SAFE_BCRYPT;
 		} //end if
 		//--
-		$data['status'] = 0; // needs verification ; if federated will be able to login ; if default, will be able to login only after verification
+		$data['status'] = 1; // by default is enabled
 		//--
 		$wr = [];
 		if((string)self::dbType() == 'pgsql') {
@@ -305,18 +382,25 @@ final class AuthUsersFrontend {
 		} //end if
 		//--
 		if(
-			((string)\trim((string)($exists['password'] ?? null)) == '')
-			OR
-			( // {{{SYNC-ALLOWED-PASS-ALGOS}}}
-				((int)($exists['passalgo'] ?? null) != (int)\SmartAuth::ALGO_PASS_SMART_SAFE_SF_PASS)
-				AND
-				((int)($exists['passalgo'] ?? null) != (int)\SmartAuth::ALGO_PASS_SMART_SAFE_BCRYPT)
+			(
+				((string)\trim((string)($exists['password'] ?? null)) == '')
+				OR
+				( // {{{SYNC-ALLOWED-PASS-ALGOS}}}
+					((int)($exists['passalgo'] ?? null) != (int)\SmartAuth::ALGO_PASS_SMART_SAFE_SF_PASS)
+					AND
+					((int)($exists['passalgo'] ?? null) != (int)\SmartAuth::ALGO_PASS_SMART_SAFE_BCRYPT)
+				)
 			)
+			AND
+			((string)\trim((string)($exists['allowfed'] ?? null)) == '')
 		) {
 			return -8;
 		} //end if
 		//--
 		$data['ipaddr'] = (string) \SmartUtils::get_ip_client(); // lastseen is updated below
+		//--
+		$data['passresetcnt'] = 0;  // reset on successful login
+		$data['passresetotc'] = ''; // reset on successful login
 		//--
 		return (int) self::updateAccountById((string)$id, (array)$data); // {{{SYNC-ACCOUNT-LOGIN-UPDATE}}}
 		//--
@@ -367,6 +451,9 @@ final class AuthUsersFrontend {
 			return -6; // wrong account selected
 		} //end if
 		unset($data['email']); // exclude this from update
+		if((string)\trim((string)$exists['name']) != '') {
+			unset($data['name']); // do not update name if already is non-empty, this may rewrite what user set via settings as his name
+		} //end if
 		//--
 		$id = (string) \trim((string)($exists['id'] ?? null));
 		if((string)$id == '') {
@@ -386,63 +473,297 @@ final class AuthUsersFrontend {
 			return -8; // {{{SYNC-FEDERATED-LOGIN-ALLOWED-ACCOUNT-PROVIDERS-CODE}}}
 		} //end if
 		//--
+		if((int)($exists['status'] ?? null) <= 0) { // {{{SYNC-ACCOUNT-STATUS-DISABLED}}}
+			return -9; // {{{SYNC-FEDERATED-LOGIN-ACCOUNT-DISABLED-CODE}}}
+		} //end if
+		//--
 		$data['ipaddr'] = (string) \SmartUtils::get_ip_client(); // lastseen is updated below
+		//--
+		$data['passresetcnt'] = 0;  // reset on successful login
+		$data['passresetotc'] = ''; // reset on successful login
 		//--
 		return (int) self::updateAccountById((string)$id, (array)$data); // {{{SYNC-ACCOUNT-LOGIN-UPDATE}}}
 		//--
 	} //END FUNCTION
 
 
-	//-------- [PRIVATES]
+	//-------- [ RECOVERY ]
 
 
-	private static function validateDataByKeys(array $keys, array $data) : int { // 0 if OK ; -51..-59 if fails
+	public static function setAccountRecoveryData(string $id, ?string $oneTimePass=null) : int { // 1 = OK ; 0 if not written ; -1..-n other are error codes
 		//--
-		if((int)\Smart::array_size($keys) <= 0) {
-			return -50;
-		} //end if
-		if((int)\Smart::array_type_test($keys) != 2) { // associative
-			return -51;
+		$id = (string) \trim((string)($id ?? null));
+		if((string)$id == '') {
+			return -1;
 		} //end if
 		//--
-		if((int)\Smart::array_size($data) <= 0) {
-			return -52;
+		$exists = (array) self::getAccountById((string)$id);
+		if((int)\Smart::array_size($exists) <= 0) {
+			return -2; // account does not exists or wrong account selected
 		} //end if
-		if((int)\Smart::array_type_test($data) != 2) { // associative
-			return -53;
+		$id = (string) \trim((string)($exists['id'] ?? null));
+		if((string)$id == '') {
+			return -3;
 		} //end if
 		//--
-		foreach($keys as $key => $val) {
-			if(!\array_key_exists((string)$key, (array)$data)) {
-				return -54;
+		$sqlExtra = '';
+		if($oneTimePass !== null) {
+			if(\SmartModExtLib\AuthUsers\Utils::isValidOneTimePassCodePlain((string)$oneTimePass) !== true) {
+				return -11;
 			} //end if
-			$data[(string)$key] =(string) \trim((string)$data[(string)$key]);
-			if((string)$data[(string)$key] == '') {
-				return -55;
+			$oneTimePass = (string) \trim((string)\SmartModExtLib\AuthUsers\Utils::createOneTimePassCodeHash((string)$oneTimePass));
+			if((string)$oneTimePass == '') {
+				return -12;
 			} //end if
-			if(\is_array($val)) {
-				if((int)\strlen((string)$data[(string)$key]) < (int)($val[0] ?? null)) {
-					return -56;
-				} //end if
-				if((int)\strlen((string)$data[(string)$key]) > (int)($val[1] ?? null)) {
-					return -57;
-				} //end if
-			} else {
-				if((int)\strlen((string)$data[(string)$key]) > (int)$val) {
-					return -58;
-				} //end if
+			if((string)self::dbType() == 'pgsql') {
+				$sqlExtra = ', "passresetotc" = \''.\SmartPgsqlDb::escape_str((string)$oneTimePass).'\'';
+			} elseif((string)self::dbType() == 'sqlite') {
+				$sqlExtra = ', `passresetotc` = \''.\SmartPgsqlDb::escape_str((string)$oneTimePass).'\'';
 			} //end if else
-		} //end for
-		//--
-		foreach($data as $key => $val) {
-			if(!\array_key_exists((string)$key, (array)$keys)) {
-				return -59;
-			} //end if
 		} //end if
 		//--
-		return 0; // must not return 1 to conflict by mistake with the caller methods OK code
+		$wr = [];
+		if((string)self::dbType() == 'pgsql') {
+			$wr = (array) \SmartPgsqlDb::write_data(
+				'UPDATE "web"."auth_users" '.
+				'SET "passresetcnt" = "passresetcnt" + 1, "passresetldt" = \''.\SmartPgsqlDb::escape_str((string)\date('Y-m-d H:i:s')).'\''.$sqlExtra.', "ipaddr" = \''.\SmartPgsqlDb::escape_str((string)\SmartUtils::get_ip_client()).'\''.
+				' WHERE ("id" = \''.\SmartPgsqlDb::escape_str((string)$id).'\')'
+			);
+		} elseif((string)self::dbType() == 'sqlite') {
+			$wr = (array) self::$db->write_data(
+				'UPDATE `auth_users` '.
+				'SET `passresetcnt` = `passresetcnt` + 1, `passresetldt` = \''.\SmartPgsqlDb::escape_str((string)\date('Y-m-d H:i:s')).'\''.$sqlExtra.', `ipaddr` = \''.\SmartPgsqlDb::escape_str((string)\SmartUtils::get_ip_client()).'\''.
+				' WHERE (`id` = \''.self::$db->escape_str((string)$id).'\')'
+			);
+		} //end if else
+		//--
+		return (int) ($wr[1] ?? null);
 		//--
 	} //END FUNCTION
+
+
+	//-------- [ACCOUNT SETTINGS]
+
+
+	public static function updateAccountContactInfo(string $id, string $name, array $data=[]) : int { // 1 = OK ; 0 if not written ; -1..-n other are error codes
+		//--
+		$id = (string) \trim((string)($id ?? null));
+		if((string)$id == '') {
+			return -1;
+		} //end if
+		//--
+		$exists = (array) self::getAccountById((string)$id);
+		if((int)\Smart::array_size($exists) <= 0) {
+			return -2; // account does not exists or wrong account selected
+		} //end if
+		$id = (string) \trim((string)($exists['id'] ?? null));
+		if((string)$id == '') {
+			return -3;
+		} //end if
+		//--
+		$name = (string) \trim((string)$name);
+		if((string)$name == '') {
+			return -11;
+		} //end if
+		//--
+		if((int)\Smart::array_size($data) > 0) {
+			$keys = [ 'country' => [ 0, 64 ], 'region' => [ 0, 64 ], 'city' => [ 0, 64 ], 'address' => [ 0, 64 ], 'zip' => [ 0, 64 ], 'phone' => [ 0, 64 ] ]; // {{{SYNC-AUTH-USERS-DB-KEYS-MAX-LEN}}}
+			$validate = (int) self::validateDataByKeys((array)$keys, (array)$data);
+			if($validate !== 0) {
+				return (int) $validate;
+			} //end if
+		} //end if
+		//--
+		$jsonData = (string) \Smart::json_encode((array)$data, false, true, false, 1);
+		//--
+		$data = [
+			'name' 	=> (string) $name,
+			'data' 	=> (string) $jsonData,
+		];
+		//--
+		$data['ipaddr'] = (string) \SmartUtils::get_ip_client(); // lastseen is updated below
+		//--
+		return (int) self::updateAccountById((string)$id, (array)$data); // {{{SYNC-ACCOUNT-UPDATE}}}
+		//--
+	} //END FUNCTION
+
+
+	public static function updateAccountPassword(string $id, string $password, int $algo) : int { // 1 = OK ; 0 if not written ; -1..-n other are error codes
+		//--
+		$id = (string) \trim((string)($id ?? null));
+		if((string)$id == '') {
+			return -1;
+		} //end if
+		//--
+		$exists = (array) self::getAccountById((string)$id);
+		if((int)\Smart::array_size($exists) <= 0) {
+			return -2; // account does not exists or wrong account selected
+		} //end if
+		$id = (string) \trim((string)($exists['id'] ?? null));
+		if((string)$id == '') {
+			return -3;
+		} //end if
+		$email = (string) \trim((string)($exists['email'] ?? null));
+		if((string)$email == '') {
+			return -4;
+		} //end if
+		//--
+		if((string)\trim((string)$password) == '') {
+			return -11;
+		} //end if
+		if(\SmartAuth::validate_auth_password((string)$password) !== true) {
+			return -12;
+		} //end if
+		//--
+		$data = [];
+		//--
+		switch((int)$algo) {
+			case  77: // smart
+				$data['passalgo'] = 77;
+				$data['password'] = (string) \trim((string)\SmartHashCrypto::password((string)$password, (string)$email));
+				break;
+			case 123: // bfcrypt
+				$data['passalgo'] = 123;
+				$data['password'] = (string) \trim((string)\SmartAuth::password_hash_create((string)$password));
+				break;
+			default:
+				return -21;
+		} //end switch
+		//--
+		if((string)$data['password'] == '') {
+			return -22;
+		} //end if
+		//--
+		$data['ipaddr'] = (string) \SmartUtils::get_ip_client(); // lastseen is updated below
+		//--
+		return (int) self::updateAccountById((string)$id, (array)$data); // {{{SYNC-ACCOUNT-UPDATE}}}
+		//--
+	} //END FUNCTION
+
+
+	public static function updateAccount2FASecret(string $id, string $fa2) : int { // 1 = OK ; 0 if not written ; -1..-n other are error codes
+		//--
+		$id = (string) \trim((string)($id ?? null));
+		if((string)$id == '') {
+			return -1;
+		} //end if
+		//--
+		$exists = (array) self::getAccountById((string)$id);
+		if((int)\Smart::array_size($exists) <= 0) {
+			return -2; // account does not exists or wrong account selected
+		} //end if
+		$id = (string) \trim((string)($exists['id'] ?? null));
+		if((string)$id == '') {
+			return -3;
+		} //end if
+		//--
+		$fa2 = (string) \trim((string)$fa2); // can be empty
+		if((int)\strlen((string)$fa2) > 4096) {
+			return -11;
+		} //end if
+		//--
+		$data = [
+			'fa2' 	=> (string) $fa2,
+		];
+		//--
+		$data['ipaddr'] = (string) \SmartUtils::get_ip_client(); // lastseen is updated below
+		//--
+		return (int) self::updateAccountById((string)$id, (array)$data); // {{{SYNC-ACCOUNT-UPDATE}}}
+		//--
+	} //END FUNCTION
+
+
+	public static function updateAccountSSOPlugins(string $id, string $allowfed) : int { // 1 = OK ; 0 if not written ; -1..-n other are error codes
+		//--
+		$id = (string) \trim((string)($id ?? null));
+		if((string)$id == '') {
+			return -1;
+		} //end if
+		//--
+		$exists = (array) self::getAccountById((string)$id);
+		if((int)\Smart::array_size($exists) <= 0) {
+			return -2; // account does not exists or wrong account selected
+		} //end if
+		$id = (string) \trim((string)($exists['id'] ?? null));
+		if((string)$id == '') {
+			return -3;
+		} //end if
+		//--
+		$allowfed = (string) \trim((string)$allowfed); // can be empty
+		if((int)\strlen((string)$allowfed) > 255) {
+			return -11;
+		} //end if
+		//--
+		$data = [
+			'allowfed' 	=> (string) $allowfed,
+		];
+		//--
+		$data['ipaddr'] = (string) \SmartUtils::get_ip_client(); // lastseen is updated below
+		//--
+		return (int) self::updateAccountById((string)$id, (array)$data); // {{{SYNC-ACCOUNT-UPDATE}}}
+		//--
+	} //END FUNCTION
+
+
+	public static function handleAccountMultiSessions(string $id, int $mode) : int { // 1 = OK ; 0 if not written ; -1..-n other are error codes
+		//--
+		$id = (string) \trim((string)($id ?? null));
+		if((string)$id == '') {
+			return -1;
+		} //end if
+		//--
+		$exists = (array) self::getAccountById((string)$id);
+		if((int)\Smart::array_size($exists) <= 0) {
+			return -2; // account does not exists or wrong account selected
+		} //end if
+		$id = (string) \trim((string)($exists['id'] ?? null));
+		if((string)$id == '') {
+			return -3;
+		} //end if
+		//--
+		if(((int)$mode < 1) || ((int)$mode > 2)) { // {{{SYNC-ACCOUNT-MULTISESSIONS}}}
+			return -4;
+		} //end if
+		//--
+		$data = [
+			'status' => (string) (int) $mode,
+		];
+		//--
+		$data['ipaddr'] = (string) \SmartUtils::get_ip_client(); // lastseen is updated below
+		//--
+		return (int) self::updateAccountById((string)$id, (array)$data); // {{{SYNC-ACCOUNT-UPDATE}}}
+		//--
+	} //END FUNCTION
+
+
+	public static function deactivateAccount(string $id) : int { // 1 = OK ; 0 if not written ; -1..-n other are error codes
+		//--
+		$id = (string) \trim((string)($id ?? null));
+		if((string)$id == '') {
+			return -1;
+		} //end if
+		//--
+		$exists = (array) self::getAccountById((string)$id);
+		if((int)\Smart::array_size($exists) <= 0) {
+			return -2; // account does not exists or wrong account selected
+		} //end if
+		$id = (string) \trim((string)($exists['id'] ?? null));
+		if((string)$id == '') {
+			return -3;
+		} //end if
+		//--
+		$data = [
+			'status' => '0',
+		];
+		//--
+		$data['ipaddr'] = (string) \SmartUtils::get_ip_client(); // lastseen is updated below
+		//--
+		return (int) self::updateAccountById((string)$id, (array)$data); // {{{SYNC-ACCOUNT-UPDATE}}}
+		//--
+	} //END FUNCTION
+
+
+	//-------- [PRIVATE: ACCOUNT UPDATE]
 
 
 	private static function updateAccountById(string $id, array $data) : int {
@@ -472,7 +793,6 @@ final class AuthUsersFrontend {
 		unset($data['id']); // disallow update, this is frozen
 		unset($data['registered']); // disallow update, this is frozen
 		unset($data['email']); // disallow update, this is frozen, if ever need to be updated use a different protected method like: updateAccountEmail() ...
-		//--
 		if((int)\Smart::array_size($data) <= 0) {
 			return -67;
 		} //end if
@@ -497,6 +817,64 @@ final class AuthUsersFrontend {
 		return (int) ($wr[1] ?? null);
 		//--
 	} //END FUNCTION
+
+
+	//-------- [PRIVATE: VALIDATE DATA]
+
+
+	private static function validateDataByKeys(array $keys, array $data) : int { // 0 if OK ; -51..-59 if fails
+		//--
+		if((int)\Smart::array_size($keys) <= 0) {
+			return -50;
+		} //end if
+		if((int)\Smart::array_type_test($keys) != 2) { // associative
+			return -51;
+		} //end if
+		//--
+		if((int)\Smart::array_size($data) <= 0) {
+			return -52;
+		} //end if
+		if((int)\Smart::array_type_test($data) != 2) { // associative
+			return -53;
+		} //end if
+		//--
+		foreach($keys as $key => $val) {
+			if(!\array_key_exists((string)$key, (array)$data)) {
+				return -54;
+			} //end if
+			if(!\Smart::is_nscalar($data[(string)$key])) {
+				return -55;
+			} //end if
+			$data[(string)$key] = (string) \trim((string)$data[(string)$key]);
+			if(\is_array($val)) {
+				if((int)\strlen((string)$data[(string)$key]) < (int)($val[0] ?? null)) {
+					return -56;
+				} //end if
+				if((int)\strlen((string)$data[(string)$key]) > (int)($val[1] ?? null)) {
+					return -57;
+				} //end if
+			} else {
+				if((string)$data[(string)$key] == '') {
+					return -56;
+				} //end if
+				if((int)\strlen((string)$data[(string)$key]) > (int)$val) {
+					return -57;
+				} //end if
+			} //end if else
+		} //end for
+		//--
+		foreach($data as $key => $val) {
+			if(!\array_key_exists((string)$key, (array)$keys)) {
+				return -58;
+			} //end if
+		} //end if
+		//--
+		return 0; // must not return 1 to conflict by mistake with the caller methods OK code
+		//--
+	} //END FUNCTION
+
+
+	//-------- [PRIVATE: VALIDATE FEDERATED (LOGIN) PROVIDER]
 
 
 	private static function validateFederatedProvider(string $provider) : int {

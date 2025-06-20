@@ -1,4 +1,13 @@
 <!-- sign-up -->
+	<script>
+	const authSignUpRequest = () => {
+		const email = smartJ$Utils.stringPureVal(jQuery('input#fld-email').val(), true);
+		const pass = smartJ$Utils.stringPureVal(jQuery('input#fld-pass').val(), true);
+		const rpass = smartJ$Utils.stringPureVal(jQuery('input#fld-rpass').val(), true);
+		const url = '?page=auth-users.authorize-api.json&action=register' + '&frm[email]=' + smartJ$Utils.escape_url(email) + '&frm[pass]=' + smartJ$Utils.escape_url(pass) + '&frm[rpass]=' + smartJ$Utils.escape_url(rpass);
+		smartJ$Browser.SubmitFormByAjax(null, url, 'yes');
+	};
+	</script>
 	<h5><i class="sfi sfi-users sfi-xl"></i> &nbsp; [###TXT-SIGNUP-TITLE|html###]</h5>
 	<br>
 	<div class="ux-control-group">
@@ -22,8 +31,10 @@
 		<a class="ux-button ux-button-primary ux-button-super signin" href="?page=auth-users.signin" title="[###TXT-BTN-SIGNIN|html###]"><i class="sfi sfi-user-check"></i> &nbsp; [###TXT-BTN-SIGNIN-DEFAULT|html###]</a>
 	</div>
 	<div class="ux-control-group">
-		<a class="ux-button ux-button-highlight ux-button-super recovery" href="#recovery" title="[###TXT-BTN-RECOVERY|html###]"><i class="sfi sfi-unlocked"></i> &nbsp; [###TXT-BTN-PASSWORD-RESET|html###]</a>
+		<a class="ux-button ux-button-highlight ux-button-super recovery" href="?page=auth-users.recovery" title="[###TXT-BTN-RECOVERY|html###]"><i class="sfi sfi-unlocked"></i> &nbsp; [###TXT-BTN-PASSWORD-RESET|html###]</a>
 	</div>
 	<br>
-	<a href="#instructions">[###TXT-LNK-TROUBLE-SIGNUP|html###]</a>
+	<div class="ux-control-group">
+		<a class="ux-button ux-button-dark ux-button-super home" href="[###URL-HOME|html###]"><i class="sfi sfi-home"></i> &nbsp; [###TXT-LNK-HOME-PAGE|html###]</a>
+	</div>
 <!-- /sign-up -->

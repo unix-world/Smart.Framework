@@ -30,12 +30,12 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 abstract class AbstractAuthAdmins {
 
 	// ->
-	// v.20250207
+	// v.20250314
 
 	public const MAX_TOKENS_PER_ACCOUNT = 25;
 
-	public const MAX_ADMIN_START_LETTER_ACCOUNTS = 32768; // limit as max 32768 per starting letter
-	public const MAX_ADMIN_ACCOUNTS = 851968; // can clusterize ..., this is only a limit per cluster, as 32768 * 26 = 851968 (there are 26 letters a-z as prefix, ex: `a/admin`) ; this is the max safe supported by one server storage system,  if stored on disk, which supports no more than 32k sub-dirs per dir ; many operating systems still have this limit ...
+	public const MAX_ADMIN_START_LETTER_ACCOUNTS = 32764; // limit as max 32767 - 2 (. and ..) - 1 (reserved) = 32764 per starting letter
+	public const MAX_ADMIN_ACCOUNTS = 2031368; // can clusterize ..., this is only a limit per cluster, as (32764 * 26) + (32764 * 36) = 851864 + 1179504 = 2031368 (there are 26 letters a-z as prefix1 and 36 letters and numbers a-z 0-9 as prefix2 , ex: `ad/admin`) ; this is the max safe supported by one server storage system,  if stored on disk, which supports no more than 32k sub-dirs per dir ; many operating systems still have this limit ...
 
 
 	abstract public function __construct(bool $initdb=true); // THIS SHOULD BE THE ONLY METHOD IN THIS CLASS THAT THROW EXCEPTIONS !!!

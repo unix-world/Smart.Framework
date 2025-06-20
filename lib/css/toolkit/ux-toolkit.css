@@ -2,7 +2,7 @@
 
 /*
 License: BSD
-	extended by unixman, (stable.20250207), (c) 2015-present unix-world.org
+	extended by unixman, (stable.20250311), (c) 2015-present unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */
@@ -35,10 +35,30 @@ License: BSD
 .ux-right {
 	text-align: right !important;
 }
-div.ux-flex-center {
-	display: flex;
-	align-items: center;
-	justify-content: center;
+
+.ux-flex-center {
+	display: flex !important;
+	flex-direction: row !important;
+	justify-content: center !important;
+	align-items: center !important;
+	text-align: center;
+}
+
+.ux-align-center {
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ux-align-content-center {
+	align-content: center;
+}
+.ux-align-content-center * {
+	margin-inline: auto;
+}
+
+.ux-full-width {
+    width: 100% !important;
 }
 
 /* Apply Border to Elements */
@@ -1100,6 +1120,96 @@ since IE8 won't execute CSS that contains a CSS3 selector.
 	color: #999999;
 }
 
+/*** Cards (by Unixman) ***/
+
+.ux-card {
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	position: relative;
+	display: inline-flex;
+	flex-direction: column;
+	min-width: 100px;
+	word-wrap: break-word;
+	background-clip: border-box;
+	background-color: #FFFFFF;
+	border: 1px solid #EDEDED;
+	border-radius: 4px;
+	margin: 0;
+	margin-right: 2%;
+	margin-bottom: 25px;
+}
+
+.ux-card.c1 {
+	width: 31%;
+}
+.ux-card.c2 {
+	width: calc(64% + 2px);
+}
+
+.ux-card > hr {
+	margin-right: 0;
+	margin-left: 0;
+}
+
+.ux-card-body {
+	flex: 1 1 auto;
+	min-height: 1px;
+	padding: 1.25rem;
+}
+
+.ux-card-title {
+	margin-bottom: 0.75rem;
+}
+
+.ux-card-subtitle {
+	margin-top: -0.375rem;
+	margin-bottom: 0;
+}
+
+.ux-card-text-balanced,
+.ux-card-text-balanced * {
+	text-wrap: balance;
+	word-break: keep-all;
+	hyphens: none;
+}
+.ux-card-text:last-child {
+	margin-bottom: 0;
+}
+
+.ux-card-header {
+	padding: 0.75rem 1.25rem;
+	margin-bottom: 0;
+	background-color: #F8F8F8;
+	border-bottom: 1px solid #EDEDED;
+}
+
+.ux-card-header:first-child {
+	border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0;
+}
+
+.ux-card-footer {
+	padding: 0.75rem 1.25rem;
+	background-color: #F7F7F7;
+	border-top: 1px solid #EDEDED;
+}
+
+.ux-card-footer:last-child {
+	border-radius: 0 0 calc(0.25rem - 1px) calc(0.25rem - 1px);
+}
+
+.ux-card-img {
+	display: block;
+	width: 100%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	flex-shrink: 0;
+	border-top-left-radius: calc(0.25rem - 1px);
+	border-top-right-radius: calc(0.25rem - 1px);
+	border-bottom-right-radius: calc(0.25rem - 1px);
+	border-bottom-left-radius: calc(0.25rem - 1px);
+}
+
 /*** Simple Navs (by Unixman) ***/
 
 nav.ux-navy {
@@ -1166,6 +1276,7 @@ nav.ux-navy > ul li .icon {
 	margin-right: 0.625rem !important;
 }
 
+/* dark-navy */
 nav.ux-navy > ul {
 	background: #3B4250;
 }
@@ -1183,7 +1294,56 @@ nav.ux-navy > ul li span.active {
 nav.ux-navy > ul li span.toggle {
 	background: #2A3140;
 }
+div.dark-navy {
+	background-color: #2A3140;
+	color: #FFFFFF;
+	font-size: 1rem;
+}
+div.dark-navy a, div.dark-navy a:link, div.dark-navy a:visited, div.dark-navy a:hover {
+	text-decoration: none;
+	border-bottom: none;
+	color: #FFFFFF;
+	font-size: 1rem;
+}
+div.dark-navy a:hover {
+	border-bottom: 1px dotted #FFFFFF;
+}
 
+/* blue-navy */
+nav.ux-navy.blue-navy > ul {
+	background: #48578E;
+}
+nav.ux-navy.blue-navy > ul li a,
+nav.ux-navy.blue-navy > ul li span {
+	color: #FFFFFF;
+}
+nav.ux-navy.blue-navy > ul li a:hover:not(.active) {
+	background: #223062;
+}
+nav.ux-navy.blue-navy > ul li a.active {
+	color: #FFFFFF;
+	background: #6171A9;
+}
+nav.ux-navy.blue-navy > ul li span.toggle {
+	color: #FFFFFF;
+	background: #334173;
+}
+div.blue-navy {
+	background-color: #334173;
+	color: #FFFFFF;
+	font-size: 1rem;
+}
+div.blue-navy a, div.blue-navy a:link, div.blue-navy a:visited, div.blue-navy a:hover {
+	text-decoration: none;
+	border-bottom: none;
+	color: #FFFFFF;
+	font-size: 1rem;
+}
+div.blue-navy a:hover {
+	border-bottom: 1px dotted #FFFFFF;
+}
+
+/* green-navy */
 nav.ux-navy.green-navy > ul {
 	background: #6A9D4E;
 }
@@ -1202,43 +1362,189 @@ nav.ux-navy.green-navy > ul li span.toggle {
 	color: #FFFFFF;
 	background: #598C3D;
 }
-
-nav.ux-navy.blue-navy > ul {
-	background: #48578E;
-}
-nav.ux-navy.blue-navy > ul li a,
-nav.ux-navy.blue-navy > ul li span {
+div.green-navy {
+	background-color: #598C3D;
 	color: #FFFFFF;
+	font-size: 1rem;
 }
-nav.ux-navy.blue-navy > ul li a:hover:not(.active) {
-	background: #212C58;
-}
-nav.ux-navy.blue-navy > ul li a.active {
+div.green-navy a, div.green-navy a:link, div.green-navy a:visited, div.green-navy a:hover {
+	text-decoration: none;
+	border-bottom: none;
 	color: #FFFFFF;
-	background: #6171A9;
+	font-size: 1rem;
 }
-nav.ux-navy.blue-navy > ul li span.toggle {
-	color: #FFFFFF;
-	background: #334173;
+div.green-navy a:hover {
+	border-bottom: 1px dotted #FFFFFF;
 }
 
-nav.ux-navy.alt-navy > ul {
-	background: #EEEEEE;
+/* olive-navy */
+nav.ux-navy.olive-navy > ul {
+	background: #778888;
 }
-nav.ux-navy.alt-navy > ul li a,
-nav.ux-navy.alt-navy > ul li span {
-	color: #0164C7;
+nav.ux-navy.olive-navy > ul li a,
+nav.ux-navy.olive-navy > ul li span {
+	color: #FFFFFF;
 }
-nav.ux-navy.alt-navy > ul li a:hover:not(.active) {
-	background: #FEFEFE;
+nav.ux-navy.olive-navy > ul li a:hover:not(.active) {
+	background: #556666;
 }
-nav.ux-navy.alt-navy > ul li a.active {
-	color: #5B646C;
-	background: #F8F8F8;
+nav.ux-navy.olive-navy > ul li a.active {
+	color: #FFFFFF;
+	background: #889999;
 }
-nav.ux-navy.alt-navy > ul li span.toggle {
-	color: #6C757D;
-	background: #DCDCDC;
+nav.ux-navy.olive-navy > ul li span.toggle {
+	color: #FFFFFF;
+	background: #667777;
+}
+div.olive-navy {
+	background-color: #667777;
+	color: #FFFFFF;
+	font-size: 1rem;
+}
+div.olive-navy a, div.olive-navy a:link, div.olive-navy a:visited, div.olive-navy a:hover {
+	text-decoration: none;
+	border-bottom: none;
+	color: #FFFFFF;
+	font-size: 1rem;
+}
+div.olive-navy a:hover {
+	border-bottom: 1px dotted #FFFFFF;
+}
+
+/* grey-navy */
+nav.ux-navy.grey-navy > ul {
+	background: #778899;
+}
+nav.ux-navy.grey-navy > ul li a,
+nav.ux-navy.grey-navy > ul li span {
+	color: #FFFFFF;
+}
+nav.ux-navy.grey-navy > ul li a:hover:not(.active) {
+	background: #556677;
+}
+nav.ux-navy.grey-navy > ul li a.active {
+	color: #FFFFFF;
+	background: #8899AA;
+}
+nav.ux-navy.grey-navy > ul li span.toggle {
+	color: #FFFFFF;
+	background: #667788;
+}
+div.grey-navy {
+	background-color: #667788;
+	color: #FFFFFF;
+	font-size: 1rem;
+}
+div.grey-navy a, div.grey-navy a:link, div.grey-navy a:visited, div.grey-navy a:hover {
+	text-decoration: none;
+	border-bottom: none;
+	color: #FFFFFF;
+	font-size: 1rem;
+}
+div.grey-navy a:hover {
+	border-bottom: 1px dotted #FFFFFF;
+}
+
+/* black-navy */
+nav.ux-navy.black-navy > ul {
+	background: #666666;
+}
+nav.ux-navy.black-navy > ul li a,
+nav.ux-navy.black-navy > ul li span {
+	color: #FFFFFF;
+}
+nav.ux-navy.black-navy > ul li a:hover:not(.active) {
+	background: #444444;
+}
+nav.ux-navy.black-navy > ul li a.active {
+	color: #FFFFFF;
+	background: #777777;
+}
+nav.ux-navy.black-navy > ul li span.toggle {
+	color: #FFFFFF;
+	background: #555555;
+}
+div.black-navy {
+	background-color: #555555;
+	color: #FFFFFF;
+	font-size: 1rem;
+}
+div.black-navy a, div.black-navy a:link, div.black-navy a:visited, div.black-navy a:hover {
+	text-decoration: none;
+	border-bottom: none;
+	color: #FFFFFF;
+	font-size: 1rem;
+}
+div.black-navy a:hover {
+	border-bottom: 1px dotted #FFFFFF;
+}
+
+/* cofee-navy */
+nav.ux-navy.cofee-navy > ul {
+	background: #6C5952;
+}
+nav.ux-navy.cofee-navy > ul li a,
+nav.ux-navy.cofee-navy > ul li span {
+	color: #FFFFFF;
+}
+nav.ux-navy.cofee-navy > ul li a:hover:not(.active) {
+	background: #7D6A63;
+}
+nav.ux-navy.cofee-navy > ul li a.active {
+	color: #FFFFFF;
+	background: #8E7B74;
+}
+nav.ux-navy.cofee-navy > ul li span.toggle {
+	color: #FFFFFF;
+	background: #5B4841;
+}
+div.cofee-navy {
+	background-color: #5B4841;
+	color: #FFFFFF;
+	font-size: 1rem;
+}
+div.cofee-navy a, div.cofee-navy a:link, div.cofee-navy a:visited, div.cofee-navy a:hover {
+	text-decoration: none;
+	border-bottom: none;
+	color: #FFFFFF;
+	font-size: 1rem;
+}
+div.cofee-navy a:hover {
+	border-bottom: 1px dotted #FFFFFF;
+}
+
+/* light-navy */
+nav.ux-navy.light-navy > ul {
+	background: #CDCDC0;
+}
+nav.ux-navy.light-navy > ul li a,
+nav.ux-navy.light-navy > ul li span {
+	color: #555555;
+}
+nav.ux-navy.light-navy > ul li a:hover:not(.active) {
+	background: #ABABA0;
+}
+nav.ux-navy.light-navy > ul li a.active {
+	color: #555555;
+	background: #DEDED1;
+}
+nav.ux-navy.light-navy > ul li span.toggle {
+	color: #555555;
+	background: #BCBCB0;
+}
+div.light-navy {
+	background-color: #BCBCB0;
+	color: #555555;
+	font-size: 1rem;
+}
+div.light-navy a, div.light-navy a:link, div.light-navy a:visited, div.light-navy a:hover {
+	text-decoration: none;
+	border-bottom: none;
+	color: #555555;
+	font-size: 1rem;
+}
+div.light-navy a:hover {
+	border-bottom: 1px dotted #555555;
 }
 
 /*** BreadCrumbs (by Unixman) ***/
@@ -1282,17 +1588,17 @@ ul.ux-breadcrumb li a:hover {
 
 /* Dark Style */
 ul.ux-breadcrumb-dark {
-	background: #444444 !important;
+	background: #3F3F3F !important;
 }
 ul.ux-breadcrumb-dark li,
 ul.ux-breadcrumb-dark li+li::before {
 	color: #778888 !important;
 }
 ul.ux-breadcrumb-dark li a {
-	color: #5589E4 !important;
+	color: #F8F8F8 !important;
 }
 ul.ux-breadcrumb-dark li a:hover {
-	color: #669AF5 !important;
+	color: #EFEFEF !important;
 }
 
 /*** DropDown (by Unixman) ***/
@@ -1330,8 +1636,8 @@ div.ux-dropdown span.ux-dropbutton {
 	font-weight: bold !important;
 	text-decoration: none !important;
 	border-radius: 3px !important;
-	border: 1px solid #90979d !important;
-	background-color: #6C757D !important;
+	border: 1px solid #4C5361 !important;
+	background-color: #3B4250 !important;
 	color: #FFFFFF !important;
 	cursor: pointer !important;
 	overflow: hidden;
@@ -1345,6 +1651,12 @@ div.ux-dropdown span.ux-dropbutton {
 	-moz-appearance: none !important;
 	-webkit-appearance: none !important;
 	user-select: none !important;
+}
+
+div.ux-dropdown.light span.ux-dropbutton {
+	border: 1px solid #EFEFEF !important;
+	background-color: #FAFAFA !important;
+	color: #555555 !important;
 }
 
 div.ux-dropdown ul {
@@ -1365,7 +1677,7 @@ div.ux-dropdown ul {
 div.ux-dropdown:hover ul {
 	visibility: visible;
 	opacity: 1;
-	border: 1px solid #dde1e9;
+	border: 1px solid #DDE1E9;
 	cursor: default;
 	min-width: 125px;
 	max-width: 300px;
@@ -1472,7 +1784,7 @@ nav.ux-navbar ul li ul li:hover {
 }
 nav.ux-navbar a:hover {
 	color: #FFFFFF;
-	background: #212C58;
+	background: #223062;
 }
 nav.ux-navbar ul ul {
 	display: none;
@@ -1506,29 +1818,16 @@ nav.ux-navbar li > a:only-child::after {
 	content: '';
 }
 
-nav.ux-navbar.navbar-green {
-	background: #6A9D4E;
-}
-nav.ux-navbar.navbar-green ul li {
-	background: #6A9D4E;
-}
-nav.ux-navbar.navbar-green ul li ul li:hover {
-	background: #598C3D;
-}
-nav.ux-navbar.navbar-green a:hover {
-	background: #487B2C;
-}
-
-nav.ux-navbar.navbar-black {
+nav.ux-navbar.navbar-dark {
 	background: #3B4250;
 }
-nav.ux-navbar.navbar-black ul li {
+nav.ux-navbar.navbar-dark ul li {
 	background: #3B4250;
 }
-nav.ux-navbar.navbar-black ul li ul li:hover {
+nav.ux-navbar.navbar-dark ul li ul li:hover {
 	background: #2A3140;
 }
-nav.ux-navbar.navbar-black a:hover {
+nav.ux-navbar.navbar-dark a:hover {
 	background: #192030;
 }
 
@@ -1788,7 +2087,7 @@ nav.ux-navbar.navbar-black a:hover {
 .ux-menubar-color-black,
 .ux-menubar-color-black * {
 	color: #FFFFFF !important;
-	background: #333333 !important;
+	background: #444444 !important;
 }
 .ux-menubar-color-white,
 .ux-menubar-color-white * {
@@ -2058,24 +2357,24 @@ nav.ux-navbar.navbar-black a:hover {
 	border-bottom: 1px solid #FFFFFF;
 	background: #F0F0F0;
 	color: #666666;
-	font-size: 12px;
+	font-size: 0.875rem;
 	font-weight: bold;
 	cursor: pointer;
 	transition: all 0.3s;
 }
 .ux-tab.dark > label {
-	border: 1px solid #555555;
-	background: #666666;
+	border: 1px solid #666666;
+	background: #555555;
 	color: #EEEEEE;
 }
 .ux-tab:hover label {
 	background: #FCFCFC;
-	border-top-color: #222222;
+	border-top-color: #333333;
 	color: #555555;
 }
 .ux-tab.dark:hover label {
-	background: #555555;
-	border-top-color: #333333;
+	background: #666666;
+	border-top-color: #DEDEDE;
 	color: #FCFCFC;
 }
 
@@ -2088,7 +2387,7 @@ nav.ux-navbar.navbar-black a:hover {
 }
 .ux-tab-content.dark {
 	border: none;
-	background: #444444;
+	background: #4F4F4F;
 	color: #FFFFFF;
 }
 
@@ -2197,27 +2496,83 @@ nav.ux-navbar.navbar-black a:hover {
 /*** Bars (by Unixman) ***/
 
 .ux-section {
-	color: #3C4663 !important;
-	background: #FFFFFF !important;
-	border: 1px solid #F3973B;
 	display: block;
+	background: #FFFFFF !important;
+	color: #48578E !important;
+	border: 1px solid #48578E !important;
 	padding: 7px !important;
 	padding-left: 15px !important;
 	padding-right: 15px !important;
 	margin-bottom: 25px !important;
 	border-radius: 2px;
 }
-
 .ux-subsection {
-	color: #FFFFFF !important;
-	background: #3C4663 !important;
-	border: 1px solid #6D748C;
 	display: block;
+	background: #48578E !important;
+	color: #FFFFFF !important;
+	border: 0 !important;
 	padding: 5px !important;
 	padding-left: 10px !important;
 	padding-right: 10px !important;
 	margin-bottom: 25px !important;
 	border-radius: 2px;
+}
+
+.ux-section.dark {
+	color: #3B4250 !important;
+	border: 1px solid #3B4250 !important;
+}
+.ux-subsection.dark {
+	background: #3B4250 !important;
+}
+
+.ux-section.green {
+	color: #6A9D4E !important;
+	border: 1px solid #6A9D4E !important;
+}
+.ux-subsection.green {
+	background: #6A9D4E !important;
+}
+
+.ux-section.olive {
+	color: #778888 !important;
+	border: 1px solid #778888 !important;
+}
+.ux-subsection.olive {
+	background: #778888 !important;
+}
+
+.ux-section.grey {
+	color: #778899 !important;
+	border: 1px solid #778899 !important;
+}
+.ux-subsection.grey {
+	background: #778899 !important;
+}
+
+.ux-section.black {
+	color: #666666 !important;
+	border: 1px solid #666666 !important;
+}
+.ux-subsection.black {
+	background: #666666 !important;
+}
+
+.ux-section.cofee {
+	color: #6C5952 !important;
+	border: 1px solid #6C5952 !important;
+}
+.ux-subsection.cofee {
+	background: #6C5952 !important;
+}
+
+.ux-section.light {
+	color: #BCBCB0 !important;
+	border: 1px solid #CDCDC0 !important;
+}
+.ux-subsection.light {
+	color: #555555 !important;
+	background: #CDCDC0 !important;
 }
 
 /*** Steps Bar (by Unixman) ***/

@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / INIT] v.20250207 s.20250207.2358
+// [AppCodeUnpack / INIT] v.20250620 s.20250218.2358
 // (c) 2013-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -64,8 +64,9 @@ const SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER =  		false; 										// Persiste
 const SMART_FRAMEWORK_MEMORY_LIMIT =  					'512M';										// Memory Limit Per Script (via PHP.INI) ; sync this with the value in .htaccess if defined ; a good value for production is 256M or 384M ; for development, with Debugging turned ON be sure to set a big value like 512M or 1024M !!
 const SMART_FRAMEWORK_EXECUTION_TIMEOUT =  				610;										// Script Max Execution Time (Sync with the web server Timeout and PHP.INI)
 const SMART_FRAMEWORK_NETSOCKET_TIMEOUT =  				120; 										// Network Socket (Stream) TimeOut in Seconds
-const SMART_FRAMEWORK_NETSERVER_ID =  					0; 											// Load Balancing: Unique ID, integer+ (min=0 ; max=1295) ; this is used for the main purpose to be able to generate very unique UUIDS in a cluster of apps ; every server in the cluster running the same app must have a different ID
 const SMART_FRAMEWORK_NETSERVER_MAXLOAD =  				false;										// Load Balancing and DDOS Protection against High Loads :: if set to FALSE will be ignored ; if set to a value > 0 if server load go over this value the server will enter in BUSY state (503 Too busy) ; by example a value of 90 means 90% load over 1 CPU core ; on multi cpus/cores value must be this value * number of cpus/cores ; a good and realistic setting is 100 * number of CPU/cores
+const SMART_FRAMEWORK_NETSERVER_ID =  					0; 											// Load Balancing: Unique ID, integer+ (min=0 ; max=1295) ; this is used for the main purpose to be able to generate very unique UUIDS in a cluster of apps ; every server in the cluster running the same app must have a different ID
+const SMART_FRAMEWORK_AUTH_CLUSTER_ID = 				'-_appcodeunpack_-'; 						// Auth Cluster ID ; `` for Master ; for Slaves can be: `srv1`, `host2`, ...
 //--------------------------------------- SSL/TLS CRYPTO OVERALL SETTINGS :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING
 const SMART_FRAMEWORK_SSL_MODE =  						'tls';										// SSL/TLS Mode: tls | tls:1.1 | tls:1.2
 const SMART_FRAMEWORK_SSL_CIPHERS = 					'HIGH';										// SSL/TLS Context Ciphers: ciphers ; default: 'HIGH' ; generally allow only high ciphers
@@ -105,10 +106,11 @@ const SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS =  		''; 										// The List of D
 const SMART_FRAMEWORK_HTACCESS_NOEXECUTION = '
 # Prevent Scripts or Executables
 Options -ExecCGI
-<FilesMatch "\.(html|htm|js|sass|scss|css|shtml|phtml|php|php*|sql|inc|tpl|mtpl|twig|latte|t3fluid|pl|py|pyc|pyo|rb|go|asp|jsp|sh|bash|bat|cmd|cgi|fcgi|fastcgi|scgi|wsgi|exe|dll|dylib|bin|so)$">
+<FilesMatch "\.(html|htm|js|css|sass|scss|shtml|phtml|php|php*|inc|tpl|mtpl|twist|twig|t3fluid|sql|go|pl|rb|py|py*|egg|whl|asp|jsp|sh|bash|bat|cmd|cgi|fcgi|fastcgi|scgi|wsgi|so|dll|dylib|bin|exe)$">
 	SetHandler none
 	ForceType text/plain
 </FilesMatch>
+# r.20250620
 '; // php_flag engine off
 //-- .htaccess ACCESS FORBIDDEN
 const SMART_FRAMEWORK_HTACCESS_FORBIDDEN = '
@@ -121,6 +123,7 @@ const SMART_FRAMEWORK_HTACCESS_FORBIDDEN = '
 <IfModule mod_authz_core.c>
 	Require all denied
 </IfModule>
+# r.20250620
 '; // {{{SYNC-SMART-APP-INI-HTACCESS}}}
 //-- .htaccess IGNORE INDEXING
 const SMART_FRAMEWORK_HTACCESS_NOINDEXING = '
@@ -129,6 +132,7 @@ const SMART_FRAMEWORK_HTACCESS_NOINDEXING = '
 	IndexIgnore *
 </IfModule>
 Options -Indexes
+# r.20250620
 '; // {{{SYNC-SMART-APP-INI-HTACCESS}}}
 //--
 

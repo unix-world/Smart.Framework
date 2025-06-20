@@ -1,5 +1,5 @@
 <?php
-// PHP Auth Cookie for Smart.Framework
+// PHP Auth Users Cookie for Smart.Framework
 // Module Library
 // (c) 2008-present unix-world.org - all rights reserved
 
@@ -15,7 +15,6 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //-----------------------------------------------------
 
 
-
 //=====================================================================================
 //===================================================================================== CLASS START
 //=====================================================================================
@@ -23,23 +22,23 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 /**
  * Class: \SmartModExtLib\AuthUsers\AuthCookie
- * Manages the Auth Cookie Methods
+ * Auth Users Auth Cookie
  *
  * @depends \SmartModExtLib\AuthUsers\Utils
- * @depends \SmartModExtLib\AuthUsers\AuthJwt
  *
  * @access 		private
  * @internal
  *
- * @version 	v.20250207
- * @package 	AuthUsers
+ * @version 	v.20250314
+ * @package 	modules:AuthUsers
  *
  */
 final class AuthCookie {
 
+	// ::
+
 
 	public const AUTH_USERS_SF_COOKIE_NAME  = 'Sf_UserAuth'; // {{{SYNC_USER-AUTH-COOKIE-NAME}}}
-	public const AUTH_USERS_RDR_COOKIE_NAME = 'Sf_SignRdr';
 
 
 	public static function getJwtCookie() : string {

@@ -49,7 +49,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartEnvironment, SmartUnicode, SmartFileSysUtils ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS, SMART_SOFTWARE_MKTPL_DEBUG_LEN (optional)
- * @version 	v.20250214
+ * @version 	v.20250302
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -1600,6 +1600,8 @@ final class SmartMarkersTemplating {
 						if((string)$val == '') {
 							$val = 'null'; // ensure a minimal json as empty string if no expr !
 						} //end if
+					} elseif((string)$escexpr == '|jsld') {
+						$val = (string) Smart::escape_js((string)$val, true); // Escape JS for ld+json
 					} elseif((string)$escexpr == '|js') {
 						$val = (string) Smart::escape_js((string)$val); // Escape JS
 					} elseif((string)$escexpr == '|html') {
@@ -1631,6 +1633,12 @@ final class SmartMarkersTemplating {
 					} elseif((string)$escexpr == '|idtxt') { // id_txt: Id-Txt
 						$val = (string) str_replace('_', '-', (string)$val);
 						$val = (string) SmartUnicode::uc_words((string)$val);
+					} elseif((string)$escexpr == '|unixname') { // unix name: a-z0-9, max 32 characters
+						$val = (string) Smart::create_slug((string)$val, true, 32); // apply strtolower ; max 32 characters
+						$val = (string) strtr((string)$val, [
+							'-' => '',
+							'_' => '',
+						]);
 					} elseif((string)$escexpr == '|slug') { // Slug: a-zA-Z0-9_- / - / -- : -
 						$val = (string) Smart::create_slug((string)$val, false); // do not apply strtolower as it can be later combined with |lower flag
 					} elseif((string)$escexpr == '|htmid') { // HTML-ID: a-zA-Z0-9_-

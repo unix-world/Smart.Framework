@@ -1,5 +1,5 @@
 <?php
-// PHP Auth 2FA for Smart.Framework
+// PHP Auth Users 2FA for Smart.Framework
 // Module Library
 // (c) 2008-present unix-world.org - all rights reserved
 
@@ -15,7 +15,6 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //-----------------------------------------------------
 
 
-
 //=====================================================================================
 //===================================================================================== CLASS START
 //=====================================================================================
@@ -23,19 +22,27 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 /**
  * Class: \SmartModExtLib\AuthUsers\Auth2FA
- * Manages the Auth 2FA Methods
+ * Auth Users 2FA
  *
- * @depends
- * @depends
+ * @depends \SmartModExtLib\AuthAdmins\Auth2FTotp
  *
  * @access 		private
  * @internal
  *
- * @version 	v.20250207
- * @package 	AuthUsers
+ * @version 	v.20250314
+ * @package 	modules:AuthUsers
  *
  */
 final class Auth2FA {
+
+	// ::
+
+
+	public static function generateNewSecret() : string {
+		//--
+		return (string) \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateSecret();
+		//--
+	} //END FUNCTION
 
 
 	public static function is2FASecretValid(string $secret) : bool {
@@ -96,7 +103,7 @@ final class Auth2FA {
 			return '';
 		} //end if
 		//--
-		return (string) \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateBarcodeQrCodeSVGFromUrl((string)$url, '#ED2559');
+		return (string) \SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateBarcodeQrCodeSVGFromUrl((string)$url, '#685A8B', '#2E2E2E');
 		//--
 	} //END FUNCTION
 

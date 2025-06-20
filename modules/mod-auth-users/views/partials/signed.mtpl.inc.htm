@@ -3,12 +3,12 @@
 	[###AUTH-USERNAME|html###]
 	<br>
 	<br>
-	<a class="ux-button ux-button-regular ux-button-super" href="?page=auth-users.apps"><i class="sfi sfi-stack"></i> <i class="sfi sfi-command"></i> &nbsp; [###TXT-APPS|html###]</a>
+	<a class="ux-button ux-button-regular ux-button-super" href="[###URL-PREFIX-LOCAL|html###]?page=auth-users.apps"><i class="sfi sfi-stack"></i> <i class="sfi sfi-command"></i> &nbsp; [###TXT-APPS|html###]</a>
 	<br>
 	<br>
-	<a class="ux-button ux-button-details ux-button-super" href="?page=auth-users.[%%%IF:CURRENT-ACTION:==account;%%%]settings[%%%ELSE:CURRENT-ACTION%%%]account[%%%/IF:CURRENT-ACTION%%%]"><i class="sfi sfi-[%%%IF:CURRENT-ACTION:==account;%%%]equalizer[%%%ELSE:CURRENT-ACTION%%%]user[%%%/IF:CURRENT-ACTION%%%]"></i> &nbsp; [%%%IF:CURRENT-ACTION:==account;%%%][###TXT-BTN-SETTINGS|html###][%%%ELSE:CURRENT-ACTION%%%][###TXT-BTN-ACCOUNT|html###][%%%/IF:CURRENT-ACTION%%%]</a>
+	<a class="ux-button ux-button-details ux-button-super" href="[###URL-PREFIX-MASTER|html###]?page=auth-users.[%%%IF:CURRENT-ACTION:==account;%%%]settings[%%%ELSE:CURRENT-ACTION%%%]account[%%%/IF:CURRENT-ACTION%%%]"><i class="sfi sfi-[%%%IF:CURRENT-ACTION:==account;%%%]equalizer[%%%ELSE:CURRENT-ACTION%%%]user[%%%/IF:CURRENT-ACTION%%%]"></i> &nbsp; [%%%IF:CURRENT-ACTION:==account;%%%][###TXT-BTN-SETTINGS|html###][%%%ELSE:CURRENT-ACTION%%%][###TXT-BTN-ACCOUNT|html###][%%%/IF:CURRENT-ACTION%%%]</a>
 	<br>
 	<br>
-	<a class="ux-button ux-button-secondary ux-button-super" href="?page=auth-users.signout"><i class="sfi sfi-switch"></i> &nbsp; [###TXT-SIGNOUT|html###]</a>
+	<a class="ux-button ux-button-secondary ux-button-super" href="[###URL-PREFIX-MASTER|html###]?page=auth-users.signout"><i class="sfi sfi-switch"></i> &nbsp; [###TXT-SIGNOUT|html###]</a>
 	<script src="lib/js/jswclock/smart-watch.js"></script><script>const watchThemeDark = true; const watchCanvasScaleFactor = 0.5;</script><div style="margin-top:50px; opacity:0.7; cursor:help;">[@@@SUB-TEMPLATE:!lib/core/templates/canvas-clock.inc.htm!@@@]</div>
 <!-- /signed -->

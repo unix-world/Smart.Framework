@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250207
+ * @version 	v.20250314
  * @package 	development:modules:AuthAdmins
  *
  */

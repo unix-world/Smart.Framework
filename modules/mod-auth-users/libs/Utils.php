@@ -1,7 +1,9 @@
 <?php
 // PHP Auth Users Utils for Smart.Framework
+// Module Library
 // (c) 2008-present unix-world.org - all rights reserved
-// r.8.7 / smart.framework.v.8.7
+
+// this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
 namespace SmartModExtLib\AuthUsers;
 
@@ -14,7 +16,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 
 //=====================================================================================
-//===================================================================================== CLASS START [OK: NAMESPACE]
+//===================================================================================== CLASS START
 //=====================================================================================
 
 //-- set in: config.php
@@ -26,21 +28,19 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //define('SMART_AUTHUSERS_FAIL_EXTLOG', true); // optional, if set will log to 'tmp/logs/idx/' all the ExtAuth Fails
 //--
 
+
 /**
  * Class: \SmartModExtLib\AuthUsers\Utils
- * AuthUsers Utils
+ * Auth Users Utils
  *
- * Passwords:
- * It disallows the usage of Plain Passwords by default ; to enable this set this constant in configs: const SMART_FRAMEWORK_AUTH_USERS_ALLOW_UNSAFE_PASSWORDS = true;
- * It supports as default 2 kind of passwords hashes: BCrypt (120-bit) and SF.Pass (256-bit)
- *
- * @usage  		static object: Class::method() - This class provides only STATIC methods
+ * @depends 	\SmartModExtLib\AuthUsers\AuthCsrf
+ * @depends 	\SmartModExtLib\AuthUsers\Auth2FA
  *
  * @access 		private
  * @internal
  *
- * @version 	v.20250207
- * @package 	AuthUsers
+ * @version 	v.20250319
+ * @package 	modules:AuthUsers
  *
  */
 final class Utils {
@@ -50,11 +50,38 @@ final class Utils {
 	public const AUTH_USERS_AREA = 'SMART-USERS-AREA';
 	public const AUTH_USERS_PAGE_SIGNIN = 'auth-users.signin';
 	public const AUTH_USERS_URL_SIGNIN = '?page=auth-users.signin';
+	public const AUTH_USERS_URL_SIGNUP = '?page=auth-users.signup';
+	public const AUTH_USERS_URL_SIGNOUT = '?page=auth-users.signout';
 	public const AUTH_USERS_URL_ACCOUNT = '?page=auth-users.account';
+	public const AUTH_USERS_URL_APPS = '?page=auth-users.apps';
 
-	private const AUTH_USERS_REGISTER_CAPTCHA_NAME = 'AuthUsers-Captcha';
+	public const AUTH_USERS_RDR_COOKIE_NAME = 'Sf_SignRdr';
 
 	private const AUTH_2FA_REGEX_TOKEN = '/^[0-9]{8}$/';
+	private const AUTH_USERS_REGISTER_CAPTCHA_NAME = 'AuthUsers-Captcha';
+
+	private const AUTH_OTC_REGEX_PASSCODE = '/^\([0-9]{10}\)\#\[[0-9A-Z]{10}\]$/'; // ex: (0123456789)#[AB3DEF78WZ]
+
+
+	public static function isValidRequestUri() : bool {
+		//--
+		// Disallow use of pretty URLs because of too complicate and various rules
+		//--
+		if(
+			(\strpos((string)\SmartUtils::get_server_current_request_uri(), '/?page=') === false) // auth users
+			AND
+			(\strpos((string)\SmartUtils::get_server_current_request_uri(), '/index.php?page=') === false) // auth users
+			AND
+			(\strpos((string)\SmartUtils::get_server_current_request_uri(), '/?/page/') === false) // auth users ext
+			AND
+			(\strpos((string)\SmartUtils::get_server_current_request_uri(), '/index.php?/page/') === false) // auth users ext
+		) {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
 
 
 	public static function setRedirUrlCookie(string $obfsUrl) : void {
@@ -68,14 +95,14 @@ final class Utils {
 			return;
 		} //end if
 		//--
-		\SmartUtils::set_cookie((string)\SmartModExtLib\AuthUsers\AuthCookie::AUTH_USERS_RDR_COOKIE_NAME, (string)$obfsUrl, 300); // force expire after 300 seconds in the case the headers are overflow, this is not important ; plus no need to manage it on clearing
+		\SmartUtils::set_cookie((string)self::AUTH_USERS_RDR_COOKIE_NAME, (string)$obfsUrl, 300); // force expire after 300 seconds in the case the headers are overflow, this is not important ; plus no need to manage it on clearing
 		//--
 	} //END FUNCTION
 
 
 	public static function getRedirUrlCookie() : string {
 		//--
-		$obfsUrl = (string) \trim((string)\SmartUtils::get_cookie((string)\SmartModExtLib\AuthUsers\AuthCookie::AUTH_USERS_RDR_COOKIE_NAME));
+		$obfsUrl = (string) \trim((string)\SmartUtils::get_cookie((string)self::AUTH_USERS_RDR_COOKIE_NAME));
 		if((string)$obfsUrl == '') {
 			return '';
 		} //end if
@@ -100,7 +127,7 @@ final class Utils {
 
 	public static function unsetRedirUrlCookie() : void {
 		//--
-		\SmartUtils::unset_cookie((string)\SmartModExtLib\AuthUsers\AuthCookie::AUTH_USERS_RDR_COOKIE_NAME);
+		\SmartUtils::unset_cookie((string)self::AUTH_USERS_RDR_COOKIE_NAME);
 		//--
 	} //END FUNCTION
 
@@ -247,7 +274,20 @@ final class Utils {
 	public static function isAuthRegisterCaptchaEnabled() : bool {
 		//--
 		if(\defined('\\SMART_AUTH_USERS_DISABLE_CAPTCHA_ON_REGISTER')) {
-			if(\SMART_AUTH_USERS_DISABLE_CAPTCHA_ON_REGISTER === true) { // for register, if captcha must be explicit disabled, it is enabled by default
+			if(\SMART_AUTH_USERS_DISABLE_CAPTCHA_ON_REGISTER === true) { // for register, captcha must be explicit disabled, it is enabled by default
+				return false;
+			} //end if
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
+
+	public static function isAuthRecoveryCaptchaEnabled() : bool {
+		//--
+		if(\defined('\\SMART_AUTH_USERS_DISABLE_CAPTCHA_ON_RECOVERY')) {
+			if(\SMART_AUTH_USERS_DISABLE_CAPTCHA_ON_RECOVERY === true) { // for recovery, captcha must be explicit disabled, it is enabled by default
 				return false;
 			} //end if
 		} //end if
@@ -320,6 +360,84 @@ final class Utils {
 		} //end if
 		//--
 		return (string) $type;
+		//--
+	} //END FUNCTION
+
+
+	public static function createOneTimePassCodePlain() : string {
+		//--
+		$plainOneTimePassCode = (string) '('.\Smart::uuid_10_num().')#['.\Smart::uuid_10_str().']'; // AUTH_OTC_REGEX_PASSCODE
+		//--
+		if(self::isValidOneTimePassCodePlain((string)$plainOneTimePassCode) !== true) {
+			return '';
+		} //end if
+		//--
+		return (string) $plainOneTimePassCode;
+		//--
+	} //END FUNCTION
+
+
+	public static function isValidOneTimePassCodePlain(string $plainOneTimePassCode) : bool {
+		//--
+		if((string)\trim((string)$plainOneTimePassCode) == '') {
+			return false;
+		} //end if
+		//--
+		if((int)\strlen((string)$plainOneTimePassCode) != 25) {
+			return false;
+		} //end if
+		//--
+		if(!\preg_match((string)self::AUTH_OTC_REGEX_PASSCODE, (string)$plainOneTimePassCode)) {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
+
+	public static function createOneTimePassCodeHash(string $plainOneTimePassCode) : string {
+		//--
+		if(self::isValidOneTimePassCodePlain((string)$plainOneTimePassCode) !== true) {
+			return '';
+		} //end if
+		//--
+		return (string) \SmartHashCrypto::sha512((string)$plainOneTimePassCode, true); // B64
+		//--
+	} //END FUNCTION
+
+
+	public static function verifyOneTimePassCode(string $plainOneTimePassCode, string $passwordHash) : bool {
+		//--
+		$passwordHash = (string) \trim((string)$passwordHash); // ~ 88 chars B64
+		if((string)$passwordHash == '') {
+			return false;
+		} //end if
+		if((int)\strlen((string)$passwordHash) < 80) {
+			return false;
+		} //end if
+		if((int)\strlen((string)$passwordHash) > 100) {
+			return false;
+		} //end if
+		//--
+		if((string)\trim((string)$plainOneTimePassCode) == '') {
+			return false;
+		} //end if
+		//--
+		if(self::isValidOneTimePassCodePlain((string)$plainOneTimePassCode) !== true) {
+			return false;
+		} //end if
+		//--
+		$hash = (string) \trim((string)self::createOneTimePassCodeHash((string)$plainOneTimePassCode));
+		if((string)\trim((string)$hash) == '') {
+			return false;
+		} //end if
+		//--
+		if((string)$hash !== (string)$passwordHash) {
+			return false;
+		} //end if
+		//--
+		return true;
 		//--
 	} //END FUNCTION
 
@@ -419,6 +537,45 @@ final class Utils {
 		} //end switch
 		//--
 		return false; // password is invalid, fallback, just in case ...
+		//--
+	} //END FUNCTION
+
+
+	public static function encrypt2FASecret(string $username, string $fa2code, string $fa2secret) : string {
+		//--
+		$username = (string) \trim((string)$username);
+		if((string)$username == '') {
+			return ''; // empty username
+		} //end if
+		if(\SmartAuth::validate_auth_ext_username((string)$username) !== true) {
+			return ''; // invalid username
+		} //end if
+		//--
+		$fa2code = (string) \trim((string)$fa2code);
+		if(((string)\trim((string)$fa2code) == '') OR (self::validateAuth2FACodeFormat((string)$fa2code) !== true)) {
+			return ''; // empty or invalid 2FA Code
+		} //end if
+		//--
+		$fa2secret = (string) \trim((string)$fa2secret);
+		if((string)$fa2secret == '') {
+			return ''; // 2fa secret is empty
+		} //end if
+		//--
+		$userEncKey = (string) self::userEncryptionKey((string)$username);
+		if((string)\trim((string)$userEncKey) == '') {
+			return ''; // user encryption key failed to generate
+		} //end if
+		//--
+		$fa2secret = (string) \trim((string)\SmartCipherCrypto::tf_encrypt((string)$fa2secret, (string)$userEncKey, true)); // TF+BF
+		if((string)$fa2secret == '') {
+			return ''; // empty secret after decrypt
+		} //end if
+		//--
+		if(self::verify2FACode((string)$username, (string)$fa2code, (string)$fa2secret, true) !== true) {
+			return ''; // verification failed
+		} //end if
+		//--
+		return (string) $fa2secret;
 		//--
 	} //END FUNCTION
 

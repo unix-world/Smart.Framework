@@ -1,5 +1,5 @@
 <?php
-// PHP Auth Plugins for Smart.Framework
+// PHP Auth Users Auth Plugins for Smart.Framework
 // Module Library
 // (c) 2008-present unix-world.org - all rights reserved
 
@@ -22,19 +22,20 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 /**
  * Class: \SmartModExtLib\AuthUsers\AuthPlugins
- * Manages the Auth Plugins
+ * Auth Users Auth Plugins
  *
  * @depends 	\SmartModExtLib\AuthUsers\Utils
  *
  * @access 		private
  * @internal
  *
- * @version 	v.20250207
- * @package 	AuthUsers
+ * @version 	v.20250314
+ * @package 	modules:AuthUsers
  *
  */
 final class AuthPlugins {
 
+	// ::
 
 	public const AUTH_USERS_PLUGINS_VALID_ID_REGEX  = '/^[a-z0-9]{3,17}$/'; // {{{SYNC-MAX-AUTH-PLUGIN-ID-LENGTH}}}
 
@@ -105,6 +106,35 @@ final class AuthPlugins {
 				'name'	=> (string) $val['name'],
 				'url' 	=> (string) \Smart::url_add_params((string)$val['url'], ['state' => (string)$stateCsrf], false), // add public csrf state
 				'svg'	=> (string) $val['icon:svg'],
+			];
+			//--
+		} //end foreach
+		//--
+		return (array) $arr;
+		//--
+	} //END FUNCTION
+
+
+	public static function getPluginsForAccountSecurity(string $accountAllowed) : array {
+		//--
+		$plugins = (array) self::getPlugins();
+		if((int)\Smart::array_size($plugins) <= 0) {
+			return [];
+		} //end if
+		//--
+		$arr = [];
+		foreach($plugins as $key => $val) {
+			//--
+			$enabled = false;
+			if(\strpos((string)$accountAllowed, '<'.$key.'>') !== false) {
+				$enabled = true;
+			} //end if
+			//--
+			$arr[] = [
+				'id' 	=> (string) $key,
+				'name'	=> (string) $val['name'],
+				'svg'	=> (string) $val['icon:svg'],
+				'state' => (string) (($enabled === true) ? 'active' : 'inactive'),
 			];
 			//--
 		} //end foreach

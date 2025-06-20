@@ -40,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20250129
+ * @version 	v.20250307
  * @package 	Plugins:Mailer
  *
  */
@@ -785,7 +785,7 @@ final class SmartMailerSend {
 		$headers = (string) str_replace(["\n", "\t"], ["\r\n", ' '], (string)$headers); // re-normalize line endings from LF to CRLF and TAB to SPACE
 		$headers = (string) trim((string)$headers)."\r\n"; // add termination CRLF, to be compatible with below sequence (will be trimmed at the end)
 		//-- antiSPAM Header - AntiAbuse
-		if($this->use_antispam_rules !== false) {
+		if($this->use_antispam_rules === true) {
 			$headers .= 'X-AntiAbuse: This header was added to track abuse, please include it with any abuse report'."\r\n";
 			$headers .= 'X-AntiAbuse: Primary Hostname - '.$this->safe_header_str($this->smtp_helo ? $this->smtp_helo : 'localhost')."\r\n";
 			$headers .= 'X-AntiAbuse: Original Domain - '.$this->safe_header_str($this->smtp_server ? $this->smtp_server : 'localhost')."\r\n";
@@ -876,10 +876,19 @@ final class SmartMailerSend {
 
 
 	//=====================================================================================
-	// v.20200415, fix qp, added content length and safe values {{{SYNC-MULTIPART-BUILD}}}
+	// v.20250307, fix qp, added content length and safe values {{{SYNC-MULTIPART-BUILD}}}
 	private function build_part($part) {
 		//--
 		$part = (array) $part;
+		//--
+		$part['encode'] 	= (string) ($part['encode'] ?? null);
+		$part['ctype'] 		= (string) ($part['ctype'] ?? null);
+		$part['charset'] 	= (string) ($part['charset'] ?? null);
+		$part['name'] 		= (string) ($part['name'] ?? null);
+		$part['cid'] 		= (string) ($part['cid'] ?? null);
+		$part['disp'] 		= (string) ($part['disp'] ?? null);
+		$part['filename'] 	= (string) ($part['filename'] ?? null);
+		$part['message'] 	= (string) ($part['message'] ?? null);
 		//--
 		if((string)$part['encode'] == '7bit') { // leave as is
 			$part['message'] = (string) str_replace(["\r\n", "\r"], "\n", (string)$part['message']); // normalize breaks
@@ -896,19 +905,11 @@ final class SmartMailerSend {
 			$part['message'] = (string) trim((string)chunk_split((string)$part['message'], 76, "\r\n"));
 		} //end if
 		//--
-		$part['ctype'] = $part['ctype'] ?? null;
-		$part['charset'] = $part['charset'] ?? null;
-		$part['name'] = $part['name'] ?? null;
-		$part['cid'] = $part['cid'] ?? null;
-		$part['disp'] = $part['disp'] ?? null;
-		$part['filename'] = $part['filename'] ?? null;
-		$part['message'] = $part['message'] ?? null;
-		//--
-		return 	'Content-Type: '.$this->safe_value_str($part['ctype']).($part['charset'] ? '; charset='.$this->safe_value_str($part['charset']) : '').($part['name'] ? '; name="'.$this->safe_value_str($part['name']).'"' : '')."\r\n".
-				'Content-Transfer-Encoding: '.$this->safe_value_str(strtoupper((string)$part['encode']))."\r\n".
-				($part['cid'] ? 'Content-ID: <'.$this->safe_value_str($part['cid']).'>'."\r\n" : '').
-				'Content-Disposition: '.$this->safe_value_str($part['disp']).';'.($part['filename'] ? ' filename="'.$this->safe_value_str($part['filename']).'"' : '')."\r\n".
-				'Content-Length: '.(int)strlen((string)$part['message'])."\r\n".
+		return 	'Content-Transfer-Encoding: '.$this->safe_value_str($part['encode'])."\r\n".
+				'Content-Type: '.$this->safe_value_str($part['ctype']).($part['charset'] ? '; charset="'.$this->safe_value_str(strtoupper($part['charset'])).'"' : '').($part['name'] ? '; name="'.$this->safe_value_str($part['name']).'"' : '')."\r\n".
+				'Content-Disposition: '.$this->safe_value_str($part['disp']).($part['filename'] ? '; filename="'.$this->safe_value_str($part['filename']).'"' : '')."\r\n".
+				(string)($part['cid'] ? 'Content-ID: <'.$this->safe_value_str($part['cid']).'>'."\r\n" : '').
+				'Content-Length: '.(int)strlen($part['message'])."\r\n".
 				'Content-Decoded-Checksum-SHA1: '.$this->safe_value_str($checksum)."\r\n".
 				"\r\n".$part['message']."\r\n";
 		//--
@@ -917,18 +918,13 @@ final class SmartMailerSend {
 
 
 	//=====================================================================================
-	// v.20200415 (multipart/mixed + multipart/related) {{{SYNC-MULTIPART-BUILD}}}
+	// v.20250307 (multipart/mixed + multipart/related) {{{SYNC-MULTIPART-BUILD}}}
 	private function build_multipart() {
 		//--
-		$timeduid = (string) Smart::uuid_10_seq(); // 10 chars, timed based, can repeat only once in 1000 years for the same millisecond
-		$timedrid = (string) strrev((string)$timeduid);
-		$entropy = (string) Smart::unique_entropy('mail/send'); // this generate a very random value
-		$numuniq = (string) Smart::uuid_10_num();
-		$rnumunq = (string) strrev((string)$numuniq);
-		//--
-		$boundary 			= '_===-Mime.Part_______.0000000000'.$numuniq.$timeduid.SmartHashCrypto::crc32b('@MimePart---#Boundary@'.$entropy).'_P_.-===_'; // 69 chars of 70 max
-		$alternateboundary 	= '_=-=-Mime.AltPart____.0000000000'.$rnumunq.$timedrid.SmartHashCrypto::crc32b('@MimeAltPart#Boundary@'.$entropy).'_A_.=-=-_'; // 69 chars of 70 max
-		$relatedboundary 	= '_-==-Mime.Related____.0000000000'.$numuniq.$timedrid.SmartHashCrypto::crc32b('@MimeRelated#Boundary@'.$entropy).'_R_.-==-_'; // 69 chars of 70 max
+		$uuid 				= (string) '000000000000000'.Smart::uuid_10_num().Smart::uuid_10_num().Smart::uuid_10_str(); // 45
+		$boundary 			= '_Smart-Mail=X='.$uuid.'_'; // 60 characters ; multipart/mixed
+		$alternateboundary 	= '_Smart-Mail=A='.$uuid.'_'; // 60 characters ; multipart/alternative
+		$relatedboundary 	= '_Smart-Mail=R='.$uuid.'_'; // 60 characters ; multipart/related
 		//--
 		$multipart = '';
 		//--
@@ -936,7 +932,7 @@ final class SmartMailerSend {
 		$multipart .= 'This is a multi-part message in MIME format.'."\r\n"."\r\n";
 		$multipart .= '--'.$boundary."\r\n";
 		//-- encapsulate in altertane container if HTML to add text alternative
-		if($this->use_antispam_rules !== false) { // antiSPAM rules needs an alternate body
+		if($this->use_antispam_rules === true) {
 			if($this->is_html !== false) { // AntiSPAM filters (SpamAssassin, RSpamd) will generally prefer having a text alternate part to a HTML one ; the following message was taken from RSpamd v.2.5: 'MIME_HTML_ONLY (0.2) / Messages that have only HTML part'
 				$multipart .= 'Content-Type: multipart/alternative; boundary="'.$alternateboundary.'"'."\r\n";
 				$multipart .= "\r\n";
@@ -950,7 +946,6 @@ final class SmartMailerSend {
 				$multipart .= '--'.$alternateboundary."\r\n";
 			} //end if
 		} //end if
-		//	$multipart .= "\r\n";
 		//-- main part
 		$multipart .= 'Content-Type: multipart/related; boundary="'.$relatedboundary.'"'."\r\n";
 		//-- cid parts (of main part)
@@ -959,12 +954,10 @@ final class SmartMailerSend {
 			$multipart .= '--'.$relatedboundary."\r\n";
 			$multipart .= (string) $this->build_part($this->parts[$i]);
 		} //end for
-	//	$multipart .= "\r\n";
 		$multipart .= '--'.$relatedboundary.'--'."\r\n";
 		//-- finalize alternate if used
-		if($this->use_antispam_rules !== false) {
+		if($this->use_antispam_rules === true) {
 			if($this->is_html !== false) {
-				//	$multipart .= "\r\n";
 				$multipart .= '--'.$alternateboundary.'--'."\r\n";
 			} //end if
 		} //end if
@@ -975,7 +968,6 @@ final class SmartMailerSend {
 			$multipart .= (string) $this->build_part($this->atts[$i]);
 		} //end for
 		//--
-	//	$multipart .= "\r\n";
 		$multipart .= '--'.$boundary.'--'."\r\n";
 		//--
 		return (string) $multipart;
@@ -992,14 +984,14 @@ final class SmartMailerSend {
 //$mail = new SmartMailerSend();
 //$mail->charset = 'UTF-8';
 //$mail->method = 'smtp';
-//$mail->SMTP_HOST = 'localhost';
-//$mail->SMTP_Port = '25';
-//$mail->Helo = 'mail_server';
-//$mail->Timeout = '10';
-//$mail->SMTPDebug = 0;
-//$mail->SMTPAuth = true;
-//$mail->Username = 'user';
-//$mail->Password = 'pass';
+//$mail->smtp_helo = 'mail_server';
+//$mail->smtp_host = 'localhost';
+//$mail->smtp_port = '25';
+//$mail->smtp_login = true;
+//$mail->smtp_user = 'user';
+//$mail->smtp_password = 'pass';
+//$mail->timeout = '10';
+//$mail->debuglevel = 0;
 
 // #Example usage (mail)
 //$mail = new SmartMailerSend();
@@ -1060,7 +1052,7 @@ final class SmartMailerSend {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20250129
+ * @version 	v.20250307
  * @package 	Plugins:Mailer
  *
  */
@@ -1188,6 +1180,9 @@ final class SmartMailerSmtpClient {
 
 		//-- checks
 		$helo = (string) trim((string)$helo);
+		if((string)$helo == '') {
+			$helo = 'localhost'; // cannot be empty
+		} //end if
 		$server = (string) trim((string)$server);
 		if((strlen((string)$server) <= 0) OR (strlen((string)$server) > 255)) {
 			$this->error = '[ERR] Invalid Server to Connect ! ['.$server.']';

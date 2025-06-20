@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderFrontend {
 
 	// ::
-	// v.20250107
+	// v.20250305
 
 
 	private static $db = null;
@@ -218,9 +218,11 @@ final class PageBuilderFrontend {
 		if((string)$y_lang != '') {
 			if((string)$arr['translations'] == '1') {
 				$tarr = (array) self::getTranslation($y_id, $y_lang);
-				if(((string)$tarr['id'] == (string)$arr['id']) AND ((string)\trim((string)$tarr['code']) != '')) {
-					$arr['code'] = (string) $tarr['code'];
-					$arr['@lang'] = (string) $tarr['lang'];
+				if((int)\Smart::array_size($tarr) > 0) {
+					if(((string)$tarr['id'] == (string)$arr['id']) AND ((string)\trim((string)$tarr['code']) != '')) {
+						$arr['code'] = (string) $tarr['code'];
+						$arr['@lang'] = (string) $tarr['lang'];
+					} //end if
 				} //end if
 			} //end if
 		} //end if

@@ -31,7 +31,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @ignore
  *
- * @version 	v.20250207
+ * @version 	v.20250314
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -40,7 +40,7 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 	// ::
 
 	//================================================================
-	public static function GetCredentials(bool $enable_bearer) : array {
+	public static function GetCredentials(bool $enable_tokens) : array {
 
 		//--
 		// IMPORTANT: if the ['auth-error'] is non-empty that means that the Authentication is Invalid by some reason ; otherwise the error should be empty ...
@@ -56,6 +56,7 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 		$credentials['auth-user'] 	= '';
 		$credentials['auth-pass'] 	= '';
 		$credentials['auth-bearer'] = '';
+		$credentials['auth-token'] 	= '';
 		$credentials['auth-mode'] 	= '';
 		//--
 
@@ -80,9 +81,10 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 			//--
 			$authmode = (string) self::AUTH_MODE_PREFIX_HTTP_BASIC.'PHP';
 			//--
-			$credentials['auth-user'] 	 = (string) \trim((string)$_SERVER['PHP_AUTH_USER']); 	// trim username
-			$credentials['auth-pass'] 	 = (string) \trim((string)$_SERVER['PHP_AUTH_PW']); 	// trim password
-			$credentials['auth-bearer']  = ''; // safety reset
+			$credentials['auth-user'] 	= (string) \trim((string)$_SERVER['PHP_AUTH_USER']); 	// trim username
+			$credentials['auth-pass'] 	= (string) \trim((string)$_SERVER['PHP_AUTH_PW']); 	// trim password
+			$credentials['auth-bearer'] = ''; // safety reset
+			$credentials['auth-token'] 	= ''; // safety reset
 			//--
 			if((string)\trim((string)$credentials['auth-user']) == '') {
 				$credentials['auth-error'] = 'UserName is Empty';
@@ -155,6 +157,7 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 								$credentials['auth-user'] 	= (string) \trim((string)($authheader[0] ?? null)); // trim username
 								$credentials['auth-pass'] 	= (string) \trim((string)($authheader[1] ?? null)); // trim password
 								$credentials['auth-bearer'] = ''; // safety reset
+								$credentials['auth-token'] 	= ''; // safety reset
 								if((string)\trim((string)$credentials['auth-user']) == '') {
 									$credentials['auth-error'] = 'UserName is Empty';
 								} elseif((string)\trim((string)$credentials['auth-pass']) == '') {
@@ -166,18 +169,34 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 							} //end if
 						} //end if
 					} //end if
-				} elseif(($enable_bearer === true) AND (\stripos((string)$authheader, 'Bearer ') === 0)) { // 2nd try Bearer Auth (Tokens)
+				} elseif(($enable_tokens === true) AND (\stripos((string)$authheader, 'Bearer ') === 0)) { // 2nd try Bearer Auth (Tokens)
 					$authheader = (string) \trim((string)\substr((string)$authheader, 7));
 					if((string)$authheader != '') {
 						$authmode = (string) self::AUTH_MODE_PREFIX_HTTP_BEARER.$authmode;
 						$credentials['auth-user'] 	= ''; // safety reset
 						$credentials['auth-pass'] 	= ''; // safety reset
+						$credentials['auth-token'] 	= ''; // safety reset
 						$credentials['auth-bearer'] = (string) \trim((string)$authheader); // trim bearer token
 						if((string)\trim((string)$credentials['auth-bearer']) == '') {
 							$credentials['auth-error'] = 'Bearer Token is Empty';
 						} else {
 							$credentials['auth-error'] = ''; // reset, auth is OK
 							$credentials['auth-safe'] += 7;
+						} //end if else
+					} //end if
+				} elseif(($enable_tokens === true) AND (\stripos((string)$authheader, 'Token ') === 0)) { // 2nd try Token Auth (Tokens)
+					$authheader = (string) \trim((string)\substr((string)$authheader, 6));
+					if((string)$authheader != '') {
+						$authmode = (string) self::AUTH_MODE_PREFIX_HTTP_TOKEN.$authmode;
+						$credentials['auth-user'] 	= ''; // safety reset
+						$credentials['auth-pass'] 	= ''; // safety reset
+						$credentials['auth-bearer'] = ''; // safety reset
+						$credentials['auth-token'] = (string) \trim((string)$authheader); // trim token
+						if((string)\trim((string)$credentials['auth-token']) == '') {
+							$credentials['auth-error'] = 'Token is Empty';
+						} else {
+							$credentials['auth-error'] = ''; // reset, auth is OK
+							$credentials['auth-safe'] += 6;
 						} //end if else
 					} //end if
 				} //end if
@@ -195,6 +214,7 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 		$credentials['auth-user'] 	= (string) \trim((string)\SmartFrameworkSecurity::FilterUnsafeString((string)$credentials['auth-user'])); 	// filter + trim: for basic  auth the username cannot start or end with spaces
 		$credentials['auth-pass'] 	= (string) \trim((string)\SmartFrameworkSecurity::FilterUnsafeString((string)$credentials['auth-pass'])); 	// filter + trim: for basic  auth the password cannot start or end with spaces
 		$credentials['auth-bearer'] = (string) \trim((string)\SmartFrameworkSecurity::FilterUnsafeString((string)$credentials['auth-bearer'])); // filter + trim: for bearer auth the token    cannot start or end with spaces
+		$credentials['auth-token']  = (string) \trim((string)\SmartFrameworkSecurity::FilterUnsafeString((string)$credentials['auth-token'])); 	// filter + trim: for bearer auth the token    cannot start or end with spaces
 		//-- {{{SYNC-AUTH-METHODS-NAME}}}
 		$credentials['auth-mode'] 	= (string) self::AUTH_MODE_PREFIX_AUTHEN.\strtoupper((string)\trim((string)$authmode));
 		//--
@@ -212,12 +232,14 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 				OR
 				((int)\strlen((string)$credentials['auth-user']) > 64)
 				OR
-				(!\preg_match((string)self::REGEX_VALID_USERNAME_OR_BEARER, (string)(string)$credentials['auth-user']))
+				(!\preg_match((string)self::REGEX_VALID_USERNAME_OR_TOKEN_BEARER, (string)(string)$credentials['auth-user']))
 			)
 		) {
 			//--
 			if((string)$credentials['auth-bearer'] != '') {
 				$credentials['auth-error'] = 'When UserName/Password is set, the Bearer Token should not be set';
+			} else if((string)$credentials['auth-token'] != '') {
+				$credentials['auth-error'] = 'When UserName/Password is set, the Token should not be set';
 			} elseif((string)$credentials['auth-pass'] == '') {
 				$credentials['auth-error'] = 'When UserName is set, the Password should be set too';
 			} else {
@@ -232,7 +254,7 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 				OR
 				((int)\strlen((string)$credentials['auth-bearer']) > 4096) // limit of HTTP header is 8k ; but the remaining part is reserved for other headers inc. cookies
 				OR
-				(!\preg_match((string)self::REGEX_VALID_USERNAME_OR_BEARER, (string)(string)$credentials['auth-bearer']))
+				(!\preg_match((string)self::REGEX_VALID_USERNAME_OR_TOKEN_BEARER, (string)(string)$credentials['auth-bearer']))
 			)
 		) {
 			//--
@@ -246,7 +268,29 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 				$credentials['auth-error'] = 'Bearer Token is Invalid, must be between 16 and 4096 characters long and contain only ASCII printable characters';
 			} //end if else
 			//--
-		} //end if
+		} elseif(
+			((string)$credentials['auth-token'] != '') // only if a token has been set explicit, avoid validate if empty
+			AND
+			( // {{{SYNC-VALIDATE-STK-TOKEN-LENGTH}}}
+				((int)\strlen((string)$credentials['auth-token']) < 46) // (user:min=3) + # + (token:min=42)
+				OR
+				((int)\strlen((string)$credentials['auth-token']) > 72) // (user:max=25) + # + (token:min=46)
+				OR
+				(!\preg_match((string)self::REGEX_VALID_USERNAME_OR_TOKEN_BEARER, (string)(string)$credentials['auth-token']))
+			)
+		) {
+			//--
+			if(
+				((string)$credentials['auth-user'] != '')
+				OR
+				((string)$credentials['auth-pass'] != '')
+			) {
+				$credentials['auth-error'] = 'When Token is set, the UserName/Password should not be set';
+			} else {
+				$credentials['auth-error'] = 'Token is Invalid, must be between 46 and 72 characters long and contain only ASCII printable characters';
+			} //end if else
+			//--
+		} //end if else
 		//--
 
 		//-- final check
@@ -255,6 +299,7 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 			$credentials['auth-user'] 	= '';
 			$credentials['auth-pass'] 	= '';
 			$credentials['auth-bearer'] = '';
+			$credentials['auth-token'] 	= '';
 			//--
 		} //end if
 		//--

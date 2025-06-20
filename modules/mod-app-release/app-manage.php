@@ -23,7 +23,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20250207
+ * @version 	v.20250307
  *
  */
 final class SmartAppTaskController extends SmartAbstractAppController {
@@ -270,6 +270,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 			'main' 		=> (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'app-manage.mtpl.htm', // {{{SYNC-APP-RELEASE-TPL-VARS}}}
 				(array) array_merge((array)$arr_markers, [
+					'DATE-TIME' 		=> (string) gmdate('Y-m-d H:i:s +0000'),
 					'APP-ID' 			=> (string) (defined('APPCODEPACK_APP_ID') ? APPCODEPACK_APP_ID : ''),
 					'APP-DEPLOY-HASH' 	=> (string) (defined('APP_DEPLOY_HASH') ? APP_DEPLOY_HASH : ''),
 					'APP-DEPLOY-USER' 	=> (string) (defined('APP_DEPLOY_AUTH_USERNAME') ? APP_DEPLOY_AUTH_USERNAME : ''),

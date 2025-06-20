@@ -1,0 +1,58 @@
+<!-- register -->
+	<style>
+	@keyframes code-area {
+		from {
+			filter: saturate(17%);
+			opacity: 0.1;
+		}
+		to {
+			filter: saturate(100%);
+			opacity: 1;
+		}
+	}
+	div#code-area img,
+	div.sign-area textarea.code {
+		animation-name: code-area;
+		animation-duration: 7s;
+		animation-delay: 0;
+		animation-iteration-count: 1;
+		animation-fill-mode: forwards;
+	}
+	div#code-area {
+		background: #FFFFFF;
+		border-radius: 11px;
+		margin-top: 0;
+		margin-bottom: 10px;
+		width: 64px;
+		height: 64px;
+		padding: 8px;
+	}
+	</style>
+	<script>
+	const authRegisterRequest = () => {
+		const hash = smartJ$Utils.stringPureVal(jQuery('textarea#fld-hash').val(), true);
+		const token = '[###REGISTRATION-TOKEN|js###]';
+		const url = '?page=auth-users.authorize-api.json&action=register.activate' + '&frm[hash]=' + smartJ$Utils.escape_url(hash) + '&frm[token]=' + smartJ$Utils.escape_url(token);
+		smartJ$Browser.SubmitFormByAjax(null, url, 'yes');
+	};
+	</script>
+	<h5><i class="sfi sfi-users sfi-xl"></i> &nbsp; [###TXT-REGISTER-TITLE|html###]</h5>
+	[###AUTH-USERNAME|html###]
+	<br>
+	<br>
+	<center><div id="code-area"><img height="64" src="modules/mod-auth-users/views/img/logo-network.svg"></div></center>
+	<div class="ux-control-group">
+		<label><i class="sfi sfi-clipboard"></i>&nbsp; [###TXT-REGISTER-CODE|html###]</label>
+		<br>
+		<textarea class="ux-field code" maxlength="255" autocomplete="off" id="fld-hash" placeholder="[###TXT-CODE-HASH|html###]" title="[###TXT-CODE-HASH|html###]" required>[###REGISTRATION-CODE|html###]</textarea>
+	</div>
+	<div class="ux-control-group">
+		<button type="button" onclick="authRegisterRequest(); return false;" class="ux-button ux-button-primary ux-button-super activate" title="[###TXT-BTN-ACTIVATE|html###]"><i class="sfi sfi-user-check"></i> &nbsp; [###TXT-BTN-ACTIVATE-DEFAULT|html###]</button>
+	</div>
+	<br>
+	<hr>
+	<br>
+	<div class="ux-control-group">
+		<a class="ux-button ux-button-dark ux-button-super home" href="[###URL-HOME|html###]"><i class="sfi sfi-home"></i> &nbsp; [###TXT-LNK-HOME-PAGE|html###]</a>
+	</div>
+<!-- /register -->

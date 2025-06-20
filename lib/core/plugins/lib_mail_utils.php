@@ -42,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20250129
+ * @version 	v.20250307
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -70,6 +70,7 @@ final class SmartMailerUtils {
 
 		//--
 		$email = (string) trim((string)$email);
+		$helo  = (string) trim((string)$helo);
 		//--
 		if(
 			((string)$email == '')
@@ -93,10 +94,6 @@ final class SmartMailerUtils {
 			if($checkdomain === true) {
 				//--
 				$out = 'notok'; // reset
-				//--
-				if((string)$helo == '') {
-					$helo = 'localhost';
-				} //end if else
 				//--
 				$msg .= "\n".'CHECK if this is a real email address ...'."\n\n";
 				$chk = (array) self::validate_mx_email_address((string)$email, (string)$helo, (int)$smtp_port);
@@ -207,11 +204,11 @@ final class SmartMailerUtils {
 		} //end if
 		//------------
 		if((int)Smart::array_size($tmp_arr) <= 0) { // ERR
-			$msg .= 'WARNING: No MX Records found for Domain \''.$safedom.'\''."\n";
+			$msg .= 'WARNING: No MX Records found for Domain `'.$safedom.'`'."\n";
 		} else {
-			$msg .= 'List of available MX Servers for Domain \''.$safedom.'\':'."\n";
+			$msg .= 'List of available MX Servers for Domain `'.$safedom.'`:'."\n";
 			for($m=0; $m<Smart::array_size($tmp_arr); $m++) {
-				$msg .= ' -> '.$tmp_arr[$m]."\n";
+				$msg .= ' -> `'.$tmp_arr[$m].'`'."\n";
 			} //end for
 			$msg .= "\n";
 		} //end if else
@@ -606,7 +603,7 @@ final class SmartMailerUtils {
 		$server_port 		= (string) trim((string)$y_server_settings['server_port']);
 		$server_sslmode 	= (string) trim((string)$y_server_settings['server_sslmode']);
 		$server_cafile 		= (string) trim((string)$y_server_settings['server_cafile']);
-		$server_secure 		= (bool)   $y_server_settings['server_secure'];
+		$server_secure 		= (bool)   ($y_server_settings['server_secure'] === true  ? true  : false);
 		$server_user 		= (string) trim((string)$y_server_settings['server_auth_user']);
 		$server_pass 		= (string) trim((string)$y_server_settings['server_auth_pass']);
 		$server_modeauth 	= (string) trim((string)$y_server_settings['server_auth_mode']);
@@ -618,16 +615,16 @@ final class SmartMailerUtils {
 		} //end if
 		$send_from_name 	= (string) trim((string)$y_server_settings['send_from_name']);
 		//-- MIME COMPOSE SETTINGS
-		$usealways_b64 		= (bool)   ($y_server_settings['use_qp_encoding'] === true ? false : true);
-		$use_min_enc_subj 	= (bool)   ($y_server_settings['use_min_enc_subj'] === false ? false : true);
-		$use_antispam_rules = (bool)   ($y_server_settings['use_antispam_rules'] === false ? false : true);
+		$usealways_b64 		= (bool)   ($y_server_settings['use_qp_encoding']    === true  ? false : true); // inversed setting
+		$use_min_enc_subj 	= (bool)   ($y_server_settings['use_min_enc_subj']   === true  ? true  : false);
+		$use_antispam_rules = (bool)   ($y_server_settings['use_antispam_rules'] === true  ? true  : false);
 		//--
 
 		//-- mail send class init
 		$mail = new SmartMailerSend();
-		$mail->smtp_securemode = (bool) $server_secure;
-		$mail->usealways_b64 = (bool) $usealways_b64;
-		$mail->use_min_enc_subj = (bool) $use_min_enc_subj;
+		$mail->smtp_securemode    = (bool) $server_secure;
+		$mail->usealways_b64      = (bool) $usealways_b64;
+		$mail->use_min_enc_subj   = (bool) $use_min_enc_subj;
 		$mail->use_antispam_rules = (bool) $use_antispam_rules;
 		//--
 		if((string)$server_name == '@mail') {
@@ -994,7 +991,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20250129
+ * @version 	v.20250307
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -1937,7 +1934,7 @@ final class SmartMailerMimeParser {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartCipherCrypto, SmartHttpUtils, SmartHttpClient, SmartAuth, SmartUtils
- * @version 	v.20250129
+ * @version 	v.20250307
  * @package 	Application:Plugins:Mailer
  *
  */

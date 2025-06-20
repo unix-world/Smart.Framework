@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Class: \SmartModExtLib\Oauth2\Oauth2Api
  * Manages the OAuth2 API Requests
  *
- * @version 	v.20250126
+ * @version 	v.20250218
  * @package 	modules:Oauth2
  *
  */

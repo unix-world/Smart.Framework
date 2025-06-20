@@ -8,7 +8,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 	@http_response_code(500);
 	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
-//----------------------------------------------------- v.20250214
+//----------------------------------------------------- v.20250620
 
 //======================================================
 // App Authenticate Middleware :: Index Area Overall Authentication (index.php)
@@ -54,16 +54,20 @@ if(((string)SmartUtils::get_ip_client() === '127.0.0.1') OR ((string)SmartUtils:
 // 	* fail login timeouts, IP based (DDOS protection after 10 fail logins ...) ; extended DDOS protected by captcha
 // INFO: see the modules/mod-auth-users/doc/README.md on how to setup this in configs ...
 //-------------------------------------------
-if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
-	SmartFrameworkRuntime::Raise500Error('A required module is missing: `mod-auth-admins` # Smart.Unicorn Authentication ...');
-	die('AppAuthAdmin:ModuleMissing:AuthAdmins');
+if(defined('SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS') AND (SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS === true)) {
+	//--
+	if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
+		SmartFrameworkRuntime::Raise500Error('A required module is missing: `mod-auth-admins` # Smart.Unicorn Authentication ...');
+		die('AppAuthAdmin:ModuleMissing:AuthAdmins');
+	} //end if
+	if(!SmartAppInfo::TestIfModuleExists('mod-auth-users')) {
+		SmartFrameworkRuntime::Raise500Error('A required module is missing: `mod-auth-users` # Smart.Unicorn Authentication ...');
+		die('AppAuthUser:ModuleMissing:AuthUsers');
+	} //end if
+	\SmartModExtLib\AuthUsers\SmartAuthUsersHandler::Authenticate(); // req. mod-auth-admins, abstract class: \SmartModExtLib\AuthAdmins\AuthHandlerInterface
+	\SmartModExtLib\AuthUsers\SmartAuthUsersHandler::AuthLock();
+	//--
 } //end if
-if(!SmartAppInfo::TestIfModuleExists('mod-auth-users')) {
-	SmartFrameworkRuntime::Raise500Error('A required module is missing: `mod-auth-users` # Smart.Unicorn Authentication ...');
-	die('AppAuthUser:ModuleMissing:AuthUsers');
-} //end if
-\SmartModExtLib\AuthUsers\SmartAuthUsersHandler::Authenticate(); // req. mod-auth-admins, abstract class: \SmartModExtLib\AuthAdmins\AuthHandlerInterface
-\SmartModExtLib\AuthUsers\SmartAuthUsersHandler::AuthLock();
 //-------------------------------------------
 
 // end of php code

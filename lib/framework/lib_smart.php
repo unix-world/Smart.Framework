@@ -80,7 +80,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20250207
+ * @version     v.20250302
  * @package     @Core
  *
  */
@@ -90,7 +90,7 @@ final class Smart {
 
 	public const REGEX_ASCII_NOSPACE_CHARACTERS 	= '/^[[:graph:]]+$/'; 			// match all ASCII safe printable characters except spaces ; [[:graph:]] is equivalent to [[:alnum:][:punct:]]
 	public const REGEX_ASCII_ANDSPACE_CHARACTERS 	= '/^[[:graph:] \t\r\n]+$/'; 	// match all ASCII safe printable characters ; allow extra safe spaces only: space, tab, line feed, carriage return
-	public const REGEX_ASCII_PRINTABLE_CHARACTERS 	= '/^[[:print:]]+$/'; 			// match all ASCII printable characters [[:print:]] is equivalent to [[:graph:][:whitespace:]] ; [:whitespace:] match a whitespace character such as space, tab, formfeed, and carriage return
+	public const REGEX_ASCII_PRINTABLE_CHARACTERS 	= '/^[[:print:]]+$/'; 			// match all ASCII printable characters ; [[:print:]] is equivalent to [[:graph:][:whitespace:]] ; [:whitespace:] match a whitespace character such as space, tab, formfeed, and carriage return
 
 	public const REGEX_SAFE_PATH_NAME 	= '/^[_a-zA-Z0-9\-\.@\#\/]+$/';
 	public const REGEX_SAFE_FILE_NAME 	= '/^[_a-zA-Z0-9\-\.@\#]+$/';
@@ -1063,14 +1063,15 @@ final class Smart {
 
 	//================================================================
 	/**
-	 * Safe escape strings to be injected in Javascript code as strings
+	 * Safe escape strings to be injected in Javascript or LD+JSON code as strings
 	 *
 	 * @param 	STRING 		$str			:: The string to be escaped
+	 * @param 	BOOL 		$ldjs 			:: Default is FALSE ; If set to TRUE will escape for compatibility with ld+json
 	 *
 	 * @return 	STRING						:: The escaped string using a json_encode() standard to be injected between single quotes '' or double quotes ""
 	 */
-	public static function escape_js(?string $str) : string {
-		//-- v.20200605
+	public static function escape_js(?string $str, bool $ldjs=false) : string {
+		//-- v.20250302
 		// Prepare a string to pass in JavaScript Single or Double Quotes
 		// By The Situation:
 		// * Using inside tags as '<a onClick="self.location = \''.Smart::escape_js($str).'\';"></a>'
@@ -1079,8 +1080,13 @@ final class Smart {
 		if((string)$str == '') {
 			return '';
 		} //end if
+		//--
+		$options = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_INVALID_UTF8_SUBSTITUTE;
+		if($ldjs === true) {
+			$options = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
+		} //end if
 		//-- encode as json
-		$encoded = (string) @json_encode((string)$str, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_INVALID_UTF8_SUBSTITUTE, 512); // encode the string includding unicode chars, with all possible: < > ' " &
+		$encoded = (string) @json_encode((string)$str, $options, 1); // encode the string includding unicode chars, with all possible: < > ' " &
 		//-- the above will provide a json encoded string as: "mystring" ; we get just what's between double quotes as: mystring
 		return (string) substr((string)trim((string)$encoded), 1, -1);
 		//--
@@ -3821,7 +3827,7 @@ final class Smart {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment
- * @version 	v.20250203
+ * @version 	v.20250217
  * @package 	@Core:FileSystem
  *
  */
@@ -4579,20 +4585,19 @@ final class SmartFileSysUtils {
 
 	//================================================================
 	/**
-	 * Generate a prefixed dir from a base62 (also supports: base58 / base36 / base32 / base16 / base10) UID, 8..72 chars length : [a-zA-Z0-9].
+	 * Generate a prefixed dir from a base62 / base58 / base36 / base32 / base16 / base10 UID, 8..72 chars length : [a-zA-Z0-9].
 	 * It does include also the UID as final folder segment.
-	 * Example: for ID 8iAz0WtTuV72QZ72Re5X0PlIgB23M6 will return: 8/8iAz0WtTuV72QZ72Re5X0PlIgB23M6/ as the generated prefixed path.
+	 * Example: for ID 8iAz0WtTuV72QZ72Re5X0PlIgB23M6 and spectrum 2 will return: 8i/Az/8iAz0WtTuV72QZ72Re5X0PlIgB23M6/ as the generated prefixed path.
 	 * This have to be used for large folder storage structure to avoid limitations on some filesystems (ext3 / ntfs) where max sub-dirs per dir is 32k.
 	 *
-	 * The prefixed path will be grouped by each 1 character (max sub-folders per folder: 62).
-	 * If a shorther length than 8 chars is provided will pad with 0 on the left.
-	 * If a longer length than 72 or an invalid ID is provided will reset the ID to 00000000 (8 chars) for the given length, but also drop a warning.
+	 * The prefixed path will be grouped by each 2 characters (sub-folders per folder, max: 62 * 62 = 3844 ; min: 10 * 10 = 100).
+	 * The minimum length of UID is 8 chars, the max length is 72 chars.
 	 *
 	 * @param STRING 		$y_id			8..72 chars id (uid)
 	 * @param INTEGER		$y_spectrum 	1..7 the expanding levels spectrum
 	 * @return STRING 						Prefixed Path
 	 */
-	public static function prefixedUidB62Path(?string $y_id, int $y_spectrum) : string {
+	public static function prefixedUidPath(?string $y_id, int $y_spectrum) : string {
 		//--
 		$y_id = (string) trim((string)$y_id);
 		if(
@@ -4610,94 +4615,23 @@ final class SmartFileSysUtils {
 		if((int)$y_spectrum < 1) {
 			Smart::log_warning(__METHOD__.' # Invalid Spectrum (min is 1): ['.(int)$y_spectrum.']');
 			$y_spectrum = 1;
-		} elseif((int)$y_spectrum > 7) {
-			Smart::log_warning(__METHOD__.' # Invalid Spectrum (max is 7): ['.(int)$y_spectrum.']');
-			$y_spectrum = 7;
+		} elseif((int)$y_spectrum > 3) {
+			Smart::log_warning(__METHOD__.' # Invalid Spectrum (max is 3): ['.(int)$y_spectrum.']');
+			$y_spectrum = 3;
 		} //end if else
 		//--
 		$arr = [];
-		for($i=0; $i<(int)$y_spectrum; $i++) {
-			$arr[] = (string) substr((string)$y_id, (int)$i, 1);
+		for($i=0; $i<(int)($y_spectrum * 2); $i++) {
+			$arr[] = (string) substr((string)$y_id, (int)$i, 2);
+			$i++;
 		} //end for
 		$arr[] = (string) $y_id; // this have to be the last entry
 		//--
-		$dir = (string) implode('/', (array)$arr).'/';
+		$dir = (string) rtrim((string)implode('/', (array)$arr),'/').'/';
 		//--
 		if(!self::checkIfSafePath((string)$dir)) {
 			Smart::log_warning(__METHOD__.' # Invalid Dir Path: ['.$dir.'] :: From ID: ['.$y_id.']');
-			return 'tmp/invalid/pfx-uidb62-path/'; // this error should not happen ...
-		} //end if
-		//--
-		return (string) $dir;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Generate a prefixed dir from a base36 UUID, 10 chars length : [A-Z0-9].
-	 * It does include also the UUID as final folder segment.
-	 * Example: for ID ABCDEFGHIJ09 will return: 9T/5B/0B/9M/9T5B0B9M8M/ as the generated prefixed path.
-	 * This have to be used for large folder storage structure to avoid limitations on some filesystems (ext3 / ntfs) where max sub-dirs per dir is 32k.
-	 *
-	 * The prefixed path will be grouped by each 2 characters (max sub-folders per folder: 36 x 36 = 1296).
-	 * If a shorther length than 10 chars is provided will pad with 0 on the left.
-	 * If a longer length or an invalid ID is provided will reset the ID to 000000..00 (10 chars) for the given length, but also drop a warning.
-	 *
-	 * @param STRING 		$y_id			10 chars id (uuid10)
-	 * @return STRING 						Prefixed Path
-	 */
-	public static function prefixedUuid10B36Path(?string $y_id) : string { // check len is default 10 as set in lib core uuid 10s
-		//--
-		$y_id = (string) strtoupper((string)trim((string)$y_id));
-		//--
-		if(((int)strlen((string)$y_id) != 10) OR (!preg_match('/^[A-Z0-9]+$/', (string)$y_id))) {
-			Smart::log_warning(__METHOD__.' # Invalid ID ['.$y_id.']');
-			$y_id = '0000000000'; // str-10.B36 (uuid10)
-		} //end if
-		//--
-		$dir = (string) self::addPathTrailingSlash((string)self::addPathTrailingSlash((string)implode('/', (array)str_split((string)substr((string)$y_id, 0, 8), 2))).$y_id); // split by 2 grouping except last 2 chars
-		//--
-		if(!self::checkIfSafePath((string)$dir)) {
-			Smart::log_warning(__METHOD__.' # Invalid Dir Path: ['.$dir.'] :: From ID: ['.$y_id.']');
-			return 'tmp/invalid/pfx-uuid10b36-path/'; // this error should not happen ...
-		} //end if
-		//--
-		return (string) $dir;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Generate a prefixed dir from a base16 UUID (sha1), 40 chars length : [a-f0-9].
-	 * It does NOT include the ID final folder.
-	 * Example: for ID df3a808b2bf20aaab4419c43d9f3a6143bd6b4bb will return: d/f3a/808/b2b/f20/aaa/b44/19c/43d/9f3/a61/43b/d6b/ as the generated prefixed path.
-	 * This have to be used for large folder storage structure to avoid limitations on some filesystems (ext3 / ntfs) where max sub-dirs per dir is 32k.
-	 *
-	 * The prefixed folder will be grouped by each 3 characters (max sub-folders per folder: 16 x 16 x 16 = 4096).
-	 * If a shorther length than 40 chars is provided will pad with 0 on the left.
-	 * If a longer length than 40 chars or an invalid ID is provided will reset the ID to 000000..00 (40 chars) for the given length, but also drop a warning.
-	 *
-	 * @param STRING 		$y_id			40 chars id (sha1)
-	 * @return STRING 						Prefixed Path
-	 */
-	public static function prefixedUuid40B16Path(?string $y_id) : string { // here the number of levels does not matter too much as at the end will be a cache file
-		//--
-		$y_id = (string) strtolower((string)trim((string)$y_id));
-		//--
-		if(((int)strlen((string)$y_id) != 40) OR (!preg_match('/^[a-f0-9]+$/', (string)$y_id))) {
-			Smart::log_warning(__METHOD__.' # Invalid ID ['.$y_id.']');
-			$y_id = '0000000000000000000000000000000000000000'; // str-40.hex (sha1)
-		} //end if
-		//--
-		$dir = (string) self::addPathTrailingSlash((string)substr((string)$y_id, 0, 1).'/'.implode('/', (array)str_split((string)substr((string)$y_id, 1, 36), 3))); // split by 3 grouping
-		//--
-		if(!self::checkIfSafePath((string)$dir)) {
-			Smart::log_warning(__METHOD__.' # Invalid Dir Path: ['.$dir.'] :: From ID: ['.$y_id.']');
-			return 'tmp/invalid/pfx-uuid40b16-path/'; // this error should not happen ...
+			return 'tmp/invalid/pfx-uid-path/'; // this error should not happen ...
 		} //end if
 		//--
 		return (string) $dir;

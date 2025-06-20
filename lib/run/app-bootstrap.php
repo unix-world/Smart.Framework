@@ -48,7 +48,7 @@ define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // REQUIRED BY SMART R
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version 	v.20250107
+ * @version 	v.20250620
  * @package 	Application
  *
  */
@@ -56,11 +56,14 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 
 	// ::
 
-	private static $initCompleted 	= false;			// flag to avoid re-create required dirs
-	private static $authCompleted 	= false; 			// flag to avoid re-authenticate
-	private static $isRunning 		= false; 			// flag to avoid re-run
+	public const SF_LANG_COOKIE_NAME 				= 'Sf_Lang';
 
-	private static $isSetLanguageBySubdomain  = false; 	// flag to avoid set again language by subdomain
+	private static bool $initCompleted 				= false;	// flag to avoid re-create required dirs
+	private static bool $authCompleted 				= false; 	// flag to avoid re-authenticate
+	private static bool $isRunning 					= false; 	// flag to avoid re-run
+
+	private static bool $isSetLanguageByCookie 		= false; 	// flag to avoid set again language by cookie
+	private static bool $isSetLanguageBySubdomain 	= false; 	// flag to avoid set again language by subdomain
 
 	//===== [PUBLIC:REQUIRED]
 
@@ -147,6 +150,45 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 
 
 	//======================================================================
+	// Sets the language cookie with the current language
+	// this is useful in a cluster where master is using by domain language set and slaves by cookie
+	// after master sets the language by domain can also call this method to keep the language cookie in sync with subdomain thus when visitor is redirected on different (slave) server to keep the same language
+	public static function AppSetLanguageCookie() : bool {
+		//--
+		return (bool) SmartUtils::set_cookie((string)self::SF_LANG_COOKIE_NAME, (string)SmartTextTranslations::getLanguage());
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	// Handles the Language Detection by Cookie (SF_LANG_COOKIE_NAME)
+	// This is an alternative for set language by subdomain
+	public static function AppSetLanguageByCookie(?string $default_lang=null) : void {
+		//--
+		if(self::$isSetLanguageByCookie !== false) {
+			return; // avoid run after it was used by runtime
+		} //end if
+		self::$isSetLanguageByCookie = true;
+		//--
+		if($default_lang === null) {
+			$default_lang = (string) SmartTextTranslations::getDefaultLanguage();
+		} elseif(!SmartTextTranslations::validateLanguage((string)$default_lang)) {
+			return;
+		} //end if
+		//--
+		$crrLang = (string) strtolower((string)trim((string)SmartFrameworkRegistry::getCookieVar((string)self::SF_LANG_COOKIE_NAME)));
+		if(SmartTextTranslations::validateLanguage((string)$crrLang)) {
+			SmartTextTranslations::setLanguage((string)$crrLang); // set default language or custom
+			return;
+		} //end if
+		//--
+		SmartTextTranslations::setLanguage((string)$default_lang); // set default language or custom
+		//--
+	} //END FUNCTION
+
+
+	//======================================================================
 	// Handles the Language Detection by SubDomain
 	// if used this will set the app language by sub-domain
 	// this will work only if more than one languages are defined in configs, otherwise will raise an error
@@ -158,12 +200,19 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 	// 3rd param: if TRUE will redirect all other subdomains (except 'www' and the 'en' subdomains), to 'www' (1st parameter)
 	// 4th param: if TRUE and 3rd param is FALSE will show 404 for all other subdomains (except 'www' and the 'en' subdomains)
 	// 5th param: ARRAY of sub-domains to be excepted (valid languages must not be includded here, they are managed separately) or empty array if none ; ex: [ 'sdom1', 'sdom2' ]
-	public static function AppSetLanguageBySubdomain(string $default_subdomain='www', bool $redirect_default_language_to_default_subdomain=true, bool $redirect_other_subdomains=false, bool $notfound_other_subdomains=false, array $except_subdomains=[]) : void {
+	// 6th param ?STRING ; Default is NULL ; the default language override ; if NOT NULL set to: 'de' or other valid language ; custom default language for default subdomain
+	public static function AppSetLanguageBySubdomain(string $default_subdomain='www', bool $redirect_default_language_to_default_subdomain=true, bool $redirect_other_subdomains=false, bool $notfound_other_subdomains=false, array $except_subdomains=[], ?string $default_lang=null) : void {
 		//--
 		if(self::$isSetLanguageBySubdomain !== false) {
 			return; // avoid run after it was used by runtime
 		} //end if
 		self::$isSetLanguageBySubdomain = true;
+		//--
+		if($default_lang === null) {
+			$default_lang = (string) SmartTextTranslations::getDefaultLanguage();
+		} elseif(!SmartTextTranslations::validateLanguage((string)$default_lang)) {
+			return;
+		} //end if
 		//--
 		$arr_available_languages = (array) SmartTextTranslations::getAvailableLanguages(); // ex: ['en', 'ro']
 		if(Smart::array_size($arr_available_languages) <= 1) {
@@ -172,20 +221,24 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 		//--
 		$default_subdomain = (string) trim((string)$default_subdomain);
 		if(
-			(strpos((string)$default_subdomain, '-') === 0) OR
-			(substr((string)$default_subdomain, -1, 1) === '-') OR
-			(!preg_match('/^[a-z0-9\-]{1,63}$/', (string)$default_subdomain))
+			((string)$default_subdomain != '')
+			AND
+			(
+				(strpos((string)$default_subdomain, '-') === 0) OR
+				(substr((string)$default_subdomain, -1, 1) === '-') OR
+				(!preg_match('/^[a-z0-9\-]{1,63}$/', (string)$default_subdomain))
+			)
 		) {
 			return; // invalid default subdomain ; contain only standard ASCII alphanumeric characters a to z; numerals 0 to 9 and/or hyphens (-) and not underscore ; not begin or end with a hyphen (-)
 		} //end if
 		//--
 		if($redirect_default_language_to_default_subdomain === true) {
-			unset($arr_available_languages[(string)SmartTextTranslations::getDefaultLanguage()]); // default language must be unset, it is mapped to the $default_subdomain
+			unset($arr_available_languages[(string)$default_lang]); // default language must be unset, it is mapped to the $default_subdomain
 		} //end if
 		//--
 		$pdom = (string) trim((string)SmartUtils::get_server_current_subdomain_name());
 		//--
-		if(((string)$pdom != '') AND ((string)$pdom != (string)$default_subdomain)) {
+		if((string)$pdom != (string)$default_subdomain) {
 			//--
 			$except_subdom = false;
 			if((int)Smart::array_size($except_subdomains) > 0) {
@@ -194,19 +247,29 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 				} //end if
 			} //end if
 			//--
-			if(((string)$pdom != (string)SmartTextTranslations::getDefaultLanguage()) AND (SmartTextTranslations::validateLanguage($pdom))) { // other languages
+			if(((string)$pdom != (string)$default_lang) AND (SmartTextTranslations::validateLanguage((string)$pdom))) { // other languages
 				SmartTextTranslations::setLanguage((string)$pdom); // set only other languages if valid: ro, de, ...
 				return;
 			} elseif($except_subdom !== true) {
 				if(
-					(($redirect_default_language_to_default_subdomain === true) AND ((string)$pdom == (string)SmartTextTranslations::getDefaultLanguage()))
+					(($redirect_default_language_to_default_subdomain === true) AND ((string)$pdom == (string)$default_lang))
 					OR
-					(($redirect_other_subdomains === true) AND ((string)$pdom != (string)SmartTextTranslations::getDefaultLanguage()) AND ((string)$pdom != (string)$default_subdomain) AND (!in_array((string)$pdom, (array)$arr_available_languages)))
+					(($redirect_other_subdomains === true) AND ((string)$pdom != (string)$default_lang) AND ((string)$pdom != (string)$default_subdomain) AND (!in_array((string)$pdom, (array)$arr_available_languages)))
 				) {
-					http_response_code(301); // permanent redirect if the language code is not valid
-					SmartFrameworkRuntime::outputHttpSafeHeader('Location: '.SmartUtils::get_server_current_protocol().($default_subdomain ? $default_subdomain.'.' : '').SmartUtils::get_server_current_basedomain_name().SmartUtils::get_server_current_request_uri()); // force redirect
-					die(''); // stop here, mandatory
-				} elseif(($redirect_other_subdomains !== true) AND ((string)$pdom != (string)SmartTextTranslations::getDefaultLanguage()) AND ((string)$pdom != (string)$default_subdomain) AND (!in_array((string)$pdom, (array)$arr_available_languages))) {
+					$port = (int) SmartUtils::get_server_current_port();
+					if((int)$port <= 0) {
+						$port = 80;
+					} //end if
+					if(((int)$port == 80) OR ((int)$port == 443)) {
+						$port = '';
+					} else {
+						$port = ':'.$port;
+					} //end if else
+					$redir = (string) SmartUtils::get_server_current_protocol().(((string)$default_subdomain != '') ? $default_subdomain.'.' : '').SmartUtils::get_server_current_basedomain_name().$port.SmartUtils::get_server_current_request_uri();
+					http_response_code(302); // temporary redirect if the language code is not valid
+					SmartFrameworkRuntime::outputHttpSafeHeader('Location: '.$redir); // force redirect
+					die((string)SmartComponents::http_status_message('Redirect', 'Language:'.$pdom, '<br><a href="'.Smart::escape_html((string)$redir).'">Click here if you are not redirected</a><br><br>', '3xx')); // stop here, mandatory
+				} elseif(($redirect_other_subdomains !== true) AND ((string)$pdom != (string)$default_lang) AND ((string)$pdom != (string)$default_subdomain) AND (!in_array((string)$pdom, (array)$arr_available_languages))) {
 					if($notfound_other_subdomains === true) {
 						http_response_code(404);
 						die((string)SmartComponents::http_message_404_notfound('Invalid Sub-Domain ...'));
@@ -214,9 +277,9 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 				} //end if else
 			} //end if else
 			//--
-		} //end if else
+		} //end if
 		//--
-		SmartTextTranslations::setLanguage((string)SmartTextTranslations::getDefaultLanguage()); // set default language: EN
+		SmartTextTranslations::setLanguage((string)$default_lang); // set default language or custom
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -292,51 +355,63 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 		if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
 			SmartFileSystem::write($dir.'.htaccess', trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOEXECUTION)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n"); // {{{SYNC-TMP-FOLDER-HTACCESS}}}
 		} //end if
-		//-- tmp logs/idx dir
-		$dir = 'tmp/logs/idx/';
-		if(!SmartFileSystem::is_type_dir($dir)) {
-			SmartFileSystem::dir_create($dir);
-			if(SmartFileSystem::is_type_dir($dir)) {
-				SmartFileSystem::write($dir.'index.html', '');
+		//--
+		if(!SmartEnvironment::isAdminArea()) { // IDX
+			//-- tmp logs/idx dir
+			$dir = 'tmp/logs/idx/';
+			if(!SmartFileSystem::is_type_dir($dir)) {
+				SmartFileSystem::dir_create($dir);
+				if(SmartFileSystem::is_type_dir($dir)) {
+					SmartFileSystem::write($dir.'index.html', '');
+				} //end if
+			} // end if
+			if(!SmartFileSystem::have_access_write($dir)) {
+				Smart::raise_error(
+					__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
+					'App Init ERROR TMP#LOGS#IDX' // this must be explicit if failed to write to TMP folder ... it means cannot log !
+				);
+				return;
 			} //end if
-		} // end if
-		if(!SmartFileSystem::have_access_write($dir)) {
-			Smart::raise_error(
-				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
-				'App Init ERROR TMP#LOGS#IDX' // this must be explicit if failed to write to TMP folder ... it means cannot log !
-			);
-			return;
-		} //end if
-		//-- tmp logs/admin dir
-		$dir = 'tmp/logs/adm/';
-		if(!SmartFileSystem::is_type_dir($dir)) {
-			SmartFileSystem::dir_create($dir);
-			if(SmartFileSystem::is_type_dir($dir)) {
-				SmartFileSystem::write($dir.'index.html', '');
-			} //end if
-		} // end if
-		if(!SmartFileSystem::have_access_write($dir)) {
-			Smart::raise_error(
-				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
-				'App Init ERROR TMP#LOGS#ADM' // this must be explicit if failed to write to TMP folder ... it means cannot log !
-			);
-			return;
-		} //end if
-		//-- tmp logs/task dir
-		$dir = 'tmp/logs/tsk/';
-		if(!SmartFileSystem::is_type_dir($dir)) {
-			SmartFileSystem::dir_create($dir);
-			if(SmartFileSystem::is_type_dir($dir)) {
-				SmartFileSystem::write($dir.'index.html', '');
-			} //end if
-		} // end if
-		if(!SmartFileSystem::have_access_write($dir)) {
-			Smart::raise_error(
-				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
-				'App Init ERROR TMP#LOGS#TSK' // this must be explicit if failed to write to TMP folder ... it means cannot log !
-			);
-			return;
-		} //end if
+			//--
+		} else { // ADM / TSK
+			//--
+			if(!SmartEnvironment::isTaskArea()) { // ADM
+				//-- tmp logs/admin dir
+				$dir = 'tmp/logs/adm/';
+				if(!SmartFileSystem::is_type_dir($dir)) {
+					SmartFileSystem::dir_create($dir);
+					if(SmartFileSystem::is_type_dir($dir)) {
+						SmartFileSystem::write($dir.'index.html', '');
+					} //end if
+				} // end if
+				if(!SmartFileSystem::have_access_write($dir)) {
+					Smart::raise_error(
+						__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
+						'App Init ERROR TMP#LOGS#ADM' // this must be explicit if failed to write to TMP folder ... it means cannot log !
+					);
+					return;
+				} //end if
+				//--
+			} else { // TSK
+				//-- tmp logs/task dir
+				$dir = 'tmp/logs/tsk/';
+				if(!SmartFileSystem::is_type_dir($dir)) {
+					SmartFileSystem::dir_create($dir);
+					if(SmartFileSystem::is_type_dir($dir)) {
+						SmartFileSystem::write($dir.'index.html', '');
+					} //end if
+				} // end if
+				if(!SmartFileSystem::have_access_write($dir)) {
+					Smart::raise_error(
+						__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
+						'App Init ERROR TMP#LOGS#TSK' // this must be explicit if failed to write to TMP folder ... it means cannot log !
+					);
+					return;
+				} //end if
+				//--
+			} //end if else
+			//--
+		} //end if else
 		//-- tmp cache dir
 		$dir = 'tmp/cache/';
 		if(!SmartFileSystem::is_type_dir($dir)) {

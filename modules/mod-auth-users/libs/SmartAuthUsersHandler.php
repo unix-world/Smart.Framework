@@ -1,5 +1,5 @@
 <?php
-// PHP Auth Users Handler for Smart.Framework
+// PHP Auth Users Auth Handler for Smart.Framework
 // Module Library
 // (c) 2008-present unix-world.org - all rights reserved
 
@@ -15,7 +15,6 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //-----------------------------------------------------
 
 
-
 //=====================================================================================
 //===================================================================================== CLASS START
 //=====================================================================================
@@ -23,29 +22,33 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 /**
  * Class: \SmartModExtLib\AuthUsers\SmartAuthUsersHandler
- * Manages the Auth Users by Cookie
+ * Auth Users Smart Auth Handler
  *
  * @depends 	\SmartModExtLib\AuthUsers\AuthJwt
  *
  * @access 		private
  * @internal
  *
- * @version 	v.20250207
- * @package 	AuthUsers
+ * @version 	v.20250619
+ * @package 	modules:AuthUsers
  *
  */
 final class SmartAuthUsersHandler
 	implements \SmartModExtLib\AuthAdmins\AuthHandlerInterface {
 
+	// ::
+
 
 	public static function Authenticate() : void {
+		//--
+		$mode = 'cookie';
 		//--
 		$token = (string) \trim((string)\SmartModExtLib\AuthUsers\AuthCookie::getJwtCookie());
 		if((string)$token == '') {
 			return;
 		} //end if
 		//--
-		$jwtValidArr = (array) \SmartModExtLib\AuthUsers\AuthJwt::validateAuthCookieJwtToken((string)$token);
+		$jwtValidArr = (array) \SmartModExtLib\AuthUsers\AuthJwt::validateAuthJwtToken((string)$mode, (string)$token);
 		if((string)($jwtValidArr['error'] ?? null) != '') {
 			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
 			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 401, (string)($jwtValidArr['error'] ?? null));
@@ -54,6 +57,8 @@ final class SmartAuthUsersHandler
 		//--
 		$email = (string) \trim((string)($jwtValidArr['user-name'] ?? null));
 		if( // {{{SYNC-AUTH-USERS-EMAIL-AS-USERNAME-SAFE-VALIDATION}}}
+			((string)$email == '')
+			OR
 			((int)\strlen((string)$email) < 5)
 			OR
 			((int)\strlen((string)$email) > 72)
@@ -68,21 +73,25 @@ final class SmartAuthUsersHandler
 		} //end if
 		//--
 		$xtras = (string) \trim((string)($jwtValidArr['xtras'] ?? null));
-		if(\strpos((string)$xtras, '|') === false) {
+		if(\strpos((string)$xtras, ']|') === false) {
 			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
 			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Xtras are Invalid: `'.$xtras.'` for `'.$email.'`');
 			return;
 		} //end if
-		$arrXtras = (array) explode('|', (string)$xtras, 3);
+		$arrXtras = (array) explode('|', (string)$xtras, 2); // explode only by 1st occurence ; json may contain also |
 		if((int)\Smart::array_size($arrXtras) != 2) {
 			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Xtras are Invalid, split length by provider: `'.$xtras.'` for `'.$email.'`');
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Xtras are Invalid, split length by separator: `'.$xtras.'` for `'.$email.'`');
 			return;
 		} //end if
 		//--
-		$reqXtras = (string) \SmartModExtLib\AuthUsers\AuthJwt::xtrasModeCookie((string)$email);
+		$reqXtras = (string) \trim((string)\SmartModExtLib\AuthUsers\AuthJwt::xtrasMode((string)$mode, (string)$email));
 		if(
-			(\strpos((string)$xtras, (string)$reqXtras.'|[') !== 0)
+			((string)$reqXtras == '')
+			OR
+			(\strpos((string)$xtras, (string)\ucfirst((string)$mode).'[') !== 0)
+			OR
+			(\strpos((string)$xtras, (string)$reqXtras.'|') !== 0)
 			OR
 			((string)($arrXtras[0] ?? null) !== (string)$reqXtras)
 		) {
@@ -91,8 +100,45 @@ final class SmartAuthUsersHandler
 			return;
 		} //end if
 		//--
-		$provider = (string) \trim((string)($arrXtras[1] ?? null), '[]');
-		if((string)$provider != '@') { // {{{SYNC-AUTH-USERS-PROVIDER-SELF}}}
+		$jsonXtras = \Smart::json_decode((string)\trim((string)($arrXtras[1] ?? null)), true, 2); // max 2 sub-levels ; {{{SYNC-JWT-XTRARR-JSON-LEVELS}}}
+		if(!\is_array($jsonXtras)) {
+			$jsonXtras = [];
+		} //end if
+		if((int)\Smart::array_size($jsonXtras) <= 0) {
+			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Xtras Data is Invalid: `'.$xtras.'` for `'.$email.'`');
+			return;
+		} //end if
+		// \Smart::log_notice(print_r($jsonXtras,1));
+		//--
+		$clusterID = (string) \trim((string)($jsonXtras['cluster'] ?? null));
+		if(\SmartAuth::validate_cluster_id((string)$clusterID) !== true) { // {{{SYNC-AUTH-USERS-SAFE-VALIDATE-CLUSTER}}}
+			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User ClusterID is Invalid: `'.$email.'` / `'.$clusterID.'`');
+			return;
+		} //end if
+		//--
+		$userID = (string) \trim((string)($jsonXtras['id'] ?? null));
+		if( // {{{SYNC-AUTH-USERS-SAFE-VALIDATE-ID}}}
+			((string)$userID == '')
+			OR
+			((int)\strlen((string)$userID) != 21)
+			OR
+			(\strpos((string)$userID, '.') === false)
+			OR
+			(\SmartAuth::validate_auth_username((string)$userID, false) !== true)
+		) {
+			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User UserID is Invalid: `'.$email.'` / `'.$userID.'`');
+			return;
+		} //end if
+		//--
+		$provider = (string) \trim((string)($jsonXtras['provider'] ?? null));
+		if((string)$provider == '') {
+			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Xtras Provider is Empty: `'.$xtras.'` for `'.$email.'`');
+			return;
+		} else if((string)$provider != '@') { // {{{SYNC-AUTH-USERS-PROVIDER-SELF}}}
 			if(!\preg_match((string)\SmartModExtLib\AuthUsers\AuthPlugins::AUTH_USERS_PLUGINS_VALID_ID_REGEX, (string)$provider)) {
 				\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
 				\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Xtras Provider is Wrong: `'.$xtras.'` for `'.$email.'`');
@@ -141,10 +187,25 @@ final class SmartAuthUsersHandler
 			return;
 		} //end if
 		//--
-		$userData = (array) \SmartModDataModel\AuthUsers\AuthUsersFrontend::getAccountByEmail((string)$email);
+		$userData = (array) \SmartModExtLib\AuthUsers\AuthClusterUser::getAccountWorkspace((string)$clusterID, (string)$userID, (string)$email);
 		if((int)\Smart::array_size($userData) <= 0) {
 			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
 			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User Account does not Exists: `'.$email.'`');
+			return;
+		} //end if
+		if((string)($userData['cluster'] ?? null) !== (string)$clusterID) {
+			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User ClusterID mismatch: `'.$email.'` / `'.($userData['cluster'] ?? null).'` / `'.$clusterID.'`');
+			return;
+		} //end if
+		if((string)\SmartModExtLib\AuthUsers\Utils::userAccountIdToUserName((string)($userData['id'] ?? null)) !== (string)$userID) {
+			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User UserID mismatch: `'.$email.'` / `'.($userData['id'] ?? null).'` / `'.$userID.'`');
+			return;
+		} //end if
+		if((string)($userData['id'] ?? null) !== (string)\SmartModExtLib\AuthUsers\Utils::userNameToUserAccountId((string)$userID)) {
+			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User UserName mismatch: `'.$email.'` / `'.($userData['id'] ?? null).'` / `'.$userID.'`');
 			return;
 		} //end if
 		if((string)($userData['email'] ?? null) !== (string)$email) {
@@ -153,15 +214,21 @@ final class SmartAuthUsersHandler
 			return;
 		} //end if
 		//--
-		if((string)($userData['jwtserial'] ?? null) !== (string)$serial) {
+		if((intval($userData['status'] ?? null) < 1) || (intval($userData['status'] ?? null) > 2)) { // {{{SYNC-ACCOUNT-MULTISESSIONS}}}
 			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'Token serial is wrong: `'.$serial.'` / `'.($userData['jwtserial'] ?? null).'` for auth `'.$email.'`');
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User Account is Disabled: `'.$email.'` / `'.($userData['status'] ?? null).'`');
 			return;
-		} //end if
-		if((string)($userData['jwtsignature'] ?? null) !== (string)$signature) {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'Token signature is wrong: `'.$signature.'` / `'.($userData['jwtsignature'] ?? null).'` for auth `'.$email.'`');
-			return;
+		} else if(intval($userData['status'] ?? null) == 2) { // {{{SYNC-ACCOUNT-MULTISESSIONS-DISABLED}}}
+			if((string)($userData['jwtserial'] ?? null) !== (string)$serial) {
+				\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
+				\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'Token serial is wrong: `'.$serial.'` / `'.($userData['jwtserial'] ?? null).'` for auth `'.$email.'`');
+				return;
+			} //end if
+			if((string)($userData['jwtsignature'] ?? null) !== (string)$signature) {
+				\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
+				\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'Token signature is wrong: `'.$signature.'` / `'.($userData['jwtsignature'] ?? null).'` for auth `'.$email.'`');
+				return;
+			} //end if
 		} //end if
 		//--
 		$userEncKey = (string) \SmartModExtLib\AuthUsers\Utils::userEncryptionKey((string)$email);
@@ -207,13 +274,21 @@ final class SmartAuthUsersHandler
 			$signKeys = [];
 		} //end if
 		//--
-		\SmartAuth::set_auth_data( // v.20250128
+		$arrWorkspaces = [
+			'is:local' => (bool) ($userData['#workspace:is:local'] ?? null),
+		];
+		if(($userData['#workspace:is:local'] ?? null) === true) {
+			$arrWorkspaces['db'] = (string) (string) \SmartModExtLib\AuthUsers\AuthClusterUser::getAccountWorkspacePath((string)$userID);
+		} //end if
+		//--
+		\SmartAuth::set_auth_data( // v.20250218
 			(string) \SmartModExtLib\AuthUsers\Utils::AUTH_USERS_AREA, // auth realm
 			(string) 'COOKIE.JWT:'.$provider, // auth method
+			(string) $clusterID, // cluster ID
 			(int)    $passalgo, // pass algo
 			(string) $passhash, // auth password hash (will be stored as encrypted, in-memory)
 			(string) $email, // auth user name
-			(string) \SmartModExtLib\AuthUsers\Utils::userAccountIdToUserName((string)($userData['id'] ?? null)), // {{{SYNC-ACCOUNT-ID-TO-USER-ID-TRANSFORMATION}}} ; auth ID (on backend must be set exact as the auth username)
+			(string) $userID, // auth ID (on backend must be set exact as the auth username)
 			(string) $email, // user email * Optional *
 			(string) \trim((string)($userData['name'] ?? null)), // user full name (First Name + ' ' + Last name) * Optional *
 			(string) \trim((string)($userData['priv'] ?? null)), // user privileges * Optional *
@@ -232,14 +307,15 @@ final class SmartAuthUsersHandler
 				'data' 			=> (array)  \Smart::json_decode((string)($userData['data'] ?? null), true, 2), // max 2 levels
 				'settings' 		=> (array)  \Smart::json_decode((string)($userData['settings'] ?? null), true, 7), // max 7 levels ; {{{SYNC-AUTH-METADATA-MAX-LEVELS}}}
 				'iprestr' 		=> (string) ($userData['iprestr'] ?? null),
-			]
+			],
+			(array)  $arrWorkspaces, // workspaces
 		);
 		//--
 		//die('<pre>'.\Smart::escape_html(\SmartUtils::pretty_print_var(\SmartAuth::get_auth_data(true))).'</pre>');
 		//--
 		//-- {{{SYNC-AUTH-USERS-CLEAR-COOKIES}}}
 		\SmartModExtLib\AuthUsers\Utils::unsetRedirUrlCookie(); // clear redir cookie
-		\SmartModExtLib\AuthUsers\Utils::unsetCsrfCookie(); // clear csrf cookie on signin
+	//	\SmartModExtLib\AuthUsers\Utils::unsetCsrfCookie(); // clear csrf cookie on signin ; do not unset, is required for setting forms
 		\SmartModExtLib\AuthUsers\Utils::clearAuthUsersCaptchaHtml(); // clear captcha cookies on signin
 		//--
 		return;

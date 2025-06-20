@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartEnvironment, SmartCipherCrypto
- * @version 	v.20250206
+ * @version 	v.20250307
  * @package 	@Core:Authentication
  *
  */
@@ -74,9 +74,9 @@ final class SmartAuth {
 	public const DEFAULT_PRIVILEGES 				= '<super-admin>,<admin>'; 							// {{{SYNC-AUTH-DEFAULT-ADM-SUPER-PRIVS}}}
 	public const DEFAULT_RESTRICTIONS 				= ''; 												// {{{SYNC-AUTH-DEFAULT-ADM-SUPER-RESTR}}}
 	public const REGEX_VALID_PRIV_KEY 				= '/^([a-z]{1}[a-z0-9\-\:]{0,20}[a-z0-9]{1})$/'; 	// valid name for one privilege key from list of privileges ; a valid privilege key can have 2..22 characters and can contain only: `a-z`, `0-9`, `:` and `-` ; must start with `a-z` only ; must not end with `:` or `-`
-
 	public const REGEX_SAFE_AUTH_EMAIL_ADDRESS 		= '/^[_a-z0-9\-\.]{1,41}@[a-z0-9\-\.]{3,30}$/'; 	// Safe Auth Email regex ; internet email@(subdomain.)domain.name ; max 72 ; practical
 	public const REGEX_SAFE_AUTH_USER_NAME 			= '/^[_a-z0-9\-\.@]{5,72}$/';  						// Safe Auth Username Regex ; cover boths above
+	public const REGEX_SAFE_CLUSTER_ID 				= '/^[_a-z0-9\-]{1,63}$/';
 	public const REGEX_VALID_JWT_SERIAL 			= '/^[A-Z0-9]{10}\-[A-Z0-9]{10}$/';
 
 	public const PASSWORD_BHASH_LENGTH 				= 60; 			// the length of PASSWORD_BCRYPT / cost=8 ; {{{SYNC-PASS-HASH-AUTH-LEN}}}
@@ -88,8 +88,106 @@ final class SmartAuth {
 	public const SWT_MAX_LIFETIME 					= 3600 * 24; 	// max 24 hours
 
 
-	private static $AuthCompleted 	= false;	// prevent re-authentication, ... the results may be unpredictable !!
-	private static $AuthData 		= []; 		// register Auth Data
+	private static bool    $AuthCompleted 	= false;	// prevent re-authentication, ... the results may be unpredictable !!
+	private static array   $AuthData 		= []; 		// register Auth Data
+	private static ?string $AuthCluster 	= null; 	// the Auth Cluster
+
+
+	//================================================================
+	/**
+	 * Validate an Auth Cluster ID, as a sub-domain name for Auth
+	 *
+	 * @param 	STRING 	$cluster  			:: The Auth Cluster ID ; empty or max length is 63, can contain just: _ a-z 0-9 -
+	 *
+	 * @return 	BOOLEAN						:: TRUE if the cluster ID is valid or FALSE if not
+	 */
+	public static function validate_cluster_id(?string $cluster) : bool { // {{{SYNC-VALIDATE-AUTH-CLUSTER-ID}}}
+		//--
+		$cluster = (string) trim((string)$cluster);
+		if((string)$cluster == '') {
+			return true; // is OK, default cluster ID is Empty
+		} //end if
+		//--
+		if(((int)strlen((string)$cluster) >= 1) AND ((int)strlen((string)$cluster) <= 63) AND (!!preg_match((string)self::REGEX_SAFE_CLUSTER_ID, (string)$cluster))) {
+			return true;
+		} //end if
+		//--
+		return false;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get the current (Server) Cluster ID, as a sub-domain name for Auth, from what is set into: SMART_FRAMEWORK_AUTH_CLUSTER_ID
+	 *
+	 * @return 	STRING						:: `` empty string if Master, or sub-domain if Auth Cluster Slave, ex: `srv1`
+	 */
+	public static function get_cluster_id() : string {
+		//--
+		if(self::$AuthCluster !== null) {
+			return (string) self::$AuthCluster;
+		} //end if
+		//--
+		$cluster = '';
+		//--
+		if(defined('SMART_FRAMEWORK_AUTH_CLUSTER_ID')) { // this is mandatory just for slaves, but for security master can define it with an empty value
+			$cluster = (string) trim((string)SMART_FRAMEWORK_AUTH_CLUSTER_ID);
+			if((string)$cluster != '') {
+				if(self::validate_cluster_id((string)$cluster) !== true) { // {{{SYNC-AUTH-USERS-SAFE-VALIDATE-CLUSTER}}}
+					Smart::log_warning(__METHOD__.' # Invalid Cluster ID definition for SMART_FRAMEWORK_AUTH_CLUSTER_ID: `'.$cluster.'`');
+					$cluster = '__--invalid--__';
+				} //end if
+			} //end if
+		} //end if
+		//--
+		self::$AuthCluster = (string) $cluster;
+		//--
+		return (string) self::$AuthCluster;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Tests if current Auth Server is the Master Auth, used for clustered Authentication only
+	 *
+	 * @return 	BOOLEAN						:: TRUE if the cluster ID is Empty (is Master) or FALSE if the cluster ID is non-empty, a slave node
+	 */
+	public static function is_cluster_master_auth() : bool {
+		//--
+		if((string)self::get_cluster_id() == '') {
+			return true;
+		} //end if
+		//--
+		return false;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Tests if current Auth Server is the Master Auth, used for clustered Authentication only
+	 *
+	 * @return 	BOOLEAN						:: TRUE if the cluster ID is Empty (is Master) or FALSE if the cluster ID is non-empty, a slave node
+	 */
+	public static function is_cluster_current_workspace() : bool {
+		//--
+		if(self::is_authenticated() !== true) { // this check is mandatory because if not authenticated the get_auth_cluster_id() will return an empty value, the same as get_cluster_id(), but actually have no workspace set !
+			return false;
+		} //end if
+		//--
+		if((string)self::get_cluster_id() !== (string)self::get_auth_cluster_id()) {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+	//================================================================
 
 
 	//================================================================
@@ -144,6 +242,7 @@ final class SmartAuth {
 			((string)trim((string)$auth_user_name, '.') == '') OR // cannot contain only dots
 			(strpos((string)$auth_user_name, '..') !== false) OR // cannot contain 2 or more successive dots
 			((string)substr((string)$auth_user_name, 0, 1) == '.') OR // cannot start with a . (dot)
+			((string)substr((string)$auth_user_name, 1, 1) == '.') OR // {{{SYNC-AUTH-ACCOUNT-ID-PATH-2-CHARS-PREFIX}}} ; cannot have a . (dot) as 2nd character (req. by prefixed dirs) which must have 2 characters prefix
 			((string)substr((string)$auth_user_name, -1, 1) == '.') OR // cannot end with a . (dot)
 			((int)substr_count((string)$auth_user_name, '.') > (int)(floor((int)strlen((string)$auth_user_name) / 3))) // cannot contain more dots (.) than 33% from all characters
 		) {
@@ -242,7 +341,7 @@ final class SmartAuth {
 		} //end if
 		//-- {{{SYNC-PASS-HASH-AUTH-CHECKS}}}
 		if(!self::validate_auth_password((string)$plainpass, false)) { // don't check here for complexity
-			Smart::log_notice(__METHOD__.' # Failed to create a password hash, Invalid Password Length: '.(int)SmartUnicode::str_len((string)$plainpass));
+			Smart::log_notice(__METHOD__.' # Failed to create a password hash, Invalid Password or Invalid Length: '.(int)SmartUnicode::str_len((string)$plainpass));
 			return '';
 		} //end if
 		//--
@@ -372,6 +471,7 @@ final class SmartAuth {
 	 *
 	 * @param 	STRING 			$y_realm 					:: *OPTIONAL* The user Authentication Realm(s)
 	 * @param 	ENUM 			$y_method 					:: *OPTIONAL* The authentication method used, as description only: HTTP-BASIC / OTHER / ...
+	 * @param   STRING 			$y_cluster 					:: Cluster ID or ''
 	 * @param 	INTEGER 		$y_algo_pass 				:: The Pass (Hash) Algo
 	 * @param 	STRING 			$y_hashpass					:: The user login password hash or plain password ; for admin/task area it only supports the SmartHashCrypto::password() type pass hash (fixed, 128 characters long) and NOT the plain password ; for index area (and other areas) it may store either: the plain password (7..55 characters) or the pass hash (60..128 characters) ; is not recommended to store here the plain password ; however, it will be stored in memory as encrypted to avoid exposure
 	 * @param 	STRING 			$y_user_name				:: The user username ; Mandatory ; must be valid safe username
@@ -383,13 +483,14 @@ final class SmartAuth {
 	 * @param   ARRAY/STRING 	$y_user_restrictions_list 	:: *OPTIONAL* The user Restrictions List as string '<restr-a>,<restr-b>,...' or array ['restr-a','restr-b'] that list all the current user restrictions ; a restriction key must have 3..28 characters and can contain only: a-z -
 	 * @param 	STRING 			$y_user_quota 				:: *OPTIONAL* The user (storage) Quota
 	 * @param 	ARRAY 			$y_user_metadata 			:: *OPTIONAL* The user metainfo, associative array with max 7 levels (sub-arrays must have no more than 6 sub-levels, can be either associative or not) ; Ex: [ 'some-key' => 101, 'another-key' => 'abc', '3rd-key' => true, '4th-key' => [0, 1, 2, 'a', 'b', 'c'], '5th-key' => [ 'x' => 'X', 'y' => 'y', 'z' => 'Z' ] ]
+	 * @param 	ARRAY 			$y_workspaces 				:: *OPTIONAL* The user workspaces defs with max 1 level
 	 *
 	 * @return 	BOOLEAN										:: TRUE if all data is OK, FALSE if not or try to reauthenticate under the same execution (which is not allowed ; must be just once per execution)
 	 */
-	public static function set_auth_data(?string $y_realm, ?string $y_method, int $y_algo_pass, ?string $y_hashpass, ?string $y_user_name, ?string $y_user_id, ?string $y_user_email='', ?string $y_user_fullname='', $y_user_privileges_list=['none','no-privilege'], $y_user_restrictions_list=['none','no-restriction'], array $y_keys=[], int $y_user_quota=-1, array $y_user_metadata=[]) : bool {
+	public static function set_auth_data(?string $y_realm, ?string $y_method, ?string $y_cluster, int $y_algo_pass, ?string $y_hashpass, ?string $y_user_name, ?string $y_user_id, ?string $y_user_email='', ?string $y_user_fullname='', $y_user_privileges_list=['none','no-privilege'], $y_user_restrictions_list=['none','no-restriction'], array $y_keys=[], int $y_user_quota=-1, array $y_user_metadata=[], array $y_workspaces=[]) : bool {
 		//--
 		// IMPORTANT: $y_user_privileges_list and $y_user_restrictions_list can be STRING or ARRAY, do not cast !
-		// v.20250128
+		// v.20250218
 		//--
 		if(self::$AuthCompleted !== false) { // avoid to re-auth
 			Smart::log_warning(__METHOD__.' # Auth Data is Locked. You either called Auth Set Data method twice or called before the Auth Lock method ...');
@@ -397,11 +498,19 @@ final class SmartAuth {
 		} //end if
 		self::$AuthCompleted = true;
 		//--
-		self::$AuthData = array(); // reset the auth data
+		self::$AuthData = []; // reset the auth data
 		//--
 		$y_realm = (string) strtoupper((string)trim((string)$y_realm));
 		if((string)$y_realm == '') {
 			$y_realm = 'DEFAULT';
+		} //end if
+		//--
+		$y_method = (string) trim((string)$y_method);
+		//--
+		$y_cluster = (string) trim((string)$y_cluster);
+		if(self::validate_cluster_id((string)$y_cluster) !== true) {
+			Smart::log_warning(__METHOD__.' # Invalid ClusterID ...');
+			return false;
 		} //end if
 		//--
 		$y_user_id = (string) trim((string)$y_user_id); // validate the same way as username, except it can have also uppercase letters: ex: UUID from DB
@@ -569,12 +678,21 @@ final class SmartAuth {
 			$y_user_metadata = []; // reset, must be array ; maybe it was not or had more than 7 levels ...
 		} //end if
 		//--
+		if(Smart::array_type_test($y_workspaces) != 2) { // requires an associative array
+			$y_workspaces = []; // reset, must be associative
+		} //end if
+		$y_workspaces = Smart::json_decode((string)Smart::json_encode((array)$y_workspaces, false, true, false, 1), true, 1); // {{{SYNC-AUTH-WORKSPACES-MAX-LEVELS}}} ; SAFETY: ensure it does not contain objects ; avoid store any objects here ; max 1 level only ; ex: workspace['a']
+		if(!is_array($y_workspaces)) {
+			$y_workspaces = []; // reset, must be array ; maybe it was not or had more than 1 level ...
+		} //end if
+		//--
 		if((string)trim((string)$y_user_id) == '') { // this is mandatory, redundant check
 			return false;
 		} //end if
 		//--
 		self::$AuthData['AUTH-METHOD'] 			= (string) $y_method;
 		self::$AuthData['AUTH-REALM'] 			= (string) $y_realm;
+		self::$AuthData['AUTH-CLUSTER-ID'] 		= (string) $y_cluster;
 		self::$AuthData['AUTH-ID'] 				= (string) $y_user_id; 		// auth id ; unique ; for the backend this must be always = AUTH-USERNAME ; on frontend (custom development) it can be set as: AUTH-USERNAME or USER-EMAIL depending on needs
 		self::$AuthData['AUTH-USERNAME'] 		= (string) $y_user_name; 	// the auth username ; unique
 		self::$AuthData['AUTH-PASSHASH'] 		= (string) $the_pass; 		// the hash of the plain pass
@@ -589,6 +707,7 @@ final class SmartAuth {
 		self::$AuthData['USER-PUBKEY'] 			= (string) $the_pubkey;
 		self::$AuthData['USER-QUOTA'] 			= (int)    $y_user_quota;
 		self::$AuthData['USER-METADATA'] 		= (array)  $y_user_metadata;
+		self::$AuthData['USER-WORKSPACES'] 		= (array)  $y_workspaces;
 		self::$AuthData['SESS-RAND-KEY'] 		= (string) $the_key;
 		//--
 		return true;
@@ -607,15 +726,17 @@ final class SmartAuth {
 		//--
 		$logged_in = false;
 		//--
-		if(array_key_exists('AUTH-ID', self::$AuthData)) {
-			if((string)trim((string)self::$AuthData['AUTH-ID']) != '') {
-				if(array_key_exists('AUTH-USERNAME', self::$AuthData)) {
-					if((string)trim((string)self::$AuthData['AUTH-USERNAME']) != '') {
-						if(array_key_exists('AUTH-PASSHASH', self::$AuthData)) {
-							if((string)trim((string)self::$AuthData['AUTH-PASSHASH']) != '') {
-								if(array_key_exists('AUTH-PASSALGO', self::$AuthData)) {
-									if(((int)self::$AuthData['AUTH-PASSALGO'] >= 1) && ((int)self::$AuthData['AUTH-PASSALGO'] <= 255)) {
-										$logged_in = true;
+		if((int)Smart::array_size(self::$AuthData) > 0) {
+			if(array_key_exists('AUTH-ID', self::$AuthData)) {
+				if((string)trim((string)self::$AuthData['AUTH-ID']) != '') {
+					if(array_key_exists('AUTH-USERNAME', self::$AuthData)) {
+						if((string)trim((string)self::$AuthData['AUTH-USERNAME']) != '') {
+							if(array_key_exists('AUTH-PASSHASH', self::$AuthData)) {
+								if((string)trim((string)self::$AuthData['AUTH-PASSHASH']) != '') {
+									if(array_key_exists('AUTH-PASSALGO', self::$AuthData)) {
+										if(((int)self::$AuthData['AUTH-PASSALGO'] >= 1) && ((int)self::$AuthData['AUTH-PASSALGO'] <= 255)) {
+											$logged_in = true;
+										} //end if
 									} //end if
 								} //end if
 							} //end if
@@ -644,6 +765,7 @@ final class SmartAuth {
 			'auth:area' 			=> (string) self::get_auth_area(),
 			'auth:method' 			=> (string) self::get_auth_method(),
 			'auth:realm' 			=> (string) self::get_auth_realm(),
+			'auth:cluster:id' 		=> (string) self::get_auth_cluster_id(),
 			'auth:id' 				=> (string) self::get_auth_id(),
 			'auth:username' 		=> (string) self::get_auth_username(),
 			'auth:passhash' 		=> (string) ((self::$AuthData['AUTH-PASSHASH'] ?? null) ? ($y_skip_sensitive ? '********[Sensitive:Protected]********' : self::get_auth_passhash()) : ''),
@@ -661,6 +783,8 @@ final class SmartAuth {
 			'user:pubkey' 			=> (string) self::get_user_pubkey(),
 			'user:quota' 			=> (int)    self::get_user_quota(),
 			'user:metadata' 		=> (array)  self::get_user_metadata(),
+			'user:workspaces' 		=> (array)  self::get_user_workspaces(),
+			'user:path:prefix' 		=> (string) self::get_user_prefixed_path_by_area_and_auth_id(),
 		];
 		//--
 	} //END FUNCTION
@@ -704,7 +828,7 @@ final class SmartAuth {
 	/**
 	 * Get the auth realm of the current user stored in the (in-memory) Auth Login Data
 	 *
-	 * @return 	STRING		:: returns the current user auth realm or an empty string if not set
+	 * @return 	STRING		:: returns the current user auth realm or 'DEFAULT' if not set or empty
 	 */
 	public static function get_auth_realm() : string {
 		//--
@@ -714,6 +838,20 @@ final class SmartAuth {
 		} //end if
 		//--
 		return (string) $login_realm;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get the current user auth cluster ID from the (in-memory) Auth Login Data
+	 *
+	 * @return 	STRING		:: returns the current user auth cluster ID or an empty string
+	 */
+	public static function get_auth_cluster_id() : string {
+		//--
+		return (string) trim((string)(self::$AuthData['AUTH-CLUSTER-ID'] ?? null));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1141,6 +1279,97 @@ final class SmartAuth {
 
 	//================================================================
 	/**
+	 * Get the current user workspaces stored in the (in-memory) Auth Login Data
+	 *
+	 * @return 	ARRAY		:: returns an array with all current user workspaces
+	 */
+	public static function get_user_workspaces() : array {
+		//--
+		return (array) (self::$AuthData['USER-WORKSPACES'] ?? null);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get the current user path prefix by area and auth user ID
+	 * works just for already authenticated user
+	 *
+	 * @return 	STRING		:: empty string `` on error or unauthenticated ; or path, ex: `idx/ab/abc7.e8` | `adm/d7/8xyz.w0`
+	 */
+	public static function get_user_prefixed_path_by_area_and_auth_id() : string {
+		//--
+		if(self::is_authenticated() !== true) {
+			return '';
+		} //end if
+		//--
+		$id = (string) trim((string)self::get_auth_id());
+		if((string)$id == '') {
+			return '';
+		} //end if
+		//--
+		$area = 'idx';
+		if(SmartEnvironment::isAdminArea()) {
+			$area = 'adm'; // tsk/adm will share the same prefix: adm
+		} //end if
+		//--
+		return (string) self::get_user_prefixed_path_by_area_and_account_id((string)$area, (string)$id);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get the user path prefix by area and user ID
+	 * works outside of authentication, for management purposes
+	 *
+	 * @param 	STRING 	$area 		:: Area: `idx` | `adm`
+	 * @param 	STRING 	$id 		:: The user ID, must be valid as userName
+	 *
+	 * @return 	STRING		:: empty string `` on error ; or path, ex: `idx/ab/abc7.e8` | `adm/d7/8xyz.w0`
+	 */
+	public static function get_user_prefixed_path_by_area_and_account_id(string $area, string $id) : string {
+		//--
+		$area = (string) trim((string)$area);
+		switch((string)$area) {
+			case 'idx':
+			case 'adm': // tsk/adm will share the same prefix: adm
+				break;
+			default:
+				Smart::log_warning(__METHOD__.' # Invalid Area: `'.$area.'`');
+				return '';
+		} //end switch
+		//--
+		$id = (string) trim((string)$id);
+		if((string)$id == '') {
+			Smart::log_warning(__METHOD__.' # User ID is Empty');
+			return '';
+		} //end if
+		if(self::validate_auth_username((string)$id) !== true) { // check reasonable must be ON because needs at least 5 characters
+			Smart::log_warning(__METHOD__.' # Invalid User ID: `'.$id.'` for Area: `'.$area.'`');
+			return '';
+		} //end if
+		//--
+		if((int)strlen((string)$id) < 3) {
+			Smart::log_warning(__METHOD__.' # Invalid User ID length: `'.$id.'` for Area: `'.$area.'`');
+			return '';
+		} //end if
+		$prefix = (string) trim((string)substr((string)$id, 0, 2));
+		if(((string)$prefix == '') OR ((int)strlen((string)$prefix) != 2) OR (!preg_match('/^[a-z0-9]{2}$/', (string)$prefix))) {
+			Smart::log_warning(__METHOD__.' # Invalid User ID prefix: `'.$prefix.'` for ID: `'.$id.'` for Area: `'.$area.'`');
+			return '';
+		} //end if
+		//--
+		return (string) $area.'/'.$prefix.'/'.Smart::safe_username((string)$id); // {{{SYNC-AUTH-ACCOUNT-ID-PATH-2-CHARS-PREFIX}}}
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
 	 * Safe Encrypt a private key using a password, using Twofish+Blowfish CBC
 	 * The provided password have to be the same as the login password for the user is being used to avoid decryption of the key by other users
 	 * This is completely safe as long as the users login passwords are supposed to be stored as ireversible hashes (by default they are ... but with custom login implementations they can be or not, depending the developer's choice)
@@ -1431,9 +1660,9 @@ final class SmartAuth {
 			$arr['d'] = (string) SmartUnicode::utf8_to_iso((string)$arr['d']); // safety
 		} //end if
 		if(preg_match((string)SmartValidator::regex_stringvalidation_expression('date-time-tzofs'), (string)$arr['d'])) { // validate date by regex
-			$dtnow = (string) gmdate('Y-m-d H:i:s O');
-			$dtswt = (string) gmdate('Y-m-d H:i:s O', (int)strtotime((string)$arr['d'])); // be sure is a date, and UTC formatted with +0000
-			$dtmax = (string) gmdate('Y-m-d H:i:s O', (int)strtotime('+ 1 day'));
+			$dtnow = (string) gmdate('Y-m-d H:i:s').' +0000';
+			$dtswt = (string) gmdate('Y-m-d H:i:s', (int)strtotime((string)$arr['d'])).' +0000'; // be sure is a date, and UTC formatted with +0000
+			$dtmax = (string) gmdate('Y-m-d H:i:s', (int)strtotime('+ 1 day')).' +0000';
 			if((string)$dtnow < (string)$dtswt) { // current date is higher than token date
 				if((string)$dtswt > (string)$dtmax) {
 					$valid['error'] = 'JSON object Date is Higher than Expected: `'.$arr['d'].'`';
@@ -1466,7 +1695,7 @@ final class SmartAuth {
 		} //end if
 		//--
 		if((string)$hashpass != '') {
-			$hashpass = (string) trim((string)Smart::b64_dec((string)$hashpass), true); // STRICT
+			$hashpass = (string) trim((string)Smart::b64_dec((string)$hashpass, true)); // STRICT
 		} //end if
 		if((string)$hashpass != '') {
 			$hashpass = (string) SmartUnicode::utf8_to_iso((string)$hashpass); // safety
@@ -1496,9 +1725,17 @@ final class SmartAuth {
 			} //end if else
 		} else { // [I] ; expects a password hash provided by SmartAuth::password_hash_create()
 			if(
-				((int)strlen((string)$hashpass) != (int)strlen((string)self::PASSWORD_BHASH_LENGTH)) //  {{{SYNC-PASS-HASH-AUTH-LEN}}}
-				OR
-				(self::password_hash_validate_format((string)$hashpass) !== true) // {{{SYNC-PASS-HASH-AUTH-FORMAT}}}
+				(
+					((int)strlen((string)$hashpass) != (int)self::PASSWORD_BHASH_LENGTH) // {{{SYNC-PASS-HASH-AUTH-LEN}}}
+					OR
+					(self::password_hash_validate_format((string)$hashpass) !== true) // {{{SYNC-PASS-HASH-AUTH-FORMAT}}}
+				)
+				AND
+				(
+					((int)strlen((string)$hashpass) != (int)SmartHashCrypto::PASSWORD_HASH_LENGTH) // {{{SYNC-AUTHADM-PASS-LENGTH}}}
+					OR
+					(SmartHashCrypto::validatepasshashformat((string)$hashpass) !== true) // {{{SYNC-AUTH-HASHPASS-FORMAT}}}
+				)
 			) {
 				$valid['error'] = 'Invalid Password Hash Length or Format [I]';
 				return (array) $valid;
@@ -1669,18 +1906,26 @@ final class SmartAuth {
 				$valid['error'] = 'Invalid Password Hash Length or Format [A]';
 				return (array) $valid;
 			} //end if else
-		} else { // [I] ; expects a password hash provided by SmartAuth::password_hash_create()
+		} else { // [I] ; expects a password hash provided by SmartAuth::password_hash_create() or SmartHashCrypto::password()
 			if(
-				((int)strlen((string)$auth_hash_pass) != (int)strlen((string)self::PASSWORD_BHASH_LENGTH)) //  {{{SYNC-PASS-HASH-AUTH-LEN}}}
-				OR
-				(self::password_hash_validate_format((string)$auth_hash_pass) !== true) // {{{SYNC-PASS-HASH-AUTH-FORMAT}}}
+				(
+					((int)strlen((string)$auth_hash_pass) != (int)self::PASSWORD_BHASH_LENGTH) // {{{SYNC-PASS-HASH-AUTH-LEN}}}
+					OR
+					(self::password_hash_validate_format((string)$auth_hash_pass) !== true) // {{{SYNC-PASS-HASH-AUTH-FORMAT}}}
+				)
+				AND
+				(
+					((int)strlen((string)$auth_hash_pass) != (int)SmartHashCrypto::PASSWORD_HASH_LENGTH) // {{{SYNC-AUTHADM-PASS-LENGTH}}}
+					OR
+					(SmartHashCrypto::validatepasshashformat((string)$auth_hash_pass) !== true) // {{{SYNC-AUTH-HASHPASS-FORMAT}}}
+				)
 			) {
 				$valid['error'] = 'Invalid Password Hash Length or Format [I]';
 				return (array) $valid;
 			} //end if
 		} //end if else
 		//--
-		$expdate = (string) gmdate('Y-m-d H:i:s O', (int)strtotime((string)gmdate('Y-m-d H:i:s').' +'.(int)$expire.' seconds')); // UTC
+		$expdate = (string) gmdate('Y-m-d H:i:s', (int)((int)time() + (int)$expire)).' +0000'; // UTC
 		//--
 		$valid_ips = [];
 		if(Smart::array_size($ip_addr_arr) > 0) {
@@ -1782,20 +2027,20 @@ final class SmartAuth {
 			return (array) $swt;
 		} //end if
 		//--
-		$b64s = (string) Smart::b64s_enc((string)$json);
-		if((string)trim((string)$b64s) == '') {
-			$swt['error'] = 'Base64S encoding Failed';
+		$b64u = (string) Smart::b64s_enc((string)$json, false); // B64u
+		if((string)trim((string)$b64u) == '') {
+			$swt['error'] = 'Base64u encoding Failed';
 			return (array) $swt;
 		} //end if
 		//--
 		$cksign = (string) SmartHashCrypto::checksum(
-			(string) self::SWT_VERSION_PREFIX.';'.$b64s.';'.self::SWT_VERSION_SUFFIX,
+			(string) self::SWT_VERSION_PREFIX.';'.$b64u.';'.self::SWT_VERSION_SUFFIX,
 			'' // default (empty), will use a derivation of SMART_FRAMEWORK_SECURITY_KEY
 		);
 		//--
 		$swt['error'] = ''; // clear
 		$swt['json']  = (string) $json;
-		$swt['token'] = (string) self::SWT_VERSION_PREFIX.';'.$b64s.';'.$cksign.';'.self::SWT_VERSION_SUFFIX;
+		$swt['token'] = (string) self::SWT_VERSION_PREFIX.';'.$b64u.';'.$cksign.';'.self::SWT_VERSION_SUFFIX;
 		return (array) $swt;
 		//--
 	} //END FUNCTION
@@ -2084,7 +2329,7 @@ final class SmartAuth {
 			$jwt['error'] = 'JWT Sign Failed: Empty';
 			return (array) $jwt;
 		} //end if
-		$sign = (string) Smart::b64_to_b64s((string)$sign, false);
+		$sign = (string) Smart::b64_to_b64s((string)$sign, false); // B64u
 		//--
 		$token .= '.'.$sign;
 		//--
@@ -2592,7 +2837,7 @@ final class SmartAuth {
 				return (array) $valid;
 			} //end if
 			$sign = (string) trim((string)($edSignature['signature'] ?? null)); // b64
-			if(SmartHashCrypto::ed25519_verify_sign((string)$signature, (string)$token, (string)Smart::b64s_dec((string)($edSignature['public-key'] ?? null), true)) !== true) {
+			if(SmartHashCrypto::ed25519_verify_sign((string)$signature, (string)$token, (string)Smart::b64s_dec((string)($edSignature['public-key'] ?? null), true)) !== true) { // B64 STRICT
 				$valid['error'] = 'JWT Signature verification failed';
 				return (array) $valid;
 			} //end if

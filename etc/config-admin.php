@@ -9,7 +9,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 	@http_response_code(500);
 	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
-//----------------------------------------------------- r.20250107
+//----------------------------------------------------- r.20250307
 
 //--------------------------------------- Templates and Home Page (admin)
 $configs['app']['admin-domain'] 					= 'localhost.local'; 					// admin domain as yourdomain.ext
@@ -49,7 +49,7 @@ define('APP_AUTH_ADMIN_PASSWORD', 'The1pas!'); // default admins auth complex pa
 */
 
 //-- admins privileges
-define('APP_AUTH_PRIVILEGES', '<super-admin>,<admin>,<oauth2>,<db-admin:mongo>,<cloud>,<svn>'); // sample: '<oauth2>,<db-admin:mongo>,<cloud>,<svn>' // a privilege key can have 2..22 characters and can contain only: a-z 0-9 - ; must start with a-z only
+define('APP_AUTH_PRIVILEGES', '<super-admin>,<admin>,<oauth2>,<auth-users:cluster>,<db-admin:mongo>,<cloud>,<svn>'); // sample: '<super-admin>,<admin>,<oauth2>,<auth-users:cluster>,<db-admin:mongo>,<cloud>,<svn>' // a privilege key can have 2..22 characters and can contain only: a-z 0-9 - ; must start with a-z only
 //-- Smart Auth (only) admin area namespaces
 $configs['app-auth']['adm-namespaces'] = [
 	'Admins Manager' 	=> 'admin.php?page=auth-admins.manager.stml',

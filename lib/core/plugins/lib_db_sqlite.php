@@ -68,7 +68,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSystem, SmartComponents
- * @version 	v.20250107
+ * @version 	v.20250217
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -500,7 +500,7 @@ final class SmartSQliteDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSysUtils, SmartFileSystem, SmartComponents
- * @version 	v.20250107
+ * @version 	v.20250217
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -543,7 +543,7 @@ final class SmartSQliteUtilDb {
 			return;
 		} //end if
 		//--
-		if(SmartFileSysUtils::checkIfSafePath((string)$file_name, true, true) != 1) { 				// deny absolute path access ; allow protected path access (starting with #)
+		if(SmartFileSysUtils::checkIfSafePath((string)$file_name, true, true) != 1) { // deny absolute path access ; allow protected path access (starting with #)
 			self::error((string)$file_name, 'OPEN', 'ERROR: DB path is invalid !', '', '');
 			return;
 		} //end if
@@ -1832,7 +1832,7 @@ final class SmartSQliteUtilDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20250107
+ * @version 	v.20250217
  * @package 	Application:Plugins:Database:SQLite
  *
  */

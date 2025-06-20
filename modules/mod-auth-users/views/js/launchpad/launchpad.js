@@ -1,12 +1,31 @@
 
 // js launchpad
+// based on github.com/linkorb/launchpad # (c) 2015 LinkORB
 // (c) 2025-present unix-world.org
-// r.20250131
+// r.20250223.2358
 
 (function(w, d) {
 	const lp = {
 		data: [],
 		overlay: null,
+		escapeHtml: function(str) {
+			//-- format sting
+			if((str == undefined) || (str == '')) {
+				return '';
+			} //end if
+			//-- force string
+			str = String(str);
+			//-- replacements map
+			var map = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;'
+			};
+			//-- do replace
+			return String(str.replace(/[&\<\>"]/g, function(m){ return map[m] })); // fix to return empty string instead of null
+			//--
+		},
 		init: function() {
 			return this.createOverlay().populateApps();
 		},
@@ -30,11 +49,11 @@
 					html += this.drawApp(this.data[i]);
 				}
 			}
-			this.overlay.innerHTML = '<div class="launchpad-canvas">'+html+'</div>';
+			this.overlay.innerHTML = '<div class="launchpad-canvas">' + html + '</div>';
 			return this;
 		},
 		drawAppGroup: function(group) {
-			let h = '<div class="launchpad-app-group"><div class="launchpad-app-group-header">'+group.group+'</div>';
+			let h = '<div class="launchpad-app-group"><div class="launchpad-app-group-header">' + this.escapeHtml(group.group) + '</div>';
 			h+= '<div class="launchpad-app-group-body">';
 			for (let i = 0; i < group.apps.length; i++) {
 				h += this.drawApp(group.apps[i]);
@@ -43,9 +62,13 @@
 			return h;
 		},
 		drawApp: function(app) {
-			let h = '<div class="launchpad-app-container"><a href="'+app.link+'"><div class="launchpad-app-icon">';
-			h += '<img src="'+app.icon+'" height="100%">';
-			h += '</div><div class="launchpad-app-label">'+app.label+'</div></a></div>';
+			let h = '';
+			h += '<div class="launchpad-app-container">';
+			h += '<a href="' + this.escapeHtml(app.link || '#') + '">';
+			h += '<div class="launchpad-app-icon">' + '<img src="' + this.escapeHtml(app.icon || 'data:,') + '" height="100%">' + '</div>';
+			h += '<div class="launchpad-app-label">' + this.escapeHtml(app.label || 'App') + '</div>';
+			h += '</a>';
+			h += '</div>';
 			return h;
 		},
 		toggle: function () {

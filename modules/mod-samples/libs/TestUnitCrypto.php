@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250214
+ * @version 	v.20250307
  *
  */
 final class TestUnitCrypto {
@@ -121,6 +121,46 @@ final class TestUnitCrypto {
 		) {
 			$err_misc[] = 'TestUnit FAILED # PHP Bin/Hex, Hex/Bin conversions test';
 		} //end if
+		//--
+
+		//--
+		$swtUser = '0000000000.tst.0000000000';
+		$cliIP = (string) \SmartUtils::get_ip_client();
+		for($i=0; $i<75; $i++) {
+			$ipList = [];
+			if((int)\rand(1, 10) > 5) {
+				$ipList[] = (string) $cliIP;
+			} //end if
+			$pass = 'Platform クラウドアプリ șȘ țȚ ăĂ îÎ âÂ '.\str_repeat((string)\chr($i), (int)\rand(1, 10));
+			$swtPassHash = (string) \SmartHashCrypto::password((string)$pass, (string)$swtUser);
+			$area = 'A';
+			if((int)$i > 25) {
+				$area = 'I';
+				if((int)\rand(0, 1) > 0) {
+					$pass = (string) \substr((string)\Smart::b64s_enc((string)$pass, false), 0, (int)\SmartHashCrypto::PASSWORD_PLAIN_MAX_LENGTH); // null character not supported in this kind of pass, use B64 enc for tests
+					$swtPassHash = (string) \SmartAuth::password_hash_create((string)$pass);
+				} //end if
+			} //end if
+			$swt_token = (array) \SmartAuth::swt_token_create(
+				'I',
+				(string) $swtUser,
+				(string) $swtPassHash,
+				60,
+				[],
+				[]
+			);
+			if($swt_token['error'] !== '') {
+				//\Smart::log_warning(__METHOD__.' # Failure, SWT Create: passhash=`'.$swtPassHash.'` ; '.print_r($swt_token,1));
+				$err_misc[] = 'TestUnit FAILED #'.($i+1).' SWT Create: '.$swt_token['error'];
+				break;
+			} //end if
+			$swt_validate = (array) \SmartAuth::swt_token_validate((string)$swt_token['token'], (string)$cliIP);
+			if($swt_validate['error'] !== '') {
+				//\Smart::log_warning(__METHOD__.' # Failure, SWT Validate: passhash=`'.$swtPassHash.'` ; '.print_r($swt_validate,1));
+				$err_misc[] = 'TestUnit FAILED #'.($i+1).' SWT Validate: '.$swt_validate['error'];
+				break;
+			} //end if
+		} //end for
 		//--
 
 		//--
@@ -308,7 +348,7 @@ final class TestUnitCrypto {
 		//--
 
 		//-- hash passwords tests, try to see if there are variations, inconsistencies, see if validations work
-		$plainPass = \SmartUnicode::sub_str('Smart スマート // Cloud Application Platform :: The max', 0, 48).' '.rand(1000,9999); // 55 chars, unicode
+		$plainPass = \SmartUnicode::sub_str('Smart スマート // Cloud Application Platform :: The max', 0, 48).' '.rand(1,9999); // 55 chars, unicode
 		$testAPassw1 = (string) \SmartAuth::password_hash_create((string)$plainPass);
 		$testAPassw2 = (string) \SmartAuth::password_hash_create((string)strrev((string)$plainPass));
 		//--

@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * DEPENDS classes: 	Smart, SmartAuth, SmartEnvironment, SmartUtils, \SmartModExtLib\AuthAdmins\AuthProviderHttp
  * DEPENDS constants: 	SMART_FRAMEWORK_SECURITY_KEY
  *
- * @version 	v.20250207
+ * @version 	v.20250314
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -333,6 +333,7 @@ abstract class AbstractAuthHandler {
 			$authData['auth-user'] 		= (string) \trim((string)$authData['auth-user']);
 			$authData['auth-pass'] 		= (string) \trim((string)$authData['auth-pass']);
 			$authData['auth-bearer'] 	= (string) \trim((string)$authData['auth-bearer']);
+			$authData['auth-token'] 	= (string) \trim((string)$authData['auth-token']);
 			//--
 			if((string)$authData['auth-bearer'] != '') { // bearer token auth ; SWT
 				//--
@@ -340,6 +341,8 @@ abstract class AbstractAuthHandler {
 					((string)$authData['auth-user'] == '')
 					AND // explicit user/pass must not be set either
 					((string)$authData['auth-pass'] == '')
+					AND
+					((string)$authData['auth-token'] == '')
 				) {
 					//--
 					// SWT Token have a lot of info embedded, just like JWT ; SWT provides the username and also provides the pass-hash (the salted, one-way hash of the password) that can be used to identify the user account and decide later if match a valid user account or not
@@ -394,7 +397,7 @@ abstract class AbstractAuthHandler {
 							} //end if
 							//--
 							$authCredentials['use-2fa-auth'] 			= false;
-							$authCredentials['use-www-401-auth-prompt'] = false; // This should be disabled for successful Auth Bearer only, the case here ; the logic is to be able to hide the www-auth prompt when Auth Bearer is used
+							$authCredentials['use-www-401-auth-prompt'] = false; // This should be disabled for successful Auth Bearer, the case here ; the logic is to be able to hide the www-auth prompt when Auth Bearer is used
 							//--
 						} else {
 							//--
@@ -416,7 +419,87 @@ abstract class AbstractAuthHandler {
 					//--
 				} else {
 					//--
-					$authCredentials['auth-ermsg'] = 'The Auth Bearer Token [SWT] can not be used when Auth UserName and/or Pass is set';
+					$authCredentials['auth-ermsg'] = 'The Auth Bearer Token [SWT] can not be used when Auth UserName/Pass and/or Token is set';
+					//--
+				} //end if else
+				//--
+			} elseif((string)$authData['auth-token'] != '') { // token auth ; STK ; ex: `user#THIS-IS-THE-TOKEN`
+				//--
+				if(
+					((string)$authData['auth-user'] == '')
+					AND // explicit user/pass must not be set either
+					((string)$authData['auth-pass'] == '')
+					AND
+					((string)$authData['auth-bearer'] == '')
+				) {
+					//--
+					$authData['auth-user'] = '';
+					$authData['auth-pass'] = '';
+					$authData['auth-bearer'] = '';
+					//-- {{{SYNC-AUTH-PROVIDER-CONDITIONS-STK-TOKEN-LOGIN}}} ; detect STK Tokens Auth as: user.name#token
+					$auth_stk_data = (array) $authCredentials['stk-token']; // create a copy
+					//--
+					if(\strpos((string)$authData['auth-token'], '#') !== false) { // token auth ; STK
+						//--
+						$tokenPartsArr = (array)  \explode('#', (string)$authData['auth-token'], 2);
+						$stk_user_name = (string) \trim((string)($tokenPartsArr[0] ?? null));
+						$stk_token_key = (string) \trim((string)($tokenPartsArr[1] ?? null));
+						$tokenPartsArr = null;
+						//--
+						if(\SmartAuth::validate_auth_username( // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
+							(string) $stk_user_name,
+							false // do not check for reasonable length here, use minimal ; will later decide
+						) === true) { // OK
+							//--
+							if( // {{{SYNC-VALIDATE-STK-TOKEN-LENGTH}}} ; to validate Token Key, see: \SmartModExtLib\AuthAdmins\AuthTokens::createPublicPassKey()
+								((int)\strlen((string)$stk_token_key) >= 42)
+								AND // token key should be between 42 and 46 characters ; sha256.B58
+								((int)\strlen((string)$stk_token_key) <= 46)
+								AND
+								((int)\strlen((string)$stk_token_key) === (int)\strspn((string)$stk_token_key, (string)\Smart::CHARSET_BASE_58)) // B58 valid chars only
+							) { // OK
+								//--
+								$auth_stk_data['is-valid']  	= true;
+								$auth_stk_data['error-msg'] 	= ''; // reset
+								//--
+								$auth_stk_data['user-name'] 	= (string) $stk_user_name; // provided via a substring of auth user with a #token suffix, separed above
+								$auth_stk_data['pass-hash'] 	= ''; // reset, this is not actually a valid Pass, but a Token Key, registered below !
+								//--
+								$auth_stk_data['token-key'] 	= (string) $stk_token_key; // provided via Auth Pass ...
+								//--
+								$authCredentials['use-2fa-auth'] = false;
+								$authCredentials['use-www-401-auth-prompt'] = false; // This should be disabled for successful Auth Token, the case here ; the logic is to be able to hide the www-auth prompt when Auth Token is used
+								//--
+							} else { // invalid token key for the STK Token
+								//--
+								$auth_stk_data['is-valid']  = false;
+								$auth_stk_data['error-msg'] = 'The STK Token Auth UserName is provided and Valid ; Auth Key is Invalid';
+								//--
+							} //end if else
+							//--
+						} else { // invalid user name for the STK Token
+							//--
+							$auth_stk_data['is-valid']  = false;
+							$auth_stk_data['error-msg'] = 'The STK Token Auth UserName is Invalid ; No need to check the Token key ...';
+							//--
+						} //end if else
+						//--
+						$stk_user_name = null;
+						$stk_token_key = null;
+						//--
+					} else {
+						//--
+						$auth_stk_data['is-valid']  = false;
+						$auth_stk_data['error-msg'] = 'The STK Token is Invalid ; No need to check the Token key ...';
+						//--
+					} //end if else
+					//--
+					$authCredentials['stk-token'] = (array) $auth_stk_data; // save back
+					$auth_stk_data = null;
+					//--
+				} else {
+					//--
+					$authCredentials['auth-ermsg'] = 'The Auth Token [STK] can not be used when Auth UserName/Pass and/or Bearer Token is set';
 					//--
 				} //end if else
 				//--

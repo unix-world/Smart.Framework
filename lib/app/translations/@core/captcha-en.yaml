@@ -2,12 +2,12 @@
 TRANSLATIONS:
   @language: EN
   @area: core
-  @version: 2021-05-26
+  @version: 2025-06-20
   captcha:
     error: |
       The Captcha expired ... Try to refresh the page.
       If the problem persist contact the website administrator !
-    confirm: 'Confirm you are not a Robot'
+    confirm: 'Anti-Spam CAPTCHA'
     verify: 'Validation Code'
     failed: 'Captcha Validation Failed'
     image: 'Captcha Image'

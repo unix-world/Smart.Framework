@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 abstract class SqAuthLog extends \SmartModDataModel\AuthAdmins\AbstractAuthLog {
 
 	// ->
-	// v.20250207
+	// v.20250314
 
 	private $db;
 	private $dbFile;

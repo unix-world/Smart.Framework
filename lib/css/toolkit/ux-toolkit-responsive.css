@@ -2,12 +2,22 @@
 
 /*
 License: BSD
-	extended by unixman (stable.20250207), (c) 2015-present unix-world.org
+	extended by unixman (stable.20250311), (c) 2015-present unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */
 
-@media all and (max-width:767px) { /* screens with a width lower than 768 */
+@media all and (max-width:958px) { /* screens with a width lower than 959px */
+
+	/*** Cards (by Unixman) ***/
+
+	.ux-card.c1, .ux-card.c2 {
+		width: 99%;
+	}
+
+}
+
+@media all and (max-width:767px) { /* screens with a width lower than 768px */
 
 	/* All buttons Responsive and Forms */
 
@@ -30,11 +40,9 @@ License: BSD
 	}
 	*/
 
-
 	.ux-flex-center .ux-flex-center-container {
 		width: 100% !important;
 	}
-
 
 	.ux-form {
 		width: 100% !important;
@@ -198,7 +206,7 @@ License: BSD
 
 }
 
-@media (hover: none), all and (max-width:767px) { /* touchscreens or screens with a width lower than 768 */
+@media (hover: none), all and (max-width:767px) { /* touchscreens or screens with a width lower than 768px */
 
 	/* Responsive Simple Navs (by Unixman) */
 
@@ -370,43 +378,23 @@ License: BSD
 	}
 	*/
 
-	nav.ux-navbar.navbar-green label.toggle {
-		background-color: #6a9d4e;
-	}
-	nav.ux-navbar.navbar-green label.toggle:hover {
-		background-color: #487b2c;
-	}
-	nav.ux-navbar.navbar-green a:hover {
-		background-color: #487b2c;
-	}
-	nav.ux-navbar.navbar-green ul ul ul a {
-		background-color: #598c3d;
-	}
-	nav.ux-navbar.navbar-green ul li ul li .toggle,
-	nav.ux-navbar.navbar-green ul ul a {
-		background-color: #598c3d;
-	}
-	nav.ux-navbar.navbar-green ul ul ul li * {
-		background-color: #487b2c !important;
-	}
-
-	nav.ux-navbar.navbar-black label.toggle {
+	nav.ux-navbar.navbar-dark label.toggle {
 		background-color: #3b4250;
 	}
-	nav.ux-navbar.navbar-black label.toggle:hover {
+	nav.ux-navbar.navbar-dark label.toggle:hover {
 		background-color: #192030;
 	}
-	nav.ux-navbar.navbar-black a:hover {
+	nav.ux-navbar.navbar-dark a:hover {
 		background-color: #192030;
 	}
-	nav.ux-navbar.navbar-black ul ul ul a {
+	nav.ux-navbar.navbar-dark ul ul ul a {
 		background-color: #2a3140;
 	}
-	nav.ux-navbar.navbar-black ul li ul li .toggle,
-	nav.ux-navbar.navbar-black ul ul a {
+	nav.ux-navbar.navbar-dark ul li ul li .toggle,
+	nav.ux-navbar.navbar-dark ul ul a {
 		background-color: #2a3140;
 	}
-	nav.ux-navbar.navbar-black ul ul ul li * {
+	nav.ux-navbar.navbar-dark ul ul ul li * {
 		background-color: #192030 !important;
 	}
 

@@ -1,6 +1,7 @@
-<!-- v.20250207 -->
+<!-- v.20250307 -->
 [@@@SUB-TEMPLATE:partials/app-release-styles.inc.htm@@@]
 <script>
+const dateTime = '[###DATE-TIME|js###]';
 const AppID = '[###APP-ID|js###]';
 const overlayID = 'app-release-task-OVERLAY';
 [%%%IF:APP-ID:!=;%%%]
@@ -30,7 +31,7 @@ const runTask = () => {
 			self.location = smartJ$Utils.url_add_suffix('[###MOD-SELF-URL|js###]' + smartJ$Utils.escape_url(selTask), '&appid=' + smartJ$Utils.escape_url(AppID)) + urlSuffix;
 		} else if(selTask === 'code-netpack') {
 			smartJ$Browser.ConfirmDialog(
-				'<div class="operation_important">You are about to run this task: `' + smartJ$Utils.escape_html(selTxtTask) + '`</div><div class="operation_question">Enter a Package Release Info</div><input type="text" maxlength="255" id="prompt-alertable-field" placeholder="Package Comment" class="ux-field" style="width:100%;"><h5>Press OK to Create the Release Package ...</h5>',
+				'<div class="operation_important">You are about to run this task: `' + smartJ$Utils.escape_html(selTxtTask) + '`</div><div class="operation_question">Enter a Package Release Info</div><input type="text" maxlength="255" id="prompt-alertable-field" value="' + smartJ$Utils.escape_html(AppID + ' # ' + dateTime) + '" placeholder="Package Comment" class="ux-field" style="width:100%;"><h5>Press OK to Create the Release Package ...</h5>',
 				() => {
 					smartJ$Browser.OverlayShow(null, null, null, overlayID, true);
 					setTimeout(() => {

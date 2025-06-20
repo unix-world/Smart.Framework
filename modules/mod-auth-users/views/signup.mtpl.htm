@@ -1,12 +1,3 @@
-<script>
-const authSignUpRequest = () => {
-	const email = smartJ$Utils.stringPureVal(jQuery('input#fld-email').val(), true);
-	const pass = smartJ$Utils.stringPureVal(jQuery('input#fld-pass').val(), true);
-	const rpass = smartJ$Utils.stringPureVal(jQuery('input#fld-rpass').val(), true);
-	const url = '?page=auth-users.authorize&action=register' + '&frm[email]=' + smartJ$Utils.escape_url(email) + '&frm[pass]=' + smartJ$Utils.escape_url(pass) + '&frm[rpass]=' + smartJ$Utils.escape_url(rpass);
-	smartJ$Browser.SubmitFormByAjax(null, url, 'yes');
-};
-</script>
 [@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/styles.mtpl.inc.htm!@@@]
 [%%%IF:IS-AUTHENTICATED:==1;%%%]
 [@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/styles-account.mtpl.inc.htm!@@@]
@@ -14,7 +5,8 @@ const authSignUpRequest = () => {
 <!-- account styles n/a -->
 [%%%/IF:IS-AUTHENTICATED%%%]
 <div class="sign-area">
-	<img height="64" alt="logo" src="modules/mod-auth-users/views/img/logo-auth.svg" style="opacity:0.88;">
+	[%%%IF:IS-REGISTER-IP-RESTRICTED:==yes;%%%]<img height="32" alt="logo" title="[###TXT-REGISTER-IP-RESTRICT|html###]" src="lib/framework/img/sign-important.svg" style="opacity:0.22;cursor:help;">[%%%ELSE:IS-REGISTER-IP-RESTRICTED%%%]<!-- Reg. is Not IP Restr. -->[%%%/IF:IS-REGISTER-IP-RESTRICTED%%%]
+	<img height="64" alt="logo" src="lib/core/img/app/app.svg" style="opacity:0.88;">
 [%%%IF:IS-AUTHENTICATED:==1;%%%]
 [@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/signed.mtpl.inc.htm!@@@]
 [%%%ELSE:IS-AUTHENTICATED%%%]

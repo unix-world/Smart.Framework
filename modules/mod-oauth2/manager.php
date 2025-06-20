@@ -1,6 +1,6 @@
 <?php
 // Controller: OAuth2 Client Manager
-// Route: admin.php?page=oauth2.manager.stml
+// Route: ?page=oauth2.manager.stml
 // (c) 2008-present unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -10,18 +10,20 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_AREA', 'ADMIN'); // INDEX, ADMIN, SHARED
+define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
 define('SMART_APP_MODULE_AUTH', true);
 
-/**
- * Admin Controller
- *
- * @ignore
- * @version v.20250203
- *
- */
-final class SmartAppAdminController extends SmartAbstractAppController {
 
+final class SmartAppIndexController extends AbstractController {}
+
+final class SmartAppTaskController  extends AbstractController {}
+
+final class SmartAppAdminController extends AbstractController {}
+
+
+abstract class AbstractController extends SmartAbstractAppController {
+
+	// v.20250222
 
 	public function Initialize() {
 		//--
@@ -45,19 +47,56 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			return 403;
 		} //end if
 		//--
-		if(!SmartEnvironment::isAdminArea()) { // allow: adm/tsk ; but this controller does not extends in a task controller
-			$this->PageViewSetCfg('error', 'OAuth2 Manager is allowed to run under `Admin` area only ! ...');
+
+		//--
+		if(SmartAuth::test_login_privilege('oauth2') !== true) { // PRIVILEGES
+			$this->PageViewSetCfg('error', 'OAuth2 Manager requires the following privilege: `oauth2` ...');
 			return 403;
 		} //end if
-		if(SmartEnvironment::isTaskArea()) {
-			$this->PageViewSetCfg('error', 'OAuth2 Manager cannot run under Admin Task Area !');
+		//--
+		if(SmartAuth::test_login_restriction('readonly') === true) { // RESTRICTIONS
+			$this->PageViewSetCfg('error', 'OAuth2 Manager is unavailable for the following restriction: `readonly` ...');
+			return 403;
+		} //end if
+		if(SmartAuth::test_login_restriction('virtual') === true) { // RESTRICTIONS
+			$this->PageViewSetCfg('error', 'OAuth2 Manager is unavailable for the following restriction: `virtual` ...');
+			return 403;
+		} //end if
+		//--
+
+		//--
+		if(SmartAuth::is_cluster_current_workspace() !== true) {
+			$this->PageViewSetCfg('error', 'OAuth2 Manager is unavailable outside of your User Account Clustered WorkSpace ...');
 			return 502;
 		} //end if
 		//--
-		if(SmartAuth::test_login_privilege('oauth2') !== true) { // PRIVILEGES
-			$this->PageViewSetCfg('error', 'OAuth2 Manager requires the following privileges: `oauth2` ...');
-			return 403;
-		} //end if
+
+		//--
+		$homeLink = (string) $this->ControllerGetParam('url-script');
+		$arrNameSpaces = [];
+		//--
+		if(SmartEnvironment::isAdminArea() === true) { // allow: adm/tsk ; but this controller does not extends in a task controller
+			//--
+			if(SmartEnvironment::isTaskArea() !== false) {
+				$this->PageViewSetCfg('error', 'OAuth2 Manager cannot run under Admin Task Area !');
+				return 502;
+			} //end if
+			//--
+			$arrNameSpaces = (array) \SmartModExtLib\AuthAdmins\AuthNameSpaces::GetNameSpaces();
+			//--
+		} else { // idx
+			if(SmartAppInfo::TestIfModuleExists('mod-auth-users')) {
+				//--
+				if(class_exists('\\SmartModExtLib\\AuthUsers\\Utils')) {
+					$homeLink = (string) \SmartModExtLib\AuthUsers\Utils::AUTH_USERS_URL_APPS;
+				} //end if
+				//--
+				if(method_exists('\\SmartModExtLib\\AuthUsers\\AuthNameSpaces', 'GetNameSpaces')) {
+					$arrNameSpaces = (array) \SmartModExtLib\AuthUsers\AuthNameSpaces::GetNameSpaces();
+				} //end if
+				//--
+			} //end if
+		} //end if else
 		//--
 
 		//--
@@ -538,8 +577,9 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						[
 							'RELEASE-HASH' 		=> (string) $this->ControllerGetParam('release-hash'),
 							'CURRENT-SCRIPT' 	=> (string) $this->ControllerGetParam('url-script'),
+							'HOME-LINK' 		=> (string) $homeLink,
 							'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=',
-							'AREAS' 			=> (array)  \SmartModExtLib\AuthAdmins\AuthNameSpaces::GetNameSpaces(),
+							'AREAS' 			=> (array)  $arrNameSpaces,
 							'CRR-TIME' 			=> (int)    time(),
 						]
 					)

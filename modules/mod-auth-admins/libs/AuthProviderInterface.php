@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250207
+ * @version 	v.20250314
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -36,8 +36,9 @@ interface AuthProviderInterface {
 	public const AUTH_MODE_PREFIX_AUTHEN 		= 'AUTH:';
 	public const AUTH_MODE_PREFIX_HTTP_BASIC 	= 'HTTP-BASIC:';
 	public const AUTH_MODE_PREFIX_HTTP_BEARER 	= 'HTTP-BEARER:';
+	public const AUTH_MODE_PREFIX_HTTP_TOKEN 	= 'HTTP-TOKEN:';
 
-	public const REGEX_VALID_USERNAME_OR_BEARER = '/[[:ascii:]]+/'; // valid username can't be outside ASCII characters ; normally some of these characters are not quite supported, but be very permissive here, it is just a simple provider, thus validate later more specific ...
+	public const REGEX_VALID_USERNAME_OR_TOKEN_BEARER = '/^[[:graph:]]+$/'; // valid username can't be outside ASCII safe characters ; normally some of these characters are not quite supported, but be very permissive here, it is just a simple provider, thus validate later more specific ...
 	// username it must be very permissive here, must allow also `#token` suffix ...
 	// passwords can contain anything, they are base64 encoded in the URL
 
@@ -46,7 +47,8 @@ interface AuthProviderInterface {
 		'auth-safe'  	=> -1000, // auth safety grade ; https basic auth: 100..102 ; http basic auth: 0..2
 		'auth-user'  	=>    '', // auth user name, for STANDARD BASIC AUTH
 		'auth-pass'  	=>    '', // auth (plain) pass, for STANDARD BASIC AUTH
-		'auth-bearer' 	=>    '', // the AUTH Bearer Token, if provided
+		'auth-bearer' 	=>    '', // the AUTH Bearer Key, if provided
+		'auth-token' 	=>    '', // the AUTH Token Key, if provided
 		'auth-mode'  	=>   '!', // auth mode signature
 	];
 

@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment, SmartUnicode, SmartHtmlParser ; optional-constants: SMART_MARKDOWN_LAZYLOAD_DEFAULT_IMG
- * @version 	v.20250118
+ * @version 	v.20250308
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -52,7 +52,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20250108';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20250308';
 
 	//===================================
 
@@ -1578,7 +1578,7 @@ final class SmartMarkdownToHTML {
 				$media_title = (string) str_replace("\t", ' ', (string)$media_title);
 				//--
 				if(strpos((string)$media_title, 'sfi sfi-') === 0) {
-					return '<i class="sfi sfi-'.Smart::escape_html((string)substr((string)$media_title, 8)).'"'.(isset($atts['style']) ? 'style="'.Smart::escape_html((string)$atts['style']).'"' : '').'></i>&nbsp; '.($media_alt_txt ? self::renderAltOrTitle((string)$media_alt_txt) : '');
+					return '<i class="sfi sfi-'.Smart::escape_html((string)substr((string)$media_title, 8)).'"'.(isset($atts['style']) ? ' style="'.Smart::escape_html((string)$atts['style']).'"' : '').'></i>&nbsp; '.($media_alt_txt ? self::renderAltOrTitle((string)$media_alt_txt) : '');
 				} //end if
 				//--
 			} //end if

@@ -1,22 +1,228 @@
+<script>
+const formSend = (id) => {
+	id = smartJ$Utils.stringPureVal(id, true);
+	if(id == '') {
+		console.warn('Form ID is Empty');
+		return;
+	}
+	smartJ$Browser.SubmitFormByAjax('frm-' + id, '?page=auth-users.settings-api.json', 'yes', () => { if(id === 'password') { jQuery('form#frm-' + id).trigger('reset'); } });
+};
+const fa2Disable = () => {
+	const id = 'fa2disable';
+	const evcode = () => {
+		formSend(id);
+	};
+	smartJ$Browser.ConfirmDialog('<h5>[###TXT-2FA-DISABLE-NOTICE|html|js###]</h5><br><h6>[###TXT-2FA-DISABLE-HINT|html|js###]</h6>', evcode, '[###TXT-2FA-TTL-DISABLE|js###]', null, null, 'alertable', false);
+};
+const accountMultiSessionsHandle = (mode) => {
+	const id = 'msesshandle';
+	if(mode !== 2) {
+		mode = 1;
+	}
+	jQuery('input#msess-mode').val(mode);
+	formSend(id);
+};
+const accountDisable = () => {
+	const id = 'disableaccnt';
+	const evcode = () => {
+		const uid = smartJ$Utils.stringPureVal(jQuery('input#accnt-deactivate-uid').val(), true);
+		jQuery('input#uid-disableaccnt').val(uid);
+		formSend(id);
+	};
+	smartJ$Browser.ConfirmDialog('<h5>[###TXT-ACC-DEACTIVATE-NOTE|html|js###]</h5><br><h6>[###TXT-ACC-DEACTIVATE-CHECK|html|js###]</h6><input id="accnt-deactivate-uid" type="text" maxlength="28" value="" autocomplete="off" class="ux-field" style="width:100%;">', evcode, '[###TXT-BTN-ACC-DEACTIVATE|js###]', null, null, 'alertable', false);
+}
+</script>
+<script>
+jQuery(() => {
+	let hashFragment = '[###REDIR-TAB|trim|js###]';
+	if(hashFragment == '') {
+		hashFragment = smartJ$Utils.stringPureVal(window.location.hash.substring(1), true).toLowerCase();
+	}
+	switch(hashFragment) {
+		case 'contact':
+		case 'password':
+		case 'security':
+		case 'account':
+			setTimeout(() => { jQuery('#tab-' + hashFragment).prop('checked', true); }, 10);
+			break;
+	}
+});
+</script>
 <div id="settings-container">
 	<div class="ux-grid-row">
-		<div class="ux-grid-col s12 m3 l2">
-			<b>[###TXT-FULL-NAME|html###]</b>
-		</div>
-		<div class="ux-grid-col s12 m9 l10">
-			[###AUTH-FULL-NAME|html###]
-		</div>
-	</div>
-	<div class="ux-grid-row">
-		<div class="ux-grid-col s12 m3 l2">
-			<b>[###TXT-DETAILS|html###]</b>
-		</div>
-		<div class="ux-grid-col s12 m9 l10">
-			<pre>[###AUTH-DETAILS|html###]</pre>
+		<div class="ux-grid-col s12">
+			<div class="ux-tab-area dark">
+				<input type="radio" id="tab-contact" name="css-tabsd" checked>
+				<input type="radio" id="tab-password" name="css-tabsd">
+				<input type="radio" id="tab-security" name="css-tabsd">
+				<input type="radio" id="tab-account" name="css-tabsd">
+				<ul class="ux-tabs dark">
+					<li class="ux-tab dark"><label for="tab-contact"><i class="sfi sfi-user-tie"></i> &nbsp; [###TXT-TAB-CINFO|html###]</label></li>
+					<li class="ux-tab dark"><label for="tab-password"><i class="sfi sfi-key"></i> &nbsp; [###TXT-TAB-PASSWORD|html###]</label></li>
+					<li class="ux-tab dark"><label for="tab-security"><i class="sfi sfi-shield"></i> &nbsp; [###TXT-TAB-SECURITY|html###]</label></li>
+					<li class="ux-tab dark"><label for="tab-account"><i class="sfi sfi-fa-cogs"></i> &nbsp; [###TXT-TAB-ACCOUNT|html###]</label></li>
+				</ul>
+				<div class="ux-tab-content dark">
+					<div style="max-width: 640px;">
+						<form id="frm-contact" class="ux-form" action="#" method="post" onSubmit="return false;">
+							<input type="hidden" name="action" value="update:contact-info">
+							<div class="ux-grid-row">
+								<div class="ux-grid-col s12 m2">
+									<label>[###TXT-FULL-NAME|html###]</label>
+								</div>
+								<div class="ux-grid-col s12 m10">
+									<input type="text" maxlength="129" autocomplete="off" name="frm[name]" value="[###AUTH-FULL-NAME|html###]" placeholder="[###TXT-FULL-NAME|html###]" class="ux-field ux-field-xl" style="width:280px;" required>
+								</div>
+							</div>
+							<div class="ux-grid-row">
+								<div class="ux-grid-col s12 m12">
+									<br>
+									<button type="button" class="ux-button" onclick="formSend('contact'); return false;"><i class="sfi sfi-floppy-disk"></i> &nbsp; [###TXT-BTN-UPD-CINFO|html###]</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="ux-tab-content dark">
+					<div style="max-width: 640px;">
+						<form id="frm-password" class="ux-form" action="#" method="post" onSubmit="return false;">
+							<input type="hidden" name="action" value="update:change-password">
+							<div class="ux-grid-row">
+								<div class="ux-grid-col s12 m4">
+									<label>[###TXT-NEW-PASS|html###]</label>
+								</div>
+								<div class="ux-grid-col s12 m8">
+									<input type="password" maxlength="128" autocomplete="off" name="frm[pass]" value="" placeholder="[###TXT-NEW-PASS|html###]" class="ux-field ux-field-xl" style="width:280px;" required>
+								</div>
+							</div>
+							<div class="ux-grid-row">
+								<div class="ux-grid-col s12 m4">
+									<label>[###TXT-NEW-REPASS|html###]</label>
+								</div>
+								<div class="ux-grid-col s12 m8">
+									<input type="password" maxlength="128" autocomplete="off" name="frm[rpass]" value="" placeholder="[###TXT-NEW-REPASS|html###]" class="ux-field ux-field-xl" style="width:280px;" required>
+								</div>
+							</div>
+							<div class="ux-grid-row">
+								<div class="ux-grid-col s12 m4">
+									<label>[###TXT-ALGO-PASS|html###]</label>
+								</div>
+								<div class="ux-grid-col s12 m8">
+									<select name="frm[algo]">
+										<option value="123">BCrypt</option>
+										<option value="77">PBKDF2</option>
+									</select>
+								</div>
+							</div>
+							<div class="ux-grid-row">
+								<div class="ux-grid-col s12 m12">
+									<br>
+									<button type="button" class="ux-button ux-button-alt" onclick="formSend('password'); return false;"><i class="sfi sfi-floppy-disk"></i> &nbsp; [###TXT-BTN-UPD-PASS|html###]</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="ux-tab-content dark">
+					<div style="max-width: 640px;">
+						<div class="ux-grid-row">
+							<div class="ux-grid-col s12 m4">
+								<label>[###TXT-2FA|html###]</label>
+							</div>
+							<div class="ux-grid-col s12 m8">
+								[%%%IF:AUTH-2FA:==yes;%%%]
+								<b><span title="ON">[###TXT-2FA-ENABLED|html###]</span></b>
+								<br>
+								<form id="frm-fa2disable" class="ux-form" action="#" method="post" onSubmit="return false;" autocomplete="off">
+									<input type="hidden" name="action" value="2fa:disable">
+									<button type="button" class="ux-button ux-button-alt" onclick="fa2Disable(); return false;"><i class="sfi sfi-fa-umbrella"></i> &nbsp; [###TXT-2FA-BTN-DISABLE|html###]</button>
+								</form>
+								[%%%ELSE:AUTH-2FA%%%]
+								<b><span title="OFF">[###TXT-2FA-DISABLED|html###]</span></b>
+								<br>
+								<a href="?page=auth-users.settings&mode=2fa" data-smart="open.modal" class="ux-button"><i class="sfi sfi-fa-umbrella"></i> &nbsp; [###TXT-2FA-BTN-ENABLE|html###]</a>
+								[%%%/IF:AUTH-2FA%%%]
+							</div>
+						</div>
+						[%%%IF:AUTH-ARR-PLUGINS:@>0;%%%]
+						<br><hr><br>
+						<form id="frm-authsso" class="ux-form" action="#" method="post" onSubmit="return false;" autocomplete="off">
+							<input type="hidden" name="action" value="update:sso-plugins">
+							<div class="ux-grid-row">
+								<div class="ux-grid-col s12 m4">
+									<label>[###TXT-AUTH-SSO-PLUGINS|html###]</label>
+									<div style="font-size:0.75rem;"><br>
+										[###TXT-AUTH-SSO-NOTICE|html###]
+									</div>
+								</div>
+								<div class="ux-grid-col s12 m8">
+									[%%%LOOP:AUTH-ARR-PLUGINS%%%]
+										<input type="checkbox" name="frm[allowfed][]" value="[###AUTH-ARR-PLUGINS.ID|html###]"[%%%IF:AUTH-ARR-PLUGINS.STATE:==active;%%%] checked[%%%/IF:AUTH-ARR-PLUGINS.STATE%%%]>
+										<img height="32" style="margin:10px;" src="data:image/svg+xml,[###AUTH-ARR-PLUGINS.SVG|url|html###]">
+										<span style="font-weight:bold;">[###AUTH-ARR-PLUGINS.NAME|html###]</span>
+										<br>
+									[%%%/LOOP:AUTH-ARR-PLUGINS%%%]
+								</div>
+							</div>
+							<div class="ux-grid-row">
+								<div class="ux-grid-col s12 m12">
+									<button type="button" class="ux-button ux-button-alt" onclick="formSend('authsso'); return false;"><i class="sfi sfi-floppy-disk"></i> &nbsp; [###TXT-BTN-AUTH-SSO-UPDATE|html###]</button>
+								</div>
+							</div>
+						</form>
+						[%%%ELSE:AUTH-ARR-PLUGINS%%%]
+							<!-- Auth Plugins: N/A -->
+						[%%%/IF:AUTH-ARR-PLUGINS%%%]
+					</div>
+				</div>
+				<div class="ux-tab-content dark">
+					<div style="max-width: 640px;">
+						<div class="ux-grid-row">
+							<div class="ux-grid-col s12 m4">
+								[###TXT-DATE-REGISTER|html###]
+							</div>
+							<div class="ux-grid-col s12 m8">
+								<b>[###AUTH-DATE-REGISTER|html###]</b>
+							</div>
+						</div>
+						<br>
+						<form id="frm-msesshandle" class="ux-form" action="#" method="post" onSubmit="return false;">
+							<input type="hidden" name="action" value="handle:multisessions">
+							<input type="hidden" name="frm[mode]" value="" id="msess-mode">
+							<div class="ux-grid-row">
+								<div class="ux-grid-col s12 m4">
+									<label>[###TXT-AUTH-MULTISESSIONS|html###]</label>
+								</div>
+								<div class="ux-grid-col s12 m8" title="[###TXT-HINT-MULTISESSIONS|html###]">
+									[%%%IF:AUTH-ALLOW-MULTISESSIONS:==yes;%%%]
+									<b><span title="ON">[###AUTH-MULTISESSIONS-ON|html###]</span></b>
+									<br>
+									<button type="button" class="ux-button ux-button-super" onclick="accountMultiSessionsHandle(2); return false;"><i class="sfi sfi-price-tags"></i> &nbsp; [###TXT-BTN-ACC-MSESS-DISABLE|html###]</button>
+									[%%%ELSE:AUTH-ALLOW-MULTISESSIONS%%%]
+									<b><span title="OFF">[###AUTH-MULTISESSIONS-OFF|html###]</span></b>
+									<br>
+									<button type="button" class="ux-button ux-button-alt ux-button-super" onclick="accountMultiSessionsHandle(1); return false;"><i class="sfi sfi-price-tag"></i> &nbsp; [###TXT-BTN-ACC-MSESS-ENABLE|html###]</button>
+									[%%%/IF:AUTH-ALLOW-MULTISESSIONS%%%]
+								</div>
+							</div>
+						</form>
+						<hr>
+						<br>
+						<form id="frm-disableaccnt" class="ux-form" action="#" method="post" onSubmit="return false;">
+							<input type="hidden" name="action" value="disable:account">
+							<input type="hidden" name="frm[uid]" value="" id="uid-disableaccnt">
+							<div class="ux-grid-row">
+								<div class="ux-grid-col s12 m12">
+									<button type="button" class="ux-button ux-button-special ux-button-super" onclick="accountDisable(); return false;"><i class="sfi sfi-user-minus"></i> &nbsp; [###TXT-BTN-ACC-DEACTIVATE|html###]</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<hr>
 	<br>
-	<div style="text-align:center;"><button type="button" class="ux-button ux-button-special ux-button-super"><i class="sfi sfi-user-minus"></i> &nbsp;  Deactivate Your Account</button></div>
 </div>
 <br>

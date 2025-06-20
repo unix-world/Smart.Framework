@@ -1,5 +1,5 @@
 <?php
-// PHP Auth Csrf for Smart.Framework
+// PHP Auth Users Csrf for Smart.Framework
 // Module Library
 // (c) 2008-present unix-world.org - all rights reserved
 
@@ -22,25 +22,25 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 /**
  * Class: \SmartModExtLib\AuthUsers\AuthCsrf
- * Manages the Auth Csrf Keys
+ * Auth Users Csrf
  *
  * @access 		private
  * @internal
  *
- * @version 	v.20250207
- * @package 	AuthUsers
+ * @version 	v.20250314
+ * @package 	modules:AuthUsers
  *
  */
 final class AuthCsrf {
 
+	// ::
 
 	public const AUTH_USERS_COOKIE_NAME_CSRF = 'Sf_UserAuth_Csrf'; // {{{SYNC-AUTH-USERS-COOKIE-NAME-CSRF}}} ; CSRF key
 
 
-	// this is the private key, unencrypted
 	public static function csrfNewPrivateKey() : string {
 		//--
-		return (string) \SmartCsrf::newPrivateKey();
+		return (string) \SmartCsrf::newPrivateKey(); // this is the private key, unencrypted
 		//--
 	} //END FUNCTION
 

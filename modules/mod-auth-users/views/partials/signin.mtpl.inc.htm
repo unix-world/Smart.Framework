@@ -1,14 +1,45 @@
 <!-- sign-in -->
+	<script>
+	const AuthFA2 = { digits: null };
+	const authSignInRequest = () => {
+		const user = smartJ$Utils.stringPureVal(jQuery('input#fld-user').val(), true);
+		const pass = smartJ$Utils.stringPureVal(jQuery('input#fld-pass').val(), true);
+		const url = '?page=auth-users.authorize-api.json&action=auth' + '&frm[user]=' + smartJ$Utils.escape_url(user) + '&frm[pass]=' + smartJ$Utils.escape_url(pass) + '&frm[2fa]=' + smartJ$Utils.escape_url(smartJ$Utils.stringPureVal(AuthFA2.digits || ''));
+		smartJ$Browser.SubmitFormByAjax(null, url, 'yes');
+	};
+	</script>
 	<h5><i class="sfi sfi-users sfi-xl"></i> &nbsp; [###TXT-SIGNIN-TITLE|html###]</h5>
 	<br>
 [%%%IF:IS-FA2-AVAILABLE:==1;%%%]
+	<link rel="stylesheet" type="text/css" href="lib/js/jquery/pin-login/jquery.pinlogin.css" media="all">
+	<script src="lib/js/jquery/pin-login/jquery.pinlogin.js"></script>
+	<script>[%%%COMMENT%%%]<!-- {{{SYNC-JS-ACTION-2FA-DISPLAY}}} -->[%%%/COMMENT%%%]
+	const display2FAZone = () => {
+		jQuery('#zone-fa2').show();
+		jQuery('#fld-user').prop('readonly', true);
+		jQuery('#fld-pass').prop('readonly', true);
+	};
+	</script>
 	[%%%IF:IS-FA2-REQUIRED:!=1;%%%]<style>.hide2FA{ display:none; }</style>[%%%ELSE:IS-FA2-REQUIRED%%%]<!-- 2FA: required -->[%%%/IF:IS-FA2-REQUIRED%%%]
 	<div id="zone-fa2" class="ux-control-group[%%%IF:IS-FA2-REQUIRED:!=1;%%%] hide2FA[%%%/IF:IS-FA2-REQUIRED%%%]" title="[###TXT-2FA-HINT|html###]">
 		<label style="font-size: 0.75rem;"><i class="sfi sfi-clock"></i>&nbsp;[###TXT-2FA-CODE|html###]</label>
 		<span id="fa2-input" title="[###TXT-2FA-TITLE|html###]"></span>
 	</div>
+	<script>
+	(() => {
+		jQuery('#fa2-input').pinlogin({
+			autofocus: false,
+			hideinput: true,
+			delay: 75,
+			fields: 8,
+			complete: (digits) => {
+				AuthFA2.digits = digits;
+			},
+		});
+	})();
+	</script>
 [%%%ELSE:IS-FA2-AVAILABLE%%%]
-<!-- 2FA: N/A -->
+	<!-- 2FA: N/A --><script>const display2FAZone = () => {};</script>
 [%%%/IF:IS-FA2-AVAILABLE%%%]
 	<div id="zone-user" class="ux-control-group">
 		<label><i class="sfi sfi-user sfi-xl"></i></label>
@@ -27,8 +58,10 @@
 		<a class="ux-button ux-button-info ux-button-super signup" href="?page=auth-users.signup" title="[###TXT-BTN-SIGNUP|html###]"><i class="sfi sfi-user-plus"></i> &nbsp; [###TXT-BTN-SIGNUP-DEFAULT|html###]</a>
 	</div>
 	<div class="ux-control-group">
-		<a class="ux-button ux-button-highlight ux-button-super recovery" href="#recovery" title="[###TXT-BTN-RECOVERY|html###]"><i class="sfi sfi-unlocked"></i> &nbsp; [###TXT-BTN-PASSWORD-RESET|html###]</a>
+		<a class="ux-button ux-button-highlight ux-button-super recovery" href="?page=auth-users.recovery" title="[###TXT-BTN-RECOVERY|html###]"><i class="sfi sfi-unlocked"></i> &nbsp; [###TXT-BTN-PASSWORD-RESET|html###]</a>
 	</div>
 	<br>
-	<a href="#instructions">[###TXT-LNK-TROUBLE-SIGNIN|html###]</a>
+	<div class="ux-control-group">
+		<a class="ux-button ux-button-dark ux-button-super home" href="[###URL-HOME|html###]"><i class="sfi sfi-home"></i> &nbsp; [###TXT-LNK-HOME-PAGE|html###]</a>
+	</div>
 <!-- /sign-in -->

@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry, SmartValidator, SmartParser ; optional-constants: SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20250214
+ * @version 	v.20250304
  * @package 	Application:Utils
  *
  */
@@ -1963,12 +1963,13 @@ final class SmartUtils {
 
 	//================================================================
 	// Ex: http(s)://domain(:port)/sites/test/ (skip port if 80 or 443) if skip port default is set to TRUE (default behaviour) ; or http(s)://domain:port/sites/test/ if skip port default is set to FALSE
-	public static function get_server_current_url(bool $skip_port_if_default=true) : string {
+	public static function get_server_current_url(bool $skip_port_if_default=true, bool $get_basedomain=false) : string {
 		//--
 		$cache_key = (string)__FUNCTION__.'#with-port';
 		if($skip_port_if_default === true) {
 			$cache_key = (string)__FUNCTION__.'#skip-default-port';
 		} //end if
+		$cache_key .= (string) (($get_basedomain === true) ? '#with-basedom' : '#with-dom');
 		//--
 		if(array_key_exists((string)$cache_key, self::$cache)) {
 			return (string) self::$cache[(string)$cache_key];
@@ -1982,6 +1983,9 @@ final class SmartUtils {
 		$used_port = ':'.$current_port;
 		//--
 		$current_domain = (string) self::get_server_current_domain_name(); // this shoud not return an empty value, but just in case
+		if($get_basedomain === true) {
+			$current_domain = (string) self::get_server_current_basedomain_name();
+		} //end if
 		if((string)$current_domain == '') {
 			Smart::log_warning(__METHOD__.' # Cannot Determine Current Server URL / Domain');
 			$current_domain = (string) self::FAKE_IP_SERVER; // use a fake IP, that does not exists {{{SYNC-SRV-DETECTION-FAKE-IP}}}

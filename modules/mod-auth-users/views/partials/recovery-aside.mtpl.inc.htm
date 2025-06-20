@@ -1,0 +1,53 @@
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/styles-signup-register.mtpl.inc.htm!@@@]
+<div id="signup-container">
+	<div class="ux-grid-row">
+		<div class="ux-grid-col s12">
+			<h2>[###TXT-RECOVERY-TITLE|html###]</h2>
+		</div>
+		<div class="ux-grid-col s12" style="text-align:right; color:#5C88CF;">
+			<h3><i>[###WEBSITE-NAME|html###]</i></h3>
+		</div>
+	</div>
+	<hr>
+	<div class="ux-grid-row" style="color:#5C88CF;">
+		<div class="ux-grid-col s12">
+			<i class="sfi sfi-xl sfi-info"></i> &nbsp; <h4>[###TXT-RECOVERY-INFO|html###]</h4>
+		</div>
+		<div class="ux-grid-col s12">
+			<div>[###TXT-RECOVERY-HEADLINE|html|nl2br###]</div>
+		</div>
+	</div>
+	<hr>
+	<br>
+	<div class="ux-grid-row">
+		<div class="ux-grid-col s12">
+			<i class="sfi sfi-xl sfi-unlocked" style="color:#ED2559;"></i> &nbsp; <h4>[###TXT-RECOVERY-STEPS|html###]</h4>
+		</div>
+		<div class="ux-grid-col s12" style="color:#5C88CF;">
+			<div>[###TXT-RECOVERY-HOWTO|html|nl2br###]</div>
+		</div>
+	</div>
+[%%%IF:CAPTCHA-HTML:!=;%%%]
+	<div class="ux-grid-row">
+		<div class="ux-grid-col s12" style="color:#ED2559;">
+			<i class="sfi sfi-lg sfi-circle-right"></i> &nbsp; <h6>[###TXT-CAPTCHA-HINT|html###]</h6>
+		</div>
+		<div class="ux-grid-col s12">
+			<div style="display:inline-block;">[###CAPTCHA-HTML###]</div>
+		</div>
+	</div>
+[%%%ELSE:CAPTCHA-HTML%%%]
+	<!-- no captcha -->
+[%%%/IF:CAPTCHA-HTML%%%]
+	<div class="ux-grid-row">
+		<div class="ux-grid-col s12">
+			<i class="sfi sfi-xl sfi-envelop" style="color:#5C88CF;"></i> &nbsp; <h5>[###TXT-RECOVERY-EMAIL|html###]</h5>
+		</div>
+		<div class="ux-grid-col s12" style="color:#5C88CF;">
+			<div>[###TXT-RECOVERY-SPAM|html|nl2br###]</div>
+		</div>
+	</div>
+	<br>
+	<hr>
+</div>
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/powered-by-unicorn.mtpl.inc.htm!@@@]

@@ -2,6 +2,29 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+June 20, 2025
+	* speedup: create log space just for current space: IDX / ADM / TSK
+	* captcha translations fixes
+	* Mod Auth Users fixes: translations, cluster settings, various
+
+March 14, 2025
+	* Mod Auth Users: clustering, 2FA, settings
+	* QRCode SVG fixes
+
+March 07, 2025
+	* gmdate +0000 fixes
+	* SWT verify fixes
+	* mailer fixes for better compatibility with iOS
+
+March 04, 2025
+	* Improve Language by Subdomain detection
+	* Add Language by Cookie detection and set helper
+
+March 01, 2025
+	* Mod Auth Users + Ext
+	* fixes and optimizations
+	* htaccess extra settings
+
 February 14, 2025
 	* refactoring ZLib and GZip methods under lib archive
 	* Snappy compress/uncompress for PHP and Javascript

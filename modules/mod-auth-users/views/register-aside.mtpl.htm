@@ -1,0 +1,6 @@
+[%%%IF:IS-AUTHENTICATED:==1;%%%]
+<br>
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/account-aside.mtpl.inc.htm!@@@]
+[%%%ELSE:IS-AUTHENTICATED%%%]
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/register-aside.mtpl.inc.htm!@@@]
+[%%%/IF:IS-AUTHENTICATED%%%]

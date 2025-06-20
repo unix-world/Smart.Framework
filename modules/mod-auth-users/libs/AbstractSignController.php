@@ -15,7 +15,9 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 abstract class AbstractSignController extends \SmartAbstractAppController {
 
-	// r.20250207
+	// r.20250529
+
+	protected ?object $translator = null;
 
 	protected ?array $semaphores = null;
 	protected string $templatePath = '';
@@ -34,8 +36,25 @@ abstract class AbstractSignController extends \SmartAbstractAppController {
 	final public function Initialize() {
 
 		//--
+		if(!\defined('\\SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS') OR (\SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS !== true)) {
+			$this->PageViewSetErrorStatus(503, 'Mod Auth Users is NOT Enabled ...');
+			return false;
+		} //end if
+		//--
+		if(\SmartModExtLib\AuthUsers\Utils::isValidRequestUri() !== true) {
+			$this->PageViewSetErrorStatus(404, 'Auth Users cannot handle a Custom Request URI');
+			return false;
+		} //end if
+		//--
+
+		//--
 		if(!\SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
 			$this->PageViewSetErrorStatus(500, 'Mod AuthAdmins is missing !');
+			return false;
+		} //end if
+		//--
+		if(!\SmartAppInfo::TestIfModuleExists('mod-oauth2')) {
+			$this->PageViewSetErrorStatus(500, 'Mod Oauth2 is missing !');
 			return false;
 		} //end if
 		//--
@@ -43,7 +62,7 @@ abstract class AbstractSignController extends \SmartAbstractAppController {
 		//--
 		if(\SmartEnvironment::isAdminArea() !== false) {
 			\Smart::log_warning(__METHOD__.' # ERR: Controller cannot run under Admin area');
-			$this->PageViewSetErrorStatus(500, 'ERROR: This Abstract Controller must run inside Index Area');
+			$this->PageViewSetErrorStatus(502, 'ERROR: This Abstract Controller must run inside Index Area');
 			return false;
 		} //end if
 		//--
@@ -58,6 +77,16 @@ abstract class AbstractSignController extends \SmartAbstractAppController {
 		$redir = (string) \trim((string)$this->RequestVarGet('redir', '', 'string'));
 		if((string)$redir != '') {
 			\SmartModExtLib\AuthUsers\Utils::setRedirUrlCookie((string)$redir);
+		} //end if
+		//--
+
+		//--
+		if($this->translator === null) {
+			$this->translator = \SmartTextTranslations::getTranslator('mod-auth-users', 'auth-users');
+			if($this->translator === null) {
+				$this->PageViewSetErrorStatus(500, 'Mod Auth Users Translator is Missing !');
+				return false;
+			} //end if
 		} //end if
 		//--
 
@@ -111,9 +140,12 @@ abstract class AbstractSignController extends \SmartAbstractAppController {
 
 	public function Run() {
 		//--
+		// pre-define it to return an empty blank page ; this method have to be re-defined
+		//--
 		\Smart::log_warning(__METHOD__.' # No Output. This method must be redefined in the running controller ...');
 		//--
-		return true; // pre-define it to return an empty blank page
+		$this->PageViewSetErrorStatus(500, 'No Output');
+		return;
 		//--
 	} //END FUNCTION
 

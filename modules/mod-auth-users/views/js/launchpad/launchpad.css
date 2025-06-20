@@ -1,8 +1,9 @@
 
 /*
-js launchpad
-(c) 2025-present unix-world.org
-r.20250131
+// js launchpad
+// based on github.com/linkorb/launchpad # (c) 2015 LinkORB
+// (c) 2025-present unix-world.org
+// r.20250223.2358
 */
 
 #launchpad_overlay {
@@ -16,7 +17,7 @@ r.20250131
 	overflow-y: auto;
 	opacity: 0;
 	transition: opacity 0.25s linear;
-	background-color: rgba(22, 22, 22, 0.78);
+	background-color: rgba(22, 22, 22, 0.87);
 }
 
 .launchpad-active > :not(#launchpad_overlay) {

@@ -10,17 +10,32 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_AREA', 'ADMIN'); // SHARED
+define('SMART_APP_MODULE_AREA', 'SHARED'); // SHARED
 define('SMART_APP_MODULE_AUTH', true);
 
-/**
- * Admin Controller
- *
- * @ignore
- * @version v.20250124
- *
- */
-final class SmartAppAdminController extends SmartAbstractAppController {
+
+final class SmartAppIndexController extends AbstractController {}
+
+final class SmartAppTaskController  extends AbstractController {}
+
+final class SmartAppAdminController extends AbstractController {}
+
+
+abstract class AbstractController extends SmartAbstractAppController {
+
+	// v.20250218
+
+	public function Initialize() {
+		//--
+		if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
+			$this->PageViewSetErrorStatus(500, 'Mod AuthAdmins is missing !');
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
 
 	public function Run() {
 
@@ -30,18 +45,33 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			return 403;
 		} //end if
 		//--
-		if(!SmartEnvironment::isAdminArea()) {
-			$this->PageViewSetCfg('error', 'OAuth2 Get.Token requires Admin Area !');
-			return 502;
+
+		//--
+		if(SmartAuth::test_login_privilege('oauth2') !== true) { // PRIVILEGES
+			$this->PageViewSetCfg('error', 'OAuth2 Get.Token requires the following privilege: `oauth2`');
+			return 403;
 		} //end if
-		if(SmartEnvironment::isTaskArea()) {
-			$this->PageViewSetCfg('error', 'OAuth2 Get.Token cannot run under Admin Task Area !');
+		//--
+		if(SmartAuth::test_login_restriction('readonly') === true) { // RESTRICTIONS
+			$this->PageViewSetCfg('error', 'OAuth2 Get.Token is unavailable for the following restriction: `readonly` ...');
+			return 403;
+		} //end if
+		// the `virtual` restriction is allowed to operate in this area
+		//--
+
+		//--
+		if(SmartAuth::is_cluster_current_workspace() !== true) {
+			$this->PageViewSetCfg('error', 'OAuth2 Get.Token is unavailable outside of your User Account Clustered WorkSpace ...');
 			return 502;
 		} //end if
 		//--
-		if(SmartAuth::test_login_privilege('oauth2') !== true) { // PRIVILEGES
-			$this->PageViewSetCfg('error', 'OAuth2 Get.Token requires the following privileges: `oauth2`');
-			return 403;
+
+		//--
+		if(SmartEnvironment::isAdminArea() === true) {
+			if(SmartEnvironment::isTaskArea() !== false) {
+				$this->PageViewSetCfg('error', 'OAuth2 Get.Token cannot run under Admin Task Area !');
+				return 502;
+			} //end if
 		} //end if
 		//--
 

@@ -15,9 +15,11 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 abstract class AbstractAppsController extends \SmartModExtLib\AuthUsers\AbstractAccountController {
 
-	// r.20250207
+	// r.20250314
 
-	protected string $title = 'Apps`n`Dashboard';
+	// SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS 	is verified by Initialize() in AbstractAccountController
+	// Custom request URI Restriction 			is verified by Initialize() in AbstractAccountController
+
 	protected string $logo = ''; // optional
 
 	protected ?array $semaphores = null;
@@ -25,25 +27,44 @@ abstract class AbstractAppsController extends \SmartModExtLib\AuthUsers\Abstract
 	protected string $templateFile = 'template-apps.htm'; 					// this must be hardcoded because this class can be extended in other modules
 
 
-	protected function setAppMenuHtml() : string { // optional
+	protected function setAppTitle() : string {
 		//--
-		return '';
+		return (string) $this->translator->text('apps-n-dashboard');
 		//--
 	} //END FUNCTION
 
 
-	final protected function preRun() : void {
+	protected function setAppMenuHtml() : string { // optional
+		//--
+		return '<!-- app menu html -->';
+		//--
+	} //END FUNCTION
+
+
+	final protected function preRun() : bool {
+		//--
+		if(\SmartAuth::is_cluster_current_workspace() !== true) {
+			$this->PageViewSetErrorStatus(502, 'This App is unavailable outside of your User Account Clustered WorkSpace');
+			return false;
+		} //end if
+		//--
+		$title = (string) \trim((string)$this->setAppTitle());
+		if((string)$title == '') {
+			$title = (string) $this->translator->text('apps-n-dashboard');
+		} //end if
 		//--
 		$this->PageViewSetVars([
-			'title' => (string) $this->title,
-			'main' 		=> (string) \SmartMarkersTemplating::render_file_template(
+			'title' => (string) $title,
+			'main' 	=> (string) \SmartMarkersTemplating::render_file_template(
 				(string) 'modules/mod-auth-users/views/apps.mtpl.htm', // this must be hardcoded because this class can be extended in other modules
 				[
+					//--
+					'WEBSITE-NAME' 				=> (string) \Smart::get_from_config('app.info-url', 'string'),
 					//--
 					'AUTH-USERNAME' 			=> (string) \SmartAuth::get_auth_username(),
 					'CURRENT-ACTION' 			=> (string) $this->ControllerGetParam('action'),
 					//--
-					'APP-TITLE' 				=> (string) (string) $this->title,
+					'APP-TITLE' 				=> (string) (string) $title,
 					'APP-LOGO' 					=> (string) (string) $this->logo,
 					'APP-MENU-HTML' 			=> (string) (string) $this->setAppMenuHtml(),
 					//--
@@ -53,21 +74,40 @@ abstract class AbstractAppsController extends \SmartModExtLib\AuthUsers\Abstract
 				(string) 'modules/mod-auth-users/views/apps-aside.mtpl.htm', // this must be hardcoded because this class can be extended in other modules
 				[
 					//--
+					'URL-PREFIX-MASTER' 		=> (string) \SmartModExtLib\AuthUsers\AuthClusterUser::getAuthClusterUrlPrefixMaster(),
+					'URL-PREFIX-LOCAL' 			=> (string) \SmartModExtLib\AuthUsers\AuthClusterUser::getAuthClusterUrlPrefixLocal(),
+					//--
+					'WEBSITE-NAME' 				=> (string) \Smart::get_from_config('app.info-url', 'string'),
+					//--
 					'AUTH-USERNAME' 			=> (string) \SmartAuth::get_auth_username(),
 					'CURRENT-ACTION' 			=> (string) $this->ControllerGetParam('action'),
+					//--
+					'SIGNED-TITLE' 				=> (string) $this->translator->text('signed-in'),
+					'SIGN-OUT' 					=> (string) $this->translator->text('btn-signout'),
+					'MY-ACCOUNT' 				=> (string) $this->translator->text('my-account'),
+					'MY-DASHBOARD' 				=> (string) $this->translator->text('my-dashboard'),
+					'MY-APPS' 					=> (string) $this->translator->text('my-apps'),
+					'CLICK-EXPAND-ON-OFF' 		=> (string) $this->translator->text('click-expand'),
+					//--
+					'APPS-JSON' 				=> (string) \Smart::json_encode((array)\SmartModExtLib\AuthUsers\Apps::getApps()),
 					//--
 				]
 			),
 		]);
+		//--
+		return true;
 		//--
 	} //END FUNCTION
 
 
 	public function Run() {
 		//--
+		// pre-define it to return an empty blank page ; this method have to be re-defined
+		//--
 		\Smart::log_warning(__METHOD__.' # No Output. This method must be redefined in the running controller ...');
 		//--
-		return true; // pre-define it to return an empty blank page
+		$this->PageViewSetErrorStatus(500, 'No Output');
+		return;
 		//--
 	} //END FUNCTION
 

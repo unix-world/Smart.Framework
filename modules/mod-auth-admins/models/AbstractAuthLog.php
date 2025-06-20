@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 abstract class AbstractAuthLog {
 
 	// ->
-	// v.20250207
+	// v.20250314
 
 
 	abstract public function __construct(); // THIS SHOULD BE THE ONLY METHOD IN THIS CLASS THAT THROW EXCEPTIONS !!!

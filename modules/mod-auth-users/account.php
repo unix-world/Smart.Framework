@@ -17,12 +17,15 @@ define('SMART_APP_MODULE_AUTH', true);
 
 final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractAccountController {
 
-	// r.20250207
+	// r.20250620
+
+	// SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS 	is verified by Initialize() in AbstractAccountController
+	// Custom request URI Restriction 			is verified by Initialize() in AbstractAccountController
 
 	public function Run() {
 
 		//--
-		$title = 'Welcome to Your Account';
+		$title = (string) $this->translator->text('welcome');
 		//--
 		$this->PageViewSetVars([
 			'title' 	=> (string) $title,
@@ -30,13 +33,16 @@ final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractAc
 				(string) $this->ControllerGetParam('module-view-path').'account.mtpl.htm',
 				[
 					//--
+					'URL-PREFIX-MASTER' 		=> (string) \SmartModExtLib\AuthUsers\AuthClusterUser::getAuthClusterUrlPrefixMaster(),
+					'URL-PREFIX-LOCAL' 			=> (string) \SmartModExtLib\AuthUsers\AuthClusterUser::getAuthClusterUrlPrefixLocal(),
+					//--
 					'AUTH-USERNAME' 			=> (string) SmartAuth::get_auth_username(),
-					'TXT-SIGNED-TITLE' 			=> 'You are Signed-In',
-					'TXT-SIGNOUT' 				=> 'Sign-Out',
-					'TXT-BTN-ACCOUNT' 			=> 'Display Your Account',
-					'TXT-BTN-SETTINGS' 			=> 'Your Account Settings',
+					'TXT-SIGNED-TITLE' 			=> (string) $this->translator->text('signed-in'),
+					'TXT-SIGNOUT' 				=> (string) $this->translator->text('btn-signout'),
+					'TXT-BTN-ACCOUNT' 			=> (string) $this->translator->text('btn-account-display'),
+					'TXT-BTN-SETTINGS' 			=> (string) $this->translator->text('btn-account-settings'),
 					'CURRENT-ACTION' 			=> (string) $this->ControllerGetParam('action'),
-					'TXT-APPS' 					=> 'Apps and Dashboard',
+					'TXT-APPS' 					=> (string) $this->translator->text('apps-and-dashboard'),
 					//--
 				]
 			),
@@ -44,11 +50,13 @@ final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractAc
 				(string) $this->ControllerGetParam('module-view-path').'account-aside.mtpl.htm',
 				[
 					//--
+					'TXT-NAV-ACCOUNT' 			=> (string) $this->translator->text('nav-account'),
 					'AUTH-USERNAME' 			=> (string) SmartAuth::get_auth_username(),
-					//--
 					'TXT-ACC-TITLE' 			=> (string) $title,
 					'AUTH-ID' 					=> (string) SmartAuth::get_auth_id(),
-					'TXT-USER-ID' 				=> 'UserID',
+					'TXT-USER-ID' 				=> (string) $this->translator->text('id-user'),
+					'CLUSTER-ID' 				=> (string) SmartAuth::get_auth_cluster_id(),
+					'TXT-CLUSTER-ID' 			=> (string) $this->translator->text('id-cluster'),
 					//--
 				]
 			),

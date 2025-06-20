@@ -39,7 +39,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @ignore
  *
  * @depends     PHP classes: Smart, SmartHashCrypto, SmartQR2DBarcode
- * @version 	v.20250207
+ * @version 	v.20250314
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -106,7 +106,7 @@ final class Auth2FTotp {
 
 
 	//==============================================================
-	public static function GenerateBarcodeQrCodeSVGFromUrl(string $barcode_2faurl, string $hexcolor='#373737') {
+	public static function GenerateBarcodeQrCodeSVGFromUrl(string $barcode_2faurl, string $hexcolor='#373737', string $bghexcolor='#FFFFFF') {
 		//--
 		$barcode_2faurl = (string) \trim((string)$barcode_2faurl);
 		if(
@@ -117,7 +117,7 @@ final class Auth2FTotp {
 			return '';
 		} //end if
 		//--
-		return (string) (new \SmartQR2DBarcode('L'))->renderAsSVG((string)$barcode_2faurl, [ 'cm' => (string)$hexcolor, 'wq' => 0 ]); // {{{SYNC-QRCODE-2FA}}}
+		return (string) (new \SmartQR2DBarcode('L'))->renderAsSVG((string)$barcode_2faurl, [ 'cm' => (string)$hexcolor, 'cs' => (string)$bghexcolor, 'bc' => (string)$bghexcolor, 'wq' => 0 ]); // {{{SYNC-QRCODE-2FA}}}
 		//--
 	} //END FUNCTION
 	//==============================================================

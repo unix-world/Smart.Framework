@@ -2,7 +2,7 @@
  * jQuery Simple Dialog (SmartLightUI)
  * (c) 2015-present unix-world.org
  * License: BSD
- * v.20250124
+ * v.20250228
  */
 
 /* Overlay {{{SYNC-OVERLAY}}} */
@@ -75,21 +75,27 @@
 
 #simpledialog-container h1 {
 	font-size: 2.125rem;
+	display: block;
 }
 #simpledialog-container h2 {
 	font-size: 1.875rem;
+	display: block;
 }
 #simpledialog-container h3 {
 	font-size: 1.625rem;
+	display: block;
 }
 #simpledialog-container h4 {
 	font-size: 1.375rem;
+	display: block;
 }
 #simpledialog-container h5 {
 	font-size: 1.125rem;
+	display: block;
 }
 #simpledialog-container h6 {
 	font-size: 1rem;
+	display: block;
 }
 
 #simpledialog-container .buttons {

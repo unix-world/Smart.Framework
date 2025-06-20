@@ -6,10 +6,11 @@
 		<div class="ux-grid-col s12" style="text-align:right;">
 			<h5><i>[###AUTH-USERNAME|html###]</i></h5>
 		</div>
-	</div>
-	<div class="ux-grid-row" style="opacity:0.4;">
-		<div class="ux-grid-col s12" style="text-align:right;">
+		<div class="ux-grid-col s12" style="text-align:right; opacity:0.4;">
 			<span>[###TXT-USER-ID|html###]</span>: &nbsp; <i>[###AUTH-ID|html###]</i>
+		</div>
+		<div class="ux-grid-col s12" style="text-align:right; opacity:0.2; font-size:0.8125rem;">
+			<span>[###TXT-CLUSTER-ID|html###]</span>: &nbsp; <i>[%%%IF:CLUSTER-ID:!=;%%%][###CLUSTER-ID|html###][%%%ELSE:CLUSTER-ID%%%][default][%%%/IF:CLUSTER-ID%%%]</i>
 		</div>
 	</div>
 	<hr>

@@ -1,4 +1,4 @@
-<!-- View: list-records v.20250129 -->
+<!-- View: list-records v.20250218 -->
 [@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-uix.inc.htm!@@@]
 [@@@SUB-TEMPLATE:partials/styles.mtpl.htm@@@]
 <style>
@@ -56,11 +56,11 @@
 <div style="margin-top:4px; margin-bottom:10px;">
 	<div class="ux-grid-row">
 		<div class="ux-grid-col m8 s12">
-			<a id="nolink" href="[###CURRENT-SCRIPT|html###]" class=""><img width="48" height="48" src="modules/mod-oauth2/views/img/logo-oauth.svg" style="vertical-align:middle; margin-top:-16px; margin-right:10px;"></a> <span style="color:#444444; font-size:2rem; font-weight:bold;">OAuth2 Client Management&nbsp;:: <span id="infoTotalRows" style="white-space:pre;"># / # @</span></span>
+			<a id="nolink" href="[###HOME-LINK|html###]" class=""><img width="48" height="48" src="modules/mod-oauth2/views/img/logo-oauth.svg" style="vertical-align:middle; margin-top:-16px; margin-right:10px;"></a> <span style="color:#444444; font-size:2rem; font-weight:bold;">OAuth2 Client Management&nbsp;:: <span id="infoTotalRows" style="white-space:pre;"># / # @</span></span>
 		</div>
 		<div class="ux-grid-col m4 s12">
 			<div class="ux-right" style="margin-top:10px;">
-[@@@SUB-TEMPLATE:!modules/mod-auth-admins/views/acc-namespaces.mtpl.inc.htm!@@@]
+[%%%IF:AREAS:@>0;%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/views/acc-namespaces.mtpl.inc.htm!@@@][%%%ELSE:AREAS%%%]<!-- NameSpaces: N/A -->[%%%/IF:AREAS%%%]
 			</div>
 		</div>
 	</div>
@@ -196,7 +196,7 @@ jQuery(() => {
 		enableColumnReorder: false,
 		enableAsyncPostRender: true,
 		asyncPostRenderDelay: 15,
-		rowHeight: 27,
+		rowHeight: 28,
 		editable: true,
 		autoEdit: false,
 		asyncEditorLoading: false,
@@ -206,11 +206,11 @@ jQuery(() => {
 
 	let winW = jQuery(window).width();
 	let winH = jQuery(window).height();
-	jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - 25), 'height': parseInt(winH - 160) });
+	jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - 25), 'height': parseInt(winH - 175) });
 	jQuery(window).resize(function() {
 		winW = jQuery(window).width();
 		winH = jQuery(window).height();
-		jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - 25), 'height': parseInt(winH - 160) });
+		jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - 25), 'height': parseInt(winH - 175) });
 		TheGrid.grid.resizeCanvas();
 		TheGrid.grid.autosizeColumns();
 	});

@@ -41,7 +41,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20250207
+ * @version 	v.20250314
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -537,7 +537,7 @@ final class SmartAuthAdminsHandler
 				//--
 				if($is_captcha_verified !== true) {
 					//--
-					$retry_seconds = (int) \strtotime('tomorrow'); // default, for captcha ; this is because after total number of logins match the captcha criteria there are 2 possibilities only: solve captcha or wait until tomorrow 00:00:00 when the DB file resets ...
+					$retry_seconds = (int) \strtotime('tomorrow'); // default, for captcha ; this is because after total number of logins match the captcha criteria there are 2 possibilities only: solve captcha or wait until tomorrow at 00:00:00 when the DB file resets ...
 					if((int)$check_fail > 0) {
 						$retry_seconds = (int) $check_fail;
 					} //end if
@@ -750,17 +750,20 @@ final class SmartAuthAdminsHandler
 						$passalgo = (int) \SmartAuth::ALGO_PASS_SMART_SAFE_OPQ_TOKEN;
 					} //end if
 					//--
-					\SmartAuth::set_auth_data( // v.20250124
-						'SMART-ADMINS-AREA', // auth realm
-						(string) $auth_mode, // auth method
-						(int)    $passalgo, // pass algo
-						(string) $account_data['pass'], // auth password hash (will be stored as encrypted, in-memory)
-						(string) $account_data['id'], // auth user name
-						(string) $account_data['id'], // auth ID (on backend must be set exact as the auth username)
-						(string) $account_data['email'], // user email * Optional *
-						(string) \trim((string)\trim((string)$account_data['name_f']).' '.\trim((string)$account_data['name_l'])), // user full name (First Name + ' ' + Last name) * Optional *
-						(string) $account_data['priv'], // user privileges * Optional *
-						(string) $account_data['restrict'], // user restrictions * Optional *
+					$account_full_name = (string) \trim((string)\trim((string)$account_data['name_f']).' '.\trim((string)$account_data['name_l']));
+					//--
+					\SmartAuth::set_auth_data( // v.20250218
+						'SMART-ADMINS-AREA', 					// auth realm
+						(string) $auth_mode, 					// auth method
+						(string) \SmartAuth::get_cluster_id(), 	// cluster ID: admin accounts are always bind to the current cluster ID, there is no concept of auth cluster master/slave
+						(int)    $passalgo, 					// pass algo
+						(string) $account_data['pass'], 		// auth password hash (will be stored as encrypted, in-memory)
+						(string) $account_data['id'], 			// auth user name
+						(string) $account_data['id'], 			// auth ID (on backend must be set exact as the auth username)
+						(string) $account_data['email'], 		// user email * Optional *
+						(string) $account_full_name, 			// user full name (First Name + ' ' + Last name) * Optional *
+						(string) $account_data['priv'], 		// user privileges * Optional *
+						(string) $account_data['restrict'], 	// user restrictions * Optional *
 						(array)  [ // {{{SYNC-AUTH-KEYS}}}
 							'privkey' => (string) $modelAdmins->decryptPrivKey((string)$account_data['keys'], (string)$account_data['pass']), // user private key (will be stored as encrypted, in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
 							// TODO: store keys in a json to be able to store also pubkey and security key
@@ -778,7 +781,8 @@ final class SmartAuthAdminsHandler
 							'country' 	=> (string) $account_data['country'],
 							'phone' 	=> (string) $account_data['phone'],
 							'settings' 	=> (array)  \Smart::json_decode((string)$account_data['settings'], true, 7), // max 7 levels ; {{{SYNC-AUTH-METADATA-MAX-LEVELS}}}
-						]
+						],
+						[] // workspaces
 					);
 					//die('<pre>'.\Smart::escape_html(\SmartUtils::pretty_print_var(\SmartAuth::get_auth_data())).'</pre>');
 					//--

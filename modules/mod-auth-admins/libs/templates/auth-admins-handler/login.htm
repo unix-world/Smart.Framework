@@ -1,4 +1,4 @@
-<!-- AuthAdmins Login # v.20250207 -->
+<!-- AuthAdmins Login # v.20250314 -->
 <style>
 body {
 	background-color: #FFFFFF !important;
@@ -8,12 +8,9 @@ hr {
 	border-top: 1px solid #ECECEC;
 	height: 1px;
 }
-a#copyright, a#copyright:hover {
+span#copyright {
 	font-size: 0.625rem !important;
-	font-weight: bold;
 	color: #888888;
-	text-decoration: none;
-	border-bottom: dotted 1px #888888;
 }
 a#special {
 	cursor: pointer !important;
@@ -93,7 +90,7 @@ const AuthAdminsCheck = () => {
 	</div>
 	<br>
 	<div><center>[###POWERED-HTML###]</center></div>
-	<div class="ux-center"><a data-smart="open.modal" href="http://www.unix-world.org" target="unix_world_org" id="copyright"><b>&copy;&nbsp;2006-[###CRR-YEAR|html###]&nbsp;unix-world.org</b></a></div>
+	<div class="ux-center"><span id="copyright">&copy;&nbsp;2006-[###CRR-YEAR|html###]&nbsp;unix-world.org</span></div>
 </div>
 [%%%IF:ID-USER:!=;%%%]
 <!-- FA2 js: skip -->
