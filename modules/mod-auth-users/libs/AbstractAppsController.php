@@ -15,7 +15,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 abstract class AbstractAppsController extends \SmartModExtLib\AuthUsers\AbstractAccountController {
 
-	// r.20250314
+	// r.20250620
 
 	// SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS 	is verified by Initialize() in AbstractAccountController
 	// Custom request URI Restriction 			is verified by Initialize() in AbstractAccountController

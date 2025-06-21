@@ -64,10 +64,6 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		if($this->translator === null) {
 			$this->translator = \SmartTextTranslations::getTranslator('mod-auth-users', 'auth-users');
-			if($this->translator === null) {
-				$this->PageViewSetErrorStatus(500, 'Mod Auth Users Translator is Missing !');
-				return false;
-			} //end if
 		} //end if
 		//--
 

@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class AuthUsersFrontend {
 
 	// ::
-	// v.20250619
+	// v.20250620
 
 
 	private static $db = null;
@@ -134,6 +134,7 @@ final class AuthUsersFrontend {
 			return []; // early return
 		} //end if
 		//--
+		$arr = [];
 		if((string)self::dbType() == 'pgsql') {
 			$arr = (array) \SmartPgsqlDb::read_asdata(
 				'SELECT * FROM "web"."auth_users" WHERE ("id" = $1) LIMIT 1 OFFSET 0',
@@ -164,6 +165,7 @@ final class AuthUsersFrontend {
 			return []; // early return
 		} //end if
 		//--
+		$arr = [];
 		if((string)self::dbType() == 'pgsql') {
 			$arr = (array) \SmartPgsqlDb::read_asdata(
 				'SELECT * FROM "web"."auth_users" WHERE ("email" = $1) LIMIT 1 OFFSET 0',
@@ -197,6 +199,7 @@ final class AuthUsersFrontend {
 			return false; // early return
 		} //end if
 		//--
+		$arr = [];
 		if((string)self::dbType() == 'pgsql') {
 			$arr = (array) \SmartPgsqlDb::read_asdata(
 				'SELECT "email" FROM "web"."auth_users" WHERE ("email" = $1) LIMIT 1 OFFSET 0',
@@ -321,19 +324,15 @@ final class AuthUsersFrontend {
 		//--
 		$wr = [];
 		if((string)self::dbType() == 'pgsql') {
-			//--
 			$wr = (array) \SmartPgsqlDb::write_data(
 				'INSERT INTO "web"."auth_users" '.
 				\SmartPgsqlDb::prepare_statement((array)$data, 'insert').' ON CONFLICT DO NOTHING' // PgSQL 9.5 or later
 			);
-			//--
 		} elseif((string)self::dbType() == 'sqlite') {
-			//--
 			$wr = (array) self::$db->write_data(
 				'INSERT OR IGNORE INTO `auth_users` '.
 				self::$db->prepare_statement((array)$data, 'insert')
 			);
-			//--
 		} //end if else
 		//--
 		return (int) ($wr[1] ?? null);
@@ -518,7 +517,7 @@ final class AuthUsersFrontend {
 			if((string)self::dbType() == 'pgsql') {
 				$sqlExtra = ', "passresetotc" = \''.\SmartPgsqlDb::escape_str((string)$oneTimePass).'\'';
 			} elseif((string)self::dbType() == 'sqlite') {
-				$sqlExtra = ', `passresetotc` = \''.\SmartPgsqlDb::escape_str((string)$oneTimePass).'\'';
+				$sqlExtra = ', `passresetotc` = \''.self::$db->escape_str((string)$oneTimePass).'\'';
 			} //end if else
 		} //end if
 		//--
@@ -532,7 +531,7 @@ final class AuthUsersFrontend {
 		} elseif((string)self::dbType() == 'sqlite') {
 			$wr = (array) self::$db->write_data(
 				'UPDATE `auth_users` '.
-				'SET `passresetcnt` = `passresetcnt` + 1, `passresetldt` = \''.\SmartPgsqlDb::escape_str((string)\date('Y-m-d H:i:s')).'\''.$sqlExtra.', `ipaddr` = \''.\SmartPgsqlDb::escape_str((string)\SmartUtils::get_ip_client()).'\''.
+				'SET `passresetcnt` = `passresetcnt` + 1, `passresetldt` = \''.self::$db->escape_str((string)\date('Y-m-d H:i:s')).'\''.$sqlExtra.', `ipaddr` = \''.self::$db->escape_str((string)\SmartUtils::get_ip_client()).'\''.
 				' WHERE (`id` = \''.self::$db->escape_str((string)$id).'\')'
 			);
 		} //end if else

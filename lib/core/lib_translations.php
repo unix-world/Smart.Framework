@@ -35,7 +35,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartPersistentCache, SmartAdapterTextTranslations, SmartFrameworkRegistry
- * @version 	v.20231030
+ * @version 	v.20250620
  * @package 	Application:Translations
  *
  */
@@ -209,13 +209,13 @@ final class SmartTextTranslations {
 				} //end if
 			} //end if
 			//--
-			if(strlen((string)$tmp_lang) == 2) { // if language id have only 2 characters
+			if((int)strlen((string)$tmp_lang) == 2) { // if language id have only 2 characters
 				if(preg_match('/^[a-z]+$/', (string)$tmp_lang)) { // language id must contain only a..z characters (iso-8859-1)
 					if(is_array($all_languages)) {
-						if($all_languages[(string)$tmp_lang]) { // if that lang is set in languages array
+						if(isset($all_languages[(string)$tmp_lang])) { // if that lang is set in languages array
 							if((string)$tmp_lang != (string)$id_cfg_lang) { // if it is the same, don't make sense to set it again !
 								$configs['regional']['language-id'] = (string) $tmp_lang;
-								if(Smart::array_size($all_languages[(string)$tmp_lang]) > 0) {
+								if((int)Smart::array_size($all_languages[(string)$tmp_lang]) > 0) {
 									// set also the rest of regional params if available and set custom for that language ...
 									foreach($all_languages[(string)$tmp_lang] as $k => $v) {
 										if(array_key_exists((string)$k, (array)$configs['regional'])) {
@@ -271,7 +271,7 @@ final class SmartTextTranslations {
 		if(strlen((string)$y_language) == 2) { // if language id have only 2 characters
 			if(preg_match('/^[a-z]+$/', (string)$y_language)) { // language id must contain only a..z characters (iso-8859-1)
 				if(is_array($all_languages)) {
-					if($all_languages[(string)$y_language]) { // if that lang is set in languages array
+					if(isset($all_languages[(string)$y_language])) { // if that lang is set in languages array
 						$ok = true;
 					} //end if
 				} //end if
@@ -973,7 +973,7 @@ final class SmartTextTranslations {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartTextTranslations, SmartFrameworkRegistry
- * @version 	v.20231030
+ * @version 	v.20250620
  * @package 	Application:Translations
  *
  */
@@ -1085,7 +1085,7 @@ final class SmartTextTranslator {
  * @access 		private
  * @internal
  *
- * @version 	v.20231030
+ * @version 	v.20250620
  * @package 	development:Application
  *
  */

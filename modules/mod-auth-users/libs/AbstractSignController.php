@@ -15,7 +15,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 abstract class AbstractSignController extends \SmartAbstractAppController {
 
-	// r.20250529
+	// r.20250620
 
 	protected ?object $translator = null;
 
@@ -83,10 +83,6 @@ abstract class AbstractSignController extends \SmartAbstractAppController {
 		//--
 		if($this->translator === null) {
 			$this->translator = \SmartTextTranslations::getTranslator('mod-auth-users', 'auth-users');
-			if($this->translator === null) {
-				$this->PageViewSetErrorStatus(500, 'Mod Auth Users Translator is Missing !');
-				return false;
-			} //end if
 		} //end if
 		//--
 

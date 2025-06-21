@@ -29,7 +29,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250619
+ * @version 	v.20250620
  * @package 	modules:AuthUsers
  *
  */
@@ -213,7 +213,7 @@ final class SmartAuthUsersHandler
 			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User Email mismatch: `'.$email.'` / `'.($userData['email'] ?? null).'`');
 			return;
 		} //end if
-		//--
+		//-- status must be 1 or 2 ; 1 = allow multi-sessions ; 2 = disallow multi-sessions
 		if((intval($userData['status'] ?? null) < 1) || (intval($userData['status'] ?? null) > 2)) { // {{{SYNC-ACCOUNT-MULTISESSIONS}}}
 			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
 			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User Account is Disabled: `'.$email.'` / `'.($userData['status'] ?? null).'`');

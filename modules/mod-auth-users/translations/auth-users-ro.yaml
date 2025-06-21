@@ -6,9 +6,9 @@ TRANSLATIONS:
   auth-users:
     homepage: 'Pagina Principală'
     auth-required: 'Este necesară Autentificarea'
-    api-invalid-request: 'Cerere Invalidă'
+    api-invalid-request: 'Solicitare Invalidă'
     api-invalid-action: 'Acțiune Invalidă'
-    api-failed-request: 'Cerere Eronată'
+    api-failed-request: 'Solicitare Eronată'
     api-already-auth: 'Ești deja Autentificat'
     api-session-expired: 'Cheia de Sesiune a Expirat'
     api-session-error-persist: 'Dacă această eroare persistă verifică setările browser-ului și permite folosirea de Cookies.'
@@ -92,7 +92,7 @@ TRANSLATIONS:
     sign-up: 'Crează un Cont'
     sign-up-title: 'Înregistrare Cont Nou'
     sign-up-with: 'Crează Cont folosind'
-    sign-up-with-hint: 'Autentificare rapidă și securizată, fără parolă. Click pe unul din serviciile de autentificare listate mai jos pentru a folosi Single-Sign-On. Dacă dețineți mai multe identități diferite la mai mulți provideri ar trebui să selectați același provider de fiecare dată pentru a evita aterizarea într-un cont / namespace diferit de cel uzual.'
+    sign-up-with-hint: 'Autentificare rapidă și securizată, fără parolă. Click pe unul din serviciile de autentificare listate mai jos pentru a folosi Single-Sign-On. Dacă dețineți mai multe identități diferite la mai mulți furnizori de identitate SSO ar trebui să selectați același furnizor de fiecare dată pentru a evita aterizarea într-un cont diferit.'
     sign-up-ip-restr: 'Înregistrarea unui Nou Cont este Restricționată după IP'
     sign-up-reg: 'Înregistrare Cont - Confirmare'
     sign-up-reg-captcha-hint: 'Pas Necesar, Securitate: rezolvă Captcha înainte de a te Înregistra folosind această opțiune.'
@@ -110,7 +110,7 @@ TRANSLATIONS:
     sign-up-reg-step2-1-desc: |
         Înregistrarea SSO folosește servicii populare ca furnizori de identitate federată care oferă securizat identitatea ta verificată cu această platformă.
         Alege cu un singur click unul din serviciile SSO ca Furnizori de Identitate:
-    sign-up-reg-step2-1-hint: 'Dacă ai identități multiple la diferiți furnizori folosind adrese de email diferite, alege același furnizor de identitate de fiecare dată, în caz contrar dacă adresa de email furnizată de serviciul de identitate SSO este diferită de cea folosită pentru prima dată pe această platformă vei ateriza într-un spațiu de cont complet separat.'
+    sign-up-reg-step2-1-hint: 'Dacă ai identități multiple la diferiți furnizori folosind adrese de email diferite, alege același furnizor de identitate de fiecare dată, în caz contrar dacă adresa de email furnizată de serviciul de identitate SSO este diferită de cea folosită pentru prima dată pe această platformă vei ateriza într-un cont diferit.'
     sign-up-reg-step3: '2FA - Autentificare în Doi Pași'
     sign-up-reg-step3-desc: |
         Folosind 2FA (Verificare cu cod pin în 2 pași), poți adăuga o măsură extra de securitate pentru contul tău. După prima autentificare, din setările contului tău, poți activa opțiunea de securitate 2FA. Opțiunea 2FA poate fi dezactivată oricând în cazul în care ai activat-o.
@@ -209,7 +209,7 @@ TRANSLATIONS:
     sett-auth-2fa-confirm-warn-enable: 'După activarea 2FA codul TOTP este necesar pentru fiecare autentificare...'
     sett-auth-sso-btn-update: 'Actualizează Lista de Plugin-uri SSO Active'
     sett-auth-sso-plugins: 'Plugin-uri Active pentru Autentificare SSO'
-    sett-auth-sso-notice: 'Lista Plugin-urilor Active pentru Autentificarea SSO. Acestea trebuie să furnizeze adresa de email exactă cu care s-a înregistrat acest cont. Nu este posibilă legarea acestui cont cu un plugin SSO care furnizează o adresă de email diferită pentru că ar putea folosi un cont/namespace complet diferit.'
+    sett-auth-sso-notice: 'Lista Plugin-urilor Active pentru Autentificarea SSO. Acestea trebuie să furnizeze adresa de email exactă cu care s-a înregistrat acest cont. Nu este posibilă legarea acestui cont cu un plugin SSO care furnizează o adresă de email diferită pentru că ar folosi un cont diferit.'
     sett-btn-account-deactivate: 'Dezactivare Cont Utilizator'
     sett-account-deactivate-notice: 'Dorești să DEZACTIVEZI CONTUL TĂU pe această platformă ? După dezactivare contul de utilizator devine indisponibil pentru autentificare. Conturile inactive vor fi șterse după 90 de zile.'
     sett-account-deactivate-id-chk: 'Pentru a dezactiva contul trebuie să introduci ID-ul tău de Utilizator'

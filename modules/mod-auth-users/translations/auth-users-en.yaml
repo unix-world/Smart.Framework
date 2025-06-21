@@ -92,7 +92,7 @@ TRANSLATIONS:
     sign-up: 'Register a New Account'
     sign-up-title: 'New Account Registration'
     sign-up-with: 'Sign-Up with'
-    sign-up-with-hint: 'Simple and secure Authentication, without passwords. Select by click a SSO identity provider from below to Authenticate using Single-Sign-On. If you have multiple identities, using different email addresses on different providers, be sure you pick-up the same provider each time, otherwise you will be landing in a different account namespace.'
+    sign-up-with-hint: 'Simple and secure Authentication, without passwords. Select by click a SSO identity provider from below to Authenticate using Single-Sign-On. If you have multiple identities, using different email addresses on different SSO providers, be sure you pick-up the same provider each time, otherwise you will be landing in a different account.'
     sign-up-ip-restr: 'Registration is Restricted by IP'
     sign-up-reg: 'Sign-Up Registration'
     sign-up-reg-captcha-hint: 'Security step, Required: solve the Captcha before Sign-Up with this option.'
@@ -110,7 +110,7 @@ TRANSLATIONS:
     sign-up-reg-step2-1-desc: |
         SSO Sign-Up is using some well-known federated identity service provider services that will secure exchange your verified identity with this platform.
         Choose with one click one of SSO Identity Providers:
-    sign-up-reg-step2-1-hint: 'If you have multiple identities, using different email addresses on different providers, be sure you pick-up the same identity provider each time, otherwise if the email address provided by the SSO identity provider is different than the one you have used to open your account on this platform, you will land into a totally separated account namespace.'
+    sign-up-reg-step2-1-hint: 'If you have multiple identities, using different email addresses on different providers, be sure you pick-up the same identity provider each time, otherwise if the email address provided by the SSO identity provider is different than the one you have used to open your account on this platform, you will land into a different account.'
     sign-up-reg-step3: '2FA - Two Factor Authentication'
     sign-up-reg-step3-desc: |
         With 2FA (2-Step pin code Verification), you can add an extra layer of security to your account. After your first login, from your account settings, you can enable the 2FA security option. The 2FA option can also be disabled anytime, if you enabled it.
@@ -209,7 +209,7 @@ TRANSLATIONS:
     sett-auth-2fa-confirm-warn-enable: 'After enabling 2FA the TOTP Code is mandatory on every login...'
     sett-auth-sso-btn-update: 'Update the List of Enabled SSO Plugins'
     sett-auth-sso-plugins: 'Enabled Auth SSO Plugins'
-    sett-auth-sso-notice: 'The Enabled SSO Plugins for your account. They must provide the exact email address as you registered on this account. It is not possible to use a SSO Plugin that will provide a different email address otherwise you will be landing into a different account/namespace.'
+    sett-auth-sso-notice: 'The Enabled SSO Plugins for your account. They must provide the exact email address as you registered on this account. It is not possible to use a SSO Plugin that will provide a different email address otherwise you will be landing into a different account.'
     sett-btn-account-deactivate: 'Deactivate Your Account'
     sett-account-deactivate-notice: 'Are you sure you want to DEACTIVATE YOUR ACCOUNT on this platform ? If you deactivate your account you will be no more able to login. Inactive accounts are deleted after 90 days.'
     sett-account-deactivate-id-chk: 'To deactivate your account please provide your UserID'
