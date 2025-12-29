@@ -2,7 +2,7 @@
 TRANSLATIONS:
   @language: EN
   @area: mod-auth-users
-  @version: 2025-06-20
+  @version: 2025-06-21
   auth-users:
     homepage: 'Home Page'
     auth-required: 'Sign-In is Required'

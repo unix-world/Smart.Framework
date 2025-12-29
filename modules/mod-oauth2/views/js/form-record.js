@@ -1,7 +1,7 @@
 
 // oauth2 :: formRecord Handler
 // (c) 2023-present unix-world.org
-// v.20250218
+// v.20250622
 
 const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 	'use strict';
@@ -29,6 +29,33 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 	const _Crypto$Hash = smartJ$CryptoHash;
 	const _BwUtils$ = smartJ$Browser;
 
+	const translation = {
+		notice: 			'Notice',
+		btnStep1: 			'Step 1: Get the OAuth2 Code',
+		btnStep2: 			'Step 2: Initialize OAuth2 Tokens and Save API',
+		errIdEmpty: 		'API ID is empty or have an invalid length',
+		errIdInvalid: 		'API ID contains invalid characters',
+		errDescription: 	'API Description is empty or too short',
+		errO2ClientId: 		'OAuth2 Client ID is empty',
+		errO2ClientSecret: 	'OAuth2 Client Secret is empty',
+		errO2UrlRedirect: 	'OAuth2 Redirect URL is empty',
+		errO2UrlAuth: 		'OAuth2 Auth URL is empty or invalid',
+		errO2UrlToken: 		'OAuth2 Token URL is empty or invalid',
+		errO2Code: 			'OAuth2 Code is empty',
+		errO2Verifier: 		'OAuth2 Code Verifier is Empty or Invalid',
+		errO2PCKEMethod: 	'OAuth2 PKCE Method is Invalid',
+		errO2PCKEChallenge: 'OAuth2 PKCE Challenge Hash is Empty for Method',
+		errFormStep: 		'Error: Invalid Step for this Form',
+	};
+
+	if(typeof(oauth2FormHandlerTranslation) != 'undefined') {
+		for(const txt in oauth2FormHandlerTranslation) {
+			if(translation.hasOwnProperty(txt)) {
+				translation[txt] = oauth2FormHandlerTranslation[txt];
+			}
+		}
+	}
+
 	let UrlActions = '';
 
 	let TplAuthParamsUrl = ''; // init
@@ -55,49 +82,49 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 	};
 
 	const notificationDialog = (msg) => {
-		_BwUtils$.GrowlNotificationAdd('Notice', _Utils$.escape_html(_Utils$.stringPureVal(msg, true)), null, 3500, false);
+		_BwUtils$.GrowlNotificationAdd(translation.notice, _Utils$.escape_html(_Utils$.stringPureVal(msg, true)), null, 3500, false);
 	};
 
 	const readDataStepOne = () => {
 		theDataStepOne = null;
 		const theApiId = _Utils$.stringPureVal($('input#api_id').val() || '', true);
 		if((theApiId == '') || (theApiId.length < 5) || (theApiId.length > 127)) {
-			notificationDialog('API-ID is empty or have an invalid length: `' + theApiId + '`');
+			notificationDialog(translation.errIdEmpty + (theApiId ? ': `' + theApiId + '`' : ''));
 			return false;
 		}
 		if(!theApiId.match(RegexExprValidApiID)) {
-			notificationDialog('API-ID contains invalid characters: `' + theApiId + '`');
+			notificationDialog(translation.errIdInvalid + ': `' + theApiId + '`');
 			return false;
 		}
 		const theDescription = _Utils$.stringPureVal($('textarea#api_desc').val() || '', true);
 		if((theDescription == '') || (theDescription.length < 10)) {
-			notificationDialog('API Description is empty or too short');
+			notificationDialog(translation.errDescription);
 			return null;
 		}
 		const theClientId = _Utils$.stringPureVal($('input#oauth2_client_id').val() || '', true);
 		if(theClientId == '') {
-			notificationDialog('OAuth2 Client ID is empty');
+			notificationDialog(translation.errO2ClientId);
 			return null;
 		}
 		const theClientSecret = _Utils$.stringPureVal($('input#oauth2_client_secret').val() || '', true);
 		if(theClientSecret == '') {
-			notificationDialog('OAuth2 Client Secret is empty');
+			notificationDialog(translation.errO2ClientSecret);
 			return null;
 		}
 		const theScope = _Utils$.stringPureVal($('input#oauth2_scope').val() || '', true); // can be empty
 		const oauth2UrlRedirect = _Utils$.stringPureVal($('input#oauth2_url_redirect').val() || '', true);
 		if(oauth2UrlRedirect == '') {
-			notificationDialog('OAuth2 URL /auth is empty');
+			notificationDialog(translation.errO2UrlRedirect);
 			return null;
 		}
 		const oauth2UrlAuth = _Utils$.stringPureVal($('input#oauth2_url_auth').val() || '', true);
 		if((oauth2UrlAuth == '') || (!validateUrl(oauth2UrlAuth))) {
-			notificationDialog('OAuth2 URL /auth is empty or invalid');
+			notificationDialog(translation.errO2UrlAuth);
 			return false;
 		}
 		const oauth2UrlToken = _Utils$.stringPureVal($('input#oauth2_url_token').val() || '', true);
 		if((oauth2UrlToken == '') || (!validateUrl(oauth2UrlToken))) {
-			notificationDialog('OAuth2 URL /token is empty or invalid');
+			notificationDialog(translation.errO2UrlToken);
 			return null;
 		}
 		return {
@@ -116,7 +143,7 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 		theDataStepTwo = null;
 		const theCode = _Utils$.stringPureVal($('input#oauth2_code').val() || '', true);
 		if(theCode == '') {
-			notificationDialog('OAuth2 Code is empty');
+			notificationDialog(translation.errO2Code);
 			return null;
 		}
 		return {
@@ -132,7 +159,7 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 		const $elemId = $('span#btn-submit-label');
 		if(submitStep <= 0) {
 			submitStep = 1;
-			$elemId.text('Step 1: Get the OAuth2 Code');
+			$elemId.text(translation.btnStep1);
 		} else if(submitStep == 1) {
 			theDataStepOne = readDataStepOne();
 			if(!theDataStepOne) {
@@ -145,7 +172,7 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 			}
 			let oauth2UrlAuth = _Utils$.stringPureVal(theDataStepOne.oauth2UrlAuth, true);
 			if((oauth2UrlAuth == '') || (!validateUrl(oauth2UrlAuth))) {
-				notificationDialog('OAuth2 URL `/auth` is empty or invalid');
+				notificationDialog(translation.errO2UrlAuth);
 				return false;
 			}
 			oauth2UrlAuth = new URL(String(oauth2UrlAuth));
@@ -173,12 +200,12 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 			}
 			const theApiId = _Utils$.stringPureVal(theDataStepOne.theApiId, true);
 			if(theApiId == '') {
-				notificationDialog('OAuth2: API-ID is Empty');
+				notificationDialog(translation.errIdEmpty);
 				return false;
 			}
 			const cId = _Utils$.stringPureVal(theDataStepOne.theClientId, true);
 			if(cId == '') {
-				notificationDialog('OAuth2: Client-ID is Empty');
+				notificationDialog(translation.errO2ClientId);
 				return false;
 			}
 			oauth2UrlAuth += _Utils$.renderMarkersTpl(_Utils$.stringPureVal(TplAuthParamsUrl), {
@@ -191,7 +218,7 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 			);
 			const cVfy = _Ba$eConv.base_from_hex_convert(_Crypto$Hash.hmac('sha3-384', _Utils$.strRot13(_Ba$eConv.b64s_enc(theApiId)), cId), 62); // {{{SYNC-OAUTH2-CODE-VERIFIER}}}
 			if((_Utils$.stringTrim(cVfy) == '') || (cVfy.length < 43) || (cVfy.length > 128)) {
-				notificationDialog('OAuth2: Code Verifier is Empty or Invalid');
+				notificationDialog(translation.errO2Verifier);
 				return false;
 			} //end if
 			let cChl = '';
@@ -228,14 +255,14 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 					methodPKCE = methodPKCE.toLowerCase(); // plain, lowercase
 					break;
 				default: // invalid
-					notificationDialog('OAuth2: PKCE Method is Invalid: `' + methodPKCE + '`');
+					notificationDialog(translation.errO2PCKEMethod + ': `' + methodPKCE + '`');
 					return false;
 			}
 			if(!!chB64u) {
 				cChl = _Ba$eConv.b64_to_b64s(cChl, false); // b64u
 			}
 			if(!cChl) {
-				notificationDialog('OAuth2: PKCE Challenge Hash is Empty; Method: `' + methodPKCE + '`');
+				notificationDialog(translation.errO2PCKEChallenge + ': `' + methodPKCE + '`');
 				return false;
 			}
 			if(usePKCE === true) {
@@ -254,7 +281,7 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 				$(element).show();
 			});
 			submitStep++;
-			$elemId.text('Step 2: Initialize OAuth2 Tokens and Save API');
+			$elemId.text(translation.btnStep2);
 			if(!isStandaloneUri) {
 				_BwUtils$.setCookie(csrfCookieName, csrfCookieValue);
 			}
@@ -271,7 +298,7 @@ const oauth2FormHandler = new class{constructor(){ // STATIC CLASS
 			submitStep++;
 			_BwUtils$.SubmitFormByAjax('oauth2_form', String(UrlActions || ''), 'yes');
 		} else {
-			notificationDialog('ERROR: Invalid Submit Step: ' + submitStep);
+			notificationDialog(translation.errFormStep + ': ' + submitStep);
 		}
 		return false;
 	};

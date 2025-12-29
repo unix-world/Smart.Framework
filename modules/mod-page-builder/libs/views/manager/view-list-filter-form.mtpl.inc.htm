@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ List # Filter :: v.20250107 -->
+<!-- Pagebuilder / Manage @ List # Filter :: v.20251211 -->
 <style>
 div#pgbld-btn-alt-list img {
 	margin-top: -4px;
@@ -89,7 +89,7 @@ div.pgbld-main-btn:hover i.sfi {
 	</td>
 	<td style="width:32px;">
 		[%%%IF:IS-DEV-MODE:==yes;%%%]
-		<div id="pgbld-btn-reset-cnt" class="pgbld-main-btn" title="[###TXT-RESET-COUNTER|html###]" onclick="smartJ$Browser.ConfirmDialog('<i class=&quot;sfi sfi-meter2&quot;></i> &nbsp; Do you want to Reset the Hit Counter on All PageBuilder Objects ?', function(){ smartJ$Browser.SubmitFormByAjax(false, 'admin.php?page=page-builder.manage&op=reset-counter&back=[###LIST-CRR-LINK|url|js###]', 'yes'); }, 'Reset the PageBuilder Objects Hit Counter', 550, 155); return false;"><i class="sfi sfi-meter2 sfi-2x"></i></div>
+		<div id="pgbld-btn-reset-cnt" class="pgbld-main-btn" title="[###TXT-RESET-COUNTER|html###]" onclick="smartJ$Browser.ConfirmDialog('<i class=&quot;sfi sfi-meter2&quot;></i> &nbsp; Do you want to Reset the Hit Counter on All PageBuilder Objects ?', () => { smartJ$Browser.SubmitFormByAjax(false, 'admin.php?page=page-builder.manage&op=reset-counter&back=[###LIST-CRR-LINK|url|js###]', 'yes'); }, 'Reset the PageBuilder Objects Hit Counter', 550, 155); return false;"><i class="sfi sfi-meter2 sfi-2x"></i></div>
 		[%%%ELSE:IS-DEV-MODE%%%]
 		&nbsp;
 		[%%%/IF:IS-DEV-MODE%%%]
@@ -122,25 +122,25 @@ div.pgbld-main-btn:hover i.sfi {
 	[%%%/IF:SHOW-FILTER-CTRL%%%]
 </form><!-- #END -->
 <script>
-jQuery(function() {
-	jQuery('#filter-src').bind('keydown', function(e) {
+jQuery(() => {
+	jQuery('#filter-src').bind('keydown', (e) => {
 		if(e.keyCode == 13) {
 			e.preventDefault();
 		}
 	});
-	var fixFilterTitle = function() {
-		var elem = jQuery('#filter-srcby').find('option:selected');
-		if(!elem) {
+	const fixFilterTitle = () => {
+		const elem = jQuery('#filter-srcby').find('option:selected');
+		if(!elem.length) {
 			return;
 		}
-		var title = elem.attr('title');
-		if(!title) {
+		const title = String(elem.attr('title') || '');
+		if(title.trim() == '') {
 			return;
 		}
-		jQuery('#filter-src').attr('title', String(title));
-	}
+		jQuery('#filter-src').attr('title', title);
+	};
 	fixFilterTitle();
-	jQuery('#filter-srcby').change(function(){
+	jQuery('#filter-srcby').change(() => {
 		fixFilterTitle();
 	});
 });

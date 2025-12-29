@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250307
+ * @version 	v.20250714
  *
  */
 final class TestUnitCrypto {
@@ -781,10 +781,10 @@ final class TestUnitCrypto {
 		$r = (int) $num % $b;
 		$res = (string) $base[$r];
 		//--
-		$q = (int) \floor((int)$num / (int)$b);
+		$q = (int) \Smart::floor_number((int)$num / (int)$b);
 		while($q) {
 			$r = (int) $q % $b;
-			$q = (int) \floor((int)$q / (int)$b);
+			$q = (int) \Smart::floor_number((int)$q / (int)$b);
 			$res = (string) $base[$r].$res;
 		} //end while
 		//--

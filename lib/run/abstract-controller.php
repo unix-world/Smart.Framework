@@ -123,7 +123,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20250107
+ * @version 	v.20250805
  * @package 	development:Application
  *
  */
@@ -192,7 +192,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		$y_hardcoded_area 	= (string) trim((string)$y_hardcoded_area);
 		//--
 		$param_url_script 	= (string) SmartUtils::get_server_current_script();
-		$param_area 		= (string) trim((string)Smart::base_name($param_url_script, '.php'));
+		$param_area 		= (string) trim((string)Smart::base_name((string)$param_url_script, '.php'));
 		$param_url_path 	= (string) SmartUtils::get_server_current_path();
 		$param_url_addr 	= (string) SmartUtils::get_server_current_url();
 		//--
@@ -488,7 +488,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 * 		app-namespace 				:: 		ex: smartframework.default (the app namespace as defined in etc/init.php)
 	 * 		app-domain 					:: 		ex: 127.0.0.1|localhost|sdom.dom.ext|dom.ext (the domain set in configs, that may differ by area: $configs['app']['index-domain'] | $configs['app']['admin-domain'])
 	 * 		release-hash 				:: 		ex: 29bp3w (the release hash based on app framework version, framework release and modules version)
-	 * 		module-area 				:: 		ex: index / admin
+	 * 		module-area 				:: 		ex: index / admin / task
 	 * 		module-name 				:: 		ex: mod-samples
 	 * 		module-path 				:: 		ex: modules/mod-samples/
 	 * 		module-view-path 			:: 		ex: modules/mod-samples/views/

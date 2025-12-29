@@ -1,4 +1,4 @@
-<!-- View: get-code v.20250218 -->
+<!-- View: get-code v.20250628 -->
 <style>
 #server-logo {
 	position: absolute !important;
@@ -92,14 +92,14 @@ div#area-bttns {
 }
 </style>
 <hr>
-<div class="operation_result">Server DateTime: <span title="Date: `[###CRR-TIME|date###]` ; DateTime: `[###CRR-TIME|datetime###]`" style="cursor:help;">[###CRR-TIME|datetimez###]</span></div>
+<div class="operation_result">[###TXT-SERVER-DTIME|html###]: <span title="Date: `[###CRR-TIME|date###]` ; Time: `[###CRR-TIME|datetime###]`" style="cursor:help;">[###CRR-TIME|datetimez###]</span></div>
 [%%%IF:CSRF-VALID:==1;%%%]
-<div class="operation_success">CSRF State Verification SUCCESS ...</div>
+<div class="operation_success">[###TXT-CSRF-OK|html|nl2br###]</div>
 [%%%ELSE:CSRF-VALID%%%]
-<div class="operation_warn">CSRF State Verification FAILED, the `State` parameter is empty or missing from reply.<br>The `OAuth2-Code` may be valid or not. If it does not work, retry the entire operation ...</div>
+<div class="operation_warn">[###TXT-CSRF-ERR|html|nl2br###]</div>
 [%%%/IF:CSRF-VALID%%%]
 <div class="operation_info">
-<span id="oauth2-area-code">OAuth2-Code:</span> &nbsp;&nbsp; <div id="area-bttns"><button id="btn-copy" class="btn" type="button" onclick="handleCopyBtn(); return false;">Copy Code</button><button id="btn-close" class="btn" type="button" onclick="handleCloseBtn(); return false;">[ Go Back ]</button></div>
+<span id="oauth2-area-code">[###TXT-CODE-OAUTH2|html###]:</span> &nbsp;&nbsp; <div id="area-bttns"><button id="btn-copy" class="btn" type="button" onclick="handleCopyBtn(); return false;">[###TXT-BTN-CODE-COPY|html###]</button><button id="btn-close" class="btn" type="button" onclick="handleCloseBtn(); return false;">[ [###TXT-BTN-GO-BACK|html###] ]</button></div>
 <br>
 <div id="oauth2-code">[###CODE|emptye|html###]</div>
 <br>
@@ -157,7 +157,7 @@ const mainFx = () => {
 	const handleCloseBtn = () => {
 		let canClose = true;
 		if((!codeCopied) && (!codePassedBack)) {
-			canClose = confirm('Make sure you Copy the Code before closing this window and manual Paste this Code in the OAuth2 Form.\n\nCLOSE THIS WINDOW NOW ?');
+			canClose = confirm('[###TXT-CONFIRM-CLOSE|js###]');
 		}
 		if(canClose) {
 			closeWnd();

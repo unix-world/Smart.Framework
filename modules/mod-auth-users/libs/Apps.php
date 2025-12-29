@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250314
+ * @version 	v.20251202
  * @package 	modules:AuthUsers
  *
  */
@@ -52,6 +52,13 @@ final class Apps {
 			foreach(\SMART_AUTHUSERS_APPS as $key => $val) {
 				if(\is_array($val)) {
 					$label = (string) \trim((string)($val['label'] ?? null));
+					$lang  = (string) \SmartTextTranslations::getLanguage();
+					if(isset($val['label:'.$lang])) {
+						$llabel = (string) \trim((string)($val['label:'.$lang] ?? null));
+						if((string)$llabel != '') {
+							$label = (string) $llabel;
+						} //end if
+					} //end if
 					$icon  = (string) \trim((string)($val['icon']  ?? null));
 					$link  = (string) \trim((string)($val['link']  ?? null));
 					if(((string)$label != '') AND ((string)$label != '') AND ((string)$label != '')) {

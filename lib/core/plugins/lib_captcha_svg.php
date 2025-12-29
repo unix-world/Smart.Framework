@@ -73,7 +73,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartMarkersTemplating, SmartSvgCaptchaPoint ; constants: SMART_FRAMEWORK_SECURITY_KEY
- * @version 	v.20250214
+ * @version 	v.20250714
  * @package 	development:Captcha
  */
 final class SmartSVGCaptcha {
@@ -469,13 +469,13 @@ final class SmartSVGCaptcha {
 			$ukey = (string) uniqid($prefix = 'gf__');
 			//-- Choose maximally half of all shapes that constitute the glyph
 			$shape_keys = $this->arr_rand_safe(
-				$glyphs[$key]['glyph_data'], Smart::random_number(0, floor(Smart::array_size($glyphs[$key]['glyph_data']) / $this->dsettings['glyph_fragments']['frag_factor']))
+				$glyphs[$key]['glyph_data'], Smart::random_number(0, Smart::floor_number(Smart::array_size($glyphs[$key]['glyph_data']) / $this->dsettings['glyph_fragments']['frag_factor']))
 			);
 			//-- Determine translation and rotation parameters. In which x direction should the fragment be moved (Based on the very first shape in the fragment)
 			if((!empty($shape_keys)) && (Smart::array_size($shape_keys) > 0)) {
 				$pos = (($rel = $glyphs[$key]['glyph_data'][$shape_keys[0]][0]->x) > $this->width / 2) ? false : true;
 				$x_translate = ($pos) ? Smart::random_number((int)abs($rel), (int)$this->width) : - Smart::random_number(0, (int)abs($rel));
-				$y_translate = (microtime() & 1) ? (-1 * Smart::random_number(0, floor($this->width / 5))) : Smart::random_number(0, floor($this->width / 5));
+				$y_translate = (microtime() & 1) ? (-1 * Smart::random_number(0, Smart::floor_number($this->width / 5))) : Smart::random_number(0, Smart::floor_number($this->width / 5));
 				$a = $this->_ra(0.6);
 				foreach($shape_keys as $kk => $skey) {
 					$copy = $this->arr_copy($glyphs[$key]['glyph_data'][$skey]);
@@ -777,7 +777,7 @@ final class SmartSVGCaptcha {
 		} //end foreach
 		//--
 		// Reevaluate the width of the image by the accumulated offset + the width of the last glyph + a random padding of maximally the last glpyh's half size.
-		//$this->width = $accumulated_hoffset + $glyph['width'] + Smart::random_number(floor($glyph['width'] * $overlapf_h), (int)$glyph['width']);
+		//$this->width = $accumulated_hoffset + $glyph['width'] + Smart::random_number(Smart::floor_number($glyph['width'] * $overlapf_h), (int)$glyph['width']);
 		//--
 		return (array) $glyphs;
 		//--
@@ -1848,7 +1848,7 @@ final class SmartSVGCaptcha {
  * @access 		private
  * @internal
  *
- * @version 	v.20250214
+ * @version 	v.20250714
  *
  */
 final class SmartSvgCaptchaPoint {

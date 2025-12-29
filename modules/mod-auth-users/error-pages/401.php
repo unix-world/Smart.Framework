@@ -18,8 +18,17 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  */
 function custom_http_message_401_unauthorized($y_message, $y_html_message='') {
-	//-- 20250606
+	//-- 20250622
 	// {{{SYNC-AUTH-USERS-LOGIN-REDIRECT}}}
+	//--
+	$realRedirectUrl = '';
+	if(\SmartAuth::is_cluster_master_auth() === true) {
+		$realRedirectUrl = (string) SmartUtils::get_server_current_url();
+	} else {
+		$realRedirectUrl = (string) \SmartModExtLib\AuthUsers\AuthClusterUser::getAuthClusterUrlPrefixMaster();
+	} //end if else
+	//--
+	$realSignInUrl = (string) $realRedirectUrl.\SmartModExtLib\AuthUsers\Utils::AUTH_USERS_URL_SIGNIN;
 	//--
 	$redirect = '';
 	//--
@@ -52,7 +61,7 @@ function custom_http_message_401_unauthorized($y_message, $y_html_message='') {
 			} //end if else
 		} //end if
 		//--
-		$redirect = (string) SmartUtils::get_server_current_url().\SmartModExtLib\AuthUsers\Utils::AUTH_USERS_URL_SIGNIN;
+		$redirect = (string) $realSignInUrl;
 		if((string)trim((string)$urlQuery) != '') {
 			$redirect .= '&redir='.Smart::escape_url((string)$urlQuery);
 		} //end if
@@ -61,10 +70,10 @@ function custom_http_message_401_unauthorized($y_message, $y_html_message='') {
 	//--
 	$htmlJsRedirect = '';
 	$htmlRedirect = '';
-	$hrefUrl = (string) SmartUtils::get_server_current_url();
+	$hrefUrl = (string) $realRedirectUrl;
 	$img = 'lib/framework/img/sign-important.svg';
 	//--
-	$translator = \SmartTextTranslations::getTranslator('mod-auth-users', 'auth-users');
+	$translator = SmartTextTranslations::getTranslator('mod-auth-users', 'auth-users');
 	//--
 	$txtLink = (string) $translator->text('homepage');
 	if(defined('SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS') AND (SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS === true)) {
@@ -79,7 +88,7 @@ function custom_http_message_401_unauthorized($y_message, $y_html_message='') {
 		$img = 'lib/framework/img/loading-spokes.svg';
 	} else {
 		if(defined('SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS') AND (SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS === true)) {
-			$hrefUrl = (string) \SmartModExtLib\AuthUsers\Utils::AUTH_USERS_URL_SIGNIN;
+			$hrefUrl = (string) $realSignInUrl;
 		} //end if
 	} //end if
 	//--

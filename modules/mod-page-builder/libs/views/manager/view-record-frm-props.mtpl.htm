@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ View Record / Props :: v.20250107 -->
+<!-- Pagebuilder / Manage @ View Record / Props :: v.20251211 -->
 <style>
 ul#lang-list {
 	display: inline;
@@ -204,7 +204,7 @@ ul#lang-list li:last-child:after {
 [%%%/IF:NUM-REFS%%%][%%%/IF:MODE%%%]
 </table>
 <script>
-jQuery(document).ready(function(){
+jQuery(document).ready(() => {
 	jQuery('#the-tags').tagEdit({
 		items: [###JSON-TAGS|json###],
 		tagMaxChars: 25,

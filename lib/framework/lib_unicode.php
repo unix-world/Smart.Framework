@@ -160,7 +160,7 @@ if(mb_substitute_character() !== 63) {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP MBString, PHP XML ; constants: SMART_FRAMEWORK_CHARSET, SMART_FRAMEWORK_SECURITY_FILTER_INPUT
- * @version     v.20250107
+ * @version     v.20251210
  * @package     @Core
  *
  */
@@ -740,6 +740,90 @@ final class SmartUnicode {
 	public static function stri_str(?string $ystring, ?string $ypart, bool $ybefore_needle=false) { // mixed
 		//--
 		return mb_stristr((string)$ystring, (string)$ypart, (bool)$ybefore_needle); // return MIXED !
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Unicode Safe 				:: Check if a string starts with another, Case Sensitive
+	 *
+	 * @param STRING 	$str		:: The string to check
+	 * @param STRING 	$part		:: The sub-string to search for in the string
+	 *
+	 * @return BOOLEAN				:: Returns TRUE if starts with or FALSE if not
+	 */
+	public static function str_startswith(string $str, string $part) : bool {
+		//--
+		if(((string)$str == '') OR ((string)$part == '')) {
+			return false;
+		} //end if
+		//--
+		return (bool) (mb_strpos((string)$str, (string)$part, 0) === 0);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Unicode Safe 				:: Check if a string starts with another, Case Insensitive
+	 *
+	 * @param STRING 	$str		:: The string to check
+	 * @param STRING 	$part		:: The sub-string to search for in the string
+	 *
+	 * @return BOOLEAN				:: Returns TRUE if starts with or FALSE if not
+	 */
+	public static function str_istartswith(string $str, string $part) : bool {
+		//--
+		if(((string)$str == '') OR ((string)$part == '')) {
+			return false;
+		} //end if
+		//--
+		return (bool) (mb_stripos((string)$str, (string)$part, 0) === 0);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Unicode Safe 				:: Check if a string ends with another, Case Sensitive
+	 *
+	 * @param STRING 	$str		:: The string to check
+	 * @param STRING 	$part		:: The sub-string to search for in the string
+	 *
+	 * @return BOOLEAN				:: Returns TRUE if ends with or FALSE if not
+	 */
+	public static function str_endswith(string $str, string $part) : bool {
+		//--
+		if(((string)$str == '') OR ((string)$part == '')) {
+			return false;
+		} //end if
+		//--
+		return (bool) (mb_strrpos((string)$str, (string)$part, 0) === (int)(mb_strlen((string)$str) - mb_strlen((string)$part)));
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Unicode Safe 				:: Check if a string ends with another, Case Insensitive
+	 *
+	 * @param STRING 	$str		:: The string to check
+	 * @param STRING 	$part		:: The sub-string to search for in the string
+	 *
+	 * @return BOOLEAN				:: Returns TRUE if ends with or FALSE if not
+	 */
+	public static function str_iendswith(string $str, string $part) : bool {
+		//--
+		if(((string)$str == '') OR ((string)$part == '')) {
+			return false;
+		} //end if
+		//--
+		return (bool) (mb_strripos((string)$str, (string)$part, 0) === (int)(mb_strlen((string)$str) - mb_strlen((string)$part)));
 		//--
 	} //END FUNCTION
 	//================================================================

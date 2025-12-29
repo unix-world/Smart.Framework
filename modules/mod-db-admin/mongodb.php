@@ -1,5 +1,5 @@
 <?php
-// Controller: DnAdmin.Mongodb
+// Controller: DbAdmin.Mongodb
 // Route: admin.php?/page/db-admin.mongodb (admin.php?page=db-admin.mongodb)
 // (c) 2008-present unix-world.org - all rights reserved
 
@@ -15,7 +15,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 /**
  * Admin Area Controller
- * @version 20250207
+ * @version 20250714
  * @ignore
  *
  * @requires define('SMART_FRAMEWORK_DB_ADMIN_ALLOW', true); // set in config-admin.php
@@ -1018,7 +1018,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$navbox_url = (string) Smart::url_add_params((string)$the_base_url, (array)$arr_url_ok_params);
 				$arr_url_ok_params = [];
 				//--
-				$num_pages = (int) ceil((int)$count / (int)$limit);
+				$num_pages = (int) Smart::ceil_number((int)$count / (int)$limit);
 				if($num_pages <= 0) {
 					$num_pages = 1;
 				} //end if
@@ -1057,7 +1057,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 							'IS-QUERY' 				=> (string) $is_query ? 'yes' : 'no',
 							'SORT-MAX' 				=> (int)    $sort_max,
 							'LIMIT-PER-PAGE' 		=> (int)    $limit,
-							'OFFSET' 				=> (int)    (ceil((int)$ofs / (int)$limit) + 1),
+							'OFFSET' 				=> (int)    (Smart::ceil_number((int)$ofs / (int)$limit) + 1),
 							'PAGES' 				=> (int)    $num_pages,
 							'TOTAL-RECORDS' 		=> (int)    $count,
 							'TOTAL-ALL-RECORDS' 	=> (int)    $all_count,

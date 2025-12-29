@@ -1,18 +1,18 @@
-<!-- Pagebuilder / Manage @ Export / Records :: v.20250107 -->
+<!-- Pagebuilder / Manage @ Export / Records :: v.20251211 -->
 <script>
-function smartModJS_PgBldr_Validate_Form() {
-	var lang = jQuery('#sel-lang').val();
+const smartModJS_PgBldr_Validate_Form = () => {
+	const lang = jQuery('#sel-lang').val() || '';
 	if(!lang) {
 		smartJ$Browser.AlertDialog('Please select the Export Language from the list', null, 'Notification');
 		return false;
 	}
-	var mode = jQuery('#sel-mode').val();
+	const mode = jQuery('#sel-mode').val() || '';
 	if(!mode) {
 		smartJ$Browser.AlertDialog('Please select the Export Mode from the list', null, 'Notification');
 		return false;
 	}
 	return true;
-}
+};
 </script>
 <center><div>
 	<h1>Export <i>PageBuilder</i> Translations</h1>

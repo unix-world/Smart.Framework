@@ -29,7 +29,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250620
+ * @version 	v.20251207
  * @package 	modules:AuthUsers
  *
  */
@@ -497,15 +497,16 @@ final class AuthClusterUser {
 		} //end if
 		//--
 		if((string)($userData['cluster'] ?? null) !== (string)$cluster) {
-			\Smart::log_warning(__METHOD__.' # Account Data Cluster ID Mismatch for `'.$email.'`');
+			\Smart::log_warning(__METHOD__.' # Account Data Cluster ID Mismatch for `'.$email.'` as: `'.($userData['cluster'] ?? null).'` # `'.$cluster.'`');
 			return [];
 		} //end if
 		if((string)\SmartModExtLib\AuthUsers\Utils::userAccountIdToUserName((string)($userData['id'] ?? null)) !== (string)$id) {
-			\Smart::log_warning(__METHOD__.' # Account Data ID Mismatch for `'.$email.'`');
+			\Smart::log_warning(__METHOD__.' # Account Data ID Mismatch for `'.$email.'` as: `'.($userData['id'] ?? null).'` # `'.$id.'`');
 			return [];
 		} //end if
-		if((string)($userData['id'] ?? null) !== (string)\SmartModExtLib\AuthUsers\Utils::userNameToUserAccountId((string)$id)) {
-			\Smart::log_warning(__METHOD__.' # Account Data User ID Mismatch for `'.$email.'`');
+		$userNameToUserAccountId = (string) \SmartModExtLib\AuthUsers\Utils::userNameToUserAccountId((string)$id);
+		if((string)($userData['id'] ?? null) !== (string)$userNameToUserAccountId) {
+			\Smart::log_warning(__METHOD__.' # Account Data User ID Mismatch for `'.$email.'` as `'.($userData['id'] ?? null).'` # `'.$userNameToUserAccountId.'`');
 			return [];
 		} //end if
 		//--

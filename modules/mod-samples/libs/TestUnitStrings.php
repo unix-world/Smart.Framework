@@ -28,20 +28,29 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250214
+ * @version 	v.20251210
  *
  */
 final class TestUnitStrings {
 
 	// ::
 
-	private static $entities_text = 'Platform クラウドアプリケーションプラットフォーム \'áâãäåāăąÁÂÃÄÅĀĂĄćĉčçĆĈČÇďĎèéêëēĕėěęÈÉÊËĒĔĖĚĘĝģĜĢĥħĤĦìíîïĩīĭȉȋįÌÍÎÏĨĪĬȈȊĮĳĵĲĴķĶĺļľłĹĻĽŁñńņňÑŃŅŇòóôõöōŏőøœÒÓÔÕÖŌŎŐØŒŕŗřŔŖŘșşšśŝßȘŞŠŚŜțţťȚŢŤùúûüũūŭůűųÙÚÛÜŨŪŬŮŰŲŵŴẏỳŷÿýẎỲŶŸÝźżžŹŻŽ "';
-	private static $entities_html = 'Platform &#12463;&#12521;&#12454;&#12489;&#12450;&#12503;&#12522;&#12465;&#12540;&#12471;&#12519;&#12531;&#12503;&#12521;&#12483;&#12488;&#12501;&#12457;&#12540;&#12512; \'&#225;&#226;&#227;&#228;&#229;&#257;&#259;&#261;&#193;&#194;&#195;&#196;&#197;&#256;&#258;&#260;&#263;&#265;&#269;&#231;&#262;&#264;&#268;&#199;&#271;&#270;&#232;&#233;&#234;&#235;&#275;&#277;&#279;&#283;&#281;&#200;&#201;&#202;&#203;&#274;&#276;&#278;&#282;&#280;&#285;&#291;&#284;&#290;&#293;&#295;&#292;&#294;&#236;&#237;&#238;&#239;&#297;&#299;&#301;&#521;&#523;&#303;&#204;&#205;&#206;&#207;&#296;&#298;&#300;&#520;&#522;&#302;&#307;&#309;&#306;&#308;&#311;&#310;&#314;&#316;&#318;&#322;&#313;&#315;&#317;&#321;&#241;&#324;&#326;&#328;&#209;&#323;&#325;&#327;&#242;&#243;&#244;&#245;&#246;&#333;&#335;&#337;&#248;&#339;&#210;&#211;&#212;&#213;&#214;&#332;&#334;&#336;&#216;&#338;&#341;&#343;&#345;&#340;&#342;&#344;&#537;&#351;&#353;&#347;&#349;&#223;&#536;&#350;&#352;&#346;&#348;&#539;&#355;&#357;&#538;&#354;&#356;&#249;&#250;&#251;&#252;&#361;&#363;&#365;&#367;&#369;&#371;&#217;&#218;&#219;&#220;&#360;&#362;&#364;&#366;&#368;&#370;&#373;&#372;&#7823;&#7923;&#375;&#255;&#253;&#7822;&#7922;&#374;&#376;&#221;&#378;&#380;&#382;&#377;&#379;&#381; "';
+	private const string ENTITIES_TEXT = 'Platform クラウドアプリケーションプラットフォーム \'áâãäåāăąÁÂÃÄÅĀĂĄćĉčçĆĈČÇďĎèéêëēĕėěęÈÉÊËĒĔĖĚĘĝģĜĢĥħĤĦìíîïĩīĭȉȋįÌÍÎÏĨĪĬȈȊĮĳĵĲĴķĶĺļľłĹĻĽŁñńņňÑŃŅŇòóôõöōŏőøœÒÓÔÕÖŌŎŐØŒŕŗřŔŖŘșşšśŝßȘŞŠŚŜțţťȚŢŤùúûüũūŭůűųÙÚÛÜŨŪŬŮŰŲŵŴẏỳŷÿýẎỲŶŸÝźżžŹŻŽ "';
+	private const string ENTITIES_HTML = 'Platform &#12463;&#12521;&#12454;&#12489;&#12450;&#12503;&#12522;&#12465;&#12540;&#12471;&#12519;&#12531;&#12503;&#12521;&#12483;&#12488;&#12501;&#12457;&#12540;&#12512; \'&#225;&#226;&#227;&#228;&#229;&#257;&#259;&#261;&#193;&#194;&#195;&#196;&#197;&#256;&#258;&#260;&#263;&#265;&#269;&#231;&#262;&#264;&#268;&#199;&#271;&#270;&#232;&#233;&#234;&#235;&#275;&#277;&#279;&#283;&#281;&#200;&#201;&#202;&#203;&#274;&#276;&#278;&#282;&#280;&#285;&#291;&#284;&#290;&#293;&#295;&#292;&#294;&#236;&#237;&#238;&#239;&#297;&#299;&#301;&#521;&#523;&#303;&#204;&#205;&#206;&#207;&#296;&#298;&#300;&#520;&#522;&#302;&#307;&#309;&#306;&#308;&#311;&#310;&#314;&#316;&#318;&#322;&#313;&#315;&#317;&#321;&#241;&#324;&#326;&#328;&#209;&#323;&#325;&#327;&#242;&#243;&#244;&#245;&#246;&#333;&#335;&#337;&#248;&#339;&#210;&#211;&#212;&#213;&#214;&#332;&#334;&#336;&#216;&#338;&#341;&#343;&#345;&#340;&#342;&#344;&#537;&#351;&#353;&#347;&#349;&#223;&#536;&#350;&#352;&#346;&#348;&#539;&#355;&#357;&#538;&#354;&#356;&#249;&#250;&#251;&#252;&#361;&#363;&#365;&#367;&#369;&#371;&#217;&#218;&#219;&#220;&#360;&#362;&#364;&#366;&#368;&#370;&#373;&#372;&#7823;&#7923;&#375;&#255;&#253;&#7822;&#7922;&#374;&#376;&#221;&#378;&#380;&#382;&#377;&#379;&#381; "';
+
+	private const string LOREM_ISO_TEXT = 'Lorem Ipsum dolor sit Amet';
+	private const string UNICODE_TEXT   = '"Unicode78źź:ăĂîÎâÂșȘțȚşŞţŢグッド';
+
+	private const string IDN_DOMAIN_UNICODE = 'jösefsson.tßst123.org';
+	private const string IDN_DOMAIN_ISO     = 'xn--jsefsson-n4a.xn--tst123-bta.org';
+	private const string IDN_EMAIL_UNICODE  = 'räksmörgås@jösefsson.tßst123.org';
+	private const string IDN_EMAIL_ISO      = 'xn--rksmrgs@jsefsson-vnbx43ag.xn--tst123-bta.org';
+
 
 	//============================================================
 	public static function testStr() {
 		//--
-		return self::$entities_text.' <p></p> ? & * ^ $ @ ! ` ~ % () [] {} | \ / + - _ : ; , . #\'0.51085630 1454529172#'."\r\n\t".'`~@#$%^&*()-_=+[{]}|;:"<>,.?/\\'; // this must be NOT dynamic
+		return self::ENTITIES_TEXT.' <p></p> ? & * ^ $ @ ! ` ~ % () [] {} | \ / + - _ : ; , . #\'0.51085630 1454529172#'."\r\n\t".'`~@#$%^&*()-_=+[{]}|;:"<>,.?/\\'; // this must be NOT dynamic
 		//--
 	} //END FUNCTION
 	//============================================================
@@ -55,14 +64,7 @@ final class TestUnitStrings {
 		//--
 
 		//--
-		$lorem_iso_text = 'Lorem Ipsum dolor sit Amet';
-		$unicode_text = '"Unicode78źź:ăĂîÎâÂșȘțȚşŞţŢグッド';
-		$invalid_string = (string) $unicode_text.pack("H*" ,'c32e').'#';
-		//--
-		$idn_domain_unicode = 'jösefsson.tßst123.org';
-		$idn_domain_iso = 'xn--jsefsson-n4a.xn--tst123-bta.org';
-		$idn_email_unicode = 'räksmörgås@jösefsson.tßst123.org';
-		$idn_email_iso = 'xn--rksmrgs@jsefsson-vnbx43ag.xn--tst123-bta.org';
+		$invalid_string = (string) self::UNICODE_TEXT.pack("H*" ,'c32e').'#';
 		//--
 
 		//--
@@ -131,9 +133,9 @@ final class TestUnitStrings {
 			$the_test = 'Unicode String Replace First Occurence Only';
 			$tests[] = $the_test;
 			if(
-				((string)\Smart::str_replace_first((string)$unicode_text, '', (string)$unicode_text.'[1]'.$unicode_text.'[2]'.$unicode_text) !== (string)'[1]'.$unicode_text.'[2]'.$unicode_text) OR
-				((string)\Smart::str_replace_first((string)$unicode_text, '', (string)'[0]'.$unicode_text.'[1]'.$unicode_text.'[2]'.$unicode_text) !== (string)'[0][1]'.$unicode_text.'[2]'.$unicode_text) OR
-				((string)\Smart::str_replace_first((string)$unicode_text, '', (string)'[0]'.$unicode_text.'[1]'.$unicode_text.'[2]'.$unicode_text.'[3]') !== (string)'[0][1]'.$unicode_text.'[2]'.$unicode_text.'[3]')
+				((string)\Smart::str_replace_first((string)self::UNICODE_TEXT, '', (string)self::UNICODE_TEXT.'[1]'.self::UNICODE_TEXT.'[2]'.self::UNICODE_TEXT) !== (string)'[1]'.self::UNICODE_TEXT.'[2]'.self::UNICODE_TEXT) OR
+				((string)\Smart::str_replace_first((string)self::UNICODE_TEXT, '', (string)'[0]'.self::UNICODE_TEXT.'[1]'.self::UNICODE_TEXT.'[2]'.self::UNICODE_TEXT) !== (string)'[0][1]'.self::UNICODE_TEXT.'[2]'.self::UNICODE_TEXT) OR
+				((string)\Smart::str_replace_first((string)self::UNICODE_TEXT, '', (string)'[0]'.self::UNICODE_TEXT.'[1]'.self::UNICODE_TEXT.'[2]'.self::UNICODE_TEXT.'[3]') !== (string)'[0][1]'.self::UNICODE_TEXT.'[2]'.self::UNICODE_TEXT.'[3]')
 			) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
@@ -142,9 +144,9 @@ final class TestUnitStrings {
 			$the_test = 'Unicode String Replace Last Occurence Only';
 			$tests[] = $the_test;
 			if(
-				((string)\Smart::str_replace_last((string)$unicode_text, '', (string)$unicode_text.'[1]'.$unicode_text.'[2]'.$unicode_text) !== (string)$unicode_text.'[1]'.$unicode_text.'[2]') OR
-				((string)\Smart::str_replace_last((string)$unicode_text, '', (string)'[0]'.$unicode_text.'[1]'.$unicode_text.'[2]'.$unicode_text) !== (string)'[0]'.$unicode_text.'[1]'.$unicode_text.'[2]') OR
-				((string)\Smart::str_replace_last((string)$unicode_text, '', (string)'[0]'.$unicode_text.'[1]'.$unicode_text.'[2]'.$unicode_text.'[3]') !== (string)'[0]'.$unicode_text.'[1]'.$unicode_text.'[2][3]')
+				((string)\Smart::str_replace_last((string)self::UNICODE_TEXT, '', (string)self::UNICODE_TEXT.'[1]'.self::UNICODE_TEXT.'[2]'.self::UNICODE_TEXT) !== (string)self::UNICODE_TEXT.'[1]'.self::UNICODE_TEXT.'[2]') OR
+				((string)\Smart::str_replace_last((string)self::UNICODE_TEXT, '', (string)'[0]'.self::UNICODE_TEXT.'[1]'.self::UNICODE_TEXT.'[2]'.self::UNICODE_TEXT) !== (string)'[0]'.self::UNICODE_TEXT.'[1]'.self::UNICODE_TEXT.'[2]') OR
+				((string)\Smart::str_replace_last((string)self::UNICODE_TEXT, '', (string)'[0]'.self::UNICODE_TEXT.'[1]'.self::UNICODE_TEXT.'[2]'.self::UNICODE_TEXT.'[3]') !== (string)'[0]'.self::UNICODE_TEXT.'[1]'.self::UNICODE_TEXT.'[2][3]')
 			) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
@@ -152,7 +154,7 @@ final class TestUnitStrings {
 		if((string)$err == '') {
 			$the_test = 'Unicode Json Encode / Decode Test';
 			$tests[] = $the_test;
-			if((string)\Smart::json_decode(\Smart::json_encode($unicode_text)) !== (string)$unicode_text) {
+			if((string)\Smart::json_decode(\Smart::json_encode(self::UNICODE_TEXT)) !== (string)self::UNICODE_TEXT) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -166,41 +168,41 @@ final class TestUnitStrings {
 		if((string)$err == '') {
 			$the_test = 'Unicode HTML Entities Encode / Decode Test';
 			$tests[] = $the_test;
-			if((string)\SmartUnicode::html_entities(self::$entities_text) !== (string)self::$entities_html) {
+			if((string)\SmartUnicode::html_entities(self::ENTITIES_TEXT) !== (string)self::ENTITIES_HTML) {
 				$err = 'ERROR: '.$the_test.' FAILED (Encode) ...';
-			} elseif((string)\Smart::stripTags((string)self::$entities_html) !== (string)self::$entities_text) {
+			} elseif((string)\Smart::stripTags((string)self::ENTITIES_HTML) !== (string)self::ENTITIES_TEXT) {
 				$err = 'ERROR: '.$the_test.' FAILED (Decode) ...';
 			} //end if
 		} //end if
 		if((string)$err == '') {
 			$the_test = 'Unicode Regex Test Positive';
 			$tests[] = $the_test;
-			if(!\preg_match((string)$regex_positive.'u', (string)$unicode_text)) {
+			if(!\preg_match((string)$regex_positive.'u', (string)self::UNICODE_TEXT)) {
 				$err = 'ERROR: '.$the_test.' FAILED (1) ...';
-			} elseif(\preg_match((string)$regex_positive, (string)$unicode_text)) {
+			} elseif(\preg_match((string)$regex_positive, (string)self::UNICODE_TEXT)) {
 				$err = 'ERROR: '.$the_test.' FAILED (2) ...';
 			} //end if
 		} //end if
 		if((string)$err == '') {
 			$the_test = 'Unicode Regex Test Negative';
 			$tests[] = $the_test;
-			if(\preg_match((string)$regex_negative.'u', (string)$unicode_text)) {
+			if(\preg_match((string)$regex_negative.'u', (string)self::UNICODE_TEXT)) {
 				$err = 'ERROR: '.$the_test.' FAILED (1) ...';
-			} elseif(!\preg_match((string)$regex_negative, (string)$unicode_text)) {
+			} elseif(!\preg_match((string)$regex_negative, (string)self::UNICODE_TEXT)) {
 				$err = 'ERROR: '.$the_test.' FAILED (2) ...';
 			} //end if
 		} //end if
 		if((string)$err == '') {
 			$the_test = 'Deaccented ISO Regex Test Positive';
 			$tests[] = $the_test;
-			if(!\preg_match((string)$regex_positive, (string)\SmartUnicode::deaccent_str($unicode_text))) {
+			if(!\preg_match((string)$regex_positive, (string)\SmartUnicode::deaccent_str(self::UNICODE_TEXT))) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
 		if((string)$err == '') {
 			$the_test = 'Deaccented ISO Regex Test Negative';
 			$tests[] = $the_test;
-			if(\preg_match((string)$regex_negative, (string)\SmartUnicode::deaccent_str($unicode_text))) {
+			if(\preg_match((string)$regex_negative, (string)\SmartUnicode::deaccent_str(self::UNICODE_TEXT))) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -208,7 +210,67 @@ final class TestUnitStrings {
 		if((string)$err == '') {
 			$the_test = 'Unicode Strlen Test';
 			$tests[] = $the_test;
-			if(\SmartUnicode::str_len($unicode_text) !== 30) {
+			if(\SmartUnicode::str_len(self::UNICODE_TEXT) !== 30) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'Unicode String Starts With (Case Sensitive), Positive';
+			$tests[] = $the_test;
+			if(\SmartUnicode::str_startswith(self::UNICODE_TEXT, '"Unicode78źź:') !== true) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		if((string)$err == '') {
+			$the_test = 'Unicode String Starts With (Case Sensitive), Negative';
+			$tests[] = $the_test;
+			if(\SmartUnicode::str_startswith(self::UNICODE_TEXT, '"unicode78źź:') === true) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'Unicode String Starts With (Case Insensitive), Positive';
+			$tests[] = $the_test;
+			if(\SmartUnicode::str_istartswith(self::UNICODE_TEXT, '"unicode78źź:') !== true) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		if((string)$err == '') {
+			$the_test = 'Unicode String Starts With (Case Insensitive), Negative';
+			$tests[] = $the_test;
+			if(\SmartUnicode::str_istartswith(self::UNICODE_TEXT, '"nicode78źź:') === true) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'Unicode String Ends With (Case Sensitive), Positive';
+			$tests[] = $the_test;
+			if(\SmartUnicode::str_endswith(self::UNICODE_TEXT, ':ăĂîÎâÂșȘțȚşŞţŢグッド') !== true) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		if((string)$err == '') {
+			$the_test = 'Unicode String Ends With (Case Sensitive), Negative';
+			$tests[] = $the_test;
+			if(\SmartUnicode::str_endswith(self::UNICODE_TEXT, ':ĂăîÎâÂșȘțȚşŞţŢグッド') === true) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'Unicode String Ends With (Case Insensitive), Positive';
+			$tests[] = $the_test;
+			if(\SmartUnicode::str_iendswith(self::UNICODE_TEXT, ':ĂăîÎâÂșȘțȚşŞţŢグッド') !== true) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		if((string)$err == '') {
+			$the_test = 'Unicode String Ends With (Case Insensitive), Negative';
+			$tests[] = $the_test;
+			if(\SmartUnicode::str_iendswith(self::UNICODE_TEXT, ':ăĂîÎâÂșȘțȚşŞţŢグッ') === true) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -216,14 +278,14 @@ final class TestUnitStrings {
 		if((string)$err == '') { // this tests also \SmartUnicode::str_ipos
 			$the_test = 'Unicode Find Substring (Case Insensitive), Positive';
 			$tests[] = $the_test;
-			if(\SmartUnicode::str_icontains($unicode_text, 'șș') !== true) {
+			if(\SmartUnicode::str_icontains(self::UNICODE_TEXT, 'șș') !== true) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
 		if((string)$err == '') { // this tests also \SmartUnicode::str_ipos
 			$the_test = 'Unicode Find Substring (Case Insensitive), Negative';
 			$tests[] = $the_test;
-			if(\SmartUnicode::str_icontains($unicode_text, 'șş') !== false) {
+			if(\SmartUnicode::str_icontains(self::UNICODE_TEXT, 'șş') !== false) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -231,14 +293,14 @@ final class TestUnitStrings {
 		if((string)$err == '') { // this tests also \SmartUnicode::str_pos
 			$the_test = 'Unicode Find Substring (Case Sensitive), Positive';
 			$tests[] = $the_test;
-			if(\SmartUnicode::str_contains($unicode_text, 'țȚ') !== true) {
+			if(\SmartUnicode::str_contains(self::UNICODE_TEXT, 'țȚ') !== true) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
 		if((string)$err == '') { // this tests also \SmartUnicode::str_pos
 			$the_test = 'Unicode Find Substring (Case Sensitive), Negative';
 			$tests[] = $the_test;
-			if(\SmartUnicode::str_contains($unicode_text, 'țŢ') !== false) {
+			if(\SmartUnicode::str_contains(self::UNICODE_TEXT, 'țŢ') !== false) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -246,14 +308,14 @@ final class TestUnitStrings {
 		if((string)$err == '') {
 			$the_test = 'Unicode Find Substring (Case Insensitive), Reverse';
 			$tests[] = $the_test;
-			if(\SmartUnicode::str_ripos($unicode_text, 'ţţグ') === false) {
+			if(\SmartUnicode::str_ripos(self::UNICODE_TEXT, 'ţţグ') === false) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
 		if((string)$err == '') {
 			$the_test = 'Unicode Find Substring (Case Sensitive), Reverse';
 			$tests[] = $the_test;
-			if(\SmartUnicode::str_rpos($unicode_text, 'ţŢグ') === false) {
+			if(\SmartUnicode::str_rpos(self::UNICODE_TEXT, 'ţŢグ') === false) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -261,14 +323,14 @@ final class TestUnitStrings {
 		if((string)$err == '') {
 			$the_test = 'Unicode Return Substring (Case Insensitive)';
 			$tests[] = $the_test;
-			if(\SmartUnicode::stri_str($unicode_text, 'âȘșȚ') !== 'ÂșȘțȚşŞţŢグッド') {
+			if(\SmartUnicode::stri_str(self::UNICODE_TEXT, 'âȘșȚ') !== 'ÂșȘțȚşŞţŢグッド') {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
 		if((string)$err == '') {
 			$the_test = 'Unicode Return Substring (Case Sensitive)';
 			$tests[] = $the_test;
-			if(\SmartUnicode::str_str($unicode_text, 'ÂșȘț') !== 'ÂșȘțȚşŞţŢグッド') {
+			if(\SmartUnicode::str_str(self::UNICODE_TEXT, 'ÂșȘț') !== 'ÂșȘțȚşŞţŢグッド') {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -276,14 +338,14 @@ final class TestUnitStrings {
 		if((string)$err == '') {
 			$the_test = 'Unicode String to LowerCase';
 			$tests[] = $the_test;
-			if(\SmartUnicode::str_tolower($unicode_text) !== '"unicode78źź:ăăîîââșșțțşşţţグッド') {
+			if(\SmartUnicode::str_tolower(self::UNICODE_TEXT) !== '"unicode78źź:ăăîîââșșțțşşţţグッド') {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
 		if((string)$err == '') {
 			$the_test = 'Unicode String to UpperCase';
 			$tests[] = $the_test;
-			if(\SmartUnicode::str_toupper($unicode_text) !== '"UNICODE78ŹŹ:ĂĂÎÎÂÂȘȘȚȚŞŞŢŢグッド') {
+			if(\SmartUnicode::str_toupper(self::UNICODE_TEXT) !== '"UNICODE78ŹŹ:ĂĂÎÎÂÂȘȘȚȚŞŞŢŢグッド') {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -291,14 +353,14 @@ final class TestUnitStrings {
 		if((string)$err == '') {
 			$the_test = 'Unicode SubString function (without last param)';
 			$tests[] = $the_test;
-			if(\SmartUnicode::sub_str($unicode_text, 25) !== 'ţŢグッド') {
+			if(\SmartUnicode::sub_str(self::UNICODE_TEXT, 25) !== 'ţŢグッド') {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
 		if((string)$err == '') {
 			$the_test = 'Unicode SubString function (with last param)';
 			$tests[] = $the_test;
-			if(\SmartUnicode::sub_str($unicode_text, 25, 3) !== 'ţŢグ') {
+			if(\SmartUnicode::sub_str(self::UNICODE_TEXT, 25, 3) !== 'ţŢグ') {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -306,7 +368,7 @@ final class TestUnitStrings {
 		if((string)$err == '') {
 			$the_test = 'Unicode SubString Count function';
 			$tests[] = $the_test;
-			if(\SmartUnicode::substr_count($unicode_text, 'ţ') !== 1) {
+			if(\SmartUnicode::substr_count(self::UNICODE_TEXT, 'ţ') !== 1) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -314,21 +376,21 @@ final class TestUnitStrings {
 		if((string)$err == '') {
 			$the_test = 'Unicode String Replace with Limit (Case Sensitive)';
 			$tests[] = $the_test;
-			if(\SmartUnicode::str_limit_replace('ź', '@', $unicode_text, 1) !== '"Unicode78@ź:ăĂîÎâÂșȘțȚşŞţŢグッド') {
+			if(\SmartUnicode::str_limit_replace('ź', '@', self::UNICODE_TEXT, 1) !== '"Unicode78@ź:ăĂîÎâÂșȘțȚşŞţŢグッド') {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
 		if((string)$err == '') {
 			$the_test = 'String Replace without Limit (Case Sensitive)';
 			$tests[] = $the_test;
-			if(str_replace('ź', '@', $unicode_text) !== '"Unicode78@@:ăĂîÎâÂșȘțȚşŞţŢグッド') {
+			if(str_replace('ź', '@', self::UNICODE_TEXT) !== '"Unicode78@@:ăĂîÎâÂșȘțȚşŞţŢグッド') {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
 		if((string)$err == '') { /* This test fails if the replacements accented characters are different case than one find in string (upper/lower) ... */
 			$the_test = 'String Replace without Limit (Case Insensitive) *** Only with unaccented replacements !!';
 			$tests[] = $the_test;
-			if(str_ireplace('E7', '@', $unicode_text) !== '"Unicod@8źź:ăĂîÎâÂșȘțȚşŞţŢグッド') {
+			if(str_ireplace('E7', '@', self::UNICODE_TEXT) !== '"Unicod@8źź:ăĂîÎâÂșȘțȚşŞţŢグッド') {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -336,7 +398,7 @@ final class TestUnitStrings {
 		if((string)$err == '') {
 			$the_test = 'Deaccent String';
 			$tests[] = $the_test;
-			if(\SmartUnicode::deaccent_str($unicode_text) !== '"Unicode78zz:aAiIaAsStTsStT???') {
+			if(\SmartUnicode::deaccent_str(self::UNICODE_TEXT) !== '"Unicode78zz:aAiIaAsStTsStT???') {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -344,7 +406,7 @@ final class TestUnitStrings {
 		if((string)$err == '') {
 			$the_test = 'Word Wrap';
 			$tests[] = $the_test;
-			if(\SmartUnicode::word_wrap($unicode_text, 13, "\n", true, '') !== '"Unicode78źź:'."\n".'ăĂîÎâÂșȘțȚşŞţ'."\n".'Ţグッド') {
+			if(\SmartUnicode::word_wrap(self::UNICODE_TEXT, 13, "\n", true, '') !== '"Unicode78źź:'."\n".'ăĂîÎâÂșȘțȚşŞţ'."\n".'Ţグッド') {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -354,8 +416,8 @@ final class TestUnitStrings {
 			$tests[] = $the_test;
 			$test_arr = array(
 				'@test' => 'Testing weird key characters',
-				'line1' => 'Some ISO-8859-1 String: @ # $ % ^ & * (\') _ - + = { [ ] } ; < ,. > / ? \\ |', 'line2' => 'Unicode (long) String: '.$unicode_text.' '.\SmartUnicode::str_toupper($unicode_text).' '.$unicode_text.' '.\SmartUnicode::str_tolower($unicode_text).' '.$unicode_text.' '.\SmartUnicode::deaccent_str($unicode_text).' '.$unicode_text,
-				$unicode_text => 'Unicode as Key',
+				'line1' => 'Some ISO-8859-1 String: @ # $ % ^ & * (\') _ - + = { [ ] } ; < ,. > / ? \\ |', 'line2' => 'Unicode (long) String: '.self::UNICODE_TEXT.' '.\SmartUnicode::str_toupper(self::UNICODE_TEXT).' '.self::UNICODE_TEXT.' '.\SmartUnicode::str_tolower(self::UNICODE_TEXT).' '.self::UNICODE_TEXT.' '.\SmartUnicode::deaccent_str(self::UNICODE_TEXT).' '.self::UNICODE_TEXT,
+				self::UNICODE_TEXT => 'Unicode as Key',
 				'line3' => ['A' => 'b', 100, 'Thousand'],
 				'line4' => [1, 0.2, 3.0001],
 				'line5' => \date('Y-m-d H:i:s')
@@ -376,7 +438,7 @@ final class TestUnitStrings {
 			$test_arr = array(
 				'LINE0' => 'Testing weird key characters with case sensitive keys',
 				'line1' => 'Some ISO-8859-1 Unsafe Characters: @ # $ % ^ & * (\') _ - + = { [ " ] } ; < ,. > ~` / ! ? \\ |',
-				'line2' => '<Unicode> ("long") \'String\': '.$unicode_text.' '.\SmartUnicode::str_toupper($unicode_text).' '.$unicode_text.' '.\SmartUnicode::str_tolower($unicode_text).' '.$unicode_text.' '.\SmartUnicode::deaccent_str($unicode_text).' '.$unicode_text,
+				'line2' => '<Unicode> ("long") \'String\': '.self::UNICODE_TEXT.' '.\SmartUnicode::str_toupper(self::UNICODE_TEXT).' '.self::UNICODE_TEXT.' '.\SmartUnicode::str_tolower(self::UNICODE_TEXT).' '.self::UNICODE_TEXT.' '.\SmartUnicode::deaccent_str(self::UNICODE_TEXT).' '.self::UNICODE_TEXT,
 				'line3' => ['A' => 'b', 'c' => 'D', 'e' => '', 'F' => ['g' => 'H', 'i' => '']],
 				'line4' => '',
 				'line5' => \date('Y-m-d H:i:s'),
@@ -425,14 +487,14 @@ final class TestUnitStrings {
 			} //end if
 		} //end if
 		//--
-		$the_random_unicode_text = (string) \SmartHashCrypto::sha1((string)$unicode_text.\Smart::random_number(1000,9999)).'-'.$unicode_text." \r\n\t".'-'.\Smart::uuid_10_num().'-'.\Smart::uuid_10_str().'-'.\Smart::uuid_10_seq();
-		$arch_text = (string) str_repeat($lorem_iso_text."\t".$unicode_text, 1150)."\n".$the_random_unicode_text; // ~ 65KB
+		$the_random_unicode_text = (string) \SmartHashCrypto::sha1((string)self::UNICODE_TEXT.\Smart::random_number(1000,9999)).'-'.self::UNICODE_TEXT." \r\n\t".'-'.\Smart::uuid_10_num().'-'.\Smart::uuid_10_str().'-'.\Smart::uuid_10_seq();
+		$arch_text = (string) str_repeat(self::LOREM_ISO_TEXT."\t".self::UNICODE_TEXT, 1150)."\n".$the_random_unicode_text; // ~ 65KB
 		//--
 		if((string)$err == '') {
 			$the_test = 'Data: Archive / Unarchive (v3)';
 			$tests[] = $the_test;
 			$testPhpArchDataV3 = 'HclNDoIwEEDhw3CBoZ3OwFbwJ2lqCBSVJVhKE4kCCxM5vYTdy/vwSZ4FKXICMGVgyXsTkqfdxPYoZdw8JkeKMcp0VRuZ4E1GbTvX5mVHdzcwuUkV37U/Hx76Mlx19wMQufkU4LMmNLYDtZTV/D72QzwGG07o8z8='."\n".'[SFZ.20231031/B64.ZLibRaw.hex]'."\n".'(5uWtdgv2ICZ71xLMEKSYXxPMEL8Yamlx3losdn)';
-			if((string)\SmartZLib::dataUnarchive((string)$testPhpArchDataV3) !== (string)$lorem_iso_text) {
+			if((string)\SmartZLib::dataUnarchive((string)$testPhpArchDataV3) !== (string)self::LOREM_ISO_TEXT) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 			if((string)\SmartZLib::dataUnarchive((string)\SmartZLib::dataArchive((string)$arch_text)) !== (string)$arch_text) {
@@ -444,7 +506,7 @@ final class TestUnitStrings {
 			$the_test = 'Data: Unarchive (v2)';
 			$tests[] = $the_test;
 			$testPhpArchDataV2 = 'Hcm5DcNADETRYtTAmscMGSs0HBkqgHv1X4IEZR//2cCmwDGlWbJR+TYMG6/J85C0xz+YcNpxfv/XTxzH6qymQ8khMStZKxlhHrLQZ+MuM4rVzmRGN/FUdV+aO2T0Gw=='."\n".'SFZ.20210818/B64.ZLibRaw.hex';
-			if((string)\SmartZLib::dataUnarchive((string)$testPhpArchDataV2) !== (string)$lorem_iso_text) {
+			if((string)\SmartZLib::dataUnarchive((string)$testPhpArchDataV2) !== (string)self::LOREM_ISO_TEXT) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -453,7 +515,7 @@ final class TestUnitStrings {
 			$the_test = 'Data: Unarchive (v1)';
 			$tests[] = $the_test;
 			$testPhpArchDataV1 = 'HclBDkBAEETRw1hLplupZimDSMRKHMD06Psfgdj9/IfM1ZQ9Z00YLVlnfxNc+Zt+j6Phc+HM3tDkbcn7eR3tuU3SDKGhjwrCUaM4i6dbS7r9qRgEdIsq6i8='."\n".'PHP.SF.151129/B64.ZLibRaw.HEX';
-			if((string)\SmartZLib::dataUnarchive((string)$testPhpArchDataV1) !== (string)$lorem_iso_text) {
+			if((string)\SmartZLib::dataUnarchive((string)$testPhpArchDataV1) !== (string)self::LOREM_ISO_TEXT) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
@@ -479,30 +541,30 @@ final class TestUnitStrings {
 		if((string)$err == '') {
 			$the_test = 'IDN: Domain Punycode Encode UTF-8 to ISO';
 			$tests[] = $the_test;
-			if((string)(new \SmartPunycode())->encode($idn_domain_unicode) != (string)$idn_domain_iso) {
-				$err = 'ERROR: '.$the_test.' FAILED ...'.' ['.$idn_domain_unicode.' -> '.$idn_domain_iso.']';
+			if((string)(new \SmartPunycode())->encode(self::IDN_DOMAIN_UNICODE) != (string)self::IDN_DOMAIN_ISO) {
+				$err = 'ERROR: '.$the_test.' FAILED ...'.' ['.self::IDN_DOMAIN_UNICODE.' -> '.self::IDN_DOMAIN_ISO.']';
 			} //end if
 		} //end if
 		if((string)$err == '') {
 			$the_test = 'IDN: Domain Punycode Decode ISO to UTF-8';
 			$tests[] = $the_test;
-			if((string)(new \SmartPunycode())->decode($idn_domain_iso) != (string)$idn_domain_unicode) {
-				$err = 'ERROR: '.$the_test.' FAILED ...'.' ['.$idn_domain_iso.' -> '.$idn_domain_unicode.']';
+			if((string)(new \SmartPunycode())->decode(self::IDN_DOMAIN_ISO) != (string)self::IDN_DOMAIN_UNICODE) {
+				$err = 'ERROR: '.$the_test.' FAILED ...'.' ['.self::IDN_DOMAIN_ISO.' -> '.self::IDN_DOMAIN_UNICODE.']';
 			} //end if
 		} //end if
 		//--
 		if((string)$err == '') {
 			$the_test = 'IDN: Email Punycode Encode UTF-8 to ISO';
 			$tests[] = $the_test;
-			if((string)(new \SmartPunycode())->encode($idn_email_unicode) != (string)$idn_email_iso) {
-				$err = 'ERROR: '.$the_test.' FAILED ...'.' ['.$idn_email_unicode.' -> '.$idn_email_iso.']';
+			if((string)(new \SmartPunycode())->encode(self::IDN_EMAIL_UNICODE) != (string)self::IDN_EMAIL_ISO) {
+				$err = 'ERROR: '.$the_test.' FAILED ...'.' ['.self::IDN_EMAIL_UNICODE.' -> '.self::IDN_EMAIL_ISO.']';
 			} //end if
 		} //end if
 		if((string)$err == '') {
 			$the_test = 'IDN: Email Punycode Decode ISO to UTF-8';
 			$tests[] = $the_test;
-			if((string)(new \SmartPunycode())->decode($idn_email_iso) != (string)$idn_email_unicode) {
-				$err = 'ERROR: '.$the_test.' FAILED ...'.' ['.$idn_email_iso.' -> '.$idn_email_unicode.']';
+			if((string)(new \SmartPunycode())->decode(self::IDN_EMAIL_ISO) != (string)self::IDN_EMAIL_UNICODE) {
+				$err = 'ERROR: '.$the_test.' FAILED ...'.' ['.self::IDN_EMAIL_ISO.' -> '.self::IDN_EMAIL_UNICODE.']';
 			} //end if
 		} //end if
 		//--

@@ -2,6 +2,20 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+December 10, 2025
+	* Fix HTTP Client
+	* Fix Translations
+	* Fix Markers Templating
+	* Unicode new methods: String Starts / Ends with (case Sensitive and Insensitive)
+
+December 02, 2025
+	* Auth Users optimizations
+
+June 21, 2025
+	* add new method to lib smart: create_idtxt()
+	* templating MTPL: implement _-KEY-LBL_ to be able to use with translations mapping from DB record fields to translations
+	* add translations for ModOauth2
+
 June 20, 2025
 	* speedup: create log space just for current space: IDX / ADM / TSK
 	* captcha translations fixes

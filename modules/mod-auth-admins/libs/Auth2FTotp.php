@@ -39,7 +39,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @ignore
  *
  * @depends     PHP classes: Smart, SmartHashCrypto, SmartQR2DBarcode
- * @version 	v.20250314
+ * @version 	v.20250714
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -71,7 +71,7 @@ final class Auth2FTotp {
 			return '';
 		} //end if
 		//--
-		$bytes = (int) ceil((int)$bits / 8);
+		$bytes = (int) \Smart::ceil_number((int)$bits / 8);
 		//--
 		if((int)$bytes < 16) { // 128 bit
 			\Smart::log_warning(__METHOD__.' # ERROR: Min supported Bytes is 16');
@@ -112,7 +112,7 @@ final class Auth2FTotp {
 		if(
 			((string)$barcode_2faurl == '')
 			OR
-			(strpos((string)$barcode_2faurl, (string)self::URL_OTPAUTH) !== 0)
+			(\strpos((string)$barcode_2faurl, (string)self::URL_OTPAUTH) !== 0)
 		) {
 			return '';
 		} //end if
@@ -216,7 +216,7 @@ final class Auth2FTotp {
 		$time = (int) \time();
 		//-- calculate the count
 		$now   = (int) ((int)$time + (int)$adjsec); // adjust with seconds, the clock
-		$count = (int) \floor((int)$now / (int)$tint);
+		$count = (int) \Smart::floor_number((int)$now / (int)$tint);
 		//-- generate a normal HOTP token
 		return (string) self::genHmac((string)$key, (string)$algo, (int)$count, (int)$length);
 		//--

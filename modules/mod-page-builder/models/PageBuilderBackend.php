@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20250128
+	// v.20250714
 
 
 	private static $db = null;
@@ -925,7 +925,7 @@ final class PageBuilderBackend {
 		//--
 		$y_ofs = \Smart::format_number_int($y_ofs, '+');
 		if($y_ofs > 0) {
-			$y_ofs = (int) (\floor($y_ofs / $y_limit) * $y_limit); // fix offset to be multiple of limit
+			$y_ofs = (int) (\Smart::floor_number($y_ofs / $y_limit) * $y_limit); // fix offset to be multiple of limit
 		} //end if
 		//--
 		switch((string)\strtoupper((string)$y_xsort)){

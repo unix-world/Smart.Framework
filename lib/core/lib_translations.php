@@ -35,7 +35,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartPersistentCache, SmartAdapterTextTranslations, SmartFrameworkRegistry
- * @version 	v.20250620
+ * @version 	v.20251210
  * @package 	Application:Translations
  *
  */
@@ -43,8 +43,10 @@ final class SmartTextTranslations {
 
 	// ::
 
-	private static $cache = array();
-	private static $translators = array();
+	private static $cache = [];
+	private static $translators = [];
+
+	private const DEF_LANG = 'en';
 
 
 	//=====
@@ -120,7 +122,7 @@ final class SmartTextTranslations {
 	 */
 	public static function getDefaultLanguage() {
 		//--
-		$lang = 'en';
+		$lang = (string) self::DEF_LANG;
 		//--
 		if(defined('SMART_FRAMEWORK_DEFAULT_LANG')) {
 			if(self::validateLanguage((string)SMART_FRAMEWORK_DEFAULT_LANG)) {
@@ -159,7 +161,7 @@ final class SmartTextTranslations {
 			return (string) self::$cache['#LANGUAGE#'];
 		} //end if
 		//--
-		$the_lang = 'en'; // default
+		$the_lang = (string) self::DEF_LANG; // default
 		//--
 		$tmp_lang = (string) strtolower((string)Smart::get_from_config('regional.language-id', 'string'));
 		if(self::validateLanguage($tmp_lang)) {
@@ -255,7 +257,7 @@ final class SmartTextTranslations {
 	 *
 	 * @param 	STRING 	$y_language 		:: The language ID ; sample (for English) will be: 'en'
 	 *
-	 * @return 	BOOLEAN						:: TRUE if language defined in configs, FALSE if not
+	 * @return 	BOOLEAN						:: TRUE if language is 2 valid chars and also defined in configs, FALSE if not
 	 *
 	 */
 	public static function validateLanguage(?string $y_language) {
@@ -279,6 +281,48 @@ final class SmartTextTranslations {
 		} //end if
 		//--
 		return (bool) $ok;
+		//--
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	/**
+	 * Validates the area name
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @return 	STRING						:: the validated area
+	 */
+	public static function validateArea(?string $y_area) {
+		//--
+		if(((string)$y_area != '') AND (preg_match('/^[a-z0-9_\-@]+$/', (string)$y_area))) {
+			return (string) $y_area;
+		} else {
+			return 'invalid__area';
+		} //end if else
+		//--
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	/**
+	 * Validates the sub-area name
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @return 	STRING						:: the validated sub-area
+	 */
+	public static function validateSubArea(?string $y_subarea) {
+		//--
+		if((string)$y_subarea != '') {
+			return (string) $y_subarea;
+		} else {
+			return 'invalid__subarea';
+		} //end if else
 		//--
 	} //END FUNCTION
 	//=====
@@ -707,41 +751,13 @@ final class SmartTextTranslations {
 		//--
 		global $languages;
 		//--
-		if(!is_array($languages)) {
-			$languages = array('en' => '[EN]');
+		if((int)Smart::array_size($languages) <= 0) {
+			$languages = [ (string)self::DEF_LANG => '['.strtoupper((string)self::DEF_LANG).']' ];
 		} else {
 			$languages = (array) array_change_key_case((array)$languages, CASE_LOWER); // make all keys lower
 		} //end if
 		//--
 		return (array) $languages;
-		//--
-	} //END FUNCTION
-	//=====
-
-
-	//=====
-	// validates the area name
-	private static function validateArea(?string $y_area) {
-		//--
-		if(((string)$y_area != '') AND (preg_match('/^[a-z0-9_\-@]+$/', (string)$y_area))) {
-			return (string) $y_area;
-		} else {
-			return 'invalid__area';
-		} //end if else
-		//--
-	} //END FUNCTION
-	//=====
-
-
-	//=====
-	// validates the sub-area name
-	private static function validateSubArea(?string $y_subarea) {
-		//--
-		if((string)$y_subarea != '') {
-			return (string) $y_subarea;
-		} else {
-			return 'invalid__subarea';
-		} //end if else
 		//--
 	} //END FUNCTION
 	//=====
@@ -973,7 +989,7 @@ final class SmartTextTranslations {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartTextTranslations, SmartFrameworkRegistry
- * @version 	v.20250620
+ * @version 	v.20251210
  * @package 	Application:Translations
  *
  */
@@ -993,24 +1009,37 @@ final class SmartTextTranslator {
 	public function __construct(?string $y_language, ?string $y_area, ?string $y_subarea) {
 		//--
 		if((string)$y_language != '') {
-			$this->language = (string) $y_language;
+			if(SmartTextTranslations::validateLanguage((string)$y_language) === true) {
+				$this->language = (string) $y_language;
+			} else {
+				$this->language = (string) SmartTextTranslations::getDefaultLanguage();
+				Smart::log_warning('Invalid Language ['.$y_language.'] :: Text Context Translator Area: `'.$y_area.'` ; SubArea: `'.$y_subarea.'`');
+			} //end if
 		} else {
-			$this->language = '??';
-			Smart::log_warning('Invalid Language for Text Context Translator Area ['.$y_language.']: '.$y_area.' ; SubArea: '.$y_subarea);
-		} //end if else
+			$this->language = (string) SmartTextTranslations::getDefaultLanguage();
+			Smart::log_warning('Empty Language :: Text Context Translator Area: `'.$y_area.'` ; SubArea: `'.$y_subarea.'`');
+		} //end if
 		//--
 		if((string)$y_area != '') {
+			$validArea = (string) SmartTextTranslations::validateArea((string)$y_area);
 			$this->area = (string) $y_area;
+			if((string)$validArea != (string)$y_area) {
+				Smart::log_warning('Invalid Area ['.$y_area.'] :: Text Context Translator SubArea: `'.$y_subarea.'` ; Language `'.$this->language.'`');
+			} //end if else
 		} else {
 			$this->area = 'undefined__area';
-			Smart::log_warning('Invalid Area for Text Context Translator Area ['.$y_language.']: '.$y_area.' ; SubArea: '.$y_subarea);
+			Smart::log_warning('Empty Area :: Text Context Translator SubArea: `'.$y_subarea.'` ; Language `'.$this->language.'`');
 		} //end if else
 		//--
 		if((string)$y_subarea != '') {
-			$this->subarea = (string) $y_subarea;
+			$validSubArea = (string) SmartTextTranslations::validateSubArea((string)$y_subarea);
+			$this->subarea = (string) $validSubArea;
+			if((string)$validSubArea != (string)$y_subarea) {
+				Smart::log_warning('Invalid SubArea ['.$y_subarea.'] :: Text Context Translator Area: `'.$y_area.'` ; Language `'.$this->language.'`');
+			} //end if
 		} else {
-			Smart::log_warning('Invalid Sub-Area for Text Context Translator Area['.$y_language.']: '.$y_area.' ; SubArea: '.$y_subarea);
 			$this->subarea = 'undefined__subarea';
+			Smart::log_warning('Empty SubArea :: Text Context Translator Area: `'.$y_area.'` ; Language `'.$this->language.'`');
 		} //end if
 		//--
 	} //END FUNCTION
@@ -1035,7 +1064,7 @@ final class SmartTextTranslator {
 	* Get the Text Translation
 	* @return STRING the Translated Text or Fallback Text to Default Language
 	 */
-	public function text(?string $y_textkey, ?string $y_fallback_language='@default', bool $y_ignore_empty=false) {
+	public function text(?string $y_textkey, ?string $y_fallback_language=null, bool $y_ignore_empty=false) {
 		//--
 		// texts are returned as raw, they must be escaped when used with HTML or JS
 		//--
@@ -1044,18 +1073,21 @@ final class SmartTextTranslator {
 			return '{Empty Translation Key}';
 		} //end if
 		//--
-		if((string)$y_fallback_language == '@default') {
+		if($y_fallback_language === null) {
+			$y_fallback_language = (string) SmartTextTranslations::getDefaultLanguage();
+		} elseif(SmartTextTranslations::validateLanguage((string)$y_fallback_language) !== true) {
+			Smart::log_warning('Invalid Fallback Language ['.$y_fallback_language.'] :: Text Context Translator Area: `'.$this->area.'` ; SubArea: `'.$this->subarea.'`');
 			$y_fallback_language = (string) SmartTextTranslations::getDefaultLanguage();
 		} //end if else
 		//--
-		$text = (string) SmartTextTranslations::getTranslationByKey($this->area, $this->subarea, (string)$y_textkey, $this->language);
-		if(((string)trim((string)$text) == '') AND ((string)$y_fallback_language != '') AND ((string)$y_fallback_language != (string)$this->language)) {
-			$text = (string) SmartTextTranslations::getTranslationByKey($this->area, $this->subarea, (string)$y_textkey, (string)$y_fallback_language);
+		$text = (string) SmartTextTranslations::getTranslationByKey((string)$this->area, (string)$this->subarea, (string)$y_textkey, (string)$this->language);
+		if(((string)trim((string)$text) == '') AND ((string)$y_fallback_language != (string)$this->language)) {
+			$text = (string) SmartTextTranslations::getTranslationByKey((string)$this->area, (string)$this->subarea, (string)$y_textkey, (string)$y_fallback_language);
 		} //end if
 		if((string)trim((string)$text) == '') {
 			if($y_ignore_empty !== true) {
-				Smart::log_warning('Undefined Key: ['.$y_textkey.'] for Text Context Translator ['.$this->language.'] - Area: '.$this->area.' ; SubArea: '.$this->subarea);
-				$text = '{Undefined Translation Key ['.$this->language.']: '.$y_textkey.'}';
+				Smart::log_warning('Undefined Key ['.$y_textkey.'] for Text Context Translator :: Language: `'.$this->language.'` ; Area: `'.$this->area.'` ; SubArea: `'.$this->subarea.'`');
+				$text = '{Undefined Translation Key ['.$this->language.']: '.$this->area.'.'.$this->subarea.'.'.$y_textkey.'}';
 			} else {
 				$text = '';
 			} //end if else

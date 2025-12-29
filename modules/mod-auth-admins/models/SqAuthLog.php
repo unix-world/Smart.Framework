@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 abstract class SqAuthLog extends \SmartModDataModel\AuthAdmins\AbstractAuthLog {
 
 	// ->
-	// v.20250314
+	// v.20250714
 
 	private $db;
 	private $dbFile;
@@ -148,7 +148,7 @@ abstract class SqAuthLog extends \SmartModDataModel\AuthAdmins\AbstractAuthLog {
 		//--
 		$factor = 1;
 		if((int)$cntAll > 0) {
-			$factor = (int) floor((int)$cntAll / (int)$loginslimit);
+			$factor = (int) \Smart::floor_number((int)$cntAll / (int)$loginslimit);
 		} //end if
 		if((int)$factor < 1) {
 			$factor = 1;

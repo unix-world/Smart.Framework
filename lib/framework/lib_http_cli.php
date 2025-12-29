@@ -84,7 +84,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFrameworkSecurity, SmartFileSysUtils, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS ; optional-constant: SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20250129
+ * @version 	v.20251208
  * @package 	@Core:Network
  *
  */
@@ -152,7 +152,7 @@ final class SmartHttpClient {
 	public $postvars;
 
 	/**
-	 * Array of PostFiles (to send) ; This can be used only in combination with $postvars ; Example [ 'filename' => 'file.txt', 'content' => 'the contents go here' ]
+	 * Array of PostFiles (to send) ; This can be used only in combination with $postvars ; Example [ [ 'filename' => 'file.txt', 'content' => 'the contents go here' ], ... ]
 	 * @var ARRAY
 	 * @default []
 	 */
@@ -1458,7 +1458,7 @@ final class SmartHttpClient {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartHashCrypto, SmartFrameworkSecurity
- * @version 	v.20250129
+ * @version 	v.20251208
  * @package 	@Core:Network
  *
  */
@@ -1557,10 +1557,13 @@ final class SmartHttpUtils {
 	//==============================================
 	public static function http_multipart_form_delimiter() : string { // {{{SYNC-MULTIPART-BUILD}}}
 		//--
-		$timeduid = (string) strtolower((string)SmartHashCrypto::crc32b(microtime(true).'-'.time(), true));
-		$entropy = (string) SmartHashCrypto::sha512(uniqid().'-'.microtime(true).'-'.time());
+		$timeduid = (string) microtime(true).'-'.time();
+		$entropy  = (string) SmartHashCrypto::sha224((string)uniqid().'-'.microtime(true).'-'.time());
 		//--
-		return '_===-MForm.Part____.'.$timeduid.'_'.md5('@MFormPart---#Boundary@'.$entropy).'_P_.-=_'; // 69 chars of 70 max
+		$prefix   = (string) strtolower((string)SmartHashCrypto::crc32b((string)$timeduid, true));
+		$suffix   = (string) Smart::base_from_hex_convert((string)$entropy, 62);
+		//--
+		return '-----------------------'.$prefix.'.'.$suffix; // 68..69 of max 70
 		//--
 	} //END FUNCTION
 	//==============================================
@@ -1570,7 +1573,7 @@ final class SmartHttpUtils {
 	public static function http_multipart_form_build(?string $delimiter, ?array $fields, ?array $files) : string { // {{{SYNC-MULTIPART-BUILD}}}
 		//--
 		$delimiter = (string) $delimiter;
-		if((strlen($delimiter) < 50) OR (strlen($delimiter) > 70)) {
+		if((strlen($delimiter) < 60) OR (strlen($delimiter) > 70)) {
 			return '';
 		} //end if
 		//--

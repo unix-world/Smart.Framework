@@ -1,13 +1,13 @@
-<!-- Pagebuilder / Manage @ Import.Form / Records :: v.20250107 -->
+<!-- Pagebuilder / Manage @ Import.Form / Records :: v.20251211 -->
 <script>
-function smartModJS_PgBldr_Validate_Form() {
-	var xl03xmlfile = jQuery('#sel-xl03xmlfile').val();
+const smartModJS_PgBldr_Validate_Form = () => {
+	const xl03xmlfile = jQuery('#sel-xl03xmlfile').val() || '';
 	if(!xl03xmlfile) {
 		smartJ$Browser.AlertDialog('Please select an XL03 XML Spreadsheet for upload', null, 'Notification');
 		return false;
 	}
 	return true;
-}
+};
 </script>
 <center><div>
 	<h1>Import <i>[###APP-NAME|html###]</i> Translations</h1>

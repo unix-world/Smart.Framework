@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart
- * @version 	v.20250312
+ * @version 	v.20250714
  * @package 	Plugins:Barcodes
  */
 final class SmartQR2DBarcode {
@@ -170,8 +170,8 @@ final class SmartQR2DBarcode {
 		$left 		= (isset($options['pl']) ? (int)$options['pl'] : $horiz);
 		$right 		= (isset($options['pr']) ? (int)$options['pr'] : $horiz);
 		$bottom 	= (isset($options['pb']) ? (int)$options['pb'] : $vert);
-		$dwidth 	= ceil($size[0] * $scalex) + $left + $right;
-		$dheight 	= ceil($size[1] * $scaley) + $top + $bottom;
+		$dwidth 	= Smart::ceil_number($size[0] * $scalex) + $left + $right;
+		$dheight 	= Smart::ceil_number($size[1] * $scaley) + $top + $bottom;
 		$iwidth 	= (isset($options['w']) ? (int)$options['w'] : $dwidth);
 		$iheight 	= (isset($options['h']) ? (int)$options['h'] : $dheight);
 		$swidth 	= $iwidth - $left - $right;
@@ -260,16 +260,16 @@ final class SmartQR2DBarcode {
 		if($width && $height) {
 			$scale = min($w / $width, $h / $height);
 			if($scale > 1) {
-				$scale = (int) floor($scale);
+				$scale = (int) Smart::floor_number($scale);
 			} elseif($scale < 1) {
 				$scale = 1;
 			} //end if
-			$x = (int) floor($x + ($w - $width * $scale) / 2);
-			$y = (int) floor($y + ($h - $height * $scale) / 2);
+			$x = (int) Smart::floor_number($x + ($w - $width * $scale) / 2);
+			$y = (int) Smart::floor_number($y + ($h - $height * $scale) / 2);
 		} else {
 			$scale = 1;
-			$x = (int) floor($x + $w / 2);
-			$y = (int) floor($y + $h / 2);
+			$x = (int) Smart::floor_number($x + $w / 2);
+			$y = (int) Smart::floor_number($y + $h / 2);
 		} //end if else
 		//--
 		$tx = 'translate('.(int)$x.' '.(int)$y.')';
@@ -732,7 +732,7 @@ final class SmartQR2DBarcode {
 			case 1: return !( ($r     ) % 2 );
 			case 2: return !( (     $c) % 3 );
 			case 3: return !( ($r + $c) % 3 );
-			case 4: return !( (floor(($r) / 2) + floor(($c) / 3)) % 2 );
+			case 4: return !( (Smart::floor_number(($r) / 2) + Smart::floor_number(($c) / 3)) % 2 );
 			case 5: return !( ((($r * $c) % 2) + (($r * $c) % 3))     );
 			case 6: return !( ((($r * $c) % 2) + (($r * $c) % 3)) % 2 );
 			case 7: return !( ((($r + $c) % 2) + (($r * $c) % 3)) % 2 );
@@ -863,8 +863,8 @@ final class SmartQR2DBarcode {
 		} //end for
 		$dark *= 20;
 		$dark /= $size * $size;
-		$a = abs(floor($dark) - 10);
-		$b = abs(ceil($dark) - 10);
+		$a = abs(Smart::floor_number($dark) - 10);
+		$b = abs(Smart::ceil_number($dark) - 10);
 		//--
 		return min($a, $b) * 10;
 		//--
@@ -910,7 +910,7 @@ final class SmartQR2DBarcode {
 			$version = self::QR_VERSION_INFO[$version - 7];
 			for($i = 0; $i < 18; $i++) {
 				$r = $size - 9 - ($i % 3);
-				$c = 5 - floor($i / 3);
+				$c = 5 - Smart::floor_number($i / 3);
 				$matrix[$r][$c] = $version[$i];
 				$matrix[$c][$r] = $version[$i];
 			} //end for

@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqOauth2 {
 
 	// ->
-	// v.20250218
+	// v.20250711
 
 	private $db;
 	private $userId;
@@ -657,7 +657,7 @@ final class SqOauth2 {
 		//--
 		$wr = $this->db->write_data(
 			'DELETE FROM `oauth2_data` '.$this->db->prepare_param_query(
-				'WHERE (`id` == ?)',
+				'WHERE (`id` = ?)',
 				[
 					(string) $id
 				]

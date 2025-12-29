@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20250107
+ * @version 	v.20251211
  * @package 	Plugins:ExportAndImport
  *
  */
@@ -38,7 +38,8 @@ final class SmartSpreadSheetExport {
 
 	//->
 
-	private $version = 'excel.2003.xml.spreadsheet:20210512';
+	private const VERSION = 'excel.2003.xml.spreadsheet:20251211';
+
 	private $cellWidth = 150;
 	private $cellHeight = 15;
 
@@ -109,7 +110,7 @@ final class SmartSpreadSheetExport {
 		} //end if
 		if(Smart::array_size($y_arr_data) > 0) {
 			for($i=0; $i<Smart::array_size($y_arr_data); $i++) {
-				if(Smart::array_size($y_arr_data[$i]) > 0) {
+				if(Smart::array_size($y_arr_data[$i] ?? null) > 0) {
 					$str .= "\t\t\t".'<Row ss:Height="'.(int)$this->cellHeight.'">'."\n";
 					foreach((array)$y_arr_data[$i] as $key => $val) {
 						$str .= "\t\t\t\t".'<Cell>'."\n";
@@ -126,7 +127,7 @@ final class SmartSpreadSheetExport {
 		$str .= "\t".'</Worksheet>'."\n";
 		$str .= '</Workbook>'."\n";
 		//--
-		$str .= '<!-- # SpreadSheet ('.$this->escapeStr((string)$this->version.' / '.SMART_FRAMEWORK_VERSION, true).') # -->'."\n";
+		$str .= '<!-- # SpreadSheet ('.$this->escapeStr((string)self::VERSION.' / '.SMART_FRAMEWORK_VERSION, true).') # -->'."\n";
 		//--
 		return (string) $str;
 		//--
@@ -198,18 +199,18 @@ final class SmartSpreadSheetImport {
 		if(Smart::array_size($csv_arr) <= 0) {
 			return array();
 		} //end if
-		if(Smart::array_size($csv_arr['Worksheet']) > 0) {
+		if(Smart::array_size($csv_arr['Worksheet'] ?? null) > 0) {
 			$csv_arr = (array) $csv_arr['Worksheet']; // standard
-		} elseif(Smart::array_size($csv_arr['ss:Worksheet']) > 0) {
+		} elseif(Smart::array_size($csv_arr['ss:Worksheet'] ?? null) > 0) {
 			$csv_arr = (array) $csv_arr['ss:Worksheet']; // bugfix for OOffice
 		} else {
 			return array();
 		} //end if else
-		if(Smart::array_size($csv_arr['Table']) <= 0) {
+		if(Smart::array_size($csv_arr['Table'] ?? null) <= 0) {
 			return array();
 		} //end if
 		$csv_arr = (array) $csv_arr['Table'];
-		if(Smart::array_size($csv_arr['Row']) <= 0) {
+		if(Smart::array_size($csv_arr['Row'] ?? null) <= 0) {
 			return array();
 		} //end if
 		$csv_arr = (array) $csv_arr['Row'];
@@ -219,11 +220,11 @@ final class SmartSpreadSheetImport {
 		//--
 		if($first_line_is_header === true) {
 			$index_data = 1;
-			if(is_array($csv_arr[0])) {
-				if(Smart::array_size($csv_arr[0]['Cell']) > 0) {
+			if(is_array($csv_arr[0] ?? null)) {
+				if(Smart::array_size($csv_arr[0]['Cell'] ?? null) > 0) {
 					for($j=0; $j<Smart::array_size($csv_arr[0]['Cell']); $j++) {
 						if(Smart::array_size($csv_arr[0]['Cell'][$j]) > 0) {
-							if(Smart::array_size($csv_arr[0]['Cell'][$j]['Data']) > 0) {
+							if(Smart::array_size($csv_arr[0]['Cell'][$j]['Data'] ?? null) > 0) {
 								if(array_key_exists('@content', (array)$csv_arr[0]['Cell'][$j]['Data'])) {
 									$hdr_arr[] = (string) $csv_arr[0]['Cell'][$j]['Data']['@content'];
 								} //end if
@@ -236,13 +237,13 @@ final class SmartSpreadSheetImport {
 			$index_data = 0;
 		} //end if else
 		//--
-		if(Smart::array_size($csv_arr) > $index_data) {
+		if((int)Smart::array_size($csv_arr) > (int)$index_data) {
 			for($i=$index_data; $i<Smart::array_size($csv_arr); $i++) {
 				if(is_array($csv_arr[$i])) {
-					if(Smart::array_size($csv_arr[$i]['Cell']) > 0) {
+					if(Smart::array_size($csv_arr[$i]['Cell'] ?? null) > 0) {
 						for($j=0; $j<Smart::array_size($csv_arr[$i]['Cell']); $j++) {
-							if(Smart::array_size($csv_arr[$i]['Cell'][$j]) > 0) {
-								if(Smart::array_size($csv_arr[$i]['Cell'][$j]['Data']) > 0) {
+							if(Smart::array_size($csv_arr[$i]['Cell'][$j] ?? null) > 0) {
+								if(Smart::array_size($csv_arr[$i]['Cell'][$j]['Data'] ?? null) > 0) {
 									if(array_key_exists('@content', (array)$csv_arr[$i]['Cell'][$j]['Data'])) {
 										$data_arr[] = (string) $csv_arr[$i]['Cell'][$j]['Data']['@content'];
 									} else {

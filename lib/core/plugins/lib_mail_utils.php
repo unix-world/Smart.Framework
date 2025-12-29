@@ -991,7 +991,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20250307
+ * @version 	v.20250714
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -1600,7 +1600,7 @@ final class SmartMailerMimeParser {
 							//	@similar_text($buff, $markup_multipart, $percent_similar);
 								$percent_similar = 99; // {{{SYNC-FIX-EML-HIDE-ALTERNATE-PARTS}}}
 								if($percent_similar >= 25) { // 25% at least similarity
-									$skips[(string)$buff_id] = (int) ceil((float)$percent_similar); // skip this alternate html part ...
+									$skips[(string)$buff_id] = (int) Smart::ceil_number((float)$percent_similar); // skip this alternate html part ...
 								} //end if
 							} //end if
 							//--

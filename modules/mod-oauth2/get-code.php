@@ -15,7 +15,9 @@ define('SMART_APP_MODULE_AREA', 'INDEX'); // INDEX, ADMIN, SHARED
 
 final class SmartAppIndexController extends SmartAbstractAppController {
 
-	// v.20250218
+	// v.20250628
+
+	private ?object $translator = null;
 
 	public function Run() {
 
@@ -120,21 +122,37 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
+		if($this->translator === null) {
+			$this->translator = SmartTextTranslations::getTranslator('mod-oauth2', 'oauth2');
+		} //end if
+		//--
+
+		//--
 		$this->PageViewSetVar(
 			'main',
 			(string) SmartComponents::http_status_message(
-				'OAuth2 Client :: Code Exchange',
-				'OAuth2 New Code :: API response',
+				(string) $this->translator->text('code-exch-ttl'),
+				(string) $this->translator->text('code-exch-head'),
 				(string) SmartMarkersTemplating::render_file_template(
 						(string) $this->ControllerGetParam('module-view-path').'get-code.mtpl.htm',
 						[
-							'CRR-TIME' 		=> (int)    time(),
-							'CODE' 			=> (string) $code,
-							'PRETTY-VARS' 	=> (string) (!!$displayExtraData ? SmartUtils::pretty_print_var((array)$vars, 0, true) : ''),
-							'HTTP-REFERER' 	=> (string) SmartUtils::get_server_current_request_referer(),
-							'CSRF-STATE' 	=> (string) $state,
-							'CSRF-VALUE' 	=> (string) $csrf,
-							'CSRF-VALID' 	=> (string) (!!$isCsrfValid ? 1 : 0)
+							//--
+							'CRR-TIME' 				=> (int)    time(),
+							'CODE' 					=> (string) $code,
+							'PRETTY-VARS' 			=> (string) (!!$displayExtraData ? SmartUtils::pretty_print_var((array)$vars, 0, true) : ''),
+							'HTTP-REFERER' 			=> (string) SmartUtils::get_server_current_request_referer(),
+							'CSRF-STATE' 			=> (string) $state,
+							'CSRF-VALUE' 			=> (string) $csrf,
+							'CSRF-VALID' 			=> (string) (!!$isCsrfValid ? 1 : 0),
+							//--
+							'TXT-SERVER-DTIME' 		=> (string) $this->translator->text('code-exch-srv-dtime'),
+							'TXT-CSRF-OK' 			=> (string) $this->translator->text('code-exch-csrf-ok'),
+							'TXT-CSRF-ERR' 			=> (string) $this->translator->text('code-exch-csrf-err'),
+							'TXT-CODE-OAUTH2' 		=> (string) $this->translator->text('code-exch-code-oauth2'),
+							'TXT-BTN-CODE-COPY' 	=> (string) $this->translator->text('code-exch-code-copy-btn'),
+							'TXT-BTN-GO-BACK' 		=> (string) $this->translator->text('code-exch-go-back-btn'),
+							'TXT-CONFIRM-CLOSE' 	=> (string) $this->translator->text('code-exch-confirm'),
+							//--
 						]
 					),
 				'proxy' // everything must be inline this is why using this TPL type here ...

@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartEnvironment, SmartCipherCrypto
- * @version 	v.20250307
+ * @version 	v.20250714
  * @package 	@Core:Authentication
  *
  */
@@ -244,7 +244,7 @@ final class SmartAuth {
 			((string)substr((string)$auth_user_name, 0, 1) == '.') OR // cannot start with a . (dot)
 			((string)substr((string)$auth_user_name, 1, 1) == '.') OR // {{{SYNC-AUTH-ACCOUNT-ID-PATH-2-CHARS-PREFIX}}} ; cannot have a . (dot) as 2nd character (req. by prefixed dirs) which must have 2 characters prefix
 			((string)substr((string)$auth_user_name, -1, 1) == '.') OR // cannot end with a . (dot)
-			((int)substr_count((string)$auth_user_name, '.') > (int)(floor((int)strlen((string)$auth_user_name) / 3))) // cannot contain more dots (.) than 33% from all characters
+			((int)substr_count((string)$auth_user_name, '.') > (int)(Smart::floor_number((int)strlen((string)$auth_user_name) / 3))) // cannot contain more dots (.) than 33% from all characters
 		) {
 			return false;
 		} //end if
@@ -289,7 +289,7 @@ final class SmartAuth {
 			OR
 			((string)substr((string)$auth_user_pass, -1, 1) == ' ') // cannot end with a space (after space normalizations)
 			OR
-			((int)substr_count((string)$auth_user_pass, ' ') > (int)((int)floor((int)SmartUnicode::str_len((string)$auth_user_pass) / 3))) // cannot contain more dots than 33% from all characters
+			((int)substr_count((string)$auth_user_pass, ' ') > (int)((int)Smart::floor_number((int)SmartUnicode::str_len((string)$auth_user_pass) / 3))) // cannot contain more dots than 33% from all characters
 		) {
 			return false;
 		} //end if

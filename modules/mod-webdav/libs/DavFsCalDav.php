@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavFsCalDav {
 
 	// ::
-	// v.20250107
+	// v.20250714
 
 	private static $caldav_ns = 'xmlns:cal="urn:ietf:params:xml:ns:caldav" xmlns:cs="http://calendarserver.org/ns/"';
 	private static $caldav_urn = 'urn:ietf:params:xml:ns:caldav';
@@ -622,7 +622,7 @@ final class DavFsCalDav {
 			return array();
 		} //end if
 		//--
-		$free_space = (int) \floor((float)\disk_free_space((string)$dav_vfs_root));
+		$free_space = (int) \Smart::floor_number((float)\disk_free_space((string)$dav_vfs_root));
 		//--
 		if((!\defined('\\SMART_WEBDAV_SHOW_USAGE_QUOTA')) OR (\SMART_WEBDAV_SHOW_USAGE_QUOTA !== true)) {
 			//-- need to report at least the free space ...

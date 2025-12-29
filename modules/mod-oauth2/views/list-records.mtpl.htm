@@ -1,4 +1,4 @@
-<!-- View: list-records v.20250218 -->
+<!-- View: list-records v.20250622 -->
 [@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-uix.inc.htm!@@@]
 [@@@SUB-TEMPLATE:partials/styles.mtpl.htm@@@]
 <style>
@@ -56,7 +56,7 @@
 <div style="margin-top:4px; margin-bottom:10px;">
 	<div class="ux-grid-row">
 		<div class="ux-grid-col m8 s12">
-			<a id="nolink" href="[###HOME-LINK|html###]" class=""><img width="48" height="48" src="modules/mod-oauth2/views/img/logo-oauth.svg" style="vertical-align:middle; margin-top:-16px; margin-right:10px;"></a> <span style="color:#444444; font-size:2rem; font-weight:bold;">OAuth2 Client Management&nbsp;:: <span id="infoTotalRows" style="white-space:pre;"># / # @</span></span>
+			<a id="nolink" href="[###HOME-LINK|html###]" class=""><img width="48" height="48" src="modules/mod-oauth2/views/img/logo-oauth.svg" style="vertical-align:middle; margin-top:-16px; margin-right:10px;"></a> <span style="color:#444444; font-size:2rem; font-weight:bold;">[###TBL-TTL|html###]&nbsp;:: <span id="infoTotalRows" style="white-space:pre;"># / # @</span></span>
 		</div>
 		<div class="ux-grid-col m4 s12">
 			<div class="ux-right" style="margin-top:10px;">
@@ -66,10 +66,10 @@
 	</div>
 </div>
 <form id="filtering" name="filtering" class="ux-form" onSubmit="return false;">
-	<input type="text" id="filter-id" name="id" placeholder="ID" value="" class="ux-field ux-field-xl">
-	<button type="button" class="ux-button ux-button-details" onClick="TheGrid.loadGridData(0);">Filter &nbsp; <i class="sfi sfi-search"></i></button>
-	<button type="button" class="ux-button ux-button-secondary" onClick="TheGrid.resetGrid(); TheGrid.loadGridData(0);">Reset &nbsp; <i class="sfi sfi-history"></i></button>
-	<button type="button" class="ux-button ux-button-primary" style="margin-left:50px;" onClick="smartJ$Browser.PopUpLink('[###ACTIONS-URL|js|html###]new-form', 'oauth2_list_mod'); return false;"> Register New OAuth2 API &nbsp; <i class="sfi sfi-plus"></i></button>
+	<input type="text" id="filter-id" name="id" placeholder="[###LABEL-ID|html###]" value="" class="ux-field ux-field-xl">
+	<button type="button" class="ux-button ux-button-details" onClick="TheGrid.loadGridData(0);">[###SRC-FRM-FILTER|html###] &nbsp; <i class="sfi sfi-search"></i></button>
+	<button type="button" class="ux-button ux-button-secondary" onClick="TheGrid.resetGrid(); TheGrid.loadGridData(0);">[###SRC-FRM-RESET|html###] &nbsp; <i class="sfi sfi-history"></i></button>
+	<button type="button" class="ux-button ux-button-primary" style="margin-left:50px;" onClick="smartJ$Browser.PopUpLink('[###ACTIONS-URL|js|html###]new-form', 'oauth2_list_mod'); return false;"> [###BTN-CREATE-NEW|html###] &nbsp; <i class="sfi sfi-plus"></i></button>
 </form>
 <br>
 <script>
@@ -100,28 +100,27 @@ jQuery(() => {
 				cssClass = 'ux-button-regular';
 			}
 		}
-		jQuery(cellNode).empty().html('<button class="ux-button ' + smartJ$Utils.escape_html(cssClass) + ' ux-button-xsmall" onClick="smartJ$Browser.PopUpLink(\'' + smartJ$Utils.escape_js(itemURL + 'view-data' +'&id=' + smartJ$Utils.escape_url(the_id)) +'\', \'oauth2_list_mod\'); return false;" title="Click to Display / Refresh / Delete' + ((isErr > 0) ? ' [ ERR: ' + smartJ$Utils.escape_html(isErr) + ' ]' : '') + '"><i class="sfi sfi-cog"></i></button>');
+		jQuery(cellNode).empty().html('<button class="ux-button ' + smartJ$Utils.escape_html(cssClass) + ' ux-button-xsmall" onClick="smartJ$Browser.PopUpLink(\'' + smartJ$Utils.escape_js(itemURL + 'view-data' +'&id=' + smartJ$Utils.escape_url(the_id)) +'\', \'oauth2_list_mod\'); return false;" title="[###HINT-TBL-OP|html|js###]' + ((isErr > 0) ? ' [ [###TXT-ERRORS|html|js###]: ' + smartJ$Utils.escape_html(isErr) + ' ]' : '') + '"><i class="sfi sfi-cog"></i></button>');
 	};
 
 	const formatter_Meta = (row, cell, value, columnDef, dataContext) => {
-		return '<i class="sfi sfi-spinner10" style="color:#EEEEEE; cursor:progress;" title="...wait..."></i>';
+		return '<i class="sfi sfi-spinner10" style="color:#EEEEEE; cursor:progress;" title="..."></i>';
 	};
 
 	const formatter_Active = (row, cell, value, columnDef, dataContext) => {
-		const txtDblClick = ' (Double-Click to Change)';
 		if(value == 1) {
-			return '<i class="sfi sfi-checkbox-checked" style="color:#6D8813; cursor:pointer;" title="Status is ACTIVE' + smartJ$Utils.escape_html(txtDblClick) + '"></i>';
+			return '<i class="sfi sfi-checkbox-checked" style="color:#6D8813; cursor:pointer;" title="[###COL-STATUS-ON|html|js###] ([###DOUBLE-CLICK|html|js###])"></i>';
 		} else {
-			return '<i class="sfi sfi-checkbox-unchecked" style="color:#2A9DF4; cursor:pointer;" title="Status is INACTIVE' + smartJ$Utils.escape_html(txtDblClick) + '"></i>';
+			return '<i class="sfi sfi-checkbox-unchecked" style="color:#2A9DF4; cursor:pointer;" title="[###COL-STATUS-OFF|html|js###] ([###DOUBLE-CLICK|html|js###])"></i>';
 		}
 	};
 
 	const formatter_refreshToken = (row, cell, value, columnDef, dataContext) => {
 		let html;
 		if(value.length) {
-			html = '<i class="sfi sfi-fa-cogs" style="color:#444444; cursor:help;" title="The API provides a Refresh Token"></i>';
+			html = '<i class="sfi sfi-fa-cogs" style="color:#444444; cursor:help;" title="[###COL-R-TK-TRUE|html|js###]"></i>';
 		} else {
-			html = '<i class="sfi sfi-cogs" style="color:#DEDEDE; cursor:help;" title="The API does NOT support a Refresh Token"></i>';
+			html = '<i class="sfi sfi-cogs" style="color:#DEDEDE; cursor:help;" title="[###COL-R-TK-FALSE|html|js###]"></i>';
 		}
 		return String(html);
 	};
@@ -129,9 +128,9 @@ jQuery(() => {
 	const formatter_idToken = (row, cell, value, columnDef, dataContext) => {
 		let html;
 		if(value.length) {
-			html = '<i class="sfi sfi-user-tie" style="color:#444444; cursor:help;" title="The API provides an Open-Id JWT"></i>';
+			html = '<i class="sfi sfi-user-tie" style="color:#444444; cursor:help;" title="[###COL-R-JWTID-TRUE|html|js###]"></i>';
 		} else {
-			html = '<i class="sfi sfi-blocked" style="color:#DEDEDE; cursor:help;" title="The API does NOT support an Open-Id JWT"></i>';
+			html = '<i class="sfi sfi-blocked" style="color:#DEDEDE; cursor:help;" title="[###COL-R-JWTID-FALSE|html|js###]"></i>';
 		}
 		return String(html);
 	};
@@ -150,7 +149,7 @@ jQuery(() => {
 		let extraTxt = '';
 		if(!!isExpired) {
 			cssClass = 'smartGrid_ColExpTime';
-			extraTxt = '[Expired]';
+			extraTxt = '[[###TXT-EXPIRED|js###]]';
 		}
 		return '<span class="' + smartJ$Utils.escape_html(cssClass) + '">' + (extraTxt ? smartJ$Utils.escape_html(extraTxt + ' ') : '') + smartJ$Utils.escape_html(value) + '</span>';
 	};
@@ -175,16 +174,16 @@ jQuery(() => {
 	// Grid Data Defs
 
 	const columns = [
-		{id:'meta', name:'', toolTip:'Display / Refresh / Delete', sortable:false, width:60, maxWidth:60, cssClass:'smartGrid_AlignCenter', formatter:formatter_Meta, asyncPostRender:asFormatter_Meta},
-		{id:'id', field:'id', name:'ID', toolTip:'Unique ID', sortable:true, width:185, cssClass:'smartGrid_Highlight smartGrid_ID', editor:TextCellSelector},
-		{id:'active', field:'active', name:'Active', toolTip:'Active Status', sortable:true, sortNumeric:true, width:70, maxWidth:70, cssClass:'smartGrid_AlignCenter', formatter:formatter_Active, editor:YesNoSelectCellEditor},
-		{id:'scope', field:'scope', name:'Scope', toolTip:'OAuth2 Scopes', sortable:false, width:125, maxWidth:200, cssClass:'smartGrid_Important smartGrid_Scope', editor:LongTextCellSelector},
-		{id:'description', field:'description', name:'Description', sortable:false, width:150, maxWidth:200, cssClass:'smartGrid_Important smartGrid_Desc', editor:LongTextCellEditor},
-		{id:'refresh_token', field:'refresh_token', name:'Ref-Tk.', toolTip:'Refresh-Token', sortable:false, width:70, maxWidth:70, cssClass:'smartGrid_AlignCenter', formatter:formatter_refreshToken},
-		{id:'id_token', field:'id_token', name:'Id-JWT', toolTip:'Open-Id JWT', sortable:false, width:70, maxWidth:70, cssClass:'smartGrid_AlignCenter', formatter:formatter_idToken},
-		{id:'access_expire_seconds', field:'access_expire_seconds', name:'Expire-Seconds', toolTip:'Expire After Seconds since Last-Update', sortable:true, width:150, maxWidth:150, cssClass:'smartGrid_AlignRight smartGrid_Important', formatter:formatter_ExpSeconds},
-		{id:'access_expire_time', field:'access_expire_time', name:'Expire-Time', toolTip:'Expire DateTime', sortable:true, sortNumeric:true, width:150, maxWidth:150, cssClass:'smartGrid_Important smartGrid_ColDate smartGrid_AlignCenter', formatter:formatter_DateTime},
-		{id:'modified', field:'modified', name:'Last-Update', toolTip:'Last Updated', sortable:true, sortNumeric:true, width:150, maxWidth:150, cssClass:'smartGrid_ColDate smartGrid_AlignCenter', formatter:formatter_DateTime},
+		{id:'meta', name:'', toolTip:'[###HINT-TBL-OP|js###]', sortable:false, width:60, maxWidth:60, cssClass:'smartGrid_AlignCenter', formatter:formatter_Meta, asyncPostRender:asFormatter_Meta},
+		{id:'id', field:'id', name:'[###LABEL-ID|js###]', toolTip:'[###HINT-ID|js###]', sortable:true, width:185, cssClass:'smartGrid_Highlight smartGrid_ID', editor:TextCellSelector},
+		{id:'active', field:'active', name:'[###LABEL-ACTIVE|js###]', toolTip:'[###HINT-STATUS|js###]', sortable:true, sortNumeric:true, width:70, maxWidth:70, cssClass:'smartGrid_AlignCenter', formatter:formatter_Active, editor:YesNoSelectCellEditor},
+		{id:'scope', field:'scope', name:'[###LABEL-SCOPE|js###]', toolTip:'[###LABEL-SCOPE|js###]', sortable:false, width:125, maxWidth:200, cssClass:'smartGrid_Important smartGrid_Scope', editor:LongTextCellSelector},
+		{id:'description', field:'description', name:'[###LABEL-DESC|js###]', toolTip:'[###LABEL-DESC|js###]', sortable:false, width:150, maxWidth:200, cssClass:'smartGrid_Important smartGrid_Desc', editor:LongTextCellEditor},
+		{id:'refresh_token', field:'refresh_token', name:'Ref-Tk.', toolTip:'[###LABEL-TK-REFRESH|js###]', sortable:false, width:70, maxWidth:70, cssClass:'smartGrid_AlignCenter', formatter:formatter_refreshToken},
+		{id:'id_token', field:'id_token', name:'Id-JWT', toolTip:'[###LABEL-TK-IDJWT|js###]', sortable:false, width:70, maxWidth:70, cssClass:'smartGrid_AlignCenter', formatter:formatter_idToken},
+		{id:'access_expire_seconds', field:'access_expire_seconds', name:'[###LABEL-EXP-SEC|js###]', toolTip:'[###HINT-EXP-SEC|js###]', sortable:true, width:150, maxWidth:150, cssClass:'smartGrid_AlignRight smartGrid_Important', formatter:formatter_ExpSeconds},
+		{id:'access_expire_time', field:'access_expire_time', name:'[###LABEL-EXP-TIME|js###]', toolTip:'[###LABEL-EXP-TIME|js###]', sortable:true, sortNumeric:true, width:150, maxWidth:150, cssClass:'smartGrid_Important smartGrid_ColDate smartGrid_AlignCenter', formatter:formatter_DateTime},
+		{id:'modified', field:'modified', name:'[###LABEL-LAST-UPD|js###]', toolTip:'[###LABEL-LAST-UPD|js###]', sortable:true, sortNumeric:true, width:150, maxWidth:150, cssClass:'smartGrid_ColDate smartGrid_AlignCenter', formatter:formatter_DateTime},
 	];
 
 	// Grid Options

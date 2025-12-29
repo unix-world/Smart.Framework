@@ -9,7 +9,7 @@
 
 /*
 License: BSD
-	extended by unixman, (stable.20250311), (c) 2015-present unix-world.org
+	extended by unixman, (stable.20250726), (c) 2015-present unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */
@@ -923,21 +923,24 @@ since IE8 won't execute CSS that contains a CSS3 selector.
 	background-color: #ECECEC;
 	color: #999999;
 }
-.ux-form input[readonly],
+.ux-field[readonly]:not(.ux-fake-readonly),
+.ux-form input[readonly]:not(.ux-fake-readonly), /* the .ux-fake-readonly class is used by ux-date-field */
+.ux-form textarea[readonly]:not(.ux-fake-readonly),
 .ux-form select[readonly],
-.ux-form textarea[readonly],
-.ux-select[readonly],
-.ux-field[readonly] {
+.ux-select[readonly] {
 	cursor: crosshair;
 	background-color: #FAFAFA; /* menu hover bg color */
-	color: #777; /* menu text color */
-	border-color: #ccc;
+	color: #777777; /* menu text color */
+	border-color: #CCCCCC;
+}
+.ux-form input.ux-fake-readonly {
+	cursor: cell;
 }
 
 .ux-form input:focus:invalid,
 .ux-form textarea:focus:invalid,
 .ux-form select:focus:invalid {
-	color: #b94a48;
+	color: #B94A48;
 	border-color: #E9322D;
 }
 .ux-form input[type="file"]:focus:invalid:focus,
@@ -2698,7 +2701,7 @@ nav.ux-navbar.navbar-dark a:hover {
 
 /*
 License: BSD
-	extended by unixman (stable.20250311), (c) 2015-present unix-world.org
+	extended by unixman (stable.20250726), (c) 2015-present unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */

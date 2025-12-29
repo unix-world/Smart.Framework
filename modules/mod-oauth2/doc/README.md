@@ -121,3 +121,29 @@ curl -v \
 
 ### IMPORTANT: This is a generic, minimal, simple OAUTH2 example. Some providers may require extra URL parameters. The OAUTH2 Scopes are custom defined for each provider.
 
+## Using OAuth2 Templates
+Optional, to restrict the usage of this api just for templates, use restriction: <oauth2:template>.
+To use with a template, add url parameter for new:
+?page=oauth2.manager&action=new-form&template=sample-template
+and for refresh:
+?page=oauth2.manager&action=reinit-token-form&id=sample-oauth2&template=sample-template
+And create the following template: etc/oauth2/sample-template.yaml
+```
+oauth2:
+    @version: 2025-07-11
+    @metainfo: "Sample ..."
+    id: "sample-oauth2"
+    description: "This is just a sample template"
+    client_id: "abc123"
+    client_secret: "0123456789"
+    scope: "openid"
+    url_redirect: ""
+    url_auth: "https://127.0.0.1:17788/oauth2/authorize"
+    url_token: "https://127.0.0.1:17788/oauth2/token"
+    template_redir: "https://127.0.0.1:8443/sites/smart-framework/admin.php?page=oauth2.manager.stml"
+```
+with an optional SVG logo: etc/oauth2/sample-template.svg
+```
+<svg xmlns="http://www.w3.org/2000/svg">
+</svg>
+```

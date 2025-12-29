@@ -74,7 +74,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends     PHP GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring ; classes: Smart, SmartFileSysUtils
- * @version 	v.20250107
+ * @version 	v.20251215
  * @package 	Plugins:Image
  *
  */
@@ -92,6 +92,8 @@ final class SmartImageGdProcess {
 	private $info = '';
 
 	private $debug = false;
+
+	private const FONT = 'lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf';
 
 
 	//================================================================
@@ -331,14 +333,15 @@ final class SmartImageGdProcess {
 	/**
 	 * Get GD image data as: GIF / PNG / JPG / WEBP
 	 *
-	 * @param ENUM 		$type 				:: *Optional* '' | 'gif' | 'png' | 'jpg' | 'webp' ; if '' will return the exact type as the input image
-	 * @param INTEGER+ 	$quality 			:: *Optional* 1..100 ; Default is 100 ; The quality of the image ; currently applies just for JPG and WEBP
-	 * @param INTEGER+ 	$compression 		:: *Optonal* 0..9 ; Default is 6 ; The image compression level (zlib) ; currently applies just for PNG
-	 * @param MIXED 	$filters 			:: *Optional* ; Default is '' = no filters ; false = PNG_NO_FILTER ; true = PNG_ALL_FILTERS ; array(PNG_FILTER_SUB, PNG_FILTER_UP, PNG_FILTER_AVG, PNG_FILTER_PAETH, PNG_FILTER_NONE) = array with filters ; currently applies just for PNG (using array of filters depends on what filters are available in LibPNG)
+	 * @param ENUM 		$type 					:: *Optional* '' | 'gif' | 'png' | 'jpg' | 'webp' ; if '' will return the exact type as the input image
+	 * @param INTEGER+ 	$quality 				:: *Optional* 1..100 ; Default is 100 ; The quality of the image ; currently applies just for JPG and WEBP
+	 * @param INTEGER+ 	$compression 			:: *Optonal* 0..9 ; Default is 6 ; The image compression level (zlib) ; currently applies just for PNG
+	 * @param INTEGER 	$filters 				:: *Optional* ; Default is 0 = no filters ; -2 = PNG_NO_FILTER ; -1 = PNG_ALL_FILTERS ; or: PNG_FILTER_SUB | PNG_FILTER_UP | PNG_FILTER_AVG | PNG_FILTER_PAETH | PNG_FILTER_NONE as filters ; currently applies just for PNG (using array of filters depends on what filters are available in LibPNG)
+	 * @param BOOLEAN 	$preserveTransparency 	:: *Optional* ; Default is FALSE ; apply just for GIF / PNG ; if set to TRUE will preserve transparency
 	 *
-	 * @return STRING 						:: '' on error or image data in the specified format: GIF / PNG / JPG / WEBP
+	 * @return STRING 							:: '' on error or image data in the specified format: GIF / PNG / JPG / WEBP
 	 */
-	public function getImageData($type='', $quality=100, $compression=6, $filters='') {
+	public function getImageData($type='', $quality=100, $compression=6, $filters=0, $preserveTransparency=false) {
 
 		//--
 		if($this->status !== true) {
@@ -353,14 +356,16 @@ final class SmartImageGdProcess {
 		//--
 
 		//--
-		$compression = (int) $compression;
+		$filters = (int) intval($filters);
+		//--
+		$compression = (int) intval($compression);
 		if($compression < 0) {
 			$compression = 0;
 		} elseif($compression > 9) {
 			$compression = 9;
 		} //end if else
 		//--
-		$quality = (int) $quality;
+		$quality = (int) intval($quality);
 		if($quality < 1) {
 			$quality = 1;
 		} elseif($quality > 100) {
@@ -377,6 +382,20 @@ final class SmartImageGdProcess {
 		//--
 
 		//--
+		if(((string)$type == 'png') || ((string)$type == 'png')) {
+			//--
+			if($preserveTransparency === true) {
+				imagealphablending($this->img, false);
+				imagesavealpha($this->img, true);
+		//	} else {
+		//		imagealphablending($this->img, true);
+		//		imagesavealpha($this->img, false);
+			} //end if else
+			//--
+		} //end if else
+		//--
+
+		//--
 		ob_start();
 		//--
 		switch((string)$type) {
@@ -384,15 +403,15 @@ final class SmartImageGdProcess {
 				@imagegif($this->img);
 				break;
 			case 'png':
-				if($filters === true) {
+				if($filters === -1) {
 					$this->_debugMsg((string)__METHOD__.' :: '.'Using PNG Filter: PNG_ALL_FILTERS', false); // notice
 					@imagepng($this->img, null, $compression, PNG_ALL_FILTERS);
-				} elseif($filters === false) {
+				} elseif($filters === -2) {
 					$this->_debugMsg((string)__METHOD__.' :: '.'Using PNG Filter: PNG_NO_FILTER', false); // notice
 					@imagepng($this->img, null, $compression, PNG_NO_FILTER);
-				} elseif(Smart::array_size($filters) > 0) { // (depends on libpng)
-					$this->_debugMsg((string)__METHOD__.' :: '.'Using PNG Filters: '.implode(' | ', (array)$filters), false); // notice
-					@imagepng($this->img, null, $compression, implode(' | ', (array)$filters));
+				} elseif((int)$filters > 0) { // (depends on libpng)
+					$this->_debugMsg((string)__METHOD__.' :: '.'Using PNG Filters: '.$filters, false); // notice
+					@imagepng($this->img, null, $compression, $filters);
 				} else { // default
 					$this->_debugMsg((string)__METHOD__.' :: '.'Using NO PNG Filters (default)', false); // notice
 					@imagepng($this->img, null, $compression);
@@ -470,11 +489,10 @@ final class SmartImageGdProcess {
 		//-- check for relative sizes
 		$fixratio = $this->width / $this->height;
 		if($resize_height <= 0) {
-			$resize_height = ceil($resize_width / $fixratio);
+			$resize_height = Smart::ceil_number($resize_width / $fixratio);
 		} elseif($resize_width <= 0) {
-			$resize_width = ceil($resize_height * $fixratio);
+			$resize_width = Smart::ceil_number($resize_height * $fixratio);
 		} //end if
-		unset($fixratio);
 		//--
 
 		//-- param fixes and constraints
@@ -515,13 +533,14 @@ final class SmartImageGdProcess {
 		$newImgW = $ratio * $this->width  + 1; // fix one pixel margin
 		$newImgH = $ratio * $this->height + 1; // fix one pixel margin
 		//--
-		unset($ratio);
-		//--
 
 		//-- modes (default mode = 0)
 		if(($mode == 1) OR ($mode == 2)) { // preserve if lower
 			if(($this->width <= $resize_width) AND ($this->height <= $resize_height)) {
 				$this->_debugMsg((string)__METHOD__.' :: '.'Will Preserve Image as it is Lower on Dimensions ...', false); // notice
+				if($mode == 2) {
+					return true;
+				} //end if
 				$newImgW = $this->width;
 				$newImgH = $this->height;
 				$resize_width = $this->width;
@@ -529,7 +548,7 @@ final class SmartImageGdProcess {
 			} //end if
 		} //end if
 		//--
-		if(($mode == 2) OR ($mode == 3)) { // relative sizes
+		if($mode == 3) { // relative sizes
 			$this->_debugMsg((string)__METHOD__.' :: '.'Will use Relative Dimensions ...', false); // notice
 			$newImgW = $newImgW - 1;
 			$resize_width = $newImgW;
@@ -568,14 +587,14 @@ final class SmartImageGdProcess {
 		//--
 
 		//-- calculate center
-		$center_w = floor($resize_width/2 - $newImgW/2);
+		$center_w = Smart::floor_number($resize_width/2 - $newImgW/2);
 		if($center_w < 0) {
 			if((int)$crop == 1) {
 				$center_w = 0;
 			} //end if
 		} //end if
 		//--
-		$center_h = floor($resize_height/2 - $newImgH/2);
+		$center_h = Smart::floor_number($resize_height/2 - $newImgH/2);
 		if($center_h < 0) {
 			if(((int)$crop == 1) OR ((int)$crop == 2)) {
 				$center_h = 0;
@@ -667,7 +686,6 @@ final class SmartImageGdProcess {
 		$wtm_type   = (string) $arwdet['t'];
 		$wtm_width  = (int)    $arwdet['w'];
 		$wtm_height = (int)    $arwdet['h'];
-		unset($arwdet);
 		//--
 		$nfo = ' :: WtType='.$wtm_type.' / WtWidth='.$wtm_width.' / WtSize='.$wtm_height;
 		//--
@@ -694,23 +712,23 @@ final class SmartImageGdProcess {
 			//--
 			case 'north':
 			case 'n':
-				$gvtyX = ceil(($this->width / 2) - ($wtm_width / 2));
+				$gvtyX = Smart::ceil_number(($this->width / 2) - ($wtm_width / 2));
 				$gvtyY = 0;
 				break;
 			case 'south':
 			case 's':
-				$gvtyX = ceil(($this->width / 2) - ($wtm_width / 2));
-				$gvtyY = floor($this->height - $wtm_height);
+				$gvtyX = Smart::ceil_number(($this->width / 2) - ($wtm_width / 2));
+				$gvtyY = Smart::floor_number($this->height - $wtm_height);
 				break;
 			case 'west':
 			case 'w':
 				$gvtyX = 0;
-				$gvtyY = ceil(($this->height / 2) - ($wtm_height / 2));
+				$gvtyY = Smart::ceil_number(($this->height / 2) - ($wtm_height / 2));
 				break;
 			case 'east':
 			case 'e':
-				$gvtyX = floor($this->width - $wtm_width);
-				$gvtyY = ceil(($this->height / 2) - ($wtm_height / 2));
+				$gvtyX = Smart::floor_number($this->width - $wtm_width);
+				$gvtyY = Smart::ceil_number(($this->height / 2) - ($wtm_height / 2));
 				break;
 			//--
 			case 'northwest':
@@ -720,26 +738,26 @@ final class SmartImageGdProcess {
 				break;
 			case 'northeast':
 			case 'ne':
-				$gvtyX = floor($this->width - $wtm_width);
+				$gvtyX = Smart::floor_number($this->width - $wtm_width);
 				$gvtyY = 0;
 				break;
 			case 'southwest':
 			case 'sw':
 				$gvtyX = 0;
-				$gvtyY = floor($this->height - $wtm_height);
+				$gvtyY = Smart::floor_number($this->height - $wtm_height);
 				break;
 			case 'southeast':
 			case 'se':
-				$gvtyX = floor($this->width - $wtm_width);
-				$gvtyY = floor($this->height - $wtm_height);
+				$gvtyX = Smart::floor_number($this->width - $wtm_width);
+				$gvtyY = Smart::floor_number($this->height - $wtm_height);
 				break;
 			//--
 			case 'center':
 			case 'c':
 			case '':
 			default:
-				$gvtyX = ceil(($this->width / 2) - ($wtm_width / 2));
-				$gvtyY = ceil(($this->height / 2) - ($wtm_height / 2));
+				$gvtyX = Smart::ceil_number(($this->width / 2) - ($wtm_width / 2));
+				$gvtyY = Smart::ceil_number(($this->height / 2) - ($wtm_height / 2));
 			//--
 		} //end switch
 		//--
@@ -774,13 +792,13 @@ final class SmartImageGdProcess {
 	 * @param STRING 	$text 				:: the text to be applied
 	 * @param INTEGER 	$angle 				:: TTF angle rotation (0..180) degrees
 	 * @param INTEGER 	$size 				:: TTF font size
-	 * @param ENUM 		$font 				:: *Optional* The font to be used: character's font (1..5 for built-in gd font ; path/to/font.gdf ; path/to/font.ttf) ; Default is: lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf
+	 * @param ENUM 		$font 				:: *Optional* The font to be used: character's font (1..5 for built-in gd font ; path/to/font.gdf ; path/to/font.ttf) ; ibm-plex-sans-regular.ttf
 	 *
 	 * @hints 								:: this works just with TTF fonts
 	 *
 	 * @return ARRAY 						:: return an empty array on error / on success returns an array with 8 coordinates as [ 0: lower left corner, X position ; 1: lower left corner, Y position ; 2: lower right corner, X position ; 3: lower right corner, Y position ; 4: upper right corner, X position ; 5: upper right corner, Y position ; 6: upper left corner, X position ; 7: upper left corner, Y position ]
 	 */
-	public function calculateTextBBox($text, $angle, $size, $font='lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf') {
+	public function calculateTextBBox($text, $angle, $size, $font=self::FONT) {
 
 		//--
 		$text = (string) Smart::normalize_spaces((string)$text); // only single line text is allowed
@@ -834,7 +852,7 @@ final class SmartImageGdProcess {
 	 * @param INTEGER 	$size 				:: TTF font size
 	 * @param INTEGER 	$width 				:: width of text area (includding margins)
 	 * @param INTEGER 	$margin 			:: left margin for text placement ; Default is 0
-	 * @param ENUM 		$font 				:: The font to be used: character's font (1..5 for built-in gd font ; path/to/font.gdf ; path/to/font.ttf) ; Default is: lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf
+	 * @param ENUM 		$font 				:: The font to be used: character's font (1..5 for built-in gd font ; path/to/font.gdf ; path/to/font.ttf) ; Default is: ibm-plex-sans-regular.ttf
 	 *
 	 * @hints 								:: this works just with TTF fonts ; the text transparency is made by the $color_rgb alpha channel
 	 *
@@ -886,14 +904,14 @@ final class SmartImageGdProcess {
 	 * @param INTEGER 	$vlinespace 		:: *Optional* vertical line spacing (space between vertical text lines)
 	 * @param INTEGER 	$angle 				:: *Optional* TTF angle rotation (0..180) degrees ; Default is 0 ; Applies just for Align=left ; for Align=center / Align=right ... to be done in the future ...
 	 * @param INTEGER 	$size 				:: *Optional* TTF font size ; Default is 10 | null (for built-in or GDF fonts)
-	 * @param ENUM 		$font 				:: *Optional* The font to be used: character's font (1..5 for built-in gd font ; path/to/font.gdf ; path/to/font.ttf) ; Default is: lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf
+	 * @param ENUM 		$font 				:: *Optional* The font to be used: character's font (1..5 for built-in gd font ; path/to/font.gdf ; path/to/font.ttf) ; Default is: ibm-plex-sans-regular.ttf
 	 * @param ARRAY 	$color_rgb 			:: *Optional* The RGB color with optional alpha channel as Array [0..255, 0..255, 0..255, 0..127] ; Default is: [0, 0, 0, 0]
 	 *
 	 * @hints 								:: this works just with TTF fonts ; the text transparency is made by the $color_rgb alpha channel
 	 *
 	 * @return BOOLEAN 						:: TRUE on success ; FALSE on error / fail
 	 */
-	public function applyWrapText($text, $align='left', $margin=0, $top=0, $vlinespace=5, $angle=0, $size=10, $font='lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf', $color_rgb=[0, 0, 0, 0]) {
+	public function applyWrapText($text, $align='left', $margin=0, $top=0, $vlinespace=5, $angle=0, $size=10, $font=self::FONT, $color_rgb=[0, 0, 0, 0]) {
 
 		//--
 		if($this->status !== true) {
@@ -937,15 +955,15 @@ final class SmartImageGdProcess {
 		$margin = (int) $margin;
 		if($margin < 0) {
 			$margin = 0;
-		} elseif($margin > floor($this->width / 2)) {
-			$margin = (int) floor($this->width / 2);
+		} elseif($margin > Smart::floor_number($this->width / 2)) {
+			$margin = (int) Smart::floor_number($this->width / 2);
 		} //end if else
 		//--
 		$vlinespace = (int) $vlinespace;
 		if($vlinespace < 0) {
 			$vlinespace = 0;
-		} elseif($vlinespace > floor($this->height / 3)) {
-			$vlinespace = (int) floor($this->height / 3);
+		} elseif($vlinespace > Smart::floor_number($this->height / 3)) {
+			$vlinespace = (int) Smart::floor_number($this->height / 3);
 		} //end if else
 		//--
 		$angle = (int) $angle; // angle in degrees (apply just for ttf fonts)
@@ -993,7 +1011,7 @@ final class SmartImageGdProcess {
 		//--
 		for($i=0; $i<Smart::array_size($lines); $i++) {
 			if((string)$lines[$i]) {
-				$liney = (int) floor($top + ((int)$i * ((int)$vlinespace + (int)$size)));
+				$liney = (int) Smart::floor_number($top + ((int)$i * ((int)$vlinespace + (int)$size)));
 				$this->_applyTextLine((string)$lines[$i], (int)$this->width, (int)$margin, (int)$angle, (int)$size, (int)$liney, (string)$align, (string)$font, (array)$color_rgb);
 				if($this->status !== true) {
 					$this->_debugMsg((string)__METHOD__.' :: '.'Failed to apply Wrap Text on Image with Font: '.$font.' / Size: '.$size.' / Angle: '.$angle.' / Align: '.$align.' / VLineSpace: '.$vlinespace.' / Margin: '.$margin);
@@ -1021,14 +1039,14 @@ final class SmartImageGdProcess {
 	 * @param INTEGER 	$offsy 				:: *Optional* correction offset Y for text placement ; Default is 0
 	 * @param INTEGER 	$angle 				:: *Optional* TTF angle rotation (0..180) degrees ; Default is 0 | null (for built-in or GDF fonts)
 	 * @param INTEGER 	$size 				:: *Optional* TTF font size ; Default is 10 | null (for built-in or GDF fonts)
-	 * @param ENUM 		$font 				:: *Optional* The font to be used: character's font (1..5 for built-in gd font ; path/to/font.gdf ; path/to/font.ttf) ; Default is: lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf
+	 * @param ENUM 		$font 				:: *Optional* The font to be used: character's font (1..5 for built-in gd font ; path/to/font.gdf ; path/to/font.ttf) ; Default is: ibm-plex-sans-regular.ttf
 	 * @param ARRAY 	$color_rgb 			:: *Optional* The RGB color with optional alpha channel as Array [0..255, 0..255, 0..255, 0..127] ; Default is: [0, 0, 0, 0]
 	 *
 	 * @hints 								:: the text transparency is made by the $color_rgb alpha channel
 	 *
 	 * @return BOOLEAN 						:: TRUE on success ; FALSE on error / fail
 	 */
-	public function applyText($text, $offsx=0, $offsy=0, $angle=0, $size=10, $font='lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf', $color_rgb=[0, 0, 0, 0]) {
+	public function applyText($text, $offsx=0, $offsy=0, $angle=0, $size=10, $font=self::FONT, $color_rgb=[0, 0, 0, 0]) {
 
 		//--
 		if($this->status !== true) {
@@ -1311,7 +1329,6 @@ final class SmartImageGdProcess {
 		$imgtyp 	= (int) $arinfo[2]; // image type constant
 		//--
 		$imgstr = ''; // free mem
-		unset($arinfo); // cleanup
 		//--
 
 		//--
@@ -1358,12 +1375,12 @@ final class SmartImageGdProcess {
 	//================================================================
 	private function _applyTextLine($line, $width, $margin, $angle, $size, $offsy, $align, $font, $color_rgb) {
 		//--
-		$width = (int) floor((int)$width - ((int)$margin * 2));
+		$width = (int) Smart::floor_number((int)$width - ((int)$margin * 2));
 		//--
 		$bbox = $this->calculateTextBBox((string)$line, (int)$angle, (int)$size, (string)$font);
 		//--
-		$pos_x_center = (int) ceil((((int)$width - (float)$bbox[0]) / 2) - ((float)$bbox[2] / 2));
-		$pos_x_right  = (int) floor((int)$width - (float)$bbox[2]);
+		$pos_x_center = (int) Smart::ceil_number((((int)$width - (float)$bbox[0]) / 2) - ((float)$bbox[2] / 2));
+		$pos_x_right  = (int) Smart::floor_number((int)$width - (float)$bbox[2]);
 		$pos_x_left   = 1;
 		//--
 		$pos_y_center = (int) $offsy;

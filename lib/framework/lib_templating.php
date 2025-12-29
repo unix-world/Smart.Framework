@@ -34,6 +34,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // 		_-ITERATOR-_		The current array iterator: 0..(arraysize-1) ; Available also in LOOP / IF
 // 		_-VAL-_				The current loop value ; Available also in LOOP / IF
 // 		_-KEY-_				The current loop key ; Available also in LOOP / IF
+// 		_-KEY-LBL_ 			The current loop key label ; for non-associative is always `#.` where # is the loop number ; for associative if `DATA:(TRANSLATIONS)` array is provided will use the value of the corresponding key, otherwise will conver key to `|idtxt`
+// Includes support for `|translate` ; it must be the 1st escaping always ... before any transformer !!
 //===== TECHNICAL REFERENCE:
 // Because the recursion patterns are un-predictable, as a template can be rendered in other template in controllers or libs,
 // the str_replace() is used internally instead of strtr() but with an important fix: will replace all values before assign as follows:
@@ -49,7 +51,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartEnvironment, SmartUnicode, SmartFileSysUtils ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS, SMART_SOFTWARE_MKTPL_DEBUG_LEN (optional)
- * @version 	v.20250302
+ * @version 	v.20251210
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -1309,7 +1311,20 @@ final class SmartMarkersTemplating {
 			if(self::have_marker((string)$mtemplate) === true) {
 			//	if(!is_array($val)) { // fix
 				if(Smart::is_nscalar($val)) { // fix
-					$mtemplate = (string) self::replace_marker((string)$mtemplate, (string)$key, (string)$val);
+					//-- {{{SYNC-MTPL-TRANSLATE}}}
+					$tval = '';
+					if(class_exists('SmartTextTranslations')) {
+						if(SmartTextTranslations::isDefaultLanguage() === false) {
+							$tkey = (string) $key.':'.strtoupper((string)SmartTextTranslations::getLanguage()); // fix: here the language must be uppercase because of transformations
+							$tval = ($y_arr_vars[(string)$tkey] ?? null); // do not cast, check for scalar below
+							if(!Smart::is_nscalar($tval)) {
+								$tval = '';
+							} //end if
+						} //end if
+					} //end if
+					//-- #
+					$mtemplate = (string) self::replace_marker((string)$mtemplate, (string)$key, (string)$val, (string)$tval);
+					//--
 				} //end if # else do not log, it may occur many times with the loop variables !!!
 			} else {
 				break;
@@ -1442,7 +1457,7 @@ final class SmartMarkersTemplating {
 	[###MARKER|html|nl2br|js|url###]
 	[###MARKER|css###]
 	*/
-	private static function replace_marker(string $mtemplate, string $key, string $val) : string {
+	private static function replace_marker(string $mtemplate, string $key, string $val, string $tval='') : string {
 		//-- {{{SYNC-TPL-EXPR-MARKER}}}
 		$valid = preg_match('/^[A-Z0-9_\-\.]+$/', (string)$key);
 		if($valid === false) {
@@ -1492,7 +1507,7 @@ final class SmartMarkersTemplating {
 								//--
 							} else {
 								//--
-								$arr_repls[(string)$crr_match[0]] = (string) self::escape_marker_value((array)$crr_match, (string)$val);
+								$arr_repls[(string)$crr_match[0]] = (string) self::escape_marker_value((array)$crr_match, (string)$val, (string)$tval);
 								//--
 							} //end if else
 							//--
@@ -1518,7 +1533,7 @@ final class SmartMarkersTemplating {
 
 	//================================================================
 	// escape a marker value conforming with the escapings sequence: |esc1|esc2|...|escn
-	private static function escape_marker_value(array $crr_match, string $val) : string {
+	private static function escape_marker_value(array $crr_match, string $val, string $tval='') : string {
 		//--
 		$crr_match = (array) $crr_match;
 		$val = (string) $val;
@@ -1622,6 +1637,10 @@ final class SmartMarkersTemplating {
 					} elseif((string)$escexpr == '|striptags') {
 						$val = (string) Smart::stripTags((string)$val); // Apply Strip Tags
 					//--
+					} elseif((string)$escexpr == '|emptym') { // if empty, display -
+						if((string)trim((string)$val) == '') {
+							$val = '-';
+						} //end if
 					} elseif((string)$escexpr == '|emptye') { // if empty, display [EMPTY]
 						if((string)trim((string)$val) == '') {
 							$val = '[EMPTY]';
@@ -1631,8 +1650,7 @@ final class SmartMarkersTemplating {
 							$val = '[N/A]';
 						} //end if
 					} elseif((string)$escexpr == '|idtxt') { // id_txt: Id-Txt
-						$val = (string) str_replace('_', '-', (string)$val);
-						$val = (string) SmartUnicode::uc_words((string)$val);
+						$val = (string) Smart::create_idtxt((string)$val);
 					} elseif((string)$escexpr == '|unixname') { // unix name: a-z0-9, max 32 characters
 						$val = (string) Smart::create_slug((string)$val, true, 32); // apply strtolower ; max 32 characters
 						$val = (string) strtr((string)$val, [
@@ -1780,6 +1798,11 @@ final class SmartMarkersTemplating {
 						$val = (string) SmartHashCrypto::sh3a512((string)$val, true); // Apply SHA3-512B64 Hashing
 					//--
 					// prettybytes ; skip, depends on Lib Utils
+					//--
+					} elseif((string)$escexpr == '|translate') { // only for PHP
+						if((string)trim((string)$tval) != '') {
+							$val = (string) $tval;
+						} //end if
 					//--
 					} else {
 						Smart::log_warning('Invalid or Undefined Marker-TPL Escaping: '.$escexpr.' - detected in Replacement Key: '.$crr_match[0].' -> [Val: '.$val.']');
@@ -1980,42 +2003,42 @@ final class SmartMarkersTemplating {
 					switch((string)$part_sign) {
 						//-- arrays
 						case '@==': // array count ==
-							if(Smart::array_size($tmp_the_arr) == (int)$bind_value) { // if evaluate to true keep the inner content
+							if((int)Smart::array_size($tmp_the_arr) == (int)intval($bind_value)) { // if evaluate to true keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
 							} //end if else
 							break;
 						case '@!=': // array count !=
-							if(Smart::array_size($tmp_the_arr) != (int)$bind_value) { // if evaluate to true keep the inner content
+							if((int)Smart::array_size($tmp_the_arr) != (int)intval($bind_value)) { // if evaluate to true keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
 							} //end if else
 							break;
 						case '@<=': // array count <=
-							if(Smart::array_size($tmp_the_arr) <= (int)$bind_value) { // if evaluate to true keep the inner content
+							if((int)Smart::array_size($tmp_the_arr) <= (int)intval($bind_value)) { // if evaluate to true keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
 							} //end if else
 							break;
 						case '@<': // array count <
-							if(Smart::array_size($tmp_the_arr) < (int)$bind_value) { // if evaluate to true keep the inner content
+							if((int)Smart::array_size($tmp_the_arr) < (int)intval($bind_value)) { // if evaluate to true keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
 							} //end if else
 							break;
 						case '@>=': // array count >=
-							if(Smart::array_size($tmp_the_arr) >= (int)$bind_value) { // if evaluate to true keep the inner content
+							if((int)Smart::array_size($tmp_the_arr) >= (int)intval($bind_value)) { // if evaluate to true keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
 							} //end if else
 							break;
 						case '@>': // array count >
-							if(Smart::array_size($tmp_the_arr) > (int)$bind_value) { // if evaluate to true keep the inner content
+							if((int)Smart::array_size($tmp_the_arr) > (int)intval($bind_value)) { // if evaluate to true keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
@@ -2047,7 +2070,7 @@ final class SmartMarkersTemplating {
 							if(is_array($tmp_the_arr)) {
 								$tmp_the_arr = 0; // fix PHP8 array to string conversion
 							} //end if
-							if((float)$tmp_the_arr <= (float)$bind_value) { // if evaluate to true keep the inner content
+							if((float)floatval($tmp_the_arr) <= (float)floatval($bind_value)) { // if evaluate to true keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
@@ -2057,7 +2080,7 @@ final class SmartMarkersTemplating {
 							if(is_array($tmp_the_arr)) {
 								$tmp_the_arr = 0; // fix PHP8 array to string conversion
 							} //end if
-							if((float)$tmp_the_arr < (float)$bind_value) { // if evaluate to true keep the inner content
+							if((float)floatval($tmp_the_arr) < (float)floatval($bind_value)) { // if evaluate to true keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
@@ -2067,7 +2090,7 @@ final class SmartMarkersTemplating {
 							if(is_array($tmp_the_arr)) {
 								$tmp_the_arr = 0; // fix PHP8 array to string conversion
 							} //end if
-							if((float)$tmp_the_arr >= (float)$bind_value) { // if evaluate to true keep the inner content
+							if((float)floatval($tmp_the_arr) >= (float)floatval($bind_value)) { // if evaluate to true keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
@@ -2077,7 +2100,7 @@ final class SmartMarkersTemplating {
 							if(is_array($tmp_the_arr)) {
 								$tmp_the_arr = 0; // fix PHP8 array to string conversion
 							} //end if
-							if((float)$tmp_the_arr > (float)$bind_value) { // if evaluate to true keep the inner content
+							if((float)floatval($tmp_the_arr) > (float)floatval($bind_value)) { // if evaluate to true keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
@@ -2087,7 +2110,7 @@ final class SmartMarkersTemplating {
 							if(is_array($tmp_the_arr)) {
 								$tmp_the_arr = 0; // fix PHP8 array to string conversion
 							} //end if
-							if((int)((int)$tmp_the_arr % (int)$bind_value) == 0) { // if evaluate to true keep the inner content
+							if((int)((int)intval($tmp_the_arr) % (int)intval($bind_value)) == 0) { // if evaluate to true keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
@@ -2097,7 +2120,7 @@ final class SmartMarkersTemplating {
 							if(is_array($tmp_the_arr)) {
 								$tmp_the_arr = 0; // fix PHP8 array to string conversion
 							} //end if
-							if((int)((int)$tmp_the_arr % (int)$bind_value) != 0) { // if evaluate to false keep the inner content
+							if((int)((int)intval($tmp_the_arr) % (int)intval($bind_value)) != 0) { // if evaluate to false keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
@@ -2133,7 +2156,7 @@ final class SmartMarkersTemplating {
 							if(is_array($tmp_the_arr)) {
 								$tmp_the_arr = ''; // fix PHP8 array to string conversion
 							} //end if
-							if(SmartUnicode::str_pos((string)$tmp_the_arr, (string)$bind_value) === 0) { // if evaluate to true keep the inner content
+							if(SmartUnicode::str_startswith((string)$tmp_the_arr, (string)$bind_value) === true) { // if evaluate to true keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
@@ -2143,7 +2166,7 @@ final class SmartMarkersTemplating {
 							if(is_array($tmp_the_arr)) {
 								$tmp_the_arr = ''; // fix PHP8 array to string conversion
 							} //end if
-							if(SmartUnicode::str_ipos((string)$tmp_the_arr, (string)$bind_value) === 0) { // if evaluate to true keep the inner content
+							if(SmartUnicode::str_istartswith((string)$tmp_the_arr, (string)$bind_value) === true) { // if evaluate to true keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
@@ -2153,7 +2176,7 @@ final class SmartMarkersTemplating {
 							if(is_array($tmp_the_arr)) {
 								$tmp_the_arr = ''; // fix PHP8 array to string conversion
 							} //end if
-							if(SmartUnicode::str_contains((string)$tmp_the_arr, (string)$bind_value)) { // if evaluate to true keep the inner content
+							if(SmartUnicode::str_contains((string)$tmp_the_arr, (string)$bind_value) === true) { // if evaluate to true keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
@@ -2163,7 +2186,7 @@ final class SmartMarkersTemplating {
 							if(is_array($tmp_the_arr)) {
 								$tmp_the_arr = ''; // fix PHP8 array to string conversion
 							} //end if
-							if(SmartUnicode::str_icontains((string)$tmp_the_arr, (string)$bind_value)) { // if evaluate to true keep the inner content
+							if(SmartUnicode::str_icontains((string)$tmp_the_arr, (string)$bind_value) === true) { // if evaluate to true keep the inner content
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
@@ -2173,17 +2196,17 @@ final class SmartMarkersTemplating {
 							if(is_array($tmp_the_arr)) {
 								$tmp_the_arr = ''; // fix PHP8 array to string conversion
 							} //end if
-							if(SmartUnicode::sub_str((string)$tmp_the_arr, (-1 * SmartUnicode::str_len((string)$bind_value)), SmartUnicode::str_len((string)$bind_value)) == (string)$bind_value) { // if evaluate to true keep the inner content
+							if(SmartUnicode::str_endswith((string)$tmp_the_arr, (string)$bind_value) === true) {
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
 							} //end if else
 							break;
-						case '$*': // if variable ends with part, case insensitive ### !!! Expensive in Execution !!! ###
+						case '$*': // if variable ends with part, case insensitive
 							if(is_array($tmp_the_arr)) {
 								$tmp_the_arr = ''; // fix PHP8 array to string conversion
 							} //end if
-							if((SmartUnicode::str_tolower(SmartUnicode::sub_str((string)$tmp_the_arr, (-1 * SmartUnicode::str_len(SmartUnicode::str_tolower((string)$bind_value))), SmartUnicode::str_len(SmartUnicode::str_tolower((string)$bind_value)))) == (string)SmartUnicode::str_tolower((string)$bind_value)) OR (SmartUnicode::str_toupper(SmartUnicode::sub_str((string)$tmp_the_arr, (-1 * SmartUnicode::str_len(SmartUnicode::str_toupper((string)$bind_value))), SmartUnicode::str_len(SmartUnicode::str_toupper((string)$bind_value)))) == (string)SmartUnicode::str_toupper((string)$bind_value))) { // if evaluate to true keep the inner content
+							if(SmartUnicode::str_iendswith((string)$tmp_the_arr, (string)$bind_value) === true) {
 								$condition_part_else = false;
 							} else {
 								$condition_part_else = true;
@@ -2313,6 +2336,7 @@ final class SmartMarkersTemplating {
 								$tmp_arr_context[(string)$bind_var_key.'.'.'_-MAXCOUNT-_'] = (string) $mxcnt;
 								$tmp_arr_context[(string)$bind_var_key.'.'.'_-ITERATOR-_'] = (string) $j;
 								$tmp_arr_context[(string)$bind_var_key.'.'.'_-KEY-_'] = (string) $j;
+								$tmp_arr_context[(string)$bind_var_key.'.'.'_-KEY-LBL_'] = (string) $j.'.';
 								if(is_array($y_arr_vars[(string)$bind_var_key][$j])) {
 									$tmp_arr_context[(string)$bind_var_key.'.'.'_-VAL-_'] = (array) $y_arr_vars[(string)$bind_var_key][$j];
 									foreach($y_arr_vars[(string)$bind_var_key][$j] as $key => $val) { // expects associative array
@@ -2376,18 +2400,38 @@ final class SmartMarkersTemplating {
 								(string) $bind_var_key.'.'.'_-KEY-_',
 								(string) $j
 							);
+							$mks_line = (string) self::replace_marker(
+								(string) $mks_line,
+								(string) $bind_var_key.'.'.'_-KEY-LBL_',
+								(string) $j.'.'
+							);
 							if(is_array($y_arr_vars[(string)$bind_var_key][$j]) AND (Smart::array_type_test($y_arr_vars[(string)$bind_var_key][$j]) === 2)) {
 								foreach($y_arr_vars[(string)$bind_var_key][$j] as $key => $val) { // expects associative array
+									//-- {{{SYNC-MTPL-TRANSLATE}}}
+									$tval = '';
+									if(class_exists('SmartTextTranslations')) {
+										if(SmartTextTranslations::isDefaultLanguage() === false) {
+											$tkey = (string) $key.':'.SmartTextTranslations::getLanguage();
+											$tval = ($y_arr_vars[(string)$bind_var_key][$j][(string)$tkey] ?? null); // do not cast, check for scalar below
+											if(!Smart::is_nscalar($tval)) {
+												$tval = '';
+											} //end if
+										} //end if
+									} //end if
+									//-- #
 									$mks_line = (string) self::replace_marker(
 										(string) $mks_line,
 										(string) $bind_var_key.'.'.'_-VAL-_'.'.'.strtoupper((string)$key),
-										(string) (Smart::is_nscalar($val) ? $val : '')
+										(string) (Smart::is_nscalar($val) ? $val : ''),
+										(string) $tval
 									);
 									$mks_line = (string) self::replace_marker(
 										(string) $mks_line,
 										(string) $bind_var_key.'.'.strtoupper((string)$key), // a shortcut for _-VAL-_.KEY
-										(string) (Smart::is_nscalar($val) ? $val : '')
+										(string) (Smart::is_nscalar($val) ? $val : ''),
+										(string) $tval
 									);
+									//--
 								} //end foreach
 							} else {
 								$mks_line = (string) self::replace_marker(
@@ -2411,6 +2455,20 @@ final class SmartMarkersTemplating {
 							//-- operate on a copy of original
 							$mks_line = (string) $loop_orig;
 							//--
+							$zTxtKey = '';
+							if(isset($y_arr_vars[(string)$bind_var_key.':(TRANSLATIONS)'])) {
+								if(is_array($y_arr_vars[(string)$bind_var_key.':(TRANSLATIONS)'])) {
+									if(isset($y_arr_vars[(string)$bind_var_key.':(TRANSLATIONS)'][(string)$zkey])) {
+										if(is_string($y_arr_vars[(string)$bind_var_key.':(TRANSLATIONS)'][(string)$zkey])) {
+											$zTxtKey = (string) trim((string)$y_arr_vars[(string)$bind_var_key.':(TRANSLATIONS)'][(string)$zkey]);
+										} //end if
+									} //end if
+								} //end if
+							} //end if
+							if((string)$zTxtKey == '') {
+								$zTxtKey = (string) Smart::create_idtxt((string)$zkey); // fallback
+							} //end if
+							//--
 							$ziterator = $j;
 							$j++;
 							//-- process IF inside LOOP for this context (the global context is evaluated prior as this function is called after process_if_syntax() in process_syntax() via render_template()
@@ -2421,6 +2479,7 @@ final class SmartMarkersTemplating {
 								$tmp_arr_context[(string)$bind_var_key.'.'.'_-MAXCOUNT-_'] = (string) $mxcnt;
 								$tmp_arr_context[(string)$bind_var_key.'.'.'_-ITERATOR-_'] = (string) $ziterator;
 								$tmp_arr_context[(string)$bind_var_key.'.'.'_-KEY-_'] = (string) $zkey;
+								$tmp_arr_context[(string)$bind_var_key.'.'.'_-KEY-LBL_'] = (string) $zTxtKey;
 								if(is_array($zval)) {
 									$tmp_arr_context[(string)$bind_var_key.'.'.'_-VAL-_'] = (array) $zval;
 									$tmp_arr_context[(string)$bind_var_key.'.'.strtoupper((string)$zkey)] = (array) $zval;
@@ -2494,18 +2553,38 @@ final class SmartMarkersTemplating {
 								(string) $bind_var_key.'.'.'_-KEY-_',
 								(string) $zkey
 							);
+							$mks_line = (string) self::replace_marker(
+								(string) $mks_line,
+								(string) $bind_var_key.'.'.'_-KEY-LBL_',
+								(string) $zTxtKey
+							);
 							if(is_array($zval) AND (Smart::array_type_test($zval) === 2)) {
 								foreach($zval as $key => $val) { // expects associative array
+									//-- {{{SYNC-MTPL-TRANSLATE}}}
+									$tval = '';
+									if(class_exists('SmartTextTranslations')) {
+										if(SmartTextTranslations::isDefaultLanguage() === false) {
+											$tkey = (string) $key.':'.SmartTextTranslations::getLanguage();
+											$tval = ($zval[(string)$tkey] ?? null); // do not cast, check for scalar below
+											if(!Smart::is_nscalar($tval)) {
+												$tval = '';
+											} //end if
+										} //end if
+									} //end if
+									//-- #
 									$mks_line = (string) self::replace_marker(
 										(string) $mks_line,
 										(string) $bind_var_key.'.'.'_-VAL-_'.'.'.strtoupper((string)$key),
-										(string) (Smart::is_nscalar($val) ? $val : '')
+										(string) (Smart::is_nscalar($val) ? $val : ''),
+										(string) $tval
 									);
 									$mks_line = (string) self::replace_marker(
 										(string) $mks_line,
 										(string) $bind_var_key.'.'.strtoupper((string)$zkey.'.'.(string)$key),
-										(string) (Smart::is_nscalar($val) ? $val : '')
+										(string) (Smart::is_nscalar($val) ? $val : ''),
+										(string) $tval
 									);
+									//--
 								} //end foreach
 							} else {
 								$mks_line = (string) self::replace_marker(

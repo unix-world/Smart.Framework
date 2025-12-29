@@ -521,7 +521,7 @@ final class SnappyUtils {
  * @internal
  *
  * @depends 	classes: Smart
- * @version 	v.20250214
+ * @version 	v.20250714
  * @package 	@Core
  *
  */
@@ -571,7 +571,7 @@ final class SnappyCompressor {
 		//--
 		$sourceLen = (int) Smart::array_size($this->arrData);
 		//--
-		return (int) (32 + (int)$sourceLen + (int)floor((int)$sourceLen / 6));
+		return (int) (32 + (int)$sourceLen + (int)Smart::floor_number((int)$sourceLen / 6));
 		//--
 	} //END FUNCTION
 

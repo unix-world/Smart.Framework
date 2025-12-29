@@ -1,4 +1,4 @@
-<!-- View: display-record v.20250218 -->
+<!-- View: display-record v.20250628 -->
 [@@@SUB-TEMPLATE:partials/styles.mtpl.htm@@@]
 <style>
 button#btn-cancel {
@@ -21,7 +21,7 @@ button#btn-cancel {
 		<div><img id="logo-oauth" width="48" height="48" src="modules/mod-oauth2/views/img/logo-oauth.svg" style="vertical-align:middle; margin-top:-24px; margin-right:10px;"> &nbsp; <h1 style="display:inline!important;">[###THE-TITLE|html###] &nbsp;&nbsp;&nbsp;&nbsp;</h1> <h5 style="display:inline-block!important;">[###DATE-NOW|html###]</h5></div>
 		[%%%LOOP:DATA-ARR%%%]
 		<div class="ux-grid-row" style="padding: 5px; border: 1px solid #FAFAFA; border-bottom: 0; background: [%%%IF:DATA-ARR._-KEY-_:==id;(0)%%%]#4D5774[%%%ELSE:DATA-ARR._-KEY-_(0)%%%][%%%IF:DATA-ARR._-KEY-_:==logs;(1)%%%]#EEEEEE[%%%ELSE:DATA-ARR._-KEY-_(1)%%%]#FFFFFF[%%%/IF:DATA-ARR._-KEY-_(1)%%%][%%%/IF:DATA-ARR._-KEY-_(0)%%%]; color: [%%%IF:DATA-ARR._-KEY-_:==id;%%%]#FFFFFF[%%%ELSE:DATA-ARR._-KEY-_%%%]#111111[%%%/IF:DATA-ARR._-KEY-_%%%];">
-			<div class="ux-grid-col s12 m3 l2" style="font-size:[%%%IF:DATA-ARR._-KEY-_:==id;%%%]1.25rem[%%%ELSE:DATA-ARR._-KEY-_%%%]0.9375rem[%%%/IF:DATA-ARR._-KEY-_%%%];"><b>[###DATA-ARR._-KEY-_|idtxt|html###]</b></div>
+			<div class="ux-grid-col s12 m3 l2" style="font-size:[%%%IF:DATA-ARR._-KEY-_:==id;%%%]1.25rem[%%%ELSE:DATA-ARR._-KEY-_%%%]0.9375rem[%%%/IF:DATA-ARR._-KEY-_%%%];"><b>[###DATA-ARR._-KEY-LBL_|html###]</b></div>
 			<div class="ux-grid-col s12 m9 l10" style="font-size:[%%%IF:DATA-ARR._-KEY-_:==id;%%%]1.25rem[%%%ELSE:DATA-ARR._-KEY-_%%%]0.9375rem[%%%/IF:DATA-ARR._-KEY-_%%%];">
 		[%%%IF:DATA-ARR._-KEY-_:?scope|access_expire_time|modified|created;%%%]
 			[%%%IF:DATA-ARR._-KEY-_:==scope;(0)%%%]
@@ -37,17 +37,17 @@ button#btn-cancel {
 			[%%%IF:DATA-ARR._-KEY-_:?active|errs;(0)%%%]
 				[%%%IF:DATA-ARR._-KEY-_:==active;(1)%%%]
 					[%%%IF:DATA-ARR._-VAL-_:==1;%%%]
-					<i class="sfi sfi-cog" style="color:#719300; cursor:help;" title="Yes: [###DATA-ARR._-VAL-_|bool|html###]"></i>&nbsp;&nbsp;&nbsp;&nbsp;<b>Yes</b>
+					<i class="sfi sfi-cog" style="color:#719300; cursor:help;" title="[###TXT-YES|html###]: [###DATA-ARR._-VAL-_|bool|html###]"></i>&nbsp;&nbsp;&nbsp;&nbsp;<b>[###TXT-YES|html###]</b>
 					[%%%ELSE:DATA-ARR._-VAL-_%%%]
-					<i class="sfi sfi-cog" style="color:#FFCC00; cursor:help;" title="No: [###DATA-ARR._-VAL-_|bool|html###]"></i>&nbsp;&nbsp;&nbsp;&nbsp;<b>No</b>
+					<i class="sfi sfi-cog" style="color:#FFCC00; cursor:help;" title="[###TXT-NO|html###]: [###DATA-ARR._-VAL-_|bool|html###]"></i>&nbsp;&nbsp;&nbsp;&nbsp;<b>[###TXT-NO|html###]</b>
 					[%%%/IF:DATA-ARR._-VAL-_%%%]
 				[%%%ELSE:DATA-ARR._-KEY-_(1)%%%]
 					[%%%IF:DATA-ARR._-VAL-_:==0;%%%]
-					<img width="32" height="32" src="lib/framework/img/sign-ok.svg" title="Yes: [###DATA-ARR._-VAL-_|int|html###]" alt="Yes: [###DATA-ARR._-VAL-_|int|html###]" style="cursor:help;">
+					<img width="32" height="32" src="lib/framework/img/sign-ok.svg" title="[###TXT-YES|html###]: [###DATA-ARR._-VAL-_|int|html###]" alt="[###TXT-YES|html###]: [###DATA-ARR._-VAL-_|int|html###]" style="cursor:help;">
 					[%%%ELSE:DATA-ARR._-VAL-_%%%]
-					<img width="32" height="32" src="lib/framework/img/sign-crit-error.svg" title="No: [###DATA-ARR._-VAL-_|int|html###]" alt="No: [###DATA-ARR._-VAL-_|int|html###]" style="cursor:help;">
+					<img width="32" height="32" src="lib/framework/img/sign-crit-error.svg" title="[###TXT-NO|html###]: [###DATA-ARR._-VAL-_|int|html###]" alt="[###TXT-NO|html###]: [###DATA-ARR._-VAL-_|int|html###]" style="cursor:help;">
 					[%%%/IF:DATA-ARR._-VAL-_%%%]
-					&nbsp;&nbsp; <button type="button" class="ux-button ux-button-small ux-button-highlight" style="margin-top:4px;" onClick="self.location = '[###ACTION-REINIT-TOKEN|js###]'; return false;"[%%%IF:IS-ACTIVE:!=yes;%%%] title="Only active APIs may be Re-Authorized ..." disabled[%%%ELSE:IS-ACTIVE%%%] title="This action will run a full Re-Authorization of the current OAuth2 API and will Refresh the Access-Token too. Use this operation in case that the Refresh-Token has not been provided and the Access-Token expired or in case of troubles with the Access Token updates ..."[%%%/IF:IS-ACTIVE%%%]>Re-Authorize&nbsp;OAuth2&nbsp;API&nbsp;&nbsp;&nbsp;<i class="sfi sfi-magnet" style="font-size:1rem !important; color:#555555;"></i></button>
+					&nbsp;&nbsp; <button type="button" class="ux-button ux-button-small ux-button-highlight" style="margin-top:4px;" onClick="self.location = '[###ACTION-REINIT-TOKEN|js|html###]'; return false;"[%%%IF:IS-ACTIVE:!=yes;%%%] title="[###TXT-ONLY-ACTIVE-REAUTH|html###]" disabled[%%%ELSE:IS-ACTIVE%%%] title="[###TXT-REAUTH|html###]"[%%%/IF:IS-ACTIVE%%%]>[###TXT-BTN-REAUTH|html###] &nbsp;&nbsp;<i class="sfi sfi-magnet" style="font-size:1rem !important; color:#555555;"></i></button>
 				[%%%/IF:DATA-ARR._-KEY-_(1)%%%]
 			[%%%ELSE:DATA-ARR._-KEY-_(0)%%%]
 				[%%%IF:DATA-ARR._-KEY-_:?description|logs|client_id|client_secret|code|access_token;(1)%%%]
@@ -55,12 +55,12 @@ button#btn-cancel {
 						[%%%IF:DATA-ARR._-KEY-_:==client_id;(4)%%%]
 							<i class="sfi sfi-bookmark" style="color:[%%%IF:DATA-ARR._-VAL-_:!=;(8)%%%]#3C4663[%%%ELSE:DATA-ARR._-VAL-_(8)%%%]#FF3300[%%%/IF:DATA-ARR._-VAL-_(8)%%%]; cursor:help;" title="[###DATA-ARR._-VAL-_|html###]"></i>
 						[%%%ELSE:DATA-ARR._-KEY-_(4)%%%]
-							<i class="sfi sfi-fa-certificate" style="color:[%%%IF:DATA-ARR._-VAL-_:!=;(8)%%%]#3C4663[%%%ELSE:DATA-ARR._-VAL-_(8)%%%]#FF3300[%%%/IF:DATA-ARR._-VAL-_(8)%%%]; cursor:help;" title="Secret: `[###DATA-ARR._-VAL-_|substr7|html###]...` | Size: `[###DATA-ARR._-VAL-_|len|html###] bytes`"></i>
+							<i class="sfi sfi-fa-certificate" style="color:[%%%IF:DATA-ARR._-VAL-_:!=;(8)%%%]#3C4663[%%%ELSE:DATA-ARR._-VAL-_(8)%%%]#FF3300[%%%/IF:DATA-ARR._-VAL-_(8)%%%]; cursor:help;" title="[###TXT-SECRET|html###]: `[###DATA-ARR._-VAL-_|substr7|html###]...` | [###TXT-SIZE|html###]: `[###DATA-ARR._-VAL-_|len|html###] bytes`"></i>
 						[%%%/IF:DATA-ARR._-KEY-_(4)%%%]
 					[%%%ELSE:DATA-ARR._-KEY-_(2)%%%]
 						[%%%IF:DATA-ARR._-KEY-_:==access_token;(3)%%%]
 							<div style="border-top:1px dashed #4D5774; border-bottom:1px dashed #4D5774;">
-							<i class="sfi sfi-shield" style="cursor:help;" title="[###DATA-ARR._-VAL-_|emptye|html###]"></i>&nbsp;&nbsp;[%%%IF:IS-EXPIRED:==yes;%%%]<i class="sfi sfi-cross" style="color:#ED2839; cursor:help;" title="Token is EXPIRED"></i>[%%%ELSE:IS-EXPIRED%%%]<i class="sfi sfi-checkmark" style="color:#44AA55; cursor:help;" title="Token is VALID"></i>[%%%/IF:IS-EXPIRED%%%] &nbsp;&nbsp; <button type="button" class="ux-button ux-button-small[%%%IF:IS-EXPIRED:==yes;%%%][%%%IF:HAVE-REFRESH-TOKEN:==no;%%%] ux-button-alt[%%%/IF:HAVE-REFRESH-TOKEN%%%][%%%ELSE:IS-EXPIRED%%%] ux-button-info[%%%/IF:IS-EXPIRED%%%]" style="margin-top:4px;" onClick="self.location='[###ACTION-GET-TOKEN|js###]'; return false;" title="[%%%IF:HAVE-REFRESH-TOKEN:==no;%%%]This OAUth2 API does NOT Support Refresh (did not provided a Refresh Token). To Refresh this Token use Re-Authorize OAuth2 API (click on Re-Authorize button below).[%%%ELSE:HAVE-REFRESH-TOKEN%%%]Click here to Display or Refresh (if expired) the Access Token.[%%%/IF:HAVE-REFRESH-TOKEN%%%]"[%%%IF:IS-EXPIRED:==yes;%%%][%%%IF:HAVE-REFRESH-TOKEN:==no;%%%] disabled[%%%/IF:HAVE-REFRESH-TOKEN%%%][%%%/IF:IS-EXPIRED%%%]> [%%%IF:IS-EXPIRED:==yes;%%%]Get&nbsp;a&nbsp;fresh[%%%ELSE:IS-EXPIRED%%%]Display&nbsp;the[%%%/IF:IS-EXPIRED%%%]&nbsp;Access&nbsp;Token &nbsp; <i class="sfi sfi-spinner10"></i></button> [%%%IF:IS-JWT:==yes;%%%]&nbsp; <img id="logo-openid" title="OpenID JWT" height="24" src="modules/mod-oauth2/views/img/logo-openid.svg">[%%%ELSE:IS-JWT%%%]<!-- NOT JWT -->[%%%/IF:IS-JWT%%%]
+							<i class="sfi sfi-shield" style="cursor:help;" title="[###DATA-ARR._-VAL-_|emptye|html###]"></i>&nbsp;&nbsp;[%%%IF:IS-EXPIRED:==yes;%%%]<i class="sfi sfi-cross" style="color:#ED2839; cursor:help;" title="[###TXT-TK-EXPIRED|html###]"></i>[%%%ELSE:IS-EXPIRED%%%]<i class="sfi sfi-checkmark" style="color:#44AA55; cursor:help;" title="[###TXT-TK-VALID|html###]"></i>[%%%/IF:IS-EXPIRED%%%] &nbsp;&nbsp; <button type="button" class="ux-button ux-button-small[%%%IF:IS-EXPIRED:==yes;%%%][%%%IF:HAVE-REFRESH-TOKEN:==no;%%%] ux-button-alt[%%%/IF:HAVE-REFRESH-TOKEN%%%][%%%ELSE:IS-EXPIRED%%%] ux-button-info[%%%/IF:IS-EXPIRED%%%]" style="margin-top:4px;" onClick="self.location='[###ACTION-GET-TOKEN|js|html###]'; return false;" title="[%%%IF:HAVE-REFRESH-TOKEN:==no;%%%][###BTN-TK-DISPLAY-HINT2|html###][%%%ELSE:HAVE-REFRESH-TOKEN%%%][###BTN-TK-DISPLAY-HINT1|html###][%%%/IF:HAVE-REFRESH-TOKEN%%%]"[%%%IF:IS-EXPIRED:==yes;%%%][%%%IF:HAVE-REFRESH-TOKEN:==no;%%%] disabled[%%%/IF:HAVE-REFRESH-TOKEN%%%][%%%/IF:IS-EXPIRED%%%]> [%%%IF:IS-EXPIRED:==yes;%%%][###BTN-TK-DISPLAY-EXP|html###][%%%ELSE:IS-EXPIRED%%%][###BTN-TK-DISPLAY|html###][%%%/IF:IS-EXPIRED%%%] &nbsp; <i class="sfi sfi-spinner10"></i></button> [%%%IF:IS-JWT:==yes;%%%]&nbsp; <img id="logo-openid" title="OpenID JWT" height="24" src="modules/mod-oauth2/views/img/logo-openid.svg">[%%%ELSE:IS-JWT%%%]<!-- NOT JWT -->[%%%/IF:IS-JWT%%%]
 							</div>
 						[%%%ELSE:DATA-ARR._-KEY-_(3)%%%]
 							[%%%IF:DATA-ARR._-KEY-_:==description;(7)%%%]<!-- description -->
@@ -75,20 +75,20 @@ button#btn-cancel {
 				[%%%ELSE:DATA-ARR._-KEY-_(1)%%%]
 					[%%%IF:DATA-ARR._-KEY-_:==refresh_token;(2)%%%]
 						[%%%IF:DATA-ARR._-VAL-_:==;%%%]
-						<i class="sfi sfi-cogs" style="color:#DEDEDE; cursor:help;" title="N/A"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#DEDEDE;">Token does Not Support Refresh (if Access-Token is expiring, needs Re-Authorize)</span>
+						<i class="sfi sfi-cogs" style="color:#DEDEDE; cursor:help;" title="N/A"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#DEDEDE;">[###TXT-TK-NO-REFRESH|html###]</span>
 						[%%%ELSE:DATA-ARR._-VAL-_%%%]
 						<i class="sfi sfi-fa-cogs" style="color:#3C4663; cursor:help;" title="[###DATA-ARR._-VAL-_|html###]"></i>
 						[%%%/IF:DATA-ARR._-VAL-_%%%]
 					[%%%ELSE:DATA-ARR._-KEY-_(2)%%%]<!-- all the rest -->
 						[%%%IF:DATA-ARR._-KEY-_:==id_token;(3)%%%]
 							[%%%IF:DATA-ARR._-VAL-_:==;%%%]
-						<i class="sfi sfi-blocked" style="color:#DEDEDE; cursor:help;" title="N/A"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#DEDEDE;">The API does not provide an ID&nbsp;JWT</span>
+						<i class="sfi sfi-blocked" style="color:#DEDEDE; cursor:help;" title="N/A"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#DEDEDE;">[###TXT-ID-JWT-NONE|html###]</span>
 							[%%%ELSE:DATA-ARR._-VAL-_%%%]
-						<i class="sfi sfi-user-tie" style="color:#3C4663; cursor:help;" title="[###DATA-ARR._-VAL-_|html###]"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#3C4663;">ID&nbsp;JWT</span>
+						<i class="sfi sfi-user-tie" style="color:#3C4663; cursor:help;" title="[###DATA-ARR._-VAL-_|html###]"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#3C4663;">[###TXT-ID-JWT|html###]</span>
 							[%%%/IF:DATA-ARR._-VAL-_%%%]
 						[%%%ELSE:DATA-ARR._-KEY-_(3)%%%]<!-- all the rest -->
 							[%%%IF:DATA-ARR._-VAL-_:==;%%%]
-						<i class="sfi sfi-warning" style="color:#ED2839; cursor:help;" title="?"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ED2839;">[Value is Empty]</span>
+						<i class="sfi sfi-warning" style="color:#ED2839; cursor:help;" title="?"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ED2839;">[[###TXT-EMPTY-VALUE|html###]]</span>
 							[%%%ELSE:DATA-ARR._-VAL-_%%%]
 						[###DATA-ARR._-VAL-_|html###]
 							[%%%/IF:DATA-ARR._-VAL-_%%%]
@@ -102,9 +102,9 @@ button#btn-cancel {
 		[%%%/LOOP:DATA-ARR%%%]
 		<div style="text-align:center; border-top: 1px solid #FAFAFA;">
 			<br>
-			<button id="btn-cancel" type="button" class="ux-button ux-button-dark" style="margin-right:10px; margin-bottom:5px;" onClick="smartJ$Browser.CloseDelayedModalPopUp();"> Go&nbsp;Back &nbsp; <i class="sfi sfi-spinner11"></i></button>
-			<button id="btn-token-refresh" type="button" class="ux-button ux-button-primary" style="margin-right:10px; margin-bottom:5px;" onClick="smartJ$Browser.ConfirmDialog('<h1>Refresh now this Access Token ?</h1><span style=&quot;color:#003366;&quot;><b>Notice:</b> The Access Token is automatically refreshed if expired at every usage, thus may not necessary to manually update it. Anyway you can do update the Access Token now if press OK, but the OAuth2 Server may not return a new one until this one expires...</span>', function(){ self.location='[###ACTION-REFRESH-TOKEN|js###]'; }, 'Access Token Manual REFRESH', 600, 280); return false;"[%%%IF:HAVE-REFRESH-TOKEN:==no;%%%] title="This Token can not be Refreshed ..." disabled[%%%ELSE:HAVE-REFRESH-TOKEN%%%][%%%IF:IS-ACTIVE:!=yes;%%%] title="Only active Tokens may be Refreshed ..." disabled[%%%ELSE:IS-ACTIVE%%%] title="This operation will explicit Refresh the Current Access Token even if is Not Expired. Normally the `Get the Access Token` operation should be used instead of this one, because that one will return the Current Access Token (if Not Expired) or a Fresh / New Access Token (if Expired). Use this operation in case of troubles with the Access Token updates only ..."[%%%/IF:IS-ACTIVE%%%][%%%/IF:HAVE-REFRESH-TOKEN%%%]> Refresh&nbsp;Token &nbsp; <i class="sfi sfi-loop"></i></button>
-			<button id="btn-token-del" type="button" class="ux-button ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="smartJ$Browser.ConfirmDialog('<h1>Delete now this OAuth2 API ?</h1><span style=&quot;color:#FF3300;&quot;><b>Notice:</b> The OAuth2 API will be completely removed from the Storage backend. Press OK to confirm the deletion...</span>', function(){ self.location='[###ACTION-DELETE-TOKEN|js###]'; }, 'OAuth2 API DELETE', 600, 280); return false;"[%%%IF:IS-ACTIVE:==yes;%%%] title="This OAuth2 API can not be deleted, it is active ..." disabled[%%%ELSE:IS-ACTIVE%%%] title="Use this operation to DELETE the selected OAuth2 API. Alternatively, you can consider to just set it as INACTIVE by double-clicking the checkbox (button) in the Listing Table area, instead to delete it ..."[%%%/IF:IS-ACTIVE%%%]> Delete&nbsp;Oauth2&nbsp;API &nbsp; <i class="sfi sfi-bin"></i></button>
+			<button id="btn-cancel" type="button" class="ux-button ux-button-dark" style="margin-right:10px; margin-bottom:5px;" onClick="smartJ$Browser.CloseDelayedModalPopUp();"> [###BTN-GO-BACK|html###] &nbsp; <i class="sfi sfi-spinner11"></i></button>
+			<button id="btn-token-refresh" type="button" class="ux-button ux-button-primary" style="margin-right:10px; margin-bottom:5px;" onClick="smartJ$Browser.ConfirmDialog('<h1>[###TXT-REFRESH-QUESTION|html###]</h1><span style=&quot;color:#003366;&quot;><b>[###TXT-NOTICE|html###]:</b> [###TXT-REFRESH-HINT|html###]</span>', function(){ self.location='[###ACTION-REFRESH-TOKEN|js|html###]'; }, '[###TXT-REFRESH-TITLE|js|html###]', 700, 300); return false;"[%%%IF:HAVE-REFRESH-TOKEN:==no;%%%] title="[###TXT-REFRESH-CANNOT|html###]" disabled[%%%ELSE:HAVE-REFRESH-TOKEN%%%][%%%IF:IS-ACTIVE:!=yes;%%%] title="[###TXT-REFRESH-CANNOT-HINT|html###]" disabled[%%%ELSE:IS-ACTIVE%%%] title="[###TXT-REFRESH-EXPLAIN|html###]"[%%%/IF:IS-ACTIVE%%%][%%%/IF:HAVE-REFRESH-TOKEN%%%]> [###TXT-REFRESH-BTN|html###] &nbsp; <i class="sfi sfi-loop"></i></button>
+			<button id="btn-token-del" type="button" class="ux-button ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="smartJ$Browser.ConfirmDialog('<h1>[###TXT-DELETE-QUESTION|html###]</h1><span style=&quot;color:#FF3300;&quot;><b>[###TXT-NOTICE|html###]:</b> [###TXT-DELETE-HINT|html###]</span>', function(){ self.location='[###ACTION-DELETE-TOKEN|js|html###]'; }, '[###TXT-DELETE-TITLE|js|html###]', 700, 300); return false;"[%%%IF:IS-ACTIVE:==yes;%%%] title="[###TXT-DELETE-CANNOT|html###]" disabled[%%%ELSE:IS-ACTIVE%%%] title="[###TXT-DELETE-CANNOT-HINT|html###]"[%%%/IF:IS-ACTIVE%%%]> [###TXT-DELETE-BTN|html###] &nbsp; <i class="sfi sfi-bin"></i></button>
 		</div>
 	</div>
 </div>

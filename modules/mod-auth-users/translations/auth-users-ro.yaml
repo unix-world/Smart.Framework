@@ -2,7 +2,7 @@
 TRANSLATIONS:
   @language: RO
   @area: mod-auth-users
-  @version: 2025-06-20
+  @version: 2025-06-21
   auth-users:
     homepage: 'Pagina Principală'
     auth-required: 'Este necesară Autentificarea'
@@ -168,7 +168,7 @@ TRANSLATIONS:
     btn-signup: 'Crează Cont'
     btn-signup-already: 'Ai deja Cont ?'
     btn-recovery: 'Obține un Cod Unic de Acces'
-    btn-cancel: 'Anulare'
+    btn-cancel: 'Renunţă'
     btn-signout: 'Deconectare'
     btn-account-display: 'Contul Tău'
     btn-account-settings: 'Setările Contului Tău'

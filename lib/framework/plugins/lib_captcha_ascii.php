@@ -47,7 +47,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart
- * @version 	v.20250214
+ * @version 	v.20250714
  * @package 	development:Captcha
  */
 final class SmartAsciiCaptcha {
@@ -329,7 +329,7 @@ final class SmartAsciiCaptcha {
 			$line = '';
 			for($k=0; $k<(int)strlen((string)$word); $k++) {
 				$ind = (int) ord((string)substr((string)$word, (int)$k, 1)) - 32 ;
-				$a = (int) (floor((int)$ind / 8) * 7 + (int)$j);
+				$a = (int) (Smart::floor_number((int)$ind / 8) * 7 + (int)$j);
 				$b = (int) ((int)$ind % 8 * 7);
 				$line .= '  ';
 				$line .= (string) substr((string)self::CAPTCHA_GLYPHS_ARR[(int)$a], (int)$b, 7);

@@ -80,7 +80,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20250302
+ * @version     v.20250721
  * @package     @Core
  *
  */
@@ -1277,6 +1277,47 @@ final class Smart {
 
 	//================================================================
 	/**
+	 * Safe Floor a number as FLOAT
+	 *
+	 * @param 	NUMERIC 	$y_number		:: A numeric value
+	 *
+	 * @return 	INT							:: An integer number
+	 */
+	public static function floor_number($y_number, ?string $y_signed=null) : int {
+		//--
+		// this method fixes a deep bug in PHP, similar with the bug explained below, at cell()
+		//--
+		$y_number = (float) floatval($y_number);
+		//--
+		return (int) (string) floor((string)$y_number);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Safe Ceil a number as FLOAT
+	 *
+	 * @param 	NUMERIC 	$y_number		:: A numeric value
+	 *
+	 * @return 	INT							:: An integer number
+	 */
+	public static function ceil_number($y_number, ?string $y_signed=null) : int {
+		//--
+		// this method fixes a deep bug in PHP, described here: https://www.phphelp.com/t/error-with-ceil-function/14334/2
+		// ex: $var = 294.85 / 58.97; echo ceil($var); // will return 6 instead of 5 because it was passed 5 as a float and ran it’s normal operation of rounding up
+		//--
+		$y_number = (float) floatval($y_number);
+		//--
+		return (int) (string) ceil((string)$y_number);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
 	 * Format a number as FLOAT
 	 *
 	 * @param 	NUMERIC 	$y_number		:: A numeric value
@@ -2353,6 +2394,29 @@ final class Smart {
 
 	//================================================================
 	/**
+	 * Creates a Nice Text from an ID
+	 *
+	 * @param STRING 		$y_str			:: The string to be processed
+	 *
+	 * @return STRING 						:: Example: `id_one` will be converted to `Id-One`
+	 */
+	public static function create_idtxt(?string $y_str) : string {
+		//--
+		if((string)$y_str == '') {
+			return '';
+		} //end if
+		//--
+		$y_str = (string) str_replace('_', '-', (string)$y_str);
+		$y_str = (string) SmartUnicode::uc_words((string)$y_str);
+		//--
+		return (string) $y_str;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
 	 * Creates a Slug (URL safe slug) from a string
 	 *
 	 * @param STRING 		$y_str			:: The string to be processed
@@ -2362,6 +2426,10 @@ final class Smart {
 	 * @return STRING 						:: The slug which will contain only: a-z 0-9 _ - (A-Z will be converted to a-z if lowercase is enforced)
 	 */
 	public static function create_slug(?string $y_str, bool $y_lowercase=false, ?int $y_maxlen=0) : string {
+		//--
+		if((string)$y_str == '') {
+			return '';
+		} //end if
 		//--
 		$y_str = (string) SmartUnicode::deaccent_str((string)trim((string)$y_str));
 		$y_str = (string) preg_replace('/[^a-zA-Z0-9_\-]/', '-', (string)$y_str);
@@ -2394,6 +2462,10 @@ final class Smart {
 	 */
 	public static function create_htmid(?string $y_str) : string {
 		//--
+		if((string)$y_str == '') {
+			return '';
+		} //end if
+		//--
 		return (string) trim((string)preg_replace('/[^a-zA-Z0-9_\-]/', '', (string)$y_str));
 		//--
 	} //END FUNCTION
@@ -2409,6 +2481,10 @@ final class Smart {
 	 * @return STRING 						:: The Js-Var which will contain only: a-z A-Z 0-9 _ $
 	 */
 	public static function create_jsvar(?string $y_str) : string {
+		//--
+		if((string)$y_str == '') {
+			return '';
+		} //end if
 		//--
 		return (string) trim((string)preg_replace('/[^a-zA-Z0-9_\$]/', '', (string)$y_str));
 		//--
@@ -2426,6 +2502,10 @@ final class Smart {
 	 * @return STRING 						:: The normalized text
 	 */
 	public static function normalize_spaces(?string $y_txt) : string {
+		//--
+		if((string)$y_txt == '') {
+			return '';
+		} //end if
 		//-- {{{SYNC-NORMALIZE-SPACES}}}
 	//	return (string) str_replace(["\r\n", "\r", "\n", "\t", "\v", "\0", "\f", "\b", "\a"], ' ', (string)$y_txt);
 		return (string) str_replace(["\r\n", "\r", "\n", "\t", "\v", chr(0), "\f", chr(8), chr(7)], ' ', (string)$y_txt); // bug fix: \b \0 \a will not work in PHP as in other languages (ex: Golang) ...

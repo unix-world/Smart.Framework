@@ -53,7 +53,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Sockets ; classes: Smart, SmartEnvironment, SmartComponents (optional)
- * @version 	v.20250107
+ * @version 	v.20251204
  * @package 	Plugins:Database:Redis
  *
  */
@@ -294,7 +294,7 @@ final class SmartRedisDb {
 			case 'GET': // get a key value ; returns the key value or null
 			case 'SET': // set a key with a value ; returns OK if successful
 			case 'APPEND': // append a value to an existing key value
-			case 'DEL': // delete a key ; a key is ignored if does not exists ; return (integer) the number of keys that have been deleted
+			case 'DEL': // delete a key ; a key is ignored if does not exists ; return (int) the number of keys that have been deleted
 			//--
 			case 'RENAME': // renames key to newkey ; returns an error when the source and destination names are the same, or when key does not exist
 		//	case 'MOVE': // move a key to the given DB ; returns 1 on success or 0 on failure ; !!! this is not implemented because operates on many databases and the current driver allow just per database management !!!

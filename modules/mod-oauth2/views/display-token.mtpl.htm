@@ -1,4 +1,4 @@
-<!-- View: display-record v.20250218 -->
+<!-- View: display-record v.20250622 -->
 [@@@SUB-TEMPLATE:partials/styles.mtpl.htm@@@]
 <style>
 #area-token {
@@ -40,29 +40,28 @@ const copyElemToClipboard = () => {
 	const err = smartJ$Browser.copyToClipboard('area-token');
 	if(!!err) {
 		console.error('ERR: copyElemToClipboard:', err);
-		smartJ$Browser.GrowlNotificationAdd('Copy to Clipboard', 'FAILED to Copy the Token to Clipboard' + img, null, 3500, false, 'pink');
+		smartJ$Browser.GrowlNotificationAdd('[###TXT-CLIPBOARD|js###]', '[###TXT-CLIPBOARD-ERR|js###]' + img, null, 3500, false, 'pink');
 	} else {
-		smartJ$Browser.GrowlNotificationAdd('Copy to Clipboard', 'Token has been Copied to Clipboard' + img, null, 1500, false, 'blue');
+		smartJ$Browser.GrowlNotificationAdd('[###TXT-CLIPBOARD|js###]', '[###TXT-CLIPBOARD-OK|js###]' + img, null, 1500, false, 'blue');
 	}
 };
 </script>
 <img id="logo-oauth" width="128" height="128" src="modules/mod-oauth2/views/img/logo-oauth.svg">
 [%%%IF:JWT:!=;%%%]<img id="logo-openid" height="96" src="modules/mod-oauth2/views/img/logo-openid.svg">[%%%ELSE:JWT%%%]<!-- NOT JWT -->[%%%/IF:JWT%%%]
 <h1 style="color:#666699;!important; display:inline;">[###TITLE|html###]</h1>
-<br>
-<h2 style="color:#777788; display:inline;">[###ID|html###]</h2>
 <div>
-	<h3 style="display:inline;">Status:&nbsp;[&nbsp;[###STATUS|html###]&nbsp;]</h3>
+	<h3 style="display:inline;">[###TXT-STATUS|html###]:&nbsp;[&nbsp;[###STATUS|html###]&nbsp;]</h3>
 	<br>
 	<img width="64" height="64" src="[###IMG|html###]" alt="svg">
 </div>
 <br>
 <div style="max-width:820px!important;">
-	<h5 style="color:#888888;">Token:</h5>
+	<h6 style="color:#777788;">[###TXT-ID|html###]: `[###ID|html###]`</h6>
+	<h6 style="color:#888888;">[###TXT-TOKEN|html###]:</h6>
 	<h6 id="area-token" style="background:#F7F7F7; color:#448FCE">[###TOKEN|html###]</h6>
 </div><br>
-<button class="ux-button ux-button-details" style="cursor:cell;" onClick="copyElemToClipboard(); return false;">Copy to Clipboard &nbsp; <i class="sfi sfi-lg sfi-stack" style="color:#FFCC00;"></i></button>
-<button class="ux-button ux-button-dark" onClick="self.location='[###URL-BACK|js|html###]'; return false;">Go Back &nbsp; <i class="sfi sfi-lg sfi-spinner11"></i></button>
+<button class="ux-button ux-button-details" style="cursor:cell;" onClick="copyElemToClipboard(); return false;">[###TXT-CLIPBOARD|html###] &nbsp; <i class="sfi sfi-lg sfi-stack" style="color:#FFCC00;"></i></button>
+<button class="ux-button ux-button-dark" onClick="self.location='[###URL-BACK|js|html###]'; return false;">[###TXT-GO-BACK|html###] &nbsp; <i class="sfi sfi-lg sfi-spinner11"></i></button>
 [%%%IF:JWT:!=;%%%]
 [###HTML-HLJS###]
 <br>

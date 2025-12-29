@@ -1,4 +1,4 @@
-<!-- View: form-record v.20250218 -->
+<!-- View: form-record v.20250711 -->
 [@@@SUB-TEMPLATE:partials/styles.mtpl.htm@@@]
 <style>
 label {
@@ -22,6 +22,11 @@ div.form-step2 {
 	display: none;
 }
 </style>
+[%%%IF:LANG:!=en;%%%]
+<!-- translation `[###LANG|html###]` --><script src="modules/mod-oauth2/views/js/form-record-locale-[###LANG|url|html###].js"></script>
+[%%%ELSE:LANG%%%]
+<!-- default translation `[###LANG|html###]` -->
+[%%%/IF:LANG%%%]
 <script src="modules/mod-oauth2/views/js/form-record.js"></script>
 <script>
 jQuery(() => {
@@ -34,53 +39,74 @@ jQuery(() => {
 		'[###COOKIE-VALUE-CSRF|js###]',
 		'[###ACTIONS-URL|js###]'
 	);
+	const templateId = '[###FORM-TEMPLATE|trim|js###]';
+	const templateName = '[###FORM-NAME|trim|js###]';
+	if(!!templateId) {
+		let templateLogo = '[###FORM-IMG|trim|js###]';
+		if(!templateLogo) {
+			templateLogo = 'modules/mod-oauth2/views/img/logo-oauth.svg';
+		}
+		jQuery('div.form-step1').hide();
+		jQuery('div#template-title').empty().html('<h2>' + smartJ$Utils.nl2br(smartJ$Utils.escape_html(templateName)) + '</h2>' + '<img height="256" src="' + smartJ$Utils.escape_html(templateLogo) + '">');
+	}
 });
+</script>
+<script>
+const btnCustomHandlerCancel = () => {
+	const frmCancelUrl = '[###FORM-URL-CANCEL|js###]';
+	if(frmCancelUrl) {
+		self.location = frmCancelUrl;
+	} else {
+		oauth2FormHandler.btnHandlerCancel();
+	}
+};
 </script>
 <div id="form-container"><center>
 <form id="oauth2_form" name="oauth2_form" class="ux-form ux-form-aligned" onSubmit="return false;">
-	<legend><h1>[%%%IF:IS-EDIT-FORM:==yes;%%%]Re-Authorize[%%%ELSE:IS-EDIT-FORM%%%]Register New[%%%/IF:IS-EDIT-FORM%%%] OAuth2 API</h1></legend>
-	<br>
-	<div class="ux-control-group form-step1">
-		<label>ID</label>
-		<input id="api_id" type="text" autocomplete="off" spellcheck="false" name="frm[id]" placeholder="A Custom, Unique ID ; Validation: [###REGEX-VALID-ID|nobackslash|html###]" pattern="[###PATTERN-VALID-ID|rxpattern|html###]" title=" [%%%|N%%%]Validation Pattern: `[###PATTERN-VALID-ID|nobackslash|html###]`[%%%|N%%%][%%%|N%%%]Validation Regex: `[###REGEX-VALID-ID|nobackslash|html###]`[%%%|N%%%] " maxlength="127" class="ux-input-1-2" value="[###FORM-ID|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
+	<input type="hidden" name="template" value="[###FORM-TEMPLATE|html###]">
+	<legend><h1>[%%%IF:IS-EDIT-FORM:==yes;%%%][###FORM-TTL-REINIT|html###][%%%ELSE:IS-EDIT-FORM%%%][###FORM-TTL-NEW|html###][%%%/IF:IS-EDIT-FORM%%%]</h1></legend>
+	<div id="template-title"></div>
+	<div class="ux-control-group form-step1" id="oauth2-area-id">
+		<label>[###LABEL-ID|html###]</label>
+		<input id="api_id" type="text" autocomplete="off" spellcheck="false" name="frm[id]" placeholder="[###HINT-ID|html###]: [###REGEX-VALID-ID|nobackslash|html###]" pattern="[###PATTERN-VALID-ID|rxpattern|html###]" title=" [%%%|N%%%][###TXT-VALID-PATERN|html###]: `[###PATTERN-VALID-ID|nobackslash|html###]`[%%%|N%%%][%%%|N%%%][###TXT-VALID-REGEX|html###]: `[###REGEX-VALID-ID|nobackslash|html###]`[%%%|N%%%] " maxlength="127" class="ux-input-1-2" value="[###FORM-ID|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
 	</div>
-	<div class="ux-control-group form-step1">
-		<label>Description</label>
-		<textarea id="api_desc" autocomplete="off" spellcheck="false" name="frm[description]" placeholder="Description[%%%|N%%%][Should not contain sensitive information, will not be encrypted]" maxlength="1024" class="ux-input-1-2" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>[###FORM-DESC|html###]</textarea>
+	<div class="ux-control-group form-step1" id="oauth2-area-desc">
+		<label>[###LABEL-DESCRIPTION|html###]</label>
+		<textarea id="api_desc" autocomplete="off" spellcheck="false" name="frm[description]" placeholder="[###HINT-DESCRIPTION|html###]" maxlength="1024" class="ux-input-1-2" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>[###FORM-DESC|html###]</textarea>
 	</div>
-	<div class="ux-control-group form-step1">
-		<label>Client ID</label>
-		<input id="oauth2_client_id" type="text" autocomplete="off" spellcheck="false" name="frm[client_id]" placeholder="OAuth2 Client ID (Application ID)" maxlength="255" class="ux-input-1-2" value="[###FORM-CLI-ID|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
+	<div class="ux-control-group form-step1" id="oauth2-area-cli-id">
+		<label>[###LABEL-CLIENT-ID|html###]</label>
+		<input id="oauth2_client_id" type="text" autocomplete="off" spellcheck="false" name="frm[client_id]" placeholder="[###HINT-CLIENT-ID|html###]" maxlength="255" class="ux-input-1-2" value="[###FORM-CLI-ID|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
 	</div>
-	<div class="ux-control-group form-step1">
-		<label>Client Secret</label>
-		<input id="oauth2_client_secret" type="text" autocomplete="off" spellcheck="false" name="frm[client_secret]" placeholder="OAuth2 Client Secret" maxlength="255" class="ux-input-1-2" value="[###FORM-CLI-SECRET|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
+	<div class="ux-control-group form-step1" id="oauth2-area-cli-secret">
+		<label>[###LABEL-CLIENT-SECRET|html###]</label>
+		<input id="oauth2_client_secret" type="text" autocomplete="off" spellcheck="false" name="frm[client_secret]" placeholder="[###HINT-CLIENT-SECRET|html###]" maxlength="255" class="ux-input-1-2" value="[###FORM-CLI-SECRET|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
 	</div>
-	<div class="ux-control-group form-step1">
-		<label>Scope</label>
-		<input id="oauth2_scope" type="text" autocomplete="off" spellcheck="false" name="frm[scope]" placeholder="OAuth2 Scopes ; Example: `scope1,scope2`" maxlength="255" class="ux-input-1-2" value="[###FORM-SCOPE|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
+	<div class="ux-control-group form-step1" id="oauth2-area-scope">
+		<label>[###LABEL-SCOPE|html###]</label>
+		<input id="oauth2_scope" type="text" autocomplete="off" spellcheck="false" name="frm[scope]" placeholder="[###HINT-SCOPE|html###]: `scope1,scope2`" maxlength="255" class="ux-input-1-2" value="[###FORM-SCOPE|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
 	</div>
-	<div class="ux-control-group form-step1">
-		<label>Redirect URL</label>
-		<input id="oauth2_url_redirect" type="text" autocomplete="off" spellcheck="false" name="frm[url_redirect]" placeholder="OAuth2 Redirect URL ; Example: `[###DEFAULT-REDIRECT-URL|html###]`" title="Example: `[###DEFAULT-REDIRECT-URL|html###]`" maxlength="255" class="ux-input-1-2" value="[###FORM-URL-REDIR|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
+	<div class="ux-control-group form-step1" id="oauth2-area-url-redir">
+		<label>[###LABEL-REDIRECT-URL|html###]</label>
+		<input id="oauth2_url_redirect" type="text" autocomplete="off" spellcheck="false" name="frm[url_redirect]" placeholder="[###HINT-REDIRECT-URL|html###]: `[###DEFAULT-REDIRECT-URL|html###]`" title="[###TXT-EXAMPLE|html###]: `[###DEFAULT-REDIRECT-URL|html###]`" maxlength="255" class="ux-input-1-2" value="[###FORM-URL-REDIR|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
 	</div>
-	<div class="ux-control-group form-step1">
-		<label>OAuth2 Auth URL</label>
-		<input id="oauth2_url_auth" type="text" autocomplete="off" spellcheck="false" name="frm[url_auth]" placeholder="OAuth2 URL for /authorize" maxlength="255" class="ux-input-1-2" value="[###FORM-URL-AUTH|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
+	<div class="ux-control-group form-step1" id="oauth2-area-url-auth">
+		<label>[###LABEL-O2-URL-AUTH|html###]</label>
+		<input id="oauth2_url_auth" type="text" autocomplete="off" spellcheck="false" name="frm[url_auth]" placeholder="[###HINT-O2-URL-AUTH|html###]: `/authorize`" maxlength="255" class="ux-input-1-2" value="[###FORM-URL-AUTH|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
 	</div>
-	<div class="ux-control-group form-step1">
-		<label>OAuth2 Token URL</label>
-		<input id="oauth2_url_token" type="text" autocomplete="off" spellcheck="false" name="frm[url_token]" placeholder="OAuth2 URL for /token" maxlength="255" class="ux-input-1-2" value="[###FORM-URL-TOKEN|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
+	<div class="ux-control-group form-step1" id="oauth2-area-url-token">
+		<label>[###LABEL-O2-URL-TOKEN|html###]</label>
+		<input id="oauth2_url_token" type="text" autocomplete="off" spellcheck="false" name="frm[url_token]" placeholder="[###HINT-O2-URL-TOKEN|html###]: `/token`" maxlength="255" class="ux-input-1-2" value="[###FORM-URL-TOKEN|html###]" required[%%%IF:IS-EDIT-FORM:==yes;%%%] readonly[%%%/IF:IS-EDIT-FORM%%%]>
 	</div>
 	<!-- Only for Step 2 -->
-	<div class="ux-control-group form-step2">
-		<label>OAuth2 Code</label>
-		<input id="oauth2_code" type="text" autocomplete="off" spellcheck="false" name="frm[code]" placeholder="Enter the OAuth2 Code (from Step1)" maxlength="3072" class="ux-input-1-2" value="[###FORM-CODE|html###]" required>
+	<div class="ux-control-group form-step2" id="oauth2-area-url-code">
+		<label>[###LABEL-O2-CODE|html###]</label>
+		<input id="oauth2_code" type="text" autocomplete="off" spellcheck="false" name="frm[code]" placeholder="[###HINT-O2-CODE|html###]" maxlength="3072" class="ux-input-1-2" value="[###FORM-CODE|html###]" required>
 	</div>
 	<!-- # -->
 	<legend>&nbsp;</legend>
 	<div class="ux-controls">
-		<button type="button" class="ux-button ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="oauth2FormHandler.btnHandlerCancel();"> Cancel &nbsp; <i class="sfi sfi-spinner11"></i></button>
+		<button type="button" class="ux-button ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="btnCustomHandlerCancel();"> [###BTN-LBL-CANCEL|html###] &nbsp; <i class="sfi sfi-spinner11"></i></button>
 		<button type="button" class="ux-button ux-button-primary" style="margin-right:10px; margin-bottom:5px;" onClick="oauth2FormHandler.btnHandlerSubmit();" id="btn-submit-btn"> <span id="btn-submit-label"></span> &nbsp; <i class="sfi sfi-checkmark"></i></button>
 	</div>
 </form>

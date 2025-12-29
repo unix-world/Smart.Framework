@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ TreeList / Records :: v.20250107 -->
+<!-- Pagebuilder / Manage @ TreeList / Records :: v.20251211 -->
 <script src="modules/mod-auth-admins/views/js/tree/simpletree.js?[###RELEASE-HASH|url|html###]"></script>
 <style>
 .simpletree-toggle, .simpletree-notoggle {
@@ -66,23 +66,26 @@ div.scroll-top:hover {
 </style>
 <div title="Scroll Top" class="scroll-top" onClick="jQuery('html, body').animate({scrollTop: 0}, 300);"><i class="sfi sfi-arrow-up"></i></div>
 <script>
-function pageBuilderFormBtnFilter() {
+const pageBuilderFormBtnFilter = () => {
 	jQuery('#filtering').submit();
-}
-function pageBuilderFormBtnResetFilter() {
+};
+const pageBuilderFormBtnResetFilter = () => {
 	self.location = '[###LIST-BTN-RESET|js###]';
-}
+};
 </script>
 [@@@SUB-TEMPLATE:view-list-filter-form.mtpl.inc.htm@@@]
 [%%%IF:HAVE-FULLTREE:==yes;%%%]<div style="padding-left:0;"><h5 style="display:inline-block;">Display Full-Tree</h5>&nbsp;&nbsp;<input type="checkbox" id="display-fulltree" value="[###VALUE-FULLTREE|html###]"></div><br>[%%%/IF:HAVE-FULLTREE%%%]
 [%%%COMMENT%%%]<!-- [%%%IF:HAVE-DATASETS:==yes;%%%]<div style="padding-left:0;"><h5 style="display:inline-block;">Hide {Data-Set-Controllers}</h5>&nbsp;&nbsp;<input type="checkbox" id="display-datasets" value="[###VALUE-DATASETS|html###]"></div><br>[%%%/IF:HAVE-DATASETS%%%] -->[%%%/COMMENT%%%]
 <script>
-	var theFilterListSrcBy = '[###LIST-VAL-SRCBY|js###]';
+const applyFilterListSrcBy = () => {
+	const theFilterListSrcBy = '[###LIST-VAL-SRCBY|js###]';
 	if(theFilterListSrcBy != 'ctrl') {
 		jQuery('#filter-src').val('[###LIST-VAL-SRC|js###]');
-		jQuery('#filter-srcby').val(String(theFilterListSrcBy));
+		jQuery('#filter-srcby').val(theFilterListSrcBy);
 	}
 	jQuery('#filter-ctrl').val('[###CTRL-SEL|js###]');
+};
+applyFilterListSrcBy();
 </script>
 <ul class="pagebuilder-tree">
 	[%%%LOOP:DATA%%%]
@@ -120,72 +123,73 @@ function pageBuilderFormBtnResetFilter() {
 </ul>
 [%%%IF:FILTER:@>0;%%%]
 <script>
-	var foundItems = [];
-	[%%%LOOP:FILTER%%%]
-	foundItems.push('id-[###FILTER.HASH-ID|js###]');[%%%|N%%%]
-	[%%%/LOOP:FILTER%%%]
-	jQuery('li.simpletree-item').each(function() {
-		var foundItem = jQuery(this);
-		foundItem.find('span.simpletree-ids').each(function() {
-			var foundId = jQuery(this);
+const handleFindByFilter = () => {
+	let foundItems = [];
+	[%%%LOOP:FILTER%%%]foundItems.push('id-[###FILTER.HASH-ID|js###]');[%%%|N%%%][%%%/LOOP:FILTER%%%]
+	jQuery('li.simpletree-item').each((idx, elem) => {
+		const foundItem = jQuery(elem);
+		foundItem.find('span.simpletree-ids').each((ix, el) => {
+			const foundId = jQuery(el);
 			if(foundItems.indexOf(String(foundId.attr('id'))) >= 0) {
-				jQuery(this).attr('class', 'simpletree-highlight').attr('data-simpletree', '');
+				foundId.attr('class', 'simpletree-highlight').attr('data-simpletree', '');
 			}
-			foundId = null;
 		});
-		foundItem = null;
 	});
 	foundItems = null;
 	jQuery('span.simpletree-highlight').parents('li').attr('data-simpletree', '');
+};
+handleFindByFilter();
 </script>
 [%%%ELSE:FILTER%%%]
 <!-- no js highlights -->
 [%%%/IF:FILTER%%%]
 <script>
-	jQuery('ul.pagebuilder-tree').simpletree({
-		useAnimation: false,
-		signCollapsed: '<i class="sfi sfi-folder-plus sfi-lg" style="color:#555555;"></i>',
-		signExpanded: '<i class="sfi sfi-folder-open sfi-lg" style="color:#555555;"></i>'
-	});
+jQuery('ul.pagebuilder-tree').simpletree({
+	useAnimation: false,
+	signCollapsed: '<i class="sfi sfi-folder-plus sfi-lg" style="color:#555555;"></i>',
+	signExpanded: '<i class="sfi sfi-folder-open sfi-lg" style="color:#555555;"></i>'
+});
 </script>
 [%%%IF:HAVE-FULLTREE:==yes;%%%]
 <script>
-	jQuery(document).ready(function(){
-		var isFullTreeCheckboxChecked = false;
-		if(smartJ$Browser.getCookie('[###COOKIE-FULLTREE|js###]') === '[###VALUE-FULLTREE|js###]') {
-			isFullTreeCheckboxChecked = true;
-		} //end if
-		jQuery('#display-fulltree').prop("checked", isFullTreeCheckboxChecked);
-	});
-	jQuery('#display-fulltree').change(function() {
-		var displayFullTree = '';
-		if(jQuery(this).is(':checked')) {
-			jQuery('#filter-ctrl').val('');
-			displayFullTree = jQuery(this).val() || '';
-		} //end if else
-		smartJ$Browser.setCookie('[###COOKIE-FULLTREE|js###]', displayFullTree);
-		pageBuilderFormBtnFilter();
-	});
+jQuery(document).ready(() => {
+	let isChecked = false;
+	if(smartJ$Browser.getCookie('[###COOKIE-FULLTREE|js###]') === '[###VALUE-FULLTREE|js###]') {
+		isChecked = true;
+	} //end if
+	jQuery('#display-fulltree').prop('checked', isChecked);
+});
+jQuery('#display-fulltree').change((event) => {
+	let doDisplay = '';
+	const theElem = jQuery(event.currentTarget);
+	if(theElem.is(':checked')) {
+		jQuery('#filter-ctrl').val('');
+		doDisplay = theElem.val() || '';
+	} //end if else
+	smartJ$Browser.setCookie('[###COOKIE-FULLTREE|js###]', doDisplay);
+	pageBuilderFormBtnFilter();
+});
 </script>
 [%%%/IF:HAVE-FULLTREE%%%]
 [%%%COMMENT%%%]
 [%%%IF:HAVE-DATASETS:==yes;%%%]
 <script>
-	jQuery(document).ready(function(){
-		var isDataSetCheckboxChecked = false;
-		if(smartJ$Browser.getCookie('[###COOKIE-DATASETS|js###]') === '[###VALUE-DATASETS|js###]') {
-			isDataSetCheckboxChecked = true;
-		} //end if
-		jQuery('#display-datasets').prop("checked", isDataSetCheckboxChecked);
-	});
-	jQuery('#display-datasets').change(function() {
-		var displayDataSets = '';
-		if(jQuery(this).is(':checked')) {
-			displayDataSets = jQuery(this).val() || '';
-		} //end if else
-		smartJ$Browser.setCookie('[###COOKIE-DATASETS|js###]', displayDataSets);
-		pageBuilderFormBtnFilter();
-	});
+jQuery(document).ready(() => {
+	let isChecked = false;
+	if(smartJ$Browser.getCookie('[###COOKIE-DATASETS|js###]') === '[###VALUE-DATASETS|js###]') {
+		isChecked = true;
+	} //end if
+	jQuery('#display-datasets').prop('checked', isChecked);
+});
+jQuery('#display-datasets').change((event) => {
+	let doDisplay = '';
+	const theElem = jQuery(event.currentTarget);
+	if(theElem.is(':checked')) {
+		doDisplay = theElem.val() || '';
+	} //end if else
+	smartJ$Browser.setCookie('[###COOKIE-DATASETS|js###]', doDisplay);
+	pageBuilderFormBtnFilter();
+});
 </script>
 [%%%/IF:HAVE-DATASETS%%%]
 [%%%/COMMENT%%%]

@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_AREA', 'INDEX'); // INDEX, ADMIN, TASK, SHARED
 
 final class SmartAppIndexController extends SmartAbstractAppController {
 
-	// r.20250620
+	// r.20250621
 
 	private ?object $translator = null;
 
@@ -55,7 +55,7 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 
 		//--
 		if($this->translator === null) {
-			$this->translator = \SmartTextTranslations::getTranslator('mod-auth-users', 'auth-users');
+			$this->translator = SmartTextTranslations::getTranslator('mod-auth-users', 'auth-users');
 		} //end if
 		//--
 

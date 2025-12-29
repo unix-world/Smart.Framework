@@ -23,7 +23,9 @@ final class SmartAppAdminController extends AbstractController {}
 
 abstract class AbstractController extends SmartAbstractAppController {
 
-	// v.20250222
+	// v.20250711
+
+	private ?object $translator = null;
 
 	public function Initialize() {
 		//--
@@ -72,6 +74,12 @@ abstract class AbstractController extends SmartAbstractAppController {
 		//--
 
 		//--
+		if($this->translator === null) {
+			$this->translator = SmartTextTranslations::getTranslator('mod-oauth2', 'oauth2');
+		} //end if
+		//--
+
+		//--
 		$homeLink = (string) $this->ControllerGetParam('url-script');
 		$arrNameSpaces = [];
 		//--
@@ -100,7 +108,7 @@ abstract class AbstractController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$action = $this->RequestVarGet('action', '', 'string');
+		$action = (string) $this->RequestVarGet('action', '', 'string');
 		//--
 
 		switch((string)$action) {
@@ -120,16 +128,39 @@ abstract class AbstractController extends SmartAbstractAppController {
 
 			case 'new-form': // Form for Add new Record (OUTPUTS: HTML)
 				//--
-				$this->PageViewSetCfg('template-file', 'template-modal.htm');
+				$template = (string) trim((string)$this->RequestVarGet('template', '', 'string'));
+				//--
+				$data = [];
+				if((string)$template != '') {
+					$data = (array) $this->readYamlTemplate((string)$template);
+				} //end if
+				if(SmartAuth::test_login_restriction('oauth2:template') === true) { // with this restriction, allow use just from templates
+					if(((string)$template == '') OR ((int)Smart::array_size($data) <= 0)) {
+						$this->PageViewSetCfg('error', 'OAuth2 Manager is unavailable outside of pre-defined templates ...');
+						return 403;
+					} //end if
+				} //end if
+				//--
+				if(!isset($data['url_redirect']) OR empty($data['url_redirect'])) { // {{{SYNC-OAUTH-API-EMPTY-REDIR-URL}}}
+					$data['url_redirect'] = (string) $this->ControllerGetParam('url-addr').'index.php/page/oauth2.get-code/';
+				} //end if
+				//--
+				$url_cancel = '';
+				if(isset($data['template_redir']) && !empty($data['template_redir'])) {
+					$url_cancel = (string) ($data['template_redir'] ?? null);
+				} //end if
 				//--
 				$csrfPrivKey = (string) \SmartModExtLib\Oauth2\Oauth2Api::csrfNewPrivateKey().'#OAuth2/AppID:'.'[NEW]';
 				$csrfPubKey  = (string) \SmartModExtLib\Oauth2\Oauth2Api::csrfPublicKey((string)$csrfPrivKey);
 				//--
+				$this->PageViewSetCfg('template-file', 'template-modal.htm');
+				//--
 				$this->PageViewSetVars([
-					'title' => 'OAuth2 Manager - Register New API',
+					'title' => (string) $this->translator->text('ttl-new'),
 					'main' 	=> (string) SmartMarkersTemplating::render_file_template(
 						(string) $this->ControllerGetParam('module-view-path').'form-record.mtpl.htm',
-						[ // TODO: this will need an intermediary step, because App-Id is unknown at this step
+						[ // this will need an intermediary step, because App-Id is unknown at this step
+							//--
 							'PATTERN-VALID-ID' 		=> (string) \SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_PATTERN_VALID_ID,
 							'REGEX-VALID-ID' 		=> (string) \SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_REGEX_VALID_ID,
 							'DEFAULT-REDIRECT-URL' 	=> (string) \SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_STANDALONE_REFRESH_URL, // {{{SYNC-OAUTH2-DEFAULT-REDIRECT-URL}}}
@@ -137,18 +168,52 @@ abstract class AbstractController extends SmartAbstractAppController {
 							'TPL-AUTH-URL-PARAMS' 	=> (string) SmartMarkersTemplating::escape_template((string)\SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_AUTHORIZE_URL_PARAMS),
 							'TPL-AUTH-URL-CHPART' 	=> (string) SmartMarkersTemplating::escape_template((string)\SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_AUTHORIZE_URL_CHPART),
 							'IS-EDIT-FORM' 			=> (string) 'no',
-							'FORM-ID' 				=> (string) '',
-							'FORM-DESC' 			=> (string) '',
-							'FORM-CLI-ID' 			=> (string) '',
-							'FORM-CLI-SECRET' 		=> (string) '',
-							'FORM-SCOPE' 			=> (string) '',
-							'FORM-URL-REDIR' 		=> (string) $this->ControllerGetParam('url-addr').'index.php/page/oauth2.get-code/',
-							'FORM-URL-AUTH' 		=> (string) '',
-							'FORM-URL-TOKEN' 		=> (string) '',
+							'FORM-TEMPLATE' 		=> (string) $template,
+							'FORM-NAME' 			=> (string) ($data['description'] ?? null),
+							'FORM-IMG' 				=> (string) ($data['logo'] ?? null),
+							'FORM-URL-CANCEL' 		=> (string) $url_cancel,
+							'FORM-ID' 				=> (string) ($data['id'] ?? null),
+							'FORM-DESC' 			=> (string) ($data['description'] ?? null),
+							'FORM-CLI-ID' 			=> (string) ($data['client_id'] ?? null),
+							'FORM-CLI-SECRET' 		=> (string) ($data['client_secret'] ?? null),
+							'FORM-SCOPE' 			=> (string) ($data['scope'] ?? null),
+							'FORM-URL-REDIR' 		=> (string) ($data['url_redirect'] ?? null),
+							'FORM-URL-AUTH' 		=> (string) ($data['url_auth'] ?? null),
+							'FORM-URL-TOKEN' 		=> (string) ($data['url_token'] ?? null),
 							'FORM-CODE' 			=> (string) '',
 							'COOKIE-NAME-CSRF' 		=> (string) \SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_COOKIE_NAME_CSRF, // {{{SYNC-OAUTH2-COOKIE-NAME-CSRF}}}
 							'COOKIE-VALUE-CSRF' 	=> (string) \SmartModExtLib\Oauth2\Oauth2Api::csrfPrivateKeyEncrypt((string)$csrfPrivKey),
 							'STATE-CSRF' 			=> (string) $csrfPubKey,
+							//--
+							'LANG' 					=> (string) SmartTextTranslations::getLanguage(),
+							//--
+							'FORM-TTL-NEW' 			=> (string) $this->translator->text('ttl-form-new'),
+							'FORM-TTL-REINIT' 		=> (string) $this->translator->text('ttl-form-reinit'),
+							'BTN-LBL-CANCEL' 		=> (string) $this->translator->text('btn-cancel'),
+							'LABEL-ID' 				=> (string) $this->translator->text('db-fld-id'),
+							'LABEL-DESCRIPTION' 	=> (string) $this->translator->text('db-fld-description'),
+							'LABEL-CLIENT-ID' 		=> (string) $this->translator->text('db-fld-client_id'),
+							'LABEL-CLIENT-SECRET' 	=> (string) $this->translator->text('db-fld-client_secret'),
+							'LABEL-SCOPE' 			=> (string) $this->translator->text('db-fld-scope'),
+							'LABEL-REDIRECT-URL' 	=> (string) $this->translator->text('db-fld-url_redirect'),
+							'LABEL-O2-URL-AUTH' 	=> (string) $this->translator->text('db-fld-url_auth'),
+							'LABEL-O2-URL-TOKEN' 	=> (string) $this->translator->text('db-fld-url_token'),
+							'LABEL-O2-CODE' 		=> (string) $this->translator->text('db-fld-code'),
+							//--
+							'HINT-ID' 				=> (string) $this->translator->text('hint-frm-id'),
+							'HINT-DESCRIPTION' 		=> (string) $this->translator->text('hint-frm-description'),
+							'HINT-CLIENT-ID' 		=> (string) $this->translator->text('hint-frm-client_id'),
+							'HINT-CLIENT-SECRET' 	=> (string) $this->translator->text('hint-frm-client_secret'),
+							'HINT-SCOPE' 			=> (string) $this->translator->text('hint-frm-scope'),
+							'HINT-REDIRECT-URL' 	=> (string) $this->translator->text('hint-frm-url_redirect'),
+							'HINT-O2-URL-AUTH' 		=> (string) $this->translator->text('hint-frm-url_auth'),
+							'HINT-O2-URL-TOKEN' 	=> (string) $this->translator->text('hint-frm-url_token'),
+							'HINT-O2-CODE' 			=> (string) $this->translator->text('hint-frm-code'),
+							//--
+							'TXT-EXAMPLE' 			=> (string) $this->translator->text('example'),
+							'TXT-VALID-PATERN' 		=> (string) $this->translator->text('validation-pattern'),
+							'TXT-VALID-REGEX' 		=> (string) $this->translator->text('validation-regex'),
+							//--
 						]
 					)
 				]);
@@ -159,28 +224,43 @@ abstract class AbstractController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetCfg('rawpage', true);
 				//--
+				$template = (string) trim((string)$this->RequestVarGet('template', '', 'string'));
 				$data = $this->RequestVarGet('frm', [], 'array');
+				$code = (string) trim((string)($data['code'] ?? null));
+				$rdr  = (string) trim((string)($data['url_redirect'] ?? null));
 				//--
 				$message = ''; // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
 				$status = 'INVALID';
 				$redirect = '';
 				$jsevcode = '';
 				//--
+				if(SmartAuth::test_login_restriction('oauth2:template') === true) { // with this restriction, allow use just from templates
+					$data = [];
+				} //end if
+				if((string)$template != '') {
+					$data = (array) $this->readYamlTemplate((string)$template);
+					$data['url_redirect'] = (string) $rdr;
+					$data['code'] = (string) $code;
+				} //end if
+				//--
 				$test = \SmartModExtLib\Oauth2\Oauth2Api::initApiData((array)$data); // mixed
 				if(is_array($test)) {
 					$status = 'OK';
-					$message = 'OAuth2 Client Initialization Done';
+					$message = (string) Smart::escape_html((string)$this->translator->text('api-init-ok'));
 					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=close-modal';
+					if(isset($data['template_redir']) && !empty($data['template_redir'])) {
+						$redirect = (string) $data['template_redir'];
+					} //end if
 				} else {
 					$status = 'ERROR';
-					$message = 'ERR.Message: '.Smart::nl_2_br((string)Smart::escape_html((string)$test));
+					$message = (string) Smart::escape_html((string)$this->translator->text('api-init-err')). ':'.'<br>'.Smart::nl_2_br((string)Smart::escape_html((string)$test));
 				} //end if else
 				//--
 				$this->PageViewSetVar(
 					'main',
 					SmartViewHtmlHelpers::js_ajax_replyto_html_form(
 						$status,
-						'Initialize OAuth2 API Tokens',
+						(string) $this->translator->text('api-init'),
 						$message,
 						$redirect,
 						'',
@@ -195,7 +275,31 @@ abstract class AbstractController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetCfg('rawpage', true);
 				//--
+				$template = (string) trim((string)$this->RequestVarGet('template', '', 'string'));
 				$data = $this->RequestVarGet('frm', [], 'array');
+				//--
+				$id   = (string) trim((string)($data['id'] ?? null));
+				$code = (string) trim((string)($data['code'] ?? null));
+				//--
+				$data = [];
+				if((string)$template != '') {
+					$data = (array) $this->readYamlTemplate((string)$template);
+					if((string)($data['id'] ?? null) !== (string)$id) {
+						$data = [];
+					} else {
+						$dbData = (array) \SmartModExtLib\Oauth2\Oauth2Api::getApiData((string)$id);
+						if((string)($dbData['id'] ?? null) !== (string)$id) {
+							$data = [];
+						} else {
+							if(!isset($data['url_redirect']) OR empty($data['url_redirect'])) { // {{{SYNC-OAUTH-API-EMPTY-REDIR-URL}}}
+								$data['url_redirect'] = (string) $this->ControllerGetParam('url-addr').'index.php/page/oauth2.get-code/';
+							} //end if
+						} //end if
+					} //end if
+				} else {
+					$data = (array) \SmartModExtLib\Oauth2\Oauth2Api::getApiData((string)$id);
+				} //end if
+				$data['code'] = (string) $code;
 				//--
 				$message = ''; // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
 				$status = 'INVALID';
@@ -205,18 +309,21 @@ abstract class AbstractController extends SmartAbstractAppController {
 				$test = \SmartModExtLib\Oauth2\Oauth2Api::initApiData((array)$data, true); // mixed ; RE-INIT is TRUE
 				if(is_array($test)) {
 					$status = 'OK';
-					$message = 'OAuth2 Client Re-Initialization Done';
+					$message = (string) Smart::escape_html((string)$this->translator->text('api-reinit-ok'));
 					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=close-modal';
+					if(isset($data['template_redir']) && !empty($data['template_redir'])) {
+						$redirect = (string) $data['template_redir'];
+					} //end if
 				} else {
 					$status = 'ERROR';
-					$message = 'ERR.Message: '.Smart::nl_2_br((string)Smart::escape_html((string)$test));
+					$message = (string) Smart::escape_html((string)$this->translator->text('api-reinit-err')). ':'.'<br>'.Smart::nl_2_br((string)Smart::escape_html((string)$test));
 				} //end if else
 				//--
 				$this->PageViewSetVar(
 					'main',
 					SmartViewHtmlHelpers::js_ajax_replyto_html_form(
 						$status,
-						'Re-Initialize OAuth2 API Tokens',
+						(string) $this->translator->text('api-reinit'),
 						$message,
 						$redirect,
 						'',
@@ -229,10 +336,9 @@ abstract class AbstractController extends SmartAbstractAppController {
 
 			case 'reinit-token-form': // Form for Re-Authorize Record, when expired (OUTPUTS: HTML)
 				//--
-				$this->PageViewSetCfg('template-file', 'template-modal.htm');
+				$template = (string) trim((string)$this->RequestVarGet('template', '', 'string'));
 				//--
-				$id = $this->RequestVarGet('id', '', 'string');
-				$id = (string) trim((string)$id);
+				$id = (string) trim((string)$this->RequestVarGet('id', '', 'string'));
 				if((string)$id == '') {
 					$this->PageViewSetCfg('error', 'ID is Empty');
 					return 400;
@@ -244,14 +350,36 @@ abstract class AbstractController extends SmartAbstractAppController {
 					return 400;
 				} //end if
 				//--
+				if(SmartAuth::test_login_restriction('oauth2:template') === true) { // with this restriction, allow use just from templates
+					if(((string)$template == '') OR ((int)Smart::array_size($data) <= 0)) {
+						$this->PageViewSetCfg('error', 'OAuth2 Manager is unavailable outside of pre-defined templates ...');
+						return 403;
+					} //end if
+				} //end if
+				$url_cancel = 'admin.php?page=oauth2.manager&action=view-data&id='.Smart::escape_url((string)($data['id'] ?? null));
+				if((string)$template != '') {
+					$tmpData = (array) $this->readYamlTemplate((string)$template);
+					if(((int)Smart::array_size($tmpData) <= 0) OR ((string)($tmpData['id'] ?? null) !== (string)$id)) {
+						$this->PageViewSetCfg('error', 'OAuth2 Manager template mismatch ...');
+						return 400;
+					} //end if
+					$data['logo'] = (string) ($tmpData['logo'] ?? null);
+					if(isset($tmpData['template_redir']) && !empty($tmpData['template_redir'])) {
+						$url_cancel = (string) ($tmpData['template_redir'] ?? null);
+					} //end if
+				} //end if
+				//--
 				$csrfPrivKey = (string) \SmartModExtLib\Oauth2\Oauth2Api::csrfNewPrivateKey().'#OAuth2/AppID:'.($data['id'] ?? null);
 				$csrfPubKey  = (string) \SmartModExtLib\Oauth2\Oauth2Api::csrfPublicKey((string)$csrfPrivKey);
 				//--
+				$this->PageViewSetCfg('template-file', 'template-modal.htm');
+				//--
 				$this->PageViewSetVars([
-					'title' => 'OAuth2 Manager - ReInitialize API',
+					'title' => (string) $this->translator->text('ttl-reinit'),
 					'main' 	=> (string) SmartMarkersTemplating::render_file_template(
 						(string) $this->ControllerGetParam('module-view-path').'form-record.mtpl.htm',
 						[
+							//--
 							'PATTERN-VALID-ID' 		=> (string) \SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_PATTERN_VALID_ID,
 							'REGEX-VALID-ID' 		=> (string) \SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_REGEX_VALID_ID,
 							'DEFAULT-REDIRECT-URL' 	=> (string) \SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_STANDALONE_REFRESH_URL, // {{{SYNC-OAUTH2-DEFAULT-REDIRECT-URL}}}
@@ -259,6 +387,10 @@ abstract class AbstractController extends SmartAbstractAppController {
 							'TPL-AUTH-URL-PARAMS' 	=> (string) SmartMarkersTemplating::escape_template((string)\SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_AUTHORIZE_URL_PARAMS),
 							'TPL-AUTH-URL-CHPART' 	=> (string) SmartMarkersTemplating::escape_template((string)\SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_AUTHORIZE_URL_CHPART),
 							'IS-EDIT-FORM' 			=> (string) 'yes',
+							'FORM-TEMPLATE' 		=> (string) $template,
+							'FORM-NAME' 			=> (string) ($data['description'] ?? null),
+							'FORM-IMG' 				=> (string) ($data['logo'] ?? null),
+							'FORM-URL-CANCEL' 		=> (string) $url_cancel,
 							'FORM-ID' 				=> (string) ($data['id'] ?? null),
 							'FORM-DESC' 			=> (string) ($data['description'] ?? null),
 							'FORM-CLI-ID' 			=> (string) ($data['client_id'] ?? null),
@@ -271,6 +403,36 @@ abstract class AbstractController extends SmartAbstractAppController {
 							'COOKIE-NAME-CSRF' 		=> (string) \SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_COOKIE_NAME_CSRF, // {{{SYNC-OAUTH2-COOKIE-NAME-CSRF}}}
 							'COOKIE-VALUE-CSRF' 	=> (string) \SmartModExtLib\Oauth2\Oauth2Api::csrfPrivateKeyEncrypt((string)$csrfPrivKey),
 							'STATE-CSRF' 			=> (string) $csrfPubKey,
+							//--
+							'LANG' 					=> (string) SmartTextTranslations::getLanguage(),
+							//--
+							'FORM-TTL-NEW' 			=> (string) $this->translator->text('ttl-form-new'),
+							'FORM-TTL-REINIT' 		=> (string) $this->translator->text('ttl-form-reinit'),
+							'BTN-LBL-CANCEL' 		=> (string) $this->translator->text('btn-cancel'),
+							'LABEL-ID' 				=> (string) $this->translator->text('db-fld-id'),
+							'LABEL-DESCRIPTION' 	=> (string) $this->translator->text('db-fld-description'),
+							'LABEL-CLIENT-ID' 		=> (string) $this->translator->text('db-fld-client_id'),
+							'LABEL-CLIENT-SECRET' 	=> (string) $this->translator->text('db-fld-client_secret'),
+							'LABEL-SCOPE' 			=> (string) $this->translator->text('db-fld-scope'),
+							'LABEL-REDIRECT-URL' 	=> (string) $this->translator->text('db-fld-url_redirect'),
+							'LABEL-O2-URL-AUTH' 	=> (string) $this->translator->text('db-fld-url_auth'),
+							'LABEL-O2-URL-TOKEN' 	=> (string) $this->translator->text('db-fld-url_token'),
+							'LABEL-O2-CODE' 		=> (string) $this->translator->text('db-fld-code'),
+							//--
+							'HINT-ID' 				=> (string) $this->translator->text('hint-frm-id'),
+							'HINT-DESCRIPTION' 		=> (string) $this->translator->text('hint-frm-description'),
+							'HINT-CLIENT-ID' 		=> (string) $this->translator->text('hint-frm-client_id'),
+							'HINT-CLIENT-SECRET' 	=> (string) $this->translator->text('hint-frm-client_secret'),
+							'HINT-SCOPE' 			=> (string) $this->translator->text('hint-frm-scope'),
+							'HINT-REDIRECT-URL' 	=> (string) $this->translator->text('hint-frm-url_redirect'),
+							'HINT-O2-URL-AUTH' 		=> (string) $this->translator->text('hint-frm-url_auth'),
+							'HINT-O2-URL-TOKEN' 	=> (string) $this->translator->text('hint-frm-url_token'),
+							'HINT-O2-CODE' 			=> (string) $this->translator->text('hint-frm-code'),
+							//--
+							'TXT-EXAMPLE' 			=> (string) $this->translator->text('example'),
+							'TXT-VALID-PATERN' 		=> (string) $this->translator->text('validation-pattern'),
+							'TXT-VALID-REGEX' 		=> (string) $this->translator->text('validation-regex'),
+							//--
 						]
 					)
 				]);
@@ -281,8 +443,7 @@ abstract class AbstractController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				//--
-				$id = $this->RequestVarGet('id', '', 'string');
-				$id = (string) trim((string)$id);
+				$id = (string) trim((string)$this->RequestVarGet('id', '', 'string'));
 				if((string)$id == '') {
 					$this->PageViewSetCfg('error', 'ID is Empty');
 					return 400;
@@ -295,7 +456,10 @@ abstract class AbstractController extends SmartAbstractAppController {
 					return 400;
 				} //end if
 				//--
-				$title = 'OAuth2 API - Display';
+				if(SmartAuth::test_login_restriction('oauth2:template') === true) {
+					$this->PageViewSetCfg('error', 'OAuth2 Manager is available only with pre-defined templates ...');
+					return 403;
+				} //end if
 				//--
 				$haveRefreshToken = true;
 				if((string)trim((string)$data['refresh_token']) == '') {
@@ -320,23 +484,68 @@ abstract class AbstractController extends SmartAbstractAppController {
 					} //end if
 				} //end if
 				//--
+				$dataTranslations = [];
+				foreach($data as $key => $val) {
+					$dataTranslations[(string)$key] = (string) $this->translator->text('db-fld-'.$key);
+				} //end foreach
+				//--
+				$title = (string) $this->translator->text('display-ttl');
 				$this->PageViewSetVars([
 					'title' => (string) $title,
 					'main' 	=> (string) SmartMarkersTemplating::render_file_template(
 						(string) $this->ControllerGetParam('module-view-path').'display-record.mtpl.htm',
 						[
-							'THE-TITLE' 			=> (string) $title,
-							'DATE-NOW' 				=> (string) date('Y-m-d H:i:s O'),
-							'ACTION-GET-TOKEN' 		=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=get-the-access-token&id='.Smart::escape_url((string)$id),
-							'ACTION-REFRESH-TOKEN' 	=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=refresh-token&id='.Smart::escape_url((string)$id),
-							'ACTION-REINIT-TOKEN' 	=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=reinit-token-form&id='.Smart::escape_url((string)$id),
-							'ACTION-DELETE-TOKEN' 	=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=delete-token&id='.Smart::escape_url((string)$id),
-							'HAVE-REFRESH-TOKEN' 	=> (string) (($haveRefreshToken === true) ? 'yes' : 'no'),
-							'IS-EXPIRING' 			=> (string) (($isExpiringToken === true) ? 'yes' : 'no'), // {{{SYNC-TOKEN-NON-EXPIRING-TEST}}}
-							'IS-EXPIRED' 			=> (string) (($isExpired === true) ? 'yes' : 'no'),
-							'IS-ACTIVE' 			=> (string) (((int)$data['active'] == 1) ? 'yes' : 'no'),
-							'IS-JWT' 				=> (string) ((strpos((string)trim((string)$data['access_token']), '[') === 0) && (strpos((string)$data['access_token'], '"JWT:signature":') !== false)) ? 'yes' : 'no', // if already decoded and is JWT should start with `[` because is JSON array
-							'DATA-ARR' 				=> (array)  $data,
+							//--
+							'THE-TITLE' 				=> (string) $title,
+							//--
+							'BTN-GO-BACK' 				=> (string) $this->translator->text('btn-go-back'),
+							'BTN-TK-DISPLAY' 			=> (string) $this->translator->text('display-btn-token'),
+							'BTN-TK-DISPLAY-EXP' 		=> (string) $this->translator->text('display-btn-token-exp'),
+							'BTN-TK-DISPLAY-HINT1' 		=> (string) $this->translator->text('display-btn-token-hint1'),
+							'BTN-TK-DISPLAY-HINT2' 		=> (string) $this->translator->text('display-btn-token-hint2'),
+							'TXT-TK-VALID' 				=> (string) $this->translator->text('display-tk-valid'),
+							'TXT-TK-EXPIRED' 			=> (string) $this->translator->text('display-tk-expired'),
+							'TXT-BTN-REAUTH' 			=> (string) $this->translator->text('display-btn-reauth'),
+							'TXT-REAUTH' 				=> (string) $this->translator->text('display-reauth'),
+							'TXT-ONLY-ACTIVE-REAUTH' 	=> (string) $this->translator->text('display-only-active-reauth'),
+							'TXT-SECRET' 				=> (string) $this->translator->text('display-secret'),
+							'TXT-SIZE' 					=> (string) $this->translator->text('display-size'),
+							'TXT-TK-NO-REFRESH' 		=> (string) $this->translator->text('display-tk-no-refresh'),
+							'TXT-ID-JWT' 				=> (string) $this->translator->text('display-id-jwt'),
+							'TXT-ID-JWT-NONE' 			=> (string) $this->translator->text('display-id-jwt-none'),
+							'TXT-REFRESH-QUESTION' 		=> (string) $this->translator->text('display-refresh-question'),
+							'TXT-REFRESH-HINT' 			=> (string) $this->translator->text('display-refresh-hint'),
+							'TXT-REFRESH-TITLE' 		=> (string) $this->translator->text('display-refresh-ttl'),
+							'TXT-REFRESH-CANNOT' 		=> (string) $this->translator->text('display-refresh-cannot'),
+							'TXT-REFRESH-CANNOT-HINT' 	=> (string) $this->translator->text('display-refresh-cannot-hint'),
+							'TXT-REFRESH-EXPLAIN' 		=> (string) $this->translator->text('display-refresh-explain'),
+							'TXT-REFRESH-BTN' 			=> (string) $this->translator->text('display-refresh-btn'),
+							'TXT-DELETE-QUESTION' 		=> (string) $this->translator->text('display-delete-question'),
+							'TXT-DELETE-HINT' 			=> (string) $this->translator->text('display-delete-hint'),
+							'TXT-DELETE-TITLE' 			=> (string) $this->translator->text('display-delete-ttl'),
+							'TXT-DELETE-CANNOT' 		=> (string) $this->translator->text('display-delete-cannot'),
+							'TXT-DELETE-CANNOT-HINT' 	=> (string) $this->translator->text('display-delete-cannot-hint'),
+							'TXT-DELETE-BTN' 			=> (string) $this->translator->text('display-delete-btn'),
+							//--
+							'TXT-NOTICE' 				=> (string) $this->translator->text('display-notice'),
+							'TXT-EMPTY-VALUE' 			=> (string) $this->translator->text('display-empty-value'),
+							//--
+							'TXT-YES' 					=> (string) $this->translator->text('yes'),
+							'TXT-NO' 					=> (string) $this->translator->text('no'),
+							//--
+							'DATE-NOW' 					=> (string) date('Y-m-d H:i:s O'),
+							'ACTION-GET-TOKEN' 			=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=get-the-access-token&id='.Smart::escape_url((string)$id),
+							'ACTION-REFRESH-TOKEN' 		=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=refresh-token&id='.Smart::escape_url((string)$id),
+							'ACTION-REINIT-TOKEN' 		=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=reinit-token-form&id='.Smart::escape_url((string)$id),
+							'ACTION-DELETE-TOKEN' 		=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=delete-token&id='.Smart::escape_url((string)$id),
+							'HAVE-REFRESH-TOKEN' 		=> (string) (($haveRefreshToken === true) ? 'yes' : 'no'),
+							'IS-EXPIRING' 				=> (string) (($isExpiringToken === true) ? 'yes' : 'no'), // {{{SYNC-TOKEN-NON-EXPIRING-TEST}}}
+							'IS-EXPIRED' 				=> (string) (($isExpired === true) ? 'yes' : 'no'),
+							'IS-ACTIVE' 				=> (string) (((int)$data['active'] == 1) ? 'yes' : 'no'),
+							'IS-JWT' 					=> (string) ((strpos((string)trim((string)$data['access_token']), '[') === 0) && (strpos((string)$data['access_token'], '"JWT:signature":') !== false)) ? 'yes' : 'no', // if already decoded and is JWT should start with `[` because is JSON array
+							'DATA-ARR' 					=> (array)  $data,
+							'DATA-ARR:(TRANSLATIONS)' 	=> (array)  $dataTranslations,
+							//--
 						]
 					)
 				]);
@@ -347,8 +556,7 @@ abstract class AbstractController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				//--
-				$id = $this->RequestVarGet('id', '', 'string');
-				$id = (string) trim((string)$id);
+				$id = (string) trim((string)$this->RequestVarGet('id', '', 'string'));
 				if((string)$id == '') {
 					$this->PageViewSetCfg('error', 'ID is Empty');
 					return 400;
@@ -363,7 +571,7 @@ abstract class AbstractController extends SmartAbstractAppController {
 					$img = 'lib/framework/img/sign-warn.svg';
 				} //end if else
 				//--
-				$title = 'Refreshing the Access Token for OAuth2 API';
+				$title = (string) $this->translator->text('api-token-refresh');
 				//--
 				$this->PageViewSetVars([
 					'title' => (string) $title,
@@ -378,8 +586,7 @@ abstract class AbstractController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				//--
-				$id = $this->RequestVarGet('id', '', 'string');
-				$id = (string) trim((string)$id);
+				$id = (string) trim((string)$this->RequestVarGet('id', '', 'string'));
 				if((string)$id == '') {
 					$this->PageViewSetCfg('error', 'ID is Empty');
 					return 400;
@@ -435,21 +642,33 @@ abstract class AbstractController extends SmartAbstractAppController {
 					} //end if
 				} //end if
 				//--
-				$title = 'OAuth2 Access Token';
+				$title = (string) $this->translator->text('token-display-ttl');
 				//--
 				$this->PageViewSetVars([
 					'title' => (string) $title,
 					'main' => (string) SmartMarkersTemplating::render_file_template(
 						(string) $this->ControllerGetParam('module-view-path').'display-token.mtpl.htm',
 						[
-							'URL-BACK' 	=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=view-data&id='.Smart::escape_url((string)$id),
-							'TITLE' 	=> (string) $title,
-							'ID' 		=> (string) $id,
-							'STATUS' 	=> (string) $result,
-							'IMG' 		=> (string) $img,
-							'TOKEN' 	=> (string) $token,
-							'JWT' 		=> (string) $jwtPretty,
-							'HTML-HLJS' => (string) SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body', 'light'),
+							//--
+							'URL-BACK' 			=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=view-data&id='.Smart::escape_url((string)$id),
+							//--
+							'TITLE' 			=> (string) $title,
+							'ID' 				=> (string) $id,
+							'STATUS' 			=> (string) $result,
+							'IMG' 				=> (string) $img,
+							'TOKEN' 			=> (string) $token,
+							'JWT' 				=> (string) $jwtPretty,
+							//--
+							'TXT-STATUS' 		=> (string) $this->translator->text('token-status'),
+							'TXT-ID' 			=> (string) $this->translator->text('token-id'),
+							'TXT-TOKEN' 		=> (string) $this->translator->text('token-label'),
+							'TXT-CLIPBOARD' 	=> (string) $this->translator->text('copy-to-clipboard'),
+							'TXT-CLIPBOARD-OK' 	=> (string) $this->translator->text('copy-to-clipboard-ok'),
+							'TXT-CLIPBOARD-ERR' => (string) $this->translator->text('copy-to-clipboard-err'),
+							'TXT-GO-BACK' 		=> (string) $this->translator->text('btn-go-back'),
+							//--
+							'HTML-HLJS' 		=> (string) SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body', 'light'),
+							//--
 						]
 					)
 				]);
@@ -460,8 +679,7 @@ abstract class AbstractController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				//--
-				$id = $this->RequestVarGet('id', '', 'string');
-				$id = (string) trim((string)$id);
+				$id = (string) trim((string)$this->RequestVarGet('id', '', 'string'));
 				if((string)$id == '') {
 					$this->PageViewSetCfg('error', 'ID is Empty');
 					return 400;
@@ -474,7 +692,7 @@ abstract class AbstractController extends SmartAbstractAppController {
 					$result = 'FAILED';
 				} //end if else
 				//--
-				$title = 'Deleting the OAuth2 API';
+				$title = (string) $this->translator->text('api-delete');
 				//--
 				$this->PageViewSetVars([
 					'title' => (string) $title,
@@ -489,13 +707,15 @@ abstract class AbstractController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetCfg('rawpage', true);
 				//--
-				$column = $this->RequestVarGet('column', '', 'string');
-				$value = $this->RequestVarGet('value', '', 'string');
-				$id = $this->RequestVarGet('id', '', 'string');
+				$column = (string) $this->RequestVarGet('column', '', 'string');
+				$value  = (string) $this->RequestVarGet('value', '', 'string');
+				$id     = (string) $this->RequestVarGet('id', '', 'string');
 				//--
-				$title = 'Update Column ['.$column.'] for ID: '.$id; //.' @ '.$value;
+				$prettyColumnName = (string) Smart::create_idtxt((string)$column);
+				//--
+				$title = (string) $this->translator->text('api-edit').': '.$id; //.' @ '.$value;
 				$status = 'ERROR';
-				$message = '???';
+				$message = (string) $this->translator->text('api-edit-xx').': '.$prettyColumnName;
 				//--
 				switch((string)$column) {
 					case 'active':
@@ -504,9 +724,9 @@ abstract class AbstractController extends SmartAbstractAppController {
 						//--
 						if((int)$upd == 1) {
 							$status = 'OK';
-							$message = 'Status ['.ucfirst((string)$column).'] updated';
+							$message = (string) $this->translator->text('api-edit-ok').': '.$prettyColumnName;
 						} else {
-							$message = 'FAILED to update Status ['.ucfirst((string)$column).']';
+							$message = (string) $this->translator->text('api-edit-err').': '.$prettyColumnName;
 						} //end if else
 						//--
 						break;
@@ -516,14 +736,14 @@ abstract class AbstractController extends SmartAbstractAppController {
 						//--
 						if((int)$upd == 1) {
 							$status = 'OK';
-							$message = 'Status ['.ucfirst((string)$column).'] updated';
+							$message = (string) $this->translator->text('api-edit-ok').': '.$prettyColumnName;
 						} else {
-							$message = 'FAILED to update Status ['.ucfirst((string)$column).']';
+							$message = (string) $this->translator->text('api-edit-err').': '.$prettyColumnName;
 						} //end if else
 						//--
 						break;
 					default:
-						$message = 'Data column is not editable: '.$column;
+						// not editable
 				} //end switch
 				//--
 				$this->PageViewSetVar(
@@ -541,12 +761,12 @@ abstract class AbstractController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetCfg('rawpage', true);
 				//-- list vars
-				$ofs = $this->RequestVarGet('ofs', 0, 'integer+');
-				$sortby = $this->RequestVarGet('sortby', 'id', 'string');
-				$sortdir = $this->RequestVarGet('sortdir', 'ASC', 'string');
-				$sorttype = $this->RequestVarGet('sorttype', 'string', 'string');
+				$ofs      = (int)    $this->RequestVarGet('ofs', 0, 'integer+');
+				$sortby   = (string) $this->RequestVarGet('sortby', 'id', 'string');
+				$sortdir  = (string) $this->RequestVarGet('sortdir', 'ASC', 'string');
+				$sorttype = (string) $this->RequestVarGet('sorttype', 'string', 'string');
 				//-- filter vars
-				$id = $this->RequestVarGet('id', '', 'string');
+				$id       = (string) $this->RequestVarGet('id', '', 'string');
 				//-- output var(s)
 				$data['status'] = 'OK';
 				$data['crrOffset'] = (int) $ofs;
@@ -570,17 +790,57 @@ abstract class AbstractController extends SmartAbstractAppController {
 
 			case '': // list: display the grid (OUTPUTS: HTML)
 				//--
+				if(SmartAuth::test_login_restriction('oauth2:template') === true) {
+					$this->PageViewSetCfg('error', 'OAuth2 Manager is available only with pre-defined templates ...');
+					return 403;
+				} //end if
+				//--
 				$this->PageViewSetVars([
-					'title' => 'OAuth2 Manager',
+					'title' => (string) $this->translator->text('ttl-list'),
 					'main' 	=> (string) SmartMarkersTemplating::render_file_template(
 						(string) $this->ControllerGetParam('module-view-path').'list-records.mtpl.htm',
 						[
+							//--
 							'RELEASE-HASH' 		=> (string) $this->ControllerGetParam('release-hash'),
 							'CURRENT-SCRIPT' 	=> (string) $this->ControllerGetParam('url-script'),
 							'HOME-LINK' 		=> (string) $homeLink,
 							'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=',
 							'AREAS' 			=> (array)  $arrNameSpaces,
 							'CRR-TIME' 			=> (int)    time(),
+							//--
+							'TBL-TTL' 			=> (string) $this->translator->text('ttl-list-table'),
+							'LABEL-ID' 			=> (string) $this->translator->text('db-fld-id'),
+							'LABEL-ACTIVE' 		=> (string) $this->translator->text('db-fld-active'),
+							'LABEL-SCOPE' 		=> (string) $this->translator->text('db-fld-scope'),
+							'LABEL-DESC' 		=> (string) $this->translator->text('db-fld-description'),
+							'LABEL-TK-REFRESH' 	=> (string) $this->translator->text('db-fld-refresh_token'),
+							'LABEL-TK-IDJWT' 	=> (string) $this->translator->text('db-fld-id_token'),
+							'LABEL-EXP-SEC' 	=> (string) $this->translator->text('db-fld-access_expire_seconds'),
+							'LABEL-EXP-TIME' 	=> (string) $this->translator->text('db-fld-access_expire_time'),
+							'LABEL-LAST-UPD' 	=> (string) $this->translator->text('db-fld-modified'),
+							//--
+							'HINT-TBL-OP' 		=> (string) $this->translator->text('hint-tbl-op'),
+							'HINT-ID' 			=> (string) $this->translator->text('hint-fld-id'),
+							'HINT-STATUS' 		=> (string) $this->translator->text('hint-fld-active'),
+							'HINT-EXP-SEC' 		=> (string) $this->translator->text('hint-fld-access_expire_seconds'),
+							//--
+							'TXT-ERRORS' 		=> (string) $this->translator->text('errors'),
+							'TXT-EXPIRED' 		=> (string) $this->translator->text('expired'),
+							//--
+							'SRC-FRM-FILTER' 	=> (string) $this->translator->text('list-frm-filter'),
+							'SRC-FRM-RESET' 	=> (string) $this->translator->text('list-frm-reset'),
+							//--
+							'DOUBLE-CLICK' 		=> (string) $this->translator->text('double-click'),
+							//--
+							'COL-STATUS-ON' 	=> (string) $this->translator->text('list-col-status-active'),
+							'COL-STATUS-OFF' 	=> (string) $this->translator->text('list-col-status-inactive'),
+							'COL-R-TK-TRUE' 	=> (string) $this->translator->text('list-col-refresh-token-true'),
+							'COL-R-TK-FALSE' 	=> (string) $this->translator->text('list-col-refresh-token-false'),
+							'COL-R-JWTID-TRUE' 	=> (string) $this->translator->text('list-col-jwt-id-true'),
+							'COL-R-JWTID-FALSE' => (string) $this->translator->text('list-col-jwt-id-false'),
+							//--
+							'BTN-CREATE-NEW' 	=> (string) $this->translator->text('ttl-form-new'),
+							//--
 						]
 					)
 				]);
@@ -598,6 +858,71 @@ abstract class AbstractController extends SmartAbstractAppController {
 
 		} // end switch
 
+	} //END FUNCTION
+
+
+	private function readYamlTemplate(string $template) : array {
+		//--
+		$template = (string) trim((string)$template);
+		//--
+		$data = [];
+		//--
+		if((string)$template != '') {
+			if((string)$template == (string)Smart::safe_validname((string)$template)) {
+				//--
+				$template = (string) Smart::safe_validname((string)$template);
+				//--
+				if((string)$template != '') {
+					//--
+					$basePath = (string) 'etc/oauth2/'.$template;
+					$template = (string) $basePath.'.yaml';
+					$logo     = (string) $basePath.'.svg';
+					//--
+					if(SmartFileSysUtils::staticFileExists((string)$template) === true) {
+						$yaml = (string) SmartFileSysUtils::readStaticFile((string)$template);
+						$yaml = (string) trim((string)$yaml);
+						if((string)$yaml != '') {
+							$yaml = (array) (new SmartYamlConverter())->parse($yaml);
+							if((int)Smart::array_size($yaml) > 0) {
+								$yaml['oauth2'] = $yaml['oauth2'] ?? null;
+								if((int)Smart::array_size($yaml['oauth2']) > 0) {
+									$data = (array) $yaml['oauth2'];
+									$isDataOk = true;
+									foreach($data as $key => $val) {
+										if(!Smart::is_nscalar($val)) {
+											$isDataOk = false;
+											break;
+										} //end if
+										$data[(string)$key] = (string) trim((string)$val);
+									} //end foreach
+									if($isDataOk === true) {
+										if(SmartFileSysUtils::staticFileExists((string)$logo) === true) {
+											$data['logo'] = (string) SmartFileSysUtils::readStaticFile((string)$logo);
+											$data['logo'] = (string) trim((string)$data['logo']);
+											if((string)$data['logo'] != '') {
+												if(strpos($data['logo'], '<svg ') === 0) {
+													$data['logo'] = 'data:image/svg+xml,'.Smart::escape_url((string)$data['logo']);
+												} else {
+													$data['logo'] = '';
+												} //end if
+											} //end if
+										} //end if
+									} else {
+										$data = [];
+									} //end if
+								} //end if
+							} //end if
+						} //end if
+						$yaml = null;
+					} //end if
+					//--
+				} //end if
+				//--
+			} //end if
+		} //end if
+		//--
+		return (array) $data;
+		//--
 	} //END FUNCTION
 
 

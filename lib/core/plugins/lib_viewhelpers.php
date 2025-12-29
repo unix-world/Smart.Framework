@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20250205
+ * @version 	v.20250714
  * @package 	Application:Plugins:ViewComponents
  *
  */
@@ -342,8 +342,8 @@ final class SmartViewHtmlHelpers {
 		$orig_limit = $limit;
 		if(isset($options['nav-mode']) AND ((string)$options['nav-mode'] == 'pages')) { // navigate by page number instead of offset
 			$is_paging = true;
-			$total = Smart::format_number_int(ceil($total / $limit), '+');
-			$current = Smart::format_number_int(ceil($current / $limit), '+');
+			$total = Smart::format_number_int(Smart::ceil_number($total / $limit), '+');
+			$current = Smart::format_number_int(Smart::ceil_number($current / $limit), '+');
 			$limit = (int) 1;
 		} //end if
 		$opt_zerolink = '';
@@ -414,7 +414,7 @@ final class SmartViewHtmlHelpers {
 				$tmp_lst_max = (int) $total;
 			} //end if
 			//-- FFW
-			$tmp_last_calc_pages = (int) floor((($total - 1) / $limit));
+			$tmp_last_calc_pages = (int) Smart::floor_number((($total - 1) / $limit));
 			$tmp_lastpage = (int) $tmp_last_calc_pages * $limit;
 			//-- REW
 			$tmp_firstpage = 0;
@@ -446,8 +446,8 @@ final class SmartViewHtmlHelpers {
 				$tmp_box_nav_end = '';
 			} //end if
 			//--
-			$tmp_pg_min = ceil($tmp_lst_max / $limit);
-			$tmp_pg_max = ceil($total / $limit);
+			$tmp_pg_min = Smart::ceil_number($tmp_lst_max / $limit);
+			$tmp_pg_max = Smart::ceil_number($total / $limit);
 			//--
 			if($is_paging) {
 				$tmp_res_total 	= (int) $orig_total;
@@ -550,8 +550,8 @@ final class SmartViewHtmlHelpers {
 		} //end if
 		//--
 		if(isset($options['nav-mode']) AND ((string)$options['nav-mode'] == 'pages')) { // navigate by page number instead of offset
-			$total = Smart::format_number_int(ceil($total / $limit), '+');
-			$current = Smart::format_number_int(ceil($current / $limit), '+');
+			$total = Smart::format_number_int(Smart::ceil_number($total / $limit), '+');
+			$current = Smart::format_number_int(Smart::ceil_number($current / $limit), '+');
 			$limit = (int) 1;
 		} //end if
 		$opt_zerolink = '';
@@ -590,7 +590,7 @@ final class SmartViewHtmlHelpers {
 			//--
 			$min = 1;
 			//--
-			$max = ceil($total / $limit);
+			$max = Smart::ceil_number($total / $limit);
 			if($max < 1) {
 				$max = 1;
 			} //end if
@@ -601,7 +601,7 @@ final class SmartViewHtmlHelpers {
 				$info_max = $total;
 			} //end if
 			//--
-			$crr = ceil($current / $limit) + 1;
+			$crr = (int) (Smart::ceil_number($current / $limit) + 1);
 			if($crr < $min) {
 				$crr = $min;
 			} //end if

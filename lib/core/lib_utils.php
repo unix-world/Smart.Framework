@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry, SmartValidator, SmartParser ; optional-constants: SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20250304
+ * @version 	v.20251204
  * @package 	Application:Utils
  *
  */
@@ -352,7 +352,7 @@ final class SmartUtils {
 		$tmp_ux_end   = (int) date('U', @strtotime((string)$y_date_past)); // get date past in seconds
 		//--
 		$tmp_ux_diff = (int) Smart::format_number_int((int)$tmp_ux_start - (int)$tmp_ux_end); // calc interval in seconds
-		$tmp_ux_diff = (int) Smart::format_number_int((int)ceil((int)$tmp_ux_diff / (int)(60 * 60 * 24))); // calc interval in days
+		$tmp_ux_diff = (int) Smart::format_number_int((int)Smart::ceil_number((int)$tmp_ux_diff / (int)(60 * 60 * 24))); // calc interval in days
 		//--
 		return (int) $tmp_ux_diff;
 		//--
@@ -403,7 +403,7 @@ final class SmartUtils {
 				//--
 				if(is_array($val)) {
 					//--
-					$out .= "\t".$key.' '.$marker.' '.self::pretty_print_var($val, $indent);
+					$out .= "\t".$key.' '.$marker.' '.self::pretty_print_var($val, $indent, $jsstyle);
 					//--
 				} else {
 					//--
@@ -1166,7 +1166,7 @@ final class SmartUtils {
 	 * @param STRING	$allowed_extensions			:: The list of allowed file extensions ; Default is '' ; Example to restrict to several extensions: '<ext1>,<ext2>,...<ext100>,...' ; set to empty string to allow all extenstions supported via Smart.Framework INI: SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS / SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS
 	 * @param STRING 	$new_name 					:: Use a new file name for the uploaded file instead of the original one ; Set to empty string to preserve the uploaded file name ; DEFAULT is ''
 	 * @param BOOLEAN 	$enforce_lowercase 			:: Set to TRUE to enforce lowercase file name ; DEFAULT is FALSE
-	 * @return MIXED								:: '' (empty string) if all OK ; FALSE (boolean) if upload failed ; otherwise will return a non-empty string with the ERROR / WARNING message if the file was not successfuly stored in the destination directory
+	 * @return MIXED								:: '' (empty string) if all OK ; FALSE (bool) if upload failed ; otherwise will return a non-empty string with the ERROR / WARNING message if the file was not successfuly stored in the destination directory
 	 */
 	public static function store_uploaded_file(?string $dest_dir, ?string $var_name, ?int $var_index=-1, bool $allow_rewrite=true, ?int $max_size=0, ?string $allowed_extensions='', ?string $new_name='', bool $enforce_lowercase=false) { // : MIXED return !!
 		//-- {{{SYNC-HANDLE-F-UPLOADS}}} v.20220509

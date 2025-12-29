@@ -54,7 +54,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * $non_associative_read_multi_records = (array) SmartPgsqlDb::read_data('SELECT * FROM "table" WHERE "id" = '.SmartPgsqlDb::escape_literal(3));
  * $associative_read_multi_records = (array) SmartPgsqlDb::read_adata('SELECT * FROM "table" WHERE "id" = $1', array('other-id'));
  * $associative_read_for_just_one_record = (array) SmartPgsqlDb::read_asdata('SELECT * FROM "table" WHERE "id" = $1 LIMIT 1 OFFSET 0', array(99)); // NOTICE: this function will return just one record, so always use LIMIT 1 OFFSET 0 (or LIMIT 0,1) ; if the query will return more records will raise an error
- * $update = (array) SmartPgsqlDb::write_data('UPDATE "table" SET "active" = 1 WHERE "id" = $1', array(55)); // will return an array[ 0 => message, 1 => (integer) affected rows ]
+ * $update = (array) SmartPgsqlDb::write_data('UPDATE "table" SET "active" = 1 WHERE "id" = $1', array(55)); // will return an array[ 0 => message, 1 => (int) affected rows ]
  * $arr_insert = array(
  * 		'id' => 100,
  * 		'active' => 1,
@@ -69,7 +69,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartEnvironment, SmartHashCrypto, SmartUnicode, SmartComponents (optional) : constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20250107
+ * @version 	v.20251204
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -2595,7 +2595,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartEnvironment, SmartUnicode, SmartComponents (optional) ; constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20250107
+ * @version 	v.20251204
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -2745,7 +2745,7 @@ final class SmartPgsqlExtDb {
 
 	/**
 	 * Escape an identifier to be compliant and Safe (against SQL Injection) with PgSQL standards.
-	 * This function will add the (double) quotes arround the identifiers (fields / table names) as needed.
+	 * This function will add the double quotes arround the identifiers (fields / table names) as needed.
 	 *
 	 * @param STRING $y_identifier					:: The Identifier to be Escaped: field / table
 	 * @return STRING 								:: The Escaped Identifier as: "field" / "table"

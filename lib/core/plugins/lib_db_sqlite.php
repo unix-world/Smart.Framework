@@ -68,7 +68,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSystem, SmartComponents
- * @version 	v.20250217
+ * @version 	v.20250714
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -500,7 +500,7 @@ final class SmartSQliteDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSysUtils, SmartFileSystem, SmartComponents
- * @version 	v.20250217
+ * @version 	v.20250714
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -1832,7 +1832,7 @@ final class SmartSQliteUtilDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20250217
+ * @version 	v.20250714
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -1861,7 +1861,7 @@ final class SmartSQliteFunctions {
 
 	public static function date_diff($date_start, $date_end) { // return date diff in days
 		//--
-		return (int) floor(((int)@strtotime((string)$date_start) - (int)@strtotime((string)$date_end)) / (3600 * 24));
+		return (int) Smart::floor_number(((int)@strtotime((string)$date_start) - (int)@strtotime((string)$date_end)) / (3600 * 24));
 		//--
 	} //END FUNCTION
 

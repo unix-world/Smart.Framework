@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_AREA', 'INDEX'); // INDEX
 
 final class SmartAppIndexController extends SmartAbstractAppController {
 
-	// r.20250620
+	// r.20251202
 
 	// it runs just on auth master server
 	// this is the auth users public authorize (api) used for: signin, register, recovery
@@ -56,14 +56,14 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 
 		//--
 		if(SmartUtils::is_ajax_request() !== true) {
-			$this->PageViewSetErrorStatus(400, 'Invalid Request');
+			$this->PageViewSetErrorStatus(400, 'Invalid Api Request');
 			return false;
 		} //end if
 		//--
 
 		//--
 		if($this->translator === null) {
-			$this->translator = \SmartTextTranslations::getTranslator('mod-auth-users', 'auth-users');
+			$this->translator = SmartTextTranslations::getTranslator('mod-auth-users', 'auth-users');
 		} //end if
 		//--
 
@@ -757,7 +757,7 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 				(string) $redirect,
 				'',
 				'',
-				(string) $jsevcode,
+				(string) $jsevcode
 			)
 		);
 		//--

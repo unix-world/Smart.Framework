@@ -61,7 +61,7 @@ if(!function_exists('gmp_binomial')) { // test the newest method from GMP ; req.
  *
  * @depends 	PHP GMP extension, Smart, SmartHashCrypto
  *
- * @version 	v.20250203
+ * @version 	v.20250714
  * @package 	Application
  *
  */
@@ -191,7 +191,7 @@ final class SmartCsrf {
  * @usage       static object: Class::method() - This class provides only STATIC methods
  *
  * @depends     classes: Smart, SmartEnvironment, SmartHashCrypto, SmartCryptoCiphersTwofishCBC, SmartCryptoCiphersBlowfishCBC, SmartCryptoCiphersOpenSSL, SmartCryptoCiphersHashCryptOFB, SmartDhKx
- * @version     v.20250203
+ * @version     v.20250714
  * @package     @Core:Crypto
  *
  */
@@ -2606,7 +2606,7 @@ final class SmartCipherCrypto {
  * @usage       dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends     PHP GMP extension (optional, only if uses BigInt) ; classes: Smart, SmartHashCrypto, SmartCipherCrypto, SmartCryptoCiphersBlowfishCBC
- * @version     v.20250203
+ * @version     v.20250714
  *
  */
 final class SmartDhKx {
@@ -3026,7 +3026,7 @@ final class SmartDhKx {
  * @internal
  *
  * @depends     PHP GMP extension ; classes: Smart
- * @version     v.20250203
+ * @version     v.20250714
  *
  */
 final class SmartCryptoCiphersThreefishCBC {
@@ -3282,7 +3282,7 @@ final class SmartCryptoCiphersThreefishCBC {
 			return; // invalid tweak
 		} //end if
 		//--
-		$numWords1024 = (int) ceil((int)self::BLOCK_SIZE / 8);
+		$numWords1024 = (int) Smart::ceil_number((int)self::BLOCK_SIZE / 8);
 		$k = (array) str_split((string)str_repeat('0', (int)((int)$numWords1024 + 1))); // init array of specific size
 		$k[(int)$numWords1024] = (string) gmp_strval((string)self::C240, 10);
 		for($i=0; $i<$numWords1024; $i++) {
@@ -3293,7 +3293,7 @@ final class SmartCryptoCiphersThreefishCBC {
 		//--
 		$ks = [];
 		//--
-		$maxS = (int) ceil((int)self::ROUNDS / 4);
+		$maxS = (int) Smart::ceil_number((int)self::ROUNDS / 4);
 		for($s=0; $s<=$maxS; $s++) {
 			for($i=0; $i<$numWords1024; $i++) {
 				$ks[$s][$i] = $k[($s+$i)%($numWords1024+1)];
@@ -3513,22 +3513,22 @@ final class SmartCryptoCiphersThreefishCBC {
 				//--
 			} //end for
 			//-- Subtract round key
-			$ct[0]  = (string) $this->uint64Sub((string)$ct[0],  (string)$this->expandedKey[floor($d/4)][0]);
-			$ct[1]  = (string) $this->uint64Sub((string)$ct[1],  (string)$this->expandedKey[floor($d/4)][1]);
-			$ct[2]  = (string) $this->uint64Sub((string)$ct[2],  (string)$this->expandedKey[floor($d/4)][2]);
-			$ct[3]  = (string) $this->uint64Sub((string)$ct[3],  (string)$this->expandedKey[floor($d/4)][3]);
-			$ct[4]  = (string) $this->uint64Sub((string)$ct[4],  (string)$this->expandedKey[floor($d/4)][4]);
-			$ct[5]  = (string) $this->uint64Sub((string)$ct[5],  (string)$this->expandedKey[floor($d/4)][5]);
-			$ct[6]  = (string) $this->uint64Sub((string)$ct[6],  (string)$this->expandedKey[floor($d/4)][6]);
-			$ct[7]  = (string) $this->uint64Sub((string)$ct[7],  (string)$this->expandedKey[floor($d/4)][7]);
-			$ct[8]  = (string) $this->uint64Sub((string)$ct[8],  (string)$this->expandedKey[floor($d/4)][8]);
-			$ct[9]  = (string) $this->uint64Sub((string)$ct[9],  (string)$this->expandedKey[floor($d/4)][9]);
-			$ct[10] = (string) $this->uint64Sub((string)$ct[10], (string)$this->expandedKey[floor($d/4)][10]);
-			$ct[11] = (string) $this->uint64Sub((string)$ct[11], (string)$this->expandedKey[floor($d/4)][11]);
-			$ct[12] = (string) $this->uint64Sub((string)$ct[12], (string)$this->expandedKey[floor($d/4)][12]);
-			$ct[13] = (string) $this->uint64Sub((string)$ct[13], (string)$this->expandedKey[floor($d/4)][13]);
-			$ct[14] = (string) $this->uint64Sub((string)$ct[14], (string)$this->expandedKey[floor($d/4)][14]);
-			$ct[15] = (string) $this->uint64Sub((string)$ct[15], (string)$this->expandedKey[floor($d/4)][15]);
+			$ct[0]  = (string) $this->uint64Sub((string)$ct[0],  (string)$this->expandedKey[Smart::floor_number($d/4)][0]);
+			$ct[1]  = (string) $this->uint64Sub((string)$ct[1],  (string)$this->expandedKey[Smart::floor_number($d/4)][1]);
+			$ct[2]  = (string) $this->uint64Sub((string)$ct[2],  (string)$this->expandedKey[Smart::floor_number($d/4)][2]);
+			$ct[3]  = (string) $this->uint64Sub((string)$ct[3],  (string)$this->expandedKey[Smart::floor_number($d/4)][3]);
+			$ct[4]  = (string) $this->uint64Sub((string)$ct[4],  (string)$this->expandedKey[Smart::floor_number($d/4)][4]);
+			$ct[5]  = (string) $this->uint64Sub((string)$ct[5],  (string)$this->expandedKey[Smart::floor_number($d/4)][5]);
+			$ct[6]  = (string) $this->uint64Sub((string)$ct[6],  (string)$this->expandedKey[Smart::floor_number($d/4)][6]);
+			$ct[7]  = (string) $this->uint64Sub((string)$ct[7],  (string)$this->expandedKey[Smart::floor_number($d/4)][7]);
+			$ct[8]  = (string) $this->uint64Sub((string)$ct[8],  (string)$this->expandedKey[Smart::floor_number($d/4)][8]);
+			$ct[9]  = (string) $this->uint64Sub((string)$ct[9],  (string)$this->expandedKey[Smart::floor_number($d/4)][9]);
+			$ct[10] = (string) $this->uint64Sub((string)$ct[10], (string)$this->expandedKey[Smart::floor_number($d/4)][10]);
+			$ct[11] = (string) $this->uint64Sub((string)$ct[11], (string)$this->expandedKey[Smart::floor_number($d/4)][11]);
+			$ct[12] = (string) $this->uint64Sub((string)$ct[12], (string)$this->expandedKey[Smart::floor_number($d/4)][12]);
+			$ct[13] = (string) $this->uint64Sub((string)$ct[13], (string)$this->expandedKey[Smart::floor_number($d/4)][13]);
+			$ct[14] = (string) $this->uint64Sub((string)$ct[14], (string)$this->expandedKey[Smart::floor_number($d/4)][14]);
+			$ct[15] = (string) $this->uint64Sub((string)$ct[15], (string)$this->expandedKey[Smart::floor_number($d/4)][15]);
 			//-- Four rounds of permute and unmix
 			for($m=(int)((int)Smart::array_size((array)self::MAGICS1)-1); $m>=0; $m--) {
 				//--
@@ -3552,22 +3552,22 @@ final class SmartCryptoCiphersThreefishCBC {
 				//--
 			} //end for
 			//-- Subtract round key
-			$ct[0]  = (string) $this->uint64Sub((string)$ct[0],  (string)$this->expandedKey[(floor($d/4))-1][0]);
-			$ct[1]  = (string) $this->uint64Sub((string)$ct[1],  (string)$this->expandedKey[(floor($d/4))-1][1]);
-			$ct[2]  = (string) $this->uint64Sub((string)$ct[2],  (string)$this->expandedKey[(floor($d/4))-1][2]);
-			$ct[3]  = (string) $this->uint64Sub((string)$ct[3],  (string)$this->expandedKey[(floor($d/4))-1][3]);
-			$ct[4]  = (string) $this->uint64Sub((string)$ct[4],  (string)$this->expandedKey[(floor($d/4))-1][4]);
-			$ct[5]  = (string) $this->uint64Sub((string)$ct[5],  (string)$this->expandedKey[(floor($d/4))-1][5]);
-			$ct[6]  = (string) $this->uint64Sub((string)$ct[6],  (string)$this->expandedKey[(floor($d/4))-1][6]);
-			$ct[7]  = (string) $this->uint64Sub((string)$ct[7],  (string)$this->expandedKey[(floor($d/4))-1][7]);
-			$ct[8]  = (string) $this->uint64Sub((string)$ct[8],  (string)$this->expandedKey[(floor($d/4))-1][8]);
-			$ct[9]  = (string) $this->uint64Sub((string)$ct[9],  (string)$this->expandedKey[(floor($d/4))-1][9]);
-			$ct[10] = (string) $this->uint64Sub((string)$ct[10], (string)$this->expandedKey[(floor($d/4))-1][10]);
-			$ct[11] = (string) $this->uint64Sub((string)$ct[11], (string)$this->expandedKey[(floor($d/4))-1][11]);
-			$ct[12] = (string) $this->uint64Sub((string)$ct[12], (string)$this->expandedKey[(floor($d/4))-1][12]);
-			$ct[13] = (string) $this->uint64Sub((string)$ct[13], (string)$this->expandedKey[(floor($d/4))-1][13]);
-			$ct[14] = (string) $this->uint64Sub((string)$ct[14], (string)$this->expandedKey[(floor($d/4))-1][14]);
-			$ct[15] = (string) $this->uint64Sub((string)$ct[15], (string)$this->expandedKey[(floor($d/4))-1][15]);
+			$ct[0]  = (string) $this->uint64Sub((string)$ct[0],  (string)$this->expandedKey[(Smart::floor_number($d/4))-1][0]);
+			$ct[1]  = (string) $this->uint64Sub((string)$ct[1],  (string)$this->expandedKey[(Smart::floor_number($d/4))-1][1]);
+			$ct[2]  = (string) $this->uint64Sub((string)$ct[2],  (string)$this->expandedKey[(Smart::floor_number($d/4))-1][2]);
+			$ct[3]  = (string) $this->uint64Sub((string)$ct[3],  (string)$this->expandedKey[(Smart::floor_number($d/4))-1][3]);
+			$ct[4]  = (string) $this->uint64Sub((string)$ct[4],  (string)$this->expandedKey[(Smart::floor_number($d/4))-1][4]);
+			$ct[5]  = (string) $this->uint64Sub((string)$ct[5],  (string)$this->expandedKey[(Smart::floor_number($d/4))-1][5]);
+			$ct[6]  = (string) $this->uint64Sub((string)$ct[6],  (string)$this->expandedKey[(Smart::floor_number($d/4))-1][6]);
+			$ct[7]  = (string) $this->uint64Sub((string)$ct[7],  (string)$this->expandedKey[(Smart::floor_number($d/4))-1][7]);
+			$ct[8]  = (string) $this->uint64Sub((string)$ct[8],  (string)$this->expandedKey[(Smart::floor_number($d/4))-1][8]);
+			$ct[9]  = (string) $this->uint64Sub((string)$ct[9],  (string)$this->expandedKey[(Smart::floor_number($d/4))-1][9]);
+			$ct[10] = (string) $this->uint64Sub((string)$ct[10], (string)$this->expandedKey[(Smart::floor_number($d/4))-1][10]);
+			$ct[11] = (string) $this->uint64Sub((string)$ct[11], (string)$this->expandedKey[(Smart::floor_number($d/4))-1][11]);
+			$ct[12] = (string) $this->uint64Sub((string)$ct[12], (string)$this->expandedKey[(Smart::floor_number($d/4))-1][12]);
+			$ct[13] = (string) $this->uint64Sub((string)$ct[13], (string)$this->expandedKey[(Smart::floor_number($d/4))-1][13]);
+			$ct[14] = (string) $this->uint64Sub((string)$ct[14], (string)$this->expandedKey[(Smart::floor_number($d/4))-1][14]);
+			$ct[15] = (string) $this->uint64Sub((string)$ct[15], (string)$this->expandedKey[(Smart::floor_number($d/4))-1][15]);
 			//--
 		} //end for
 		//--
@@ -3806,7 +3806,7 @@ final class SmartCryptoCiphersThreefishCBC {
  * @internal
  *
  * @depends     classes: Smart, SmartEnvironment
- * @version     v.20250203
+ * @version     v.20250714
  *
  */
 final class SmartCryptoCiphersTwofishCBC { // algo has been adapted to work faster, supports 64-bit machines only
@@ -4546,7 +4546,7 @@ die();
  * @internal
  *
  * @depends     classes: Smart, SmartHashCrypto
- * @version     v.20250203
+ * @version     v.20250714
  *
  */
 final class SmartCryptoCiphersBlowfishCBC {
@@ -4703,7 +4703,7 @@ final class SmartCryptoCiphersBlowfishCBC {
 		//== ALGO: START
 		$rawCryptoData = ''; // init
 		//-- Blowfish is a 64-bit block cipher. This means that the data must be provided in units that are a multiple of 8 bytes
-		$padding = (int) ((int)ceil((int)strlen((string)$b64DataOrPak) / (int)self::BLOCK_SIZE) * (int)self::BLOCK_SIZE); // blowfish blocksize is 8 ; {{{SYNC-ENCRYPTY-B64-PADDING}}}
+		$padding = (int) ((int)Smart::ceil_number((int)strlen((string)$b64DataOrPak) / (int)self::BLOCK_SIZE) * (int)self::BLOCK_SIZE); // blowfish blocksize is 8 ; {{{SYNC-ENCRYPTY-B64-PADDING}}}
 		$b64DataOrPak = (string) str_pad((string)$b64DataOrPak, (int)$padding, ' ', STR_PAD_RIGHT); // unixman (pad with spaces), safe for B64/HEX or package ; padding with NULL is not safe and if it would be no package and last character is null trimming will break data ...
 		//--
 		//==
@@ -5159,7 +5159,7 @@ echo 'plain text: '.$plaintext; // it should be: 'this is some example plain tex
  * @internal
  *
  * @depends     classes: Smart, SmartEnvironment, SmartHashCrypto
- * @version     v.20250203
+ * @version     v.20250714
  *
  */
 final class SmartCryptoCiphersHashCryptOFB {
@@ -5521,7 +5521,7 @@ final class SmartCryptoCiphersHashCryptOFB {
 
 		/*
 		// Initialize pseudo random generator
-		// seed rand: (double)microtime()*1000000 // no more needed
+		// seed rand: (float)microtime()*1000000 // no more needed
 
 		// Collect very random data.
 		// Add as many "pseudo" random sources as you can find.
@@ -5581,7 +5581,7 @@ final class SmartCryptoCiphersHashCryptOFB {
  * @internal
  *
  * @depends     extensions: PHP OpenSSL ; classes: Smart, SmartHashCrypto
- * @version     v.20250203
+ * @version     v.20250714
  *
  */
 final class SmartCryptoCiphersOpenSSL {
@@ -5831,7 +5831,7 @@ final class SmartCryptoCiphersOpenSSL {
 			$blocksize = (int) strlen((string)$this->crypto_iv);
 			$padding = 0;
 			if((int)$blocksize > 0) {
-				$padding = (int) ((int)ceil((int)strlen((string)$b64DataOrPak) / (int)$blocksize) * (int)$blocksize); // {{{SYNC-BLOWFISH-PADDING}}}
+				$padding = (int) ((int)Smart::ceil_number((int)strlen((string)$b64DataOrPak) / (int)$blocksize) * (int)$blocksize); // {{{SYNC-BLOWFISH-PADDING}}}
 			} //end if
 			//-- unixman: fix: add spaces as padding as we have it as b64 encoded and will not modify the original
 			$b64DataOrPak = (string) str_pad((string)$b64DataOrPak, (int)$padding, ' ', STR_PAD_RIGHT); // unixman (pad with spaces), safe for B64/HEX or package ; padding with NULL is not safe and if it would be no package and last character is null trimming will break data ...

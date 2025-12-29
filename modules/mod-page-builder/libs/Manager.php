@@ -49,7 +49,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250107
+ * @version 	v.20251215
  * @package 	PageBuilder
  *
  */
@@ -217,8 +217,7 @@ final class Manager {
 	public static function ViewDisplayHighlightCode($y_id) {
 		//--
 		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordById($y_id);
-		//--
-		if((string)$query['id'] == '') {
+		if((string)\trim((string)($query['id'] ?? null)) == '') {
 			return \SmartComponents::operation_warn(self::text('err_4'));
 		} //end if
 		//--
@@ -245,8 +244,7 @@ final class Manager {
 	public static function ViewDisplayHighlightData($y_id) {
 		//--
 		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordById($y_id);
-		//--
-		if((string)$query['id'] == '') {
+		if((string)\trim((string)($query['id'] ?? null)) == '') {
 			return \SmartComponents::operation_warn(self::text('err_4'));
 		} //end if
 		//--
@@ -269,8 +267,7 @@ final class Manager {
 	public static function ViewDisplayRecord($y_id, $y_disp, $y_lang='') {
 		//--
 		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordDetailsById($y_id);
-		//--
-		if((string)$query['id'] == '') {
+		if((string)\trim((string)($query['id'] ?? null)) == '') {
 			return \SmartComponents::operation_warn(self::text('err_4'));
 		} //end if
 		//--
@@ -345,7 +342,7 @@ final class Manager {
 	public static function ViewFormProps($y_id, $y_mode) {
 		//--
 		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordPropsById($y_id);
-		if((string)$query['id'] == '') {
+		if((string)\trim((string)($query['id'] ?? null)) == '') {
 			return \SmartComponents::operation_error('FormView Props // Invalid ID');
 		} //end if
 		//--
@@ -580,7 +577,7 @@ final class Manager {
 	// $y_mode :: 'list' | 'form'
 	public static function ViewFormMarkupCode($y_id, $y_mode, $y_lang='') {
 		//--
-		if(((string)$y_lang == '') OR (\strlen($y_lang) != 2) OR (\SmartTextTranslations::validateLanguage($y_lang) !== true)) {
+		if(((string)$y_lang == '') OR (\strlen((string)$y_lang) != 2) OR (\SmartTextTranslations::validateLanguage((string)$y_lang) !== true)) {
 			$y_lang = '';
 		} //end if
 		//--
@@ -589,7 +586,7 @@ final class Manager {
 		} else {
 			$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordCodeById($y_id);
 		} //end if else
-		if((string)$query['id'] == '') {
+		if((string)\trim((string)($query['id'] ?? null)) == '') {
 			return \SmartComponents::operation_error('FormView Code // Invalid ID');
 		} //end if
 		//--
@@ -949,7 +946,7 @@ final class Manager {
 	public static function ViewFormYamlData($y_id, $y_mode) {
 		//--
 		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordDataById($y_id);
-		if((string)$query['id'] == '') {
+		if((string)\trim((string)($query['id'] ?? null)) == '') {
 			return \SmartComponents::operation_error('FormView YAML Data // Invalid ID');
 		} //end if
 		//--
@@ -1135,7 +1132,7 @@ final class Manager {
 	public static function ViewFormInfo($y_id, $y_mode) {
 		//--
 		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordInfById($y_id);
-		if((string)$query['id'] == '') {
+		if((string)\trim((string)($query['id'] ?? null)) == '') {
 			return \SmartComponents::operation_error('FormView Info // Invalid ID');
 		} //end if
 		//--
@@ -1202,7 +1199,7 @@ final class Manager {
 	public static function ViewFormMedia($y_id, $y_mode, $y_is_preview_only=false) {
 		//--
 		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordInfById($y_id);
-		if((string)$query['id'] == '') {
+		if((string)\trim((string)($query['id'] ?? null)) == '') {
 			return \SmartComponents::operation_error('FormView Media // Invalid ID');
 		} //end if
 		//--
@@ -1247,12 +1244,12 @@ final class Manager {
 
 
 	//==================================================================
-	public static function UploadMedia($y_id, $y_type, $y_name, $y_content, $y_cksum, $y_as) {
+	public static function UploadMedia(?string $y_id, ?string $y_type, ?string $y_name, ?string $y_content, ?string $y_cksum, ?string $y_as) : string {
 		//--
 		$err = '';
 		//--
-		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordInfById($y_id);
-		if((string)$query['id'] == '') {
+		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordInfById((string)$y_id);
+		if((string)\trim((string)($query['id'] ?? null)) == '') {
 			$err = 'Invalid ID';
 		} //end if
 		//--
@@ -1274,106 +1271,47 @@ final class Manager {
 				$err = 'Invalid Content Checksum';
 			} //end if
 		} //end if
-		if(!$err) {
-			if(((string)\strtolower((string)\substr((string)$y_content, 0, 11)) != 'data:image/') OR (\stripos((string)$y_content, ';base64,') === false)) {
-				$err = 'Invalid Content Format';
-			} //end if
-		} //end if
-		if(!$err) {
-			$y_content = (array) \explode(';base64,', (string)$y_content);
-			$y_content = (string) \Smart::b64_dec((string)\trim((string)($y_content[1] ?? null)));
-			if((string)$y_content == '') {
-				$err = 'Invalid SVG Content';
-			} //end if
-		} //end if
 		//--
 		$img_ext = '';
 		//--
 		if(!$err) {
-			switch((string)$y_type) {
-				case 'image/svg+xml': // here SVGs can be only base64 encoded as canvas will send them !
-					if((\stripos((string)$y_content, '<svg') !== false) AND (\stripos((string)$y_content, '</svg>') !== false)) { // {{{SYNC VALIDATE SVG}}}
-						$y_content = (new \SmartXmlParser())->format((string)$y_content, false, false, false, true); // avoid injection of other content than XML, remove the XML header
-					} else {
-						$y_content = ''; // not a SVG !
-					} //end if else
-					if((string)$y_content == '') {
-						$err = 'Invalid SVG Content';
-					} else {
-						$img_ext = 'svg';
-					} //end if
-					break;
-				case 'image/gif':
-				case 'image/png':
-				case 'image/jpeg':
-				case 'image/webp':
-					$imgd = new \SmartImageGdProcess((string)$y_content);
-					$img_ext = (string) $imgd->getImageType();
-					$img_as = '';
-					if((string)$y_type == 'image/webp') { // fix back: {{{SYNC-JS-CANVAS-CANNOT-HANDLE-WEBP}}}
-						$img_ext = 'webp';
-						$img_as = 'webp';
-					} //end if
-					$is_converted = false;
-					$skip_filter_imgd = false;
-					switch((string)$y_as) {
-						case 'gif':
-						case 'png':
-						case 'jpg':
-						case 'webp':
-							$is_converted = true;
-							$img_ext = (string) $y_as;
-							$img_as = (string) $y_as;
-							break;
-						default:
-							// n/a
-					} //end if
-					if(((string)$img_ext == 'gif') || ((string)$img_ext == 'png')) {
-						if($is_converted === false) { // skip original GIfs and PNGs (but not those converted)
-							$skip_filter_imgd = true; // preserve original gifs to keep animations ; they will be only validated for errors via IMGD (if there is a real image to avoid injection of other content)
-						} //end if
-					} //end if
-					$resize = $imgd->resizeImage(1600, 1280, false, 2, [255, 255, 255]); // create resample with: preserve if lower + relative dimensions
-					if(!$resize) {
-						$err = 'Invalid Image Content: '.$imgd->getLastMessage();
-					} //end if
-					if(!$err) {
-						if($imgd->getStatusOk() === true) {
-							if($skip_filter_imgd === false) { // skip original GIfs and PNGs (but not those converted)
-								$y_content = (string) $imgd->getImageData((string)$img_as, (self::IMG_QUALITY_JPG_WEBP * 100), 9);
-							} //end if
-						} else {
-							$y_content = '';
-						} //end if
-					} else {
-						$y_content = '';
-					} //end if else
-					if(!$err) {
-						if((string)$y_content == '') {
-							$err = 'Invalid Image Content';
-						} elseif(\strlen($y_content) > 1024 * 1024 * self::LIMIT_MEDIA_SIZE_MB) {
-							$err = 'Oversized Image Content';
-						} //end if
-					} //end if
-					break;
-				default:
-					$err = 'Invalid Type: '.$y_type;
-					$y_type = 'unknown';
-			} //end switch
+			$arrProcess = (array) \SmartModExtLib\PageBuilder\Media::safeProcessUploadedDataImg(
+				(string) $y_type,
+				(string) $y_content,
+				(string) $y_as,
+				(int)    self::IMG_MAX_WIDTH,
+				(int)    self::IMG_MAX_HEIGHT,
+				(float)  self::IMG_QUALITY_JPG_WEBP,
+				(float)  self::LIMIT_MEDIA_SIZE_MB
+			);
+			$err 		= (string) $arrProcess['error'];
+			$y_type 	= (string) $arrProcess['mime'];
+			$img_ext 	= (string) $arrProcess['extension'];
+			$y_content 	= (string) $arrProcess['content'];
+		} //end if
+		//--
+		if(!$err) {
+			if((string)\trim((string)$y_content) == '') {
+				$err = 'Processed Image Content is Empty';
+			} elseif((string)\trim((string)$y_type) == '') {
+				$err = 'Processed Image Type is Empty';
+			} elseif((string)\trim((string)$img_ext) == '') {
+				$err = 'Processed Image Extension is Empty';
+			} //end if else
 		} //end if
 		//--
 		if(!$err) {
 			$fdir = (string) \SmartModExtLib\PageBuilder\Utils::getMediaFolderByObjectId((string)$query['id']);
-			if(!\SmartFileSystem::is_type_dir($fdir)) {
-				\SmartFileSystem::dir_create($fdir, true);
-				if(!\SmartFileSystem::is_type_dir($fdir)) {
+			if(!\SmartFileSystem::is_type_dir((string)$fdir)) {
+				\SmartFileSystem::dir_create((string)$fdir, true);
+				if(!\SmartFileSystem::is_type_dir((string)$fdir)) {
 					$err = 'Failed to Create Storage Folder';
 				} //end if
 			} //end if
 		} //end if
 		if(!$err) {
-			if(!\SmartFileSystem::is_type_file($fdir.'index.html')) {
-				\SmartFileSystem::write($fdir.'index.html', '');
+			if(!\SmartFileSystem::is_type_file((string)$fdir.'index.html')) {
+				\SmartFileSystem::write((string)$fdir.'index.html', '');
 			} //end if
 		} //end if
 		if(!$err) {
@@ -1387,7 +1325,7 @@ final class Manager {
 			if(((string)$y_name != '') AND (\strlen((string)$y_name) <= 75)) {
 				$file = (string) $y_name;
 			} else {
-				$file = (string) \Smart::safe_filename('img-'.\strtolower(\Smart::uuid_10_seq()).'.'.$img_ext);
+				$file = (string) \Smart::safe_filename('img-'.\strtolower((string)\Smart::uuid_10_seq()).'.'.$img_ext);
 			} //end if
 			if(!\SmartFileSystem::write((string)$fdir.$file, (string)$y_content)) {
 				$err = 'Failed to Create Storage File';
@@ -1396,9 +1334,9 @@ final class Manager {
 		//--
 		if(!$err) {
 			$rdir = (string) \SmartModExtLib\PageBuilder\Utils::getMediaFolderRoot();
-			if(\SmartFileSystem::is_type_dir($rdir)) {
-				if(!\SmartFileSystem::is_type_file($rdir.'index.html')) {
-					\SmartFileSystem::write($rdir.'index.html', '');
+			if(\SmartFileSystem::is_type_dir((string)$rdir)) {
+				if(!\SmartFileSystem::is_type_file((string)$rdir.'index.html')) {
+					\SmartFileSystem::write((string)$rdir.'index.html', '');
 				} //end if
 			} //end if
 		} //end if
@@ -1429,7 +1367,7 @@ final class Manager {
 		$err = '';
 		//--
 		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordInfById($y_id);
-		if((string)$query['id'] == '') {
+		if((string)\trim((string)($query['id'] ?? null)) == '') {
 			$err = 'Invalid ID';
 		} //end if
 		//--
@@ -2854,7 +2792,7 @@ final class Manager {
 										$real_imported++;
 										$x_is_not_imported = false;
 									} //end if
-									if((string)$dbg == 'yes') {
+									if(\SmartEnvironment::ifDebug()) {
 										if($upd < -1) {
 											\SmartEnvironment::setDebugMsg('extra', 'IMPORT-TRANSLATIONS', [
 												'title' => '[Import Translations: '.$y_appname.']',
@@ -2924,7 +2862,7 @@ final class Manager {
 						//--
 						if(((string)\trim((string)$data_arr[(string)$def_lang][$i]) != '') AND ((string)\trim((string)$val[$i]) != '')) { // skip all empty records
 							//--
-							if(!\is_array($arr_xdata[(int)$x_iterator])) {
+							if(!\is_array($arr_xdata[(int)$x_iterator] ?? null)) {
 								$arr_xdata[(int)$x_iterator] = (array) $arr_conform;
 							} //end if
 							//--
