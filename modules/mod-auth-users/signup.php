@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_AREA', 'INDEX'); // INDEX
 
 final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractSignController {
 
-	// r.20250620
+	// r.20260108
 
 	// SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS 	is verified by Initialize() in AbstractSignController
 	// Custom request URI Restriction 			is verified by Initialize() in AbstractSignController
@@ -232,6 +232,9 @@ final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractSi
 					'WEBSITE-NAME' 				=> (string) Smart::get_from_config('app.info-url', 'string'),
 					'IS-AUTHENTICATED' 			=> (int)    (SmartAuth::is_authenticated() === true) ? 1 : 0,
 					'AUTH-USERNAME' 			=> (string) SmartAuth::get_auth_username(),
+					//--
+					'URL-ACCOUNT' 				=> (string) self::URL_ACCOUNT_HREF,
+					'URL-REDIR-ACCOUNT-MSEC' 	=> (int)    self::URL_ACCOUNT_TIME,
 					//--
 					'CAPTCHA-HTML' 				=> (string) $captchaHtmlCode,
 					'TXT-CAPTCHA-HINT' 			=> (string) $this->translator->text('sign-up-reg-captcha-hint'),

@@ -1,4 +1,4 @@
-<!-- v.20250314 -->
+<!-- v.20260108 -->
 [@@@SUB-TEMPLATE:acc-styles-form.mtpl.inc.htm@@@]
 <script>
 const disable2FAConfirm = () => {
@@ -45,7 +45,7 @@ const disable2FAConfirm = () => {
 		<div class="ux-control-group"[%%%IF:2FA-KEY:!=;%%%][%%%IF:2FA-BARCODE:!=;%%%] style="min-height:200px;"[%%%/IF:2FA-BARCODE%%%][%%%/IF:2FA-KEY%%%]>
 			<label>2FA Key[%%%IF:2FA-KEY:!=;%%%][%%%IF:2FA-TEST-TK:!=;%%%]<br><br><br><span style="cursor:help; color:#DDDDDD;" title="Test Token: [###2FA-TEST-TK|html###] ; Date: [###2FA-TEST-DATE|html###] ; Key: [###2FA-KEY|html###]"><i class="sfi sfi-clock sfi-xl"></i></span>[%%%/IF:2FA-TEST-TK%%%][%%%/IF:2FA-KEY%%%]</label>
 			<div style="display:inline-block; font-size:0.875rem;">
-				[%%%IF:2FA-DB-KEY:==1;%%%]<button class="ux-button ux-button-highlight" onClick="disable2FAConfirm(); return false;"><i class="sfi sfi-qrcode"></i> &nbsp; Disable Two-Factor Authentication</button>[%%%ELSE:2FA-DB-KEY%%%]<button class="ux-button ux-button-regular" onClick="self.location = '[###ACTIONS-URL|js|html###]enable-2fa-form&id=[###ID|js|html###]'; return false;"><i class="sfi sfi-qrcode"></i> &nbsp; Enable Two-Factor Authentication</button>[%%%/IF:2FA-DB-KEY%%%]
+				[%%%IF:2FA-DB-KEY:==1;%%%]<button class="ux-button ux-button-highlight" onClick="disable2FAConfirm(); return false;"><i class="sfi sfi-clock2"></i> &nbsp; Disable Two-Factor Authentication</button>[%%%ELSE:2FA-DB-KEY%%%]<button class="ux-button ux-button-regular" onClick="self.location = '[###ACTIONS-URL|js|html###]enable-2fa-form&id=[###ID|js|html###]'; return false;"><i class="sfi sfi-clock"></i> &nbsp; Enable Two-Factor Authentication</button>[%%%/IF:2FA-DB-KEY%%%]
 				[%%%IF:2FA-KEY:!=;%%%][%%%IF:2FA-BARCODE:!=;%%%]<br><span id="2fa-logo" style="cursor:cell; color:#DDDDDD;" title="Click to reveal the QRCode" onclick="jQuery('#2fa-logo').hide(); jQuery('#2fa-qr').show();"><i class="sfi sfi-qrcode sfi-5x"></i></span><img id="2fa-qr" style="display:none; cursor:cell; margin-top:10px;" src="data:image/svg+xml,[###2FA-BARCODE|url###]" title="[###2FA-URL|html###]" onclick="jQuery('#2fa-logo').show(); jQuery('#2fa-qr').hide();">[%%%/IF:2FA-BARCODE%%%][%%%/IF:2FA-KEY%%%]
 			</div>
 		</div>
@@ -61,11 +61,11 @@ const disable2FAConfirm = () => {
 		<!-- pass change / 2fa cannot be modified here -->
 		[%%%/IF:VIEW-ONLY%%%]
 		<div class="ux-control-group">
-			<label>Private Key</label>
+			<label>Secret Key</label>
 			[%%%IF:SELF-KEYS:==yes;%%%]
 			[%%%IF:VIEW-ONLY:!=yes;%%%]<input type="hidden" name="frm[upd-keys]" value="yes">[%%%/IF:VIEW-ONLY%%%]
-			<textarea name="frm[keys]" class="ux-input-1-2" placeholder="Private Key" spellcheck="false" style="height:75px;" maxlength="768" [%%%IF:VIEW-ONLY:!=yes;%%%]minlength="64"[%%%ELSE:VIEW-ONLY%%%]readonly[%%%/IF:VIEW-ONLY%%%]>[###KEYS|html###]</textarea>
-			[%%%IF:VIEW-ONLY:!=yes;%%%][%%%IF:LEN-KEYS:>0;%%%]<br><div class="operation_notice" style="display:inline-block; max-width:600px!important;">Important:<div>If you change your private key you may loose all the current encrypted information. Before changing your current private key make sure you make a backup of it.</div></div>[%%%/IF:LEN-KEYS%%%][%%%/IF:VIEW-ONLY%%%]
+			<textarea name="frm[keys]" class="ux-input-1-2" placeholder="Secret Key" spellcheck="false" style="height:75px;" maxlength="768" [%%%IF:VIEW-ONLY:!=yes;%%%]minlength="64"[%%%ELSE:VIEW-ONLY%%%]readonly[%%%/IF:VIEW-ONLY%%%]>[###KEYS|html###]</textarea>
+			[%%%IF:VIEW-ONLY:!=yes;%%%][%%%IF:LEN-KEYS:>0;%%%]<div style="text-align:right;"><div class="operation_notice" style="display:inline-block; max-width:400px!important;">Important:<div>If you change your Secret Key you may loose all the current encrypted information. Before changing your current Secret Key make sure you make a backup of it.</div></div></div>[%%%/IF:LEN-KEYS%%%][%%%/IF:VIEW-ONLY%%%]
 			[%%%ELSE:SELF-KEYS%%%]
 			[%%%IF:LEN-KEYS:>0;%%%]<i title="[###LEN-KEYS|int###]" class="sfi sfi-fa-umbrella" style="color:#778899;"></i>[%%%ELSE:LEN-KEYS%%%]<i title="[###LEN-KEYS|int###]" class="sfi sfi-cancel-circle" style="color:#EEEEEE;"></i>[%%%/IF:LEN-KEYS%%%]
 			[%%%/IF:SELF-KEYS%%%]

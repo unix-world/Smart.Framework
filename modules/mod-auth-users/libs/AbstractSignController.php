@@ -15,7 +15,10 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 abstract class AbstractSignController extends \SmartAbstractAppController {
 
-	// r.20250620
+	// r.20260108
+
+	protected const URL_ACCOUNT_HREF = '?page=auth-users.account';
+	protected const URL_ACCOUNT_TIME = 150;
 
 	protected ?object $translator = null;
 

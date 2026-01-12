@@ -7,7 +7,7 @@
 // Changing the code below is on your own risk and may lead to severe disrupts in the execution of this software !
 //####################
 
-//== v.20250107
+//== v.20260103
 //--
 ini_set('display_errors', '1'); 											// temporary enable this to display bootstrap errors if any ; will be managed later by Smart Error Handler
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED); 						// on bootstrap show real-time errors (sync with Smart Error Handler)
@@ -24,6 +24,8 @@ if(is_file('.sf-unpack')) { // {{{SYNC-HTTP-NOCACHE-HEADERS}}} ; Tasks must be a
 //--
 //==
 ob_start();
+//--
+define('SMART_FRAMEWORK_ROOT_ABSOLUTE_PATH', (string)__DIR__.'/'); 			// smart framework absolute root path
 //--
 const SMART_FRAMEWORK_LIB_PATH =  			'lib/framework/'; 				// smart framework lib path
 const SMART_FRAMEWORK_RUNTIME_MODE =  		'web.task'; 					// runtime mode: 'web.task'

@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class AuthUsersFrontend {
 
 	// ::
-	// v.20250620
+	// v.20260107
 
 
 	private static $db = null;
@@ -663,6 +663,45 @@ final class AuthUsersFrontend {
 		//--
 		$data = [
 			'fa2' 	=> (string) $fa2,
+		];
+		//--
+		$data['ipaddr'] = (string) \SmartUtils::get_ip_client(); // lastseen is updated below
+		//--
+		return (int) self::updateAccountById((string)$id, (array)$data); // {{{SYNC-ACCOUNT-UPDATE}}}
+		//--
+	} //END FUNCTION
+
+
+	public static function updateAccountSignKeys(string $id, array $certData) {
+		//--
+		$id = (string) \trim((string)($id ?? null));
+		if((string)$id == '') {
+			return -1;
+		} //end if
+		//--
+		$exists = (array) self::getAccountById((string)$id);
+		if((int)\Smart::array_size($exists) <= 0) {
+			return -2; // account does not exists or wrong account selected
+		} //end if
+		$id = (string) \trim((string)($exists['id'] ?? null));
+		if((string)$id == '') {
+			return -3;
+		} //end if
+		//--
+		if((int)\Smart::array_size($certData) <= 0) {
+			return -4;
+		} //end if
+		//--
+		$encSignKeys = (string) \trim((string)\SmartModExtLib\AuthUsers\Utils::encryptSignKeys(
+			(string) \SmartModExtLib\AuthUsers\Utils::userAccountIdToUserName((string)$id), // because the $id was rewitten above with $exists['id'] must be converted back
+			(array)  $certData
+		));
+		if((string)$encSignKeys == '') {
+			return -5;
+		} //end if
+		//--
+		$data = [
+			'signkeys' 	=> (string) $encSignKeys,
 		];
 		//--
 		$data['ipaddr'] = (string) \SmartUtils::get_ip_client(); // lastseen is updated below

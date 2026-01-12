@@ -30,7 +30,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250314
+ * @version 	v.20251230
  * @package 	modules:AuthUsers
  *
  */
@@ -38,13 +38,14 @@ final class AuthJwt {
 
 	// ::
 
+	public const AUTH_USERS_JWT_ALGO 				= 'H3S512'; 		// Ed25519, H3S512, H3S384, ...
 	public const AUTH_USERS_JWT_EXPIRATION 			= 60 * 24; 			// 1440 m = 1d
-	public const AUTH_USERS_COOKIE_JWT_ALGO 		= 'H3S512'; 		// Ed25519, H3S512, H3S384, ...
+	public const AUTH_USERS_JWT_MAX_EXPIRATION 		= 60 * 24 * 365; 	// 1440 m * 365 = 365d
 
 
-	public static function newAuthJwtToken(?string $mode, ?string $provider, ?string $cluster, ?string $id, ?string $email, $privs=[], $restr=[], array $data=[]) : array {
+	public static function newAuthJwtToken(?string $mode, ?string $provider, ?string $cluster, ?string $id, ?string $email, array $privs=[], array $restr=[], array $data=[], int $expire=0) : array {
 		//--
-		// valid $mode: '' | 'cookie' ; used for xtras mode
+		// valid $mode: 'cookie' | 'api' ; used for xtras mode
 		//--
 		$jwt = [
 			'err' 		=> 900,
@@ -56,6 +57,7 @@ final class AuthJwt {
 		$mode = (string) \strtolower((string)\trim((string)$mode));
 		switch((string)$mode) {
 			case 'cookie':
+			case 'api':
 				break;
 			default:
 				$jwt['err'] = 901;
@@ -118,7 +120,18 @@ final class AuthJwt {
 			} //end if
 		} //end if
 		//--
-		$expire = (int) self::AUTH_USERS_JWT_EXPIRATION; // minutes
+		if((int)$expire <= 0) { // use default
+			$expire = (int) self::AUTH_USERS_JWT_EXPIRATION; // minutes
+		} //end if
+		if((int)$expire <= 0) { // security check: just in case, disallow non-expiring JWTs
+			$jwt['err'] = 909;
+			return (array) $jwt;
+		} //end if
+		if((int)$expire > (int)self::AUTH_USERS_JWT_MAX_EXPIRATION) { // security check: just in case, disallow JWT with larger expiration than max expire
+			$jwt['err'] = 910;
+			return (array) $jwt;
+		} //end if
+		//--
 		$issuer = (string) \SmartUtils::get_server_current_basedomain_name().':'.\SmartUtils::get_server_current_port();
 		//--
 		$xtrarr = [
@@ -134,9 +147,11 @@ final class AuthJwt {
 			$jwt['err'] = 921;
 			return (array) $jwt;
 		} //end if
-		$ipaddr = '*';
+		//--
+		$xtras .= '|'.\Smart::json_encode((array)$xtrarr, false, true, false, 2); // max 2 sub-levels ; {{{SYNC-JWT-XTRARR-JSON-LEVELS}}}
+		//--
+		$ipaddr = '*'; // api
 		if((string)$mode == 'cookie') {
-			$xtras .= '|'.\Smart::json_encode((array)$xtrarr, false, true, false, 2); // max 2 sub-levels ; {{{SYNC-JWT-XTRARR-JSON-LEVELS}}}
 			$ipaddr = (string) \SmartUtils::get_ip_client(); // this must be the current client IP address to bind the token by
 		} //end if
 		if((string)\trim((string)$ipaddr) == '') {
@@ -145,7 +160,7 @@ final class AuthJwt {
 			return (array) $jwt;
 		} //end if
 		//--
-		$token = (array) \SmartAuth::jwt_token_create((string)self::AUTH_USERS_COOKIE_JWT_ALGO, (string)$email, (string)$ipaddr, (string)\SmartModExtLib\AuthUsers\Utils::AUTH_USERS_AREA, (string)$issuer, (int)$expire, (array)$privs, (array)$restr, (string)$xtras, 2); // TF:enc
+		$token = (array) \SmartAuth::jwt_token_create((string)self::AUTH_USERS_JWT_ALGO, (string)$email, (string)$ipaddr, (string)\SmartModExtLib\AuthUsers\Utils::AUTH_USERS_AREA, (string)$issuer, (int)$expire, (array)$privs, (array)$restr, (string)$xtras, 2); // TF:enc
 		// \Smart::log_notice(__METHOD__.' # '.\print_r($token,1));
 		if((string)($token['error'] ?? null) != '') {
 			\Smart::log_warning(__METHOD__.' # JWT ERR: '.($token['error'] ?? null));
@@ -165,19 +180,29 @@ final class AuthJwt {
 
 	public static function xtrasMode(?string $mode, ?string $email) : string {
 		//--
+		$uid = '';
+		//--
 		$mode = (string) \strtolower((string)\trim((string)$mode));
 		switch((string)$mode) {
 			case 'cookie':
+				$uid = (string) \SmartUtils::get_visitor_tracking_uid();
+				break;
+			case 'api':
+				$uid = (string) '{API}'; // TODO: use the user's seckey ?
 				break;
 			default:
 				return '';
 		} //end switch
 		//--
+		if((string)\trim((string)$uid) == '') {
+			return '';
+		} //end if
+		//--
 		$issuer = (string) \SmartUtils::get_server_current_basedomain_name().':'.\SmartUtils::get_server_current_port();
 		//--
-		$safeXtrasSign = (string) \Smart::b64_to_b64s((string)\SmartHashCrypto::sh3a512('AuthUsers:JWT'."\r".$issuer."\r".$mode."\r".$email."\r".\SmartUtils::get_visitor_tracking_uid()."\r".\SMART_FRAMEWORK_SECURITY_KEY, true)); // b64s
+		$safeXtrasSign = (string) \Smart::b64_to_b64s((string)\SmartHashCrypto::sh3a512('AuthUsers:JWT'."\r".$issuer."\r".$mode."\r".$email."\r".\Smart::normalize_spaces((string)$uid)."\r".\SMART_FRAMEWORK_SECURITY_KEY, true)); // b64s
 		//--
-		return (string) ucfirst((string)$mode).'['.\SmartHashCrypto::crc32b((string)$safeXtrasSign).'.'.\SmartHashCrypto::crc32b((string)\strrev((string)$safeXtrasSign)).']';
+		return (string) \ucfirst((string)$mode).'['.\SmartHashCrypto::crc32b((string)$safeXtrasSign).'.'.\SmartHashCrypto::crc32b((string)\strrev((string)$safeXtrasSign)).']';
 		//--
 	} //END FUNCTION
 
@@ -187,6 +212,7 @@ final class AuthJwt {
 		$mode = (string) \strtolower((string)\trim((string)$mode));
 		switch((string)$mode) {
 			case 'cookie':
+			case 'api':
 				break;
 			default:
 				return [
@@ -201,7 +227,7 @@ final class AuthJwt {
 		//--
 		$issuer = (string) \SmartUtils::get_server_current_basedomain_name().':'.\SmartUtils::get_server_current_port();
 		//--
-		return (array) \SmartAuth::jwt_token_validate((string)self::AUTH_USERS_COOKIE_JWT_ALGO, (string)$issuer, (string)$token, (string)$ipaddr);
+		return (array) \SmartAuth::jwt_token_validate((string)self::AUTH_USERS_JWT_ALGO, (string)$issuer, (string)$token, (string)$ipaddr);
 		//--
 	} //END FUNCTION
 

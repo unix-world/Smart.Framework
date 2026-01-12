@@ -8,7 +8,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 	@http_response_code(500);
 	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
-//----------------------------------------------------- v.20251210
+//----------------------------------------------------- v.20260103
 
 //======================================================
 // App Authenticate Middleware :: Index Area Overall Authentication (index.php)

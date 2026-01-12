@@ -6,7 +6,7 @@
 [%%%/IF:IS-AUTHENTICATED%%%]
 <div class="sign-area">
 	[%%%IF:IS-REGISTER-IP-RESTRICTED:==yes;%%%]<img height="32" alt="logo" title="[###TXT-REGISTER-IP-RESTRICT|html###]" src="lib/framework/img/sign-important.svg" style="opacity:0.22;cursor:help;">[%%%ELSE:IS-REGISTER-IP-RESTRICTED%%%]<!-- Reg. is Not IP Restr. -->[%%%/IF:IS-REGISTER-IP-RESTRICTED%%%]
-	<img height="64" alt="logo" src="lib/core/img/app/app.svg" style="opacity:0.88;">
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/logo.mtpl.inc.htm!@@@]
 [%%%IF:IS-AUTHENTICATED:==1;%%%]
 [@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/signed.mtpl.inc.htm!@@@]
 [%%%ELSE:IS-AUTHENTICATED%%%]

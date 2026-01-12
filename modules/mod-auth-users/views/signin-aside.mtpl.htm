@@ -1,6 +1,7 @@
 [%%%IF:IS-AUTHENTICATED:==1;%%%]
 <br>
 [@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/account-aside.mtpl.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/account-redirect-by-js.mtpl.inc.htm!@@@]
 [%%%ELSE:IS-AUTHENTICATED%%%]
 [%%%IF:CAPTCHA-HTML:!=;%%%]
 <div style="margin-top:10px;">

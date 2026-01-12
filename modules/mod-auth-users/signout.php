@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_AREA', 'INDEX'); // INDEX, ADMIN, TASK, SHARED
 
 final class SmartAppIndexController extends SmartAbstractAppController {
 
-	// r.20250621
+	// r.20251229
 
 	private ?object $translator = null;
 
@@ -98,7 +98,7 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 		} //end if
 
 		//--
-		$isOk = \SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
+		$isOk = \SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
 		if($isOk !== true) {
 			$message = (string) $this->translator->text('sign-out-fail');
 		} //end if

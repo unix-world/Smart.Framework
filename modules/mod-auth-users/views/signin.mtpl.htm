@@ -5,7 +5,7 @@
 <!-- account styles n/a -->
 [%%%/IF:IS-AUTHENTICATED%%%]
 <div class="sign-area">
-	<img height="64" alt="logo" src="lib/core/img/app/app.svg" style="opacity:0.88;">
+[@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/logo.mtpl.inc.htm!@@@]
 [%%%IF:IS-AUTHENTICATED:==1;%%%]
 [@@@SUB-TEMPLATE:!modules/mod-auth-users/views/partials/signed.mtpl.inc.htm!@@@]
 [%%%ELSE:IS-AUTHENTICATED%%%]

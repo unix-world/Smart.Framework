@@ -41,7 +41,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20250314
+ * @version 	v.20260108
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -752,7 +752,7 @@ final class SmartAuthAdminsHandler
 					//--
 					$account_full_name = (string) \trim((string)\trim((string)$account_data['name_f']).' '.\trim((string)$account_data['name_l']));
 					//--
-					\SmartAuth::set_auth_data( // v.20250218
+					\SmartAuth::set_auth_data( // v.20260108
 						'SMART-ADMINS-AREA', 					// auth realm
 						(string) $auth_mode, 					// auth method
 						(string) \SmartAuth::get_cluster_id(), 	// cluster ID: admin accounts are always bind to the current cluster ID, there is no concept of auth cluster master/slave
@@ -764,9 +764,10 @@ final class SmartAuthAdminsHandler
 						(string) $account_full_name, 			// user full name (First Name + ' ' + Last name) * Optional *
 						(string) $account_data['priv'], 		// user privileges * Optional *
 						(string) $account_data['restrict'], 	// user restrictions * Optional *
-						(array)  [ // {{{SYNC-AUTH-KEYS}}}
-							'privkey' => (string) $modelAdmins->decryptPrivKey((string)$account_data['keys'], (string)$account_data['pass']), // user private key (will be stored as encrypted, in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
-							// TODO: store keys in a json to be able to store also pubkey and security key
+						(array)  [ // {{{SYNC-AUTH-KEYS}}} ; {{{SYNC-ADM-AUTH-KEYS}}}
+							'fa2sec' => (string) $modelAdmins->decrypt2FAKey((string)$account_data['fa2'], (string)$account_data['id']), // 2FA secret ; will be stored as encrypted, in-memory
+							'seckey' => (string) $modelAdmins->decryptSecretKey((string)$account_data['keys'], (string)$account_data['pass']), // user Secret Key, should not be revealed, used for sensitive data persistent encryption ; will be stored as encrypted, in-memory
+							// TODO: set sign keys, security key, etc, see Auth Users ...
 						], // keys
 						(int)    \Smart::format_number_int($account_data['quota'],'+'), // user quota in MB * Optional * ... zero, aka unlimited
 						[ // user metadata (array) ; may vary

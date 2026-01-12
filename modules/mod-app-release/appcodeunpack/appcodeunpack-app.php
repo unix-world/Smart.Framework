@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20250218 s.20250218.2358
+// [AppCodeUnpack / APP] v.20260108 s.20260108.2358
 // (c) 2008-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -94,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) : voi
 final class AppCodeUnpack {
 
 	// ::
-	// v.20250218
+	// v.20260108
 
-	private const APPCODEUNPACK_VERSION = 's.20250218.2358';
+	private const APPCODEUNPACK_VERSION = 's.20260108.2358';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
@@ -961,7 +961,7 @@ final class AppCodeUnpack {
 				'APPCODEUNPACK_LOGO_SF_SVG', 'APPCODEUNPACK_LOADING_SVG',
 				'APPCODEUNPACK_CSS_LOCAL_FX', 'APPCODEUNPACK_JS_LOCAL_FX',
 				'APPCODEUNPACK_HTML_DEPLOY',
-				'APP_AUTH_ADMIN_USERNAME', 'APP_AUTH_ADMIN_PASSWORD', // 'APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY',
+				'APP_AUTH_ADMIN_USERNAME', 'APP_AUTH_ADMIN_PASSWORD', // 'APP_AUTH_ADMIN_ENCRYPTED_SECKEY',
 				'APPCODEPACK_DEPLOY_SECRET', 'APPCODEPACK_DEPLOY_APPLIST',
 				'SMART_FRAMEWORK_SRVPROXY_ENABLED',
 			]
@@ -1052,19 +1052,19 @@ final class AppCodeUnpack {
 		) {
 			//-- OK, logged in
 			$privileges = (array) Smart::list_to_array((string)SmartAuth::DEFAULT_PRIVILEGES); // {{{SYNC-SMART-DEFAULT-PRIVILEGES}}}
-			$priv_keys = '';
-			if(defined('APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY')) {
-				if((string)trim((string)APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY) != '') {
-					$priv_keys = (string) trim((string)APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY);
-					if((string)$priv_keys != '') {
-						$priv_keys = (string) SmartAuth::decrypt_sensitive_data((string)$priv_keys, (string)$hash_of_pass);
+			$sec_key = '';
+			if(defined('APP_AUTH_ADMIN_ENCRYPTED_SECKEY')) {
+				if((string)trim((string)APP_AUTH_ADMIN_ENCRYPTED_SECKEY) != '') {
+					$sec_key = (string) trim((string)APP_AUTH_ADMIN_ENCRYPTED_SECKEY);
+					if((string)$sec_key != '') {
+						$sec_key = (string) SmartAuth::decrypt_sensitive_data((string)$sec_key, (string)$hash_of_pass);
 					} //end if
 				} //end if
 			} //end if
 			//--
 			$hash_of_pass = (string) SmartHashCrypto::password((string)$_SERVER['PHP_AUTH_PW'], (string)$_SERVER['PHP_AUTH_USER']);
 			//--
-			SmartAuth::set_auth_data( // v.20250218
+			SmartAuth::set_auth_data( // v.20260108
 				'APPCODEUNPACK-AREA', 								// auth realm
 				'HTTP-BASIC', 										// auth method {{{SYNC-AUTH-METHODS-NAME}}}
 				(string) SmartAuth::get_cluster_id(), 				// cluster ID: admin accounts are always bind to the current cluster ID, there is no concept of auth cluster master/slave
@@ -1076,9 +1076,8 @@ final class AppCodeUnpack {
 				'AppCodeUnpack SuperAdmin', 						// user full name (First Name + ' ' + Last name) * Optional *
 				(array) $privileges, 								// user privileges * Optional *
 				(array)  [ 'def-account', 'account' ], 				// user restrictions ; {{{SYNC-AUTH-RESTRICTIONS}}} ; {{{SYNC-DEF-ACC-EDIT-RESTRICTION}}} ; {{{SYNC-ACC-NO-EDIT-RESTRICTION}}}
-				(array)  [ // {{{SYNC-AUTH-KEYS}}}
-					'privkey' => (string) $priv_keys 				// user private key (will be stored as encrypted, in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
-					// TODO: have also a private or security key ?
+				(array)  [ // {{{SYNC-AUTH-KEYS}}} ; {{{SYNC-ADM-AUTH-KEYS}}}
+					'seckey' => (string) $sec_key 					// user Secret Key, should not be revealed, used for sensitive data persistent encryption ; will be stored as encrypted, in-memory
 				],
 				0, 													// user quota in MB * Optional * ... zero, aka unlimited
 				[ 													// user metadata (array) ; may vary

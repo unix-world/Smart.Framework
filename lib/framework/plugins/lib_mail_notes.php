@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  *
  * @depends 	classes: SmartUnicode, Smart, SmartHashCrypto, SmartCipherCrypto, SmartAuth
- * @version 	v.20250107
+ * @version 	v.20260107
  * @package 	Plugins:Mailer
  *
  */
@@ -63,14 +63,14 @@ final class SmartMailerNotes {
 		} //end if
 		//--
 		$auth_id = (string) SmartAuth::get_auth_id();
-		$auth_privkeys = (string) SmartAuth::get_user_privkey();
+		$auth_privkeys = (string) SmartAuth::get_user_seckey();
 		//--
 		if((string)trim((string)$auth_id) == '') {
 			return '[ERROR #1]: WARNING: Cannot Decrypt: Auth UserName is Empty';
 		} //end if
 		//--
 		if((string)trim((string)$auth_privkeys) == '') {
-			return '[ERROR #2]: Cannot Decrypt: Auth PrivateKey is Empty';
+			return '[ERROR #2]: Cannot Decrypt: Auth SecurityKey is Empty';
 		} //end if
 		//--
 		if((string)trim((string)$y_eml) == '') {
@@ -105,10 +105,10 @@ final class SmartMailerNotes {
 	public static function encrypt_eml_message_as_apple_notes($y_uuid, $y_date, $y_from, $y_subj, $y_eml) {
 		//--
 		$auth_id = (string) SmartAuth::get_auth_id();
-		$auth_privkeys = (string) SmartAuth::get_user_privkey();
+		$auth_privkeys = (string) SmartAuth::get_user_seckey();
 		//--
 		if(((string)trim((string)$auth_id) == '') OR ((string)trim((string)$auth_privkeys) == '')) {
-			Smart::log_warning(__METHOD__.' # ERROR: Failed to Encrypt Note # Auth UserName or Auth PrivateKey is Empty ...');
+			Smart::log_warning(__METHOD__.' # ERROR: Failed to Encrypt Note # Auth UserName or Auth SecurityKey is Empty');
 			return '';
 		} //end if
 		//--

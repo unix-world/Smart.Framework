@@ -30,7 +30,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 abstract class AbstractAuthAdmins {
 
 	// ->
-	// v.20250314
+	// v.20260108
 
 	public const MAX_TOKENS_PER_ACCOUNT = 25;
 
@@ -69,10 +69,10 @@ abstract class AbstractAuthAdmins {
 	abstract public function getTokensListById(string $id) : array;
 
 
-	//-------- Priv Keys
+	//-------- Secret Key
 
 
-	final public function encryptPrivKey(?string $pkey_plain, ?string $hash_pass=null) : string { // {{{SYNC-ADM-AUTH-KEYS}}}
+	final public function encryptSecretKey(?string $pkey_plain, ?string $hash_pass=null) : string { // {{{SYNC-ADM-AUTH-KEYS}}}
 		//--
 		if($hash_pass === null) {
 			if(\SmartAuth::is_authenticated() !== true) {
@@ -103,7 +103,7 @@ abstract class AbstractAuthAdmins {
 	} //END FUNCTION
 
 
-	final public function decryptPrivKey(?string $pkey_enc, ?string $hash_pass=null) : string { // {{{SYNC-ADM-AUTH-KEYS}}}
+	final public function decryptSecretKey(?string $pkey_enc, ?string $hash_pass=null) : string { // {{{SYNC-ADM-AUTH-KEYS}}}
 		//--
 		if($hash_pass === null) {
 			if(\SmartAuth::is_authenticated() !== true) {

@@ -31,7 +31,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @ignore
  *
- * @version 	v.20250314
+ * @version 	v.20251230
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -40,7 +40,7 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 	// ::
 
 	//================================================================
-	public static function GetCredentials(bool $enable_tokens) : array {
+	public static function GetCredentials(bool $enable_tokens, bool $disable_basic=false) : array {
 
 		//--
 		// IMPORTANT: if the ['auth-error'] is non-empty that means that the Authentication is Invalid by some reason ; otherwise the error should be empty ...
@@ -61,6 +61,14 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 		//--
 
 		//--
+		if(($enable_tokens !== true) AND ($disable_basic !== true)) {
+			$credentials['auth-error'] 	 = 'Auth Data is unavailable, all providers are disabled';
+			$credentials['auth-safe'] 	-= 10;
+			return (array) $credentials; // stop here if is HTTPS required and is not !
+		} //end if
+		//--
+
+		//--
 		if(!\is_array($_SERVER)) {
 			$credentials['auth-error'] 	 = 'Server Data is unavailable for Authentication purposes';
 			$credentials['auth-safe'] 	-= 1;
@@ -74,6 +82,8 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 
 		//--
 		if(
+			($disable_basic !== true)
+			AND
 			\array_key_exists('PHP_AUTH_USER', $_SERVER)
 			AND
 			\array_key_exists('PHP_AUTH_PW', $_SERVER)
@@ -82,7 +92,7 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 			$authmode = (string) self::AUTH_MODE_PREFIX_HTTP_BASIC.'PHP';
 			//--
 			$credentials['auth-user'] 	= (string) \trim((string)$_SERVER['PHP_AUTH_USER']); 	// trim username
-			$credentials['auth-pass'] 	= (string) \trim((string)$_SERVER['PHP_AUTH_PW']); 	// trim password
+			$credentials['auth-pass'] 	= (string) \trim((string)$_SERVER['PHP_AUTH_PW']); 		// trim password
 			$credentials['auth-bearer'] = ''; // safety reset
 			$credentials['auth-token'] 	= ''; // safety reset
 			//--
@@ -145,8 +155,8 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 				//--
 			} //end if else
 			//--
-			if(((string)$authheader != '') AND ((int)\strlen((string)$authheader) <= 1024) AND ((string)$authmode != '')) {
-				if(\stripos((string)$authheader, 'Basic ') === 0) { // 1st try Basic Auth
+			if(((string)$authheader != '') AND ((int)\strlen((string)$authheader) <= (int)(4096 + 512)) AND ((string)$authmode != '')) { // {{{SYNC-BEARER-JWT-ALLOW-MAX-LEN}}} ; fix: allow 4096+512 header length for Bearer, JWT
+				if(($disable_basic !== true) AND (\stripos((string)$authheader, 'Basic ') === 0)) { // 1st try Basic Auth
 					$authheader = (string) \trim((string)\substr((string)$authheader, 6));
 					if((string)$authheader != '') {
 						$authheader = (string) \base64_decode((string)$authheader, true); // B64 STRICT
@@ -252,7 +262,7 @@ final class AuthProviderHttp implements \SmartModExtLib\AuthAdmins\AuthProviderI
 			(
 				((int)\strlen((string)$credentials['auth-bearer']) < 16)
 				OR
-				((int)\strlen((string)$credentials['auth-bearer']) > 4096) // limit of HTTP header is 8k ; but the remaining part is reserved for other headers inc. cookies
+				((int)\strlen((string)$credentials['auth-bearer']) > 4096) // {{{SYNC-BEARER-JWT-ALLOW-MAX-LEN}}} ; limit of HTTP header is 8k ; but the remaining part is reserved for other headers inc. cookies
 				OR
 				(!\preg_match((string)self::REGEX_VALID_USERNAME_OR_TOKEN_BEARER, (string)(string)$credentials['auth-bearer']))
 			)

@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_AREA', 'INDEX'); // INDEX
 
 final class SmartAppIndexController extends SmartAbstractAppController {
 
-	// r.20251202
+	// r.20260107
 
 	// it runs just on auth master server
 	// this is the auth users public authorize (api) used for: signin, register, recovery
@@ -278,7 +278,7 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 							$is2FACodeOK = true; // 2FA verification is skipped because is inactive or user has not 2FA enabled, consider it OK
 						} else {
 							if((string)$frm['2fa'] != '') {
-								if(\SmartModExtLib\AuthUsers\Utils::verify2FACode((string)$frm['user'], (string)$frm['2fa'], (string)($userData['fa2'] ?? null), true) === true) { // is encrypted
+								if(\SmartModExtLib\AuthUsers\Utils::verify2FACode((string)\SmartModExtLib\AuthUsers\Utils::userAccountIdToUserName((string)($userData['id'] ?? null)), (string)$frm['2fa'], (string)($userData['fa2'] ?? null), true) === true) { // ok ; is encrypted
 									$is2FACodeOK = true; // 2FA verification is OK
 								} else {
 									$status = 'WARN';

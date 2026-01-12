@@ -17,7 +17,7 @@ define('SMART_APP_MODULE_AUTH', true);
 
 final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractAppsController {
 
-	// r.20250620
+	// r.20260107
 
 	// SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS 	is verified by Initialize() in AbstractAppsController via AbstractAccountController
 	// Custom request URI Restriction 			is verified by Initialize() in AbstractAppsController via AbstractAccountController
@@ -48,6 +48,7 @@ final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractAp
 					'MOD-AUTH-USERS-APP-HTML' => (string) SmartMarkersTemplating::render_file_template(
 						(string) $this->ControllerGetParam('module-view-path').'partials/apps-dashboard.mtpl.inc.htm',
 						[
+							'APPS-N-DASHBOARD-HINT' => (string) $this->translator->text('apps-and-dashboard-hint'),
 						]
 					),
 				]

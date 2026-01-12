@@ -38,8 +38,32 @@ if((!defined('SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH')) OR (!is_string(SMART_FRAM
 	die('The SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH was not set or is invalid (must be string) ...');
 } //end if
 //================================================================
-// TODO: remove this after dropping off PHP compatibility lower than PHP 8.1
-define('SMART_FRAMEWORK_PHP_HAVE_ARRAY_LIST', (bool)((version_compare((string)phpversion(), '8.1.0') >= 0) && function_exists('array_is_list')));
+// removed after dropping off PHP compatibility lower than PHP 8.1
+//define('SMART_FRAMEWORK_PHP_HAVE_ARRAY_LIST', (bool)((version_compare((string)phpversion(), '8.1.0') >= 0) && function_exists('array_is_list')));
+//================================================================
+if(!defined('SMART_FRAMEWORK_CHMOD_DIRS')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_CHMOD_DIRS');
+} //end if
+if(
+	(!is_int(SMART_FRAMEWORK_CHMOD_DIRS)) OR
+	(!in_array((string)str_pad((string)decoct(SMART_FRAMEWORK_CHMOD_DIRS), 4, '0', STR_PAD_LEFT), [ '0700', '0750', '0755', '0770', '0775', '0777' ]))
+) {
+	@http_response_code(500);
+	die('Invalid INIT constant value for SMART_FRAMEWORK_CHMOD_DIRS: '.SMART_FRAMEWORK_CHMOD_DIRS.' (decimal) / '.str_pad((string)decoct(SMART_FRAMEWORK_CHMOD_DIRS), 4, '0', STR_PAD_LEFT).' (octal)');
+} //end if
+//--
+if(!defined('SMART_FRAMEWORK_CHMOD_FILES')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_CHMOD_FILES');
+} //end if
+if(
+	(!is_int(SMART_FRAMEWORK_CHMOD_FILES)) OR
+	(!in_array((string)str_pad((string)decoct(SMART_FRAMEWORK_CHMOD_FILES), 4, '0', STR_PAD_LEFT), [ '0600', '0640', '0644', '0660', '0664', '0666' ]))
+) {
+	@http_response_code(500);
+	die('Invalid INIT constant value for SMART_FRAMEWORK_CHMOD_FILES: '.SMART_FRAMEWORK_CHMOD_FILES.' (decimal) / '.str_pad((string)decoct(SMART_FRAMEWORK_CHMOD_FILES), 4, '0', STR_PAD_LEFT).' (octal)');
+} //end if
 //================================================================
 
 
@@ -80,7 +104,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20250721
+ * @version     v.20260103
  * @package     @Core
  *
  */
@@ -480,6 +504,72 @@ final class Smart {
 		$path_info['dirname'] = (string) self::fix_path_separator((string)$path_info['dirname']);
 		//--
 		return (array) $path_info;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Binary Safe 					:: Check if a string contains another, Case Sensitive
+	 *
+	 * @param STRING 	$str		:: The string to check
+	 * @param STRING 	$part		:: The sub-string to search for in the string
+	 *
+	 * @return BOOLEAN				:: Returns TRUE if contains part or FALSE if not
+	 */
+	public static function str_contains(string $str, string $part) : bool {
+		//--
+		if(((string)$str == '') OR ((string)$part == '')) {
+			return false;
+		} //end if
+		//--
+	//	return (bool) (strpos((string)$str, (string)$part) !== false);
+		return (bool) str_contains((string)$str, (string)$part); // requires PHP >= 8.0 ; faster
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Binary Safe 					:: Check if a string starts with another, Case Sensitive
+	 *
+	 * @param STRING 	$str		:: The string to check
+	 * @param STRING 	$part		:: The sub-string to search for in the string
+	 *
+	 * @return BOOLEAN				:: Returns TRUE if starts with or FALSE if not
+	 */
+	public static function str_startswith(string $str, string $part) : bool {
+		//--
+		if(((string)$str == '') OR ((string)$part == '')) {
+			return false;
+		} //end if
+		//--
+	//	return (bool) (strpos((string)$str, (string)$part, 0) === 0);
+		return (bool) str_starts_with((string)$str, (string)$part); // requires PHP >= 8.0 ; faster
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Binary Safe 					:: Check if a string ends with another, Case Sensitive
+	 *
+	 * @param STRING 	$str		:: The string to check
+	 * @param STRING 	$part		:: The sub-string to search for in the string
+	 *
+	 * @return BOOLEAN				:: Returns TRUE if ends with or FALSE if not
+	 */
+	public static function str_endswith(string $str, string $part) : bool {
+		//--
+		if(((string)$str == '') OR ((string)$part == '')) {
+			return false;
+		} //end if
+		//--
+	//	return (bool) (strrpos((string)$str, (string)$part, 0) === (int)(strlen((string)$str) - strlen((string)$part)));
+		return (bool) str_ends_with((string)$str, (string)$part); // requires PHP >= 8.0 ; faster
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1803,12 +1893,12 @@ final class Smart {
 			return 0; // not an array
 		} //end if
 		//--
-		$is_list = false; // by default consider is non-list (associative array, aka: map)
-		if(SMART_FRAMEWORK_PHP_HAVE_ARRAY_LIST === true) { // requires PHP >= 8.1.0
-			$is_list = (bool) array_is_list((array)$y_arr);
-		} else {
-			$is_list = (bool) ((array)array_values((array)$y_arr) === (array)$y_arr); // speed-optimized, the fastest with PHP < 8.1 with non-associative large arrays, tested in all scenarios with large or small arrays
-		} //end if
+	//	$is_list = false; // by default consider is non-list (associative array, aka: map)
+	//	if(SMART_FRAMEWORK_PHP_HAVE_ARRAY_LIST === true) {
+			$is_list = (bool) array_is_list((array)$y_arr); // requires PHP >= 8.1.0 ; faster
+	//	} else {
+	//		$is_list = (bool) ((array)array_values((array)$y_arr) === (array)$y_arr); // speed-optimized, the fastest with PHP < 8.1 with non-associative large arrays, tested in all scenarios with large or small arrays
+	//	} //end if
 		//--
 		if($is_list === true) {
 			return 1; // non-associative array (list, sequential numeric index, 0..n)
@@ -3906,8 +3996,8 @@ final class Smart {
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: Smart, SmartEnvironment
- * @version 	v.20250217
+ * @depends 	classes: Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_CHMOD_DIRS, SMART_FRAMEWORK_CHMOD_FILES
+ * @version 	v.20260103
  * @package 	@Core:FileSystem
  *
  */
@@ -4025,6 +4115,63 @@ final class SmartFileSysUtils {
 		} //end if
 		//--
 		return (string) $fcontent;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * FAST WRITE A STATIC FILE WITH CONTENTS. ONLY WRITES IF THE FILE CONTENT DIFFERS OR DOES NOT EXISTS. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/file.ext).
+	 * It should be used just with static files which does not changes too often between executions ; it does not use safe lock checks
+	 *
+	 * @param 	STRING 		$file_relative_path 				:: The relative path of file to be written (can be a symlink to a file)
+	 * @param 	STRING		$contents 							:: The file contents
+	 * @param 	BOOL 		$skip_check_if_exists 				:: default is FALSE ; if set to TRUE if file exists will don't check if the content is identical
+	 *
+	 * @return 	BOOL											:: TRUE if success, FALSE if fail
+	 */
+	public static function writeStaticFile(?string $file_relative_path, ?string $contents, bool $skip_check_if_exists=false) : bool {
+		//--
+		if(self::staticFileExists((string)$file_relative_path) === true) {
+			if($skip_check_if_exists === true) {
+				return true;
+			} else {
+				$chkContents = (string) self::readStaticFile((string)$file_relative_path);
+				if((string)$chkContents === (string)$contents) {
+					return true;
+				} //end if
+			} //end if else
+		} //end if
+		//--
+		// do not use clearstatcache(), this is intended for STATIC FILES ONLY
+		//--
+		$staticRootPath = (string) self::getStaticFilesRootPath();
+		//--
+		self::raiseErrorIfUnsafePath((string)$file_relative_path);
+		self::raiseErrorIfUnsafePath((string)$staticRootPath.$file_relative_path);
+		//--
+		$result = file_put_contents(
+			(string) $staticRootPath.$file_relative_path,
+			(string) $contents,
+			LOCK_EX
+		);
+		//--
+		if($result === false) { // check
+			Smart::log_warning(__METHOD__.' # Failed to Write the File: `'.$staticRootPath.$file_relative_path.'`');
+			return false;
+		} //end if
+		$flen = (int) strlen((string)$contents);
+		if($result !== (int)$flen) {
+			Smart::log_warning(__METHOD__.' # Writing the File: `'.$staticRootPath.$file_relative_path.'` has returned an incomplete result, only '.$flen.' bytes were written');
+			return false;
+		} //end if
+		//--
+		if(defined('SMART_FRAMEWORK_CHMOD_FILES')) {
+			return (bool) chmod((string)$staticRootPath.$file_relative_path, SMART_FRAMEWORK_CHMOD_FILES);
+		} //end if
+		//--
+		return true;
 		//--
 	} //END FUNCTION
 	//================================================================

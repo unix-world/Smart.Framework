@@ -2,6 +2,19 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+January 03, 2026
+	* drop off compatibility with older PHP, now requires PHP 8.1.0 or later
+	* optimize some methods to use the newest built-in PHP 8.1+ native methods to speed-up execution in several areas of execution
+	* new class: SmartCryptoEcdsaOpenSSL, implements ECDSA Elliptic Curve Crypto
+
+December 30, 2025
+	* Lib Spreadsheet fixes with undefined array keys
+	* LibGD improvements + preserve transparency option for GIF / PNG
+	* JS Framework: Browser Utils: Fix for conflict in VirtualImageUploadHandler with more than one uploade
+	* JS Framework BrowserUtils: VirtualFileUploadHandler + optimizations
+	* Mod PageBuilder: Media class + fixes
+	* Mod Auth Users: implement support for JWT Api Auth, Bearer, fix wrong spell class name
+
 December 10, 2025
 	* Fix HTTP Client
 	* Fix Translations

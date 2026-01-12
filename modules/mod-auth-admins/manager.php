@@ -956,7 +956,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					//--
 					$user_lkeys = (int) strlen(((string)($select_user['keys'] ?? null)));
 					if((string)($select_user['id'] ?? null) == (string)SmartAuth::get_auth_id()) {
-						$user_pkeys = (string) $model->decryptPrivKey((string)($select_user['keys'] ?? null)); // {{{SYNC-ADM-AUTH-KEYS}}}
+						$user_pkeys = (string) $model->decryptSecretKey((string)($select_user['keys'] ?? null)); // {{{SYNC-ADM-AUTH-KEYS}}}
 					} //end if
 					if(SmartEnvironment::is2FAEnabled() === true) {
 						if((string)($select_user['fa2'] ?? null) != '') {

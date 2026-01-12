@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartEnvironment, SmartCipherCrypto
- * @version 	v.20250714
+ * @version 	v.20260108
  * @package 	@Core:Authentication
  *
  */
@@ -645,7 +645,7 @@ final class SmartAuth {
 		//--
 		$the_pass = (string) SmartCipherCrypto::encrypt((string)$y_hashpass, (string)$the_key, 'hash/sha3-224');
 		//--
-		$the_fa2secret = (string) trim((string)($y_keys['fa2sec'] ?? null));
+		$the_fa2secret = (string) trim((string)strval($y_keys['fa2sec'] ?? null));
 		if((string)$the_fa2secret != '') {
 			$the_fa2secret = (string) SmartCipherCrypto::encrypt((string)$the_fa2secret, (string)$the_key, 'hash/sha3-256');
 			if((string)trim((string)$the_fa2secret) == '') { // be sure is really empty
@@ -653,7 +653,15 @@ final class SmartAuth {
 			} //end if else
 		} //end if
 		//--
-		$the_securitykey = (string) trim((string)($y_keys['seckey'] ?? null));
+		$the_secretkey = (string) trim((string)strval($y_keys['seckey'] ?? null));
+		if((string)$the_secretkey != '') {
+			$the_secretkey = (string) SmartCipherCrypto::bf_encrypt((string)$the_secretkey, (string)$the_key);
+			if((string)trim((string)$the_secretkey) == '') { // be sure is really empty
+				$the_secretkey = '';
+			} //end if else
+		} //end if
+		//--
+		$the_securitykey = (string) trim((string)strval($y_keys['ssekey'] ?? null));
 		if((string)$the_securitykey != '') {
 			$the_securitykey = (string) SmartCipherCrypto::bf_encrypt((string)$the_securitykey, (string)$the_key);
 			if((string)trim((string)$the_securitykey) == '') { // be sure is really empty
@@ -661,14 +669,19 @@ final class SmartAuth {
 			} //end if else
 		} //end if
 		//--
-		$the_privkey = (string) trim((string)($y_keys['privkey'] ?? null));
+		$the_privkey = (string) trim((string)strval($y_keys['privkey'] ?? null));
 		if((string)$the_privkey != '') {
 			$the_privkey = (string) SmartCipherCrypto::tf_encrypt((string)$the_privkey, (string)$the_key);
 			if((string)trim((string)$the_privkey) == '') { // be sure is really empty
 				$the_privkey = '';
 			} //end if else
 		} //end if
-		$the_pubkey = (string) trim((string)($y_keys['pubkey'] ?? null));
+		//--
+		$the_pubkey = (string) trim((string)strval($y_keys['pubkey'] ?? null));
+		//--
+		$the_cert = (string) trim((string)strval($y_keys['cert'] ?? null));
+		//--
+		$the_infocert = (string) trim((string)strval($y_keys['infocert'] ?? null));
 		//--
 		if(Smart::array_type_test($y_user_metadata) != 2) { // requires an associative array
 			$y_user_metadata = []; // reset, must be associative
@@ -702,9 +715,12 @@ final class SmartAuth {
 		self::$AuthData['USER-PRIVILEGES'] 		= (string) $y_user_privileges_list;
 		self::$AuthData['USER-RESTRICTIONS'] 	= (string) $y_user_restrictions_list;
 		self::$AuthData['USER-2FA-SECRET'] 		= (string) $the_fa2secret;
-		self::$AuthData['USER-SECKEY'] 			= (string) $the_securitykey;
+		self::$AuthData['USER-SECKEY'] 			= (string) $the_secretkey; // used for sensitive data encryption, if changed all data must be migrated
+		self::$AuthData['USER-SSEKEY'] 			= (string) $the_securitykey; // user for on-the-fly encryption and/or auth tokens, may be changed
 		self::$AuthData['USER-PRIVKEY'] 		= (string) $the_privkey;
 		self::$AuthData['USER-PUBKEY'] 			= (string) $the_pubkey;
+		self::$AuthData['USER-CERT'] 			= (string) $the_cert;
+		self::$AuthData['USER-INFO-CERT'] 		= (string) $the_infocert;
 		self::$AuthData['USER-QUOTA'] 			= (int)    $y_user_quota;
 		self::$AuthData['USER-METADATA'] 		= (array)  $y_user_metadata;
 		self::$AuthData['USER-WORKSPACES'] 		= (array)  $y_workspaces;
@@ -779,8 +795,11 @@ final class SmartAuth {
 			'user:arr-restrictions' => (array)  self::get_user_arr_restrictions(),
 			'user:fa2secret' 		=> (string) ((self::$AuthData['USER-2FA-SECRET'] ?? null)  ? ($y_skip_sensitive ? '........[Sensitive:Protected]........' : self::get_user_fa2secret()) : ''),
 			'user:seckey' 			=> (string) ((self::$AuthData['USER-SECKEY'] ?? null)  ? ($y_skip_sensitive ? '........[Sensitive:Protected]........' : self::get_user_seckey()) : ''),
+			'user:ssekey' 			=> (string) ((self::$AuthData['USER-SSEKEY'] ?? null)  ? ($y_skip_sensitive ? '........[Sensitive:Protected]........' : self::get_user_ssekey()) : ''),
 			'user:privkey' 			=> (string) ((self::$AuthData['USER-PRIVKEY'] ?? null) ? ($y_skip_sensitive ? '........[Sensitive:Protected]........' : self::get_user_privkey()) : ''),
 			'user:pubkey' 			=> (string) self::get_user_pubkey(),
+			'user:cert' 			=> (string) self::get_user_cert(),
+			'user:info-cert' 		=> (string) self::get_user_infocert(),
 			'user:quota' 			=> (int)    self::get_user_quota(),
 			'user:metadata' 		=> (array)  self::get_user_metadata(),
 			'user:workspaces' 		=> (array)  self::get_user_workspaces(),
@@ -1015,9 +1034,9 @@ final class SmartAuth {
 
 	//================================================================
 	/**
-	 * Get the auth user (safe) stored security-key from (in-memory)
+	 * Get the auth user (safe) stored secret-key from (in-memory)
 	 *
-	 * @return 	STRING		:: The plain security-key if was set and valid or empty string
+	 * @return 	STRING		:: The plain secret-key if was set and valid or empty string
 	 */
 	public static function get_user_seckey() : string {
 		//--
@@ -1028,6 +1047,26 @@ final class SmartAuth {
 		} //end if else
 		//--
 		return (string) SmartCipherCrypto::bf_decrypt((string)self::$AuthData['USER-SECKEY'], (string)self::$AuthData['SESS-RAND-KEY']);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get the auth user (safe) stored security-key from (in-memory)
+	 *
+	 * @return 	STRING		:: The plain security-key if was set and valid or empty string
+	 */
+	public static function get_user_ssekey() : string {
+		//--
+		if((!array_key_exists('USER-SSEKEY', self::$AuthData)) OR (!array_key_exists('SESS-RAND-KEY', self::$AuthData))) {
+			return ''; // no sec-key or not key
+		} elseif((string)trim((string)self::$AuthData['USER-SSEKEY']) == '') {
+			return ''; // empty sec-key
+		} //end if else
+		//--
+		return (string) SmartCipherCrypto::bf_decrypt((string)self::$AuthData['USER-SSEKEY'], (string)self::$AuthData['SESS-RAND-KEY']);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1055,13 +1094,41 @@ final class SmartAuth {
 
 	//================================================================
 	/**
-	 * Get the auth user (safe) stored public-key from (in-memory)
+	 * Get the auth user stored public-key from (in-memory)
 	 *
 	 * @return 	STRING		:: The plain public-key if was set and valid or empty string
 	 */
 	public static function get_user_pubkey() : string {
 		//--
 		return (string) trim((string)(self::$AuthData['USER-PUBKEY'] ?? null));
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get the auth user stored sign-cert from (in-memory)
+	 *
+	 * @return 	STRING		:: The plain sign-cert if was set and valid or empty string
+	 */
+	public static function get_user_cert() : string {
+		//--
+		return (string) trim((string)(self::$AuthData['USER-CERT'] ?? null));
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get the auth user stored info-sign-cert from (in-memory)
+	 *
+	 * @return 	STRING		:: The plain info-sign-cert if was set and valid or empty string
+	 */
+	public static function get_user_infocert() : string {
+		//--
+		return (string) trim((string)(self::$AuthData['USER-INFO-CERT'] ?? null));
 		//--
 	} //END FUNCTION
 	//================================================================

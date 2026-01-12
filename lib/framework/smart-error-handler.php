@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20251210 # this should be loaded from app web root only
+// # r.20260103 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -43,9 +43,9 @@ if((string)trim((string)ini_get('default_mimetype')) != 'text/html') {
 //--
 
 //-- PHP version, 64-bit support and various checks
-if(version_compare((string)phpversion(), '7.4.33') < 0) { // check for PHP 7.4 (latest) or later 8.x
+if(version_compare((string)phpversion(), '8.1.0') < 0) { // check for PHP 8.1 or later
 	@http_response_code(500);
-	die('PHP Runtime not supported: '.phpversion().' !'.'<br>PHP versions to run this software are: 7.4 / 8.0 / 8.1 / 8.2 / 8.3 / 8.4 / 8.5 or later');
+	die('PHP Runtime not supported: '.phpversion().' !'.'<br>PHP versions to run this software are: 8.1 / 8.2 / 8.3 / 8.4 / 8.5 or later');
 } //end if
 //--
 if(((int)PHP_INT_SIZE < 8) OR ((string)(int)PHP_INT_MAX < '9223372036854775807')) { // check for 64-bit integer
@@ -91,7 +91,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2025.12.10'); // tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2026.01.03'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--

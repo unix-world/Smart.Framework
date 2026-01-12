@@ -29,7 +29,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250314
+ * @version 	v.20251229
  * @package 	modules:AuthUsers
  *
  */
@@ -69,7 +69,7 @@ final class AuthCookie {
 	} //END FUNCTION
 
 
-	public static function usetJwtCookie() : bool {
+	public static function unsetJwtCookie() : bool {
 		//-- http only
 		if(\SmartUtils::unset_cookie((string)self::AUTH_USERS_SF_COOKIE_NAME, '/', '@', '@', false, true) === true) {
 			return true;

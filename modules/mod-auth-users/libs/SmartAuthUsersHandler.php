@@ -29,7 +29,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250620
+ * @version 	v.20251230
  * @package 	modules:AuthUsers
  *
  */
@@ -41,17 +41,37 @@ final class SmartAuthUsersHandler
 
 	public static function Authenticate() : void {
 		//--
-		$mode = 'cookie';
+	//	$apiToken = \SmartModExtLib\AuthUsers\AuthJwt::newAuthJwtToken('api', '@', '', 'user.id', 'user@email.ext'); \Smart::log_notice(__METHOD__.' # '.print_r($apiToken,1));
 		//--
-		$token = (string) \trim((string)\SmartModExtLib\AuthUsers\AuthCookie::getJwtCookie());
-		if((string)$token == '') {
+		$mode = '';
+		$token = '';
+		//--
+		$bearer = (string) self::getApiAuth();
+		if((string)$bearer != '') {
+			$mode = 'api';
+			$token = (string) $bearer;
+		} else {
+			$cookie = (string) self::getCookieAuth();
+			if((string)$cookie != '') {
+				$mode = 'cookie';
+				$token = (string) $cookie;
+			} //end if
+			$cookie = null;
+		} //end if else
+		$bearer = null;
+		//--
+		if((string)\trim((string)$mode) == '') {
+			return;
+		} //end if
+		if((string)\trim((string)$token) == '') {
 			return;
 		} //end if
 		//--
 		$jwtValidArr = (array) \SmartModExtLib\AuthUsers\AuthJwt::validateAuthJwtToken((string)$mode, (string)$token);
+	//	\Smart::log_notice(__METHOD__.' # '.print_r($jwtValidArr,1));
 		if((string)($jwtValidArr['error'] ?? null) != '') {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 401, (string)($jwtValidArr['error'] ?? null));
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Validation', 401, (string)($jwtValidArr['error'] ?? null));
 			return;
 		} //end if
 		//--
@@ -67,21 +87,22 @@ final class SmartAuthUsersHandler
 			OR
 			(\SmartAuth::validate_auth_ext_username((string)$email) !== true)
 		) {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'UserName is Invalid: `'.$email.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Validation', 403, 'UserName is Invalid: `'.$email.'`');
 			return;
 		} //end if
 		//--
 		$xtras = (string) \trim((string)($jwtValidArr['xtras'] ?? null));
+	//	\Smart::log_notice(__METHOD__.' # `'.$xtras.'`');
 		if(\strpos((string)$xtras, ']|') === false) {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Xtras are Invalid: `'.$xtras.'` for `'.$email.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Validation', 403, 'Xtras are Invalid: `'.$xtras.'` for `'.$email.'`');
 			return;
 		} //end if
 		$arrXtras = (array) explode('|', (string)$xtras, 2); // explode only by 1st occurence ; json may contain also |
 		if((int)\Smart::array_size($arrXtras) != 2) {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Xtras are Invalid, split length by separator: `'.$xtras.'` for `'.$email.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Validation', 403, 'Xtras are Invalid, split length by separator: `'.$xtras.'` for `'.$email.'`');
 			return;
 		} //end if
 		//--
@@ -95,8 +116,8 @@ final class SmartAuthUsersHandler
 			OR
 			((string)($arrXtras[0] ?? null) !== (string)$reqXtras)
 		) {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Xtras are Wrong: `'.$xtras.'` for `'.$email.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Validation', 403, 'Xtras are Wrong: `'.$xtras.'` for `'.$email.'`');
 			return;
 		} //end if
 		//--
@@ -105,16 +126,16 @@ final class SmartAuthUsersHandler
 			$jsonXtras = [];
 		} //end if
 		if((int)\Smart::array_size($jsonXtras) <= 0) {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Xtras Data is Invalid: `'.$xtras.'` for `'.$email.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Validation', 403, 'Xtras Data is Invalid: `'.$xtras.'` for `'.$email.'`');
 			return;
 		} //end if
 		// \Smart::log_notice(print_r($jsonXtras,1));
 		//--
 		$clusterID = (string) \trim((string)($jsonXtras['cluster'] ?? null));
 		if(\SmartAuth::validate_cluster_id((string)$clusterID) !== true) { // {{{SYNC-AUTH-USERS-SAFE-VALIDATE-CLUSTER}}}
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User ClusterID is Invalid: `'.$email.'` / `'.$clusterID.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Auth', 403, 'User ClusterID is Invalid: `'.$email.'` / `'.$clusterID.'`');
 			return;
 		} //end if
 		//--
@@ -128,33 +149,33 @@ final class SmartAuthUsersHandler
 			OR
 			(\SmartAuth::validate_auth_username((string)$userID, false) !== true)
 		) {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User UserID is Invalid: `'.$email.'` / `'.$userID.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Auth', 403, 'User UserID is Invalid: `'.$email.'` / `'.$userID.'`');
 			return;
 		} //end if
 		//--
 		$provider = (string) \trim((string)($jsonXtras['provider'] ?? null));
 		if((string)$provider == '') {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Xtras Provider is Empty: `'.$xtras.'` for `'.$email.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Validation', 403, 'Xtras Provider is Empty: `'.$xtras.'` for `'.$email.'`');
 			return;
 		} else if((string)$provider != '@') { // {{{SYNC-AUTH-USERS-PROVIDER-SELF}}}
 			if(!\preg_match((string)\SmartModExtLib\AuthUsers\AuthPlugins::AUTH_USERS_PLUGINS_VALID_ID_REGEX, (string)$provider)) {
-				\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-				\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Xtras Provider is Wrong: `'.$xtras.'` for `'.$email.'`');
+				\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+				\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Validation', 403, 'Xtras Provider is Wrong: `'.$xtras.'` for `'.$email.'`');
 				return;
 			} //end if
 			if(\SmartModExtLib\AuthUsers\AuthPlugins::pluginExists((string)$provider) !== true) {
-				\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-				\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Xtras Provider does Not Exists: `'.$xtras.'` for `'.$email.'`');
+				\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+				\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Validation', 403, 'Xtras Provider does Not Exists: `'.$xtras.'` for `'.$email.'`');
 				return;
 			} //end if
 		} //end if
 		//--
 		$area = (string) \trim((string)($jwtValidArr['area'] ?? null));
 		if((string)$area !== (string)\SmartModExtLib\AuthUsers\Utils::AUTH_USERS_AREA) {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Area is Invalid: `'.$area.'` for `'.$email.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Validation', 403, 'Area is Invalid: `'.$area.'` for `'.$email.'`');
 			return;
 		} //end if
 		//--
@@ -162,79 +183,85 @@ final class SmartAuthUsersHandler
 		if(
 			((string)$iplist == '')
 			OR
-			((string)$iplist == '*')
-			OR
-			(\strpos((string)$iplist, '<') === false)
-			OR
-			(\strpos((string)$iplist, '>') === false)
+			(
+				((string)$mode == 'cookie')
+				AND
+				(
+					((string)$iplist == '*') // disallow wildcard IP list on cookie auth JWT
+					OR
+					(\strpos((string)$iplist, '<') === false)
+					OR
+					(\strpos((string)$iplist, '>') === false)
+				)
+			)
 		) {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'IpList is Invalid: `'.$iplist.'` for `'.$email.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Validation', 403, 'IpList is Invalid: `'.$iplist.'` for `'.$email.'`');
 			return;
 		} //end if
 		//--
 		$serial = (string) \trim((string)($jwtValidArr['serial'] ?? null));
 		if(((string)$serial == '') || ((int)\strlen((string)$serial) != 21)) {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Serial is Invalid: `'.$serial.'` for `'.$email.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Validation', 403, 'Serial is Invalid: `'.$serial.'` for `'.$email.'`');
 			return;
 		} //end if
 		//--
 		$signature = (string) \trim((string)($jwtValidArr['sign'] ?? null));
 		if((string)$signature == '') {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Validation', 403, 'Signature is Empty for `'.$email.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Validation', 403, 'Signature is Empty for `'.$email.'`');
 			return;
 		} //end if
 		//--
 		$userData = (array) \SmartModExtLib\AuthUsers\AuthClusterUser::getAccountWorkspace((string)$clusterID, (string)$userID, (string)$email);
 		if((int)\Smart::array_size($userData) <= 0) {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User Account does not Exists: `'.$email.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Auth', 403, 'User Account does not Exists: `'.$email.'`');
 			return;
 		} //end if
 		if((string)($userData['cluster'] ?? null) !== (string)$clusterID) {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User ClusterID mismatch: `'.$email.'` / `'.($userData['cluster'] ?? null).'` / `'.$clusterID.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Auth', 403, 'User ClusterID mismatch: `'.$email.'` / `'.($userData['cluster'] ?? null).'` / `'.$clusterID.'`');
 			return;
 		} //end if
 		if((string)\SmartModExtLib\AuthUsers\Utils::userAccountIdToUserName((string)($userData['id'] ?? null)) !== (string)$userID) {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User UserID mismatch: `'.$email.'` / `'.($userData['id'] ?? null).'` / `'.$userID.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Auth', 403, 'User UserID mismatch: `'.$email.'` / `'.($userData['id'] ?? null).'` / `'.$userID.'`');
 			return;
 		} //end if
 		if((string)($userData['id'] ?? null) !== (string)\SmartModExtLib\AuthUsers\Utils::userNameToUserAccountId((string)$userID)) {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User UserName mismatch: `'.$email.'` / `'.($userData['id'] ?? null).'` / `'.$userID.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Auth', 403, 'User UserName mismatch: `'.$email.'` / `'.($userData['id'] ?? null).'` / `'.$userID.'`');
 			return;
 		} //end if
 		if((string)($userData['email'] ?? null) !== (string)$email) {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User Email mismatch: `'.$email.'` / `'.($userData['email'] ?? null).'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Auth', 403, 'User Email mismatch: `'.$email.'` / `'.($userData['email'] ?? null).'`');
 			return;
 		} //end if
 		//-- status must be 1 or 2 ; 1 = allow multi-sessions ; 2 = disallow multi-sessions
 		if((intval($userData['status'] ?? null) < 1) || (intval($userData['status'] ?? null) > 2)) { // {{{SYNC-ACCOUNT-MULTISESSIONS}}}
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'User Account is Disabled: `'.$email.'` / `'.($userData['status'] ?? null).'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Auth', 403, 'User Account is Disabled: `'.$email.'` / `'.($userData['status'] ?? null).'`');
 			return;
 		} else if(intval($userData['status'] ?? null) == 2) { // {{{SYNC-ACCOUNT-MULTISESSIONS-DISABLED}}}
 			if((string)($userData['jwtserial'] ?? null) !== (string)$serial) {
-				\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-				\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'Token serial is wrong: `'.$serial.'` / `'.($userData['jwtserial'] ?? null).'` for auth `'.$email.'`');
+				\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+				\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Auth', 403, 'Token serial is wrong: `'.$serial.'` / `'.($userData['jwtserial'] ?? null).'` for auth `'.$email.'`');
 				return;
 			} //end if
 			if((string)($userData['jwtsignature'] ?? null) !== (string)$signature) {
-				\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-				\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:Auth', 403, 'Token signature is wrong: `'.$signature.'` / `'.($userData['jwtsignature'] ?? null).'` for auth `'.$email.'`');
+				\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+				\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Auth', 403, 'Token signature is wrong: `'.$signature.'` / `'.($userData['jwtsignature'] ?? null).'` for auth `'.$email.'`');
 				return;
 			} //end if
 		} //end if
 		//--
-		$userEncKey = (string) \SmartModExtLib\AuthUsers\Utils::userEncryptionKey((string)$email);
+		$userEncKey = (string) \SmartModExtLib\AuthUsers\Utils::userEncryptionKey((string)$userID); // ok ; pre-check ; if returns an empty key by error means settings are bad, cannot login !
 		if((string)\trim((string)$userEncKey) == '') {
-			\SmartModExtLib\AuthUsers\AuthCookie::usetJwtCookie();
-			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('Auth', 403, 'Invalid User Encryption Key for auth `'.$email.'`');
+			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
+			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Auth', 403, 'Invalid User Encryption Key for auth `'.$email.'`');
 			return;
 		} //end if
 		//--
@@ -250,29 +277,21 @@ final class SmartAuthUsersHandler
 			$quota = -1; // means unlimited
 		} //end if
 		//--
-		$fa2secret = (string) \trim((string)($userData['fa2'] ?? null));
-		if((string)$fa2secret != '') {
-			$fa2secret = (string) \trim((string)\SmartCipherCrypto::tf_decrypt((string)$fa2secret, (string)$userEncKey, true)); // TF+BF
-			if(\SmartModExtLib\AuthUsers\Auth2FA::is2FASecretValid((string)$fa2secret) !== true) {
-				$fa2secret = '';
-			} //end if
-		} //end if
+		$fa2secret 	= (string) \trim((string)\SmartModExtLib\AuthUsers\Utils::decrypt2FASecret((string)$userID, (string)($userData['fa2'] ?? null)));
+		$securityKey 	= (string) \trim((string)\SmartModExtLib\AuthUsers\Utils::decryptSecretKey((string)$userID, (string)($userData['seckey'] ?? null))); // it is used as Security Key NOT as Secret Key !
+		$signKeys 	= (array)  \SmartModExtLib\AuthUsers\Utils::decryptSignKeys((string)$userID, (string)($userData['signkeys'] ?? null));
 		//--
-		$secKey = (string) \trim((string)($userData['seckey'] ?? null));
-		if((string)$secKey != '') {
-			$secKey = (string) \trim((string)\SmartCipherCrypto::tf_decrypt((string)$secKey, (string)$userEncKey, true)); // TF+BF
-		} //end if
-		//--
-		$signKeys = (string) \trim((string)($userData['signkeys'] ?? null));
-		if((string)$signKeys != '') {
-			$signKeys = (string) \trim((string)\SmartCipherCrypto::tf_decrypt((string)$signKeys, (string)$userEncKey, true)); // TF+BF
-			if((string)$signKeys != '') {
-				$signKeys = \Smart::json_decode((string)$signKeys);
+		$infocert 	= [];
+		foreach($signKeys as $sk => $sv) {
+			if(!\in_array((string)$sk, [ 'privKey', 'pubKey', 'certificate' ])) {
+				$infocert[(string)$sk] = $sv; // mixed
 			} //end if
-		} //end if
-		if(!\is_array($signKeys)) {
-			$signKeys = [];
-		} //end if
+		} //end foreach
+		if((int)\Smart::array_size($infocert) > 0) {
+			$infocert = (string) \trim((string)\Smart::json_encode((array)$infocert, true, true, false, 2)); // max 2 levels
+		} else {
+			$infocert = '';
+		} //end if else
 		//--
 		$arrWorkspaces = [
 			'is:local' => (bool) ($userData['#workspace:is:local'] ?? null),
@@ -281,9 +300,9 @@ final class SmartAuthUsersHandler
 			$arrWorkspaces['db'] = (string) (string) \SmartModExtLib\AuthUsers\AuthClusterUser::getAccountWorkspacePath((string)$userID);
 		} //end if
 		//--
-		\SmartAuth::set_auth_data( // v.20250218
+		\SmartAuth::set_auth_data( // v.20260108
 			(string) \SmartModExtLib\AuthUsers\Utils::AUTH_USERS_AREA, // auth realm
-			(string) 'COOKIE.JWT:'.$provider, // auth method
+			(string) \strtoupper((string)$mode).'.JWT:'.$provider, // auth method
 			(string) $clusterID, // cluster ID
 			(int)    $passalgo, // pass algo
 			(string) $passhash, // auth password hash (will be stored as encrypted, in-memory)
@@ -293,11 +312,14 @@ final class SmartAuthUsersHandler
 			(string) \trim((string)($userData['name'] ?? null)), // user full name (First Name + ' ' + Last name) * Optional *
 			(string) \trim((string)($userData['priv'] ?? null)), // user privileges * Optional *
 			(string) \trim((string)($userData['restr'] ?? null)), // user restrictions * Optional *
-			(array)  [ // {{{SYNC-AUTH-KEYS}}}
-				'fa2sec'  => (string) $fa2secret,
-				'seckey'  => (string) $secKey,
-				'privkey' => (string) ($signKeys['privkey'] ?? null),
-				'pubkey'  => (string) ($signKeys['pubkey'] ?? null),
+			(array)  [ // {{{SYNC-AUTH-KEYS}}} ; important: for user accounts, seckey (Secret Key) should never be changed, otherwise may loose encrypted data ! the ssekey (Security Key) may be changed, it is used for tokens (ex: JWT) generation only
+				'fa2sec' 	=> (string) $fa2secret, 							// 2FA secret
+				'seckey' 	=> (string) $userEncKey, 							// secret (private) key, should not be revealed, used for sensitive data persistent encryption
+				'ssekey' 	=> (string) $securityKey, 							// security (private) key, should not be revealed, used for on-the-fly encryption and/or tokens (ex: JWT) generation only
+				'privkey' 	=> (string) ($signKeys['privKey'] ?? null), 		// sign private key, should not be revealed
+				'pubkey'  	=> (string) ($signKeys['pubKey'] ?? null), 			// sign public key
+				'cert' 		=> (string) ($signKeys['certificate'] ?? null), 	// sign certificate
+				'infocert' 	=> (string) $infocert, 								// sign metainfo (json)
 			], // keys
 			(int)    $quota, // user quota in MB * Optional ; -1 unlimited 0..n MB
 			[ // user metadata (array) ; may vary
@@ -311,7 +333,7 @@ final class SmartAuthUsersHandler
 			(array)  $arrWorkspaces, // workspaces
 		);
 		//--
-		//die('<pre>'.\Smart::escape_html(\SmartUtils::pretty_print_var(\SmartAuth::get_auth_data(true))).'</pre>');
+	//	\Smart::log_notice(__METHOD__.' # '.print_r(\SmartAuth::get_auth_data(true),1));
 		//--
 		//-- {{{SYNC-AUTH-USERS-CLEAR-COOKIES}}}
 		\SmartModExtLib\AuthUsers\Utils::unsetRedirUrlCookie(); // clear redir cookie
@@ -328,6 +350,54 @@ final class SmartAuthUsersHandler
 		\SmartAuth::lock_auth_data();
 		//--
 		return;
+		//--
+	} //END FUNCTION
+
+
+	private static function getCookieAuth() : string {
+		//--
+		return (string) \trim((string)\SmartModExtLib\AuthUsers\AuthCookie::getJwtCookie());
+		//--
+	} //END FUNCTION
+
+
+	private static function getApiAuth() : string {
+		//--
+		$authData = []; // init
+		//--
+		$authTemplateData = (array) \SmartModExtLib\AuthAdmins\AuthProviderHttp::AUTH_RESULT; // pre-init, to be sure is implemented in a correct way
+		//--
+		$authHttpData = (array) \SmartModExtLib\AuthAdmins\AuthProviderHttp::GetCredentials(true, true); // enable tokens ; disable auth basic
+		//--
+		foreach($authTemplateData as $key => $val) {
+			$authData[(string)$key] = ($authHttpData[(string)$key] ?? null); // do not cast, must be preserved !
+		} //end foreach
+		//--
+		$authData['auth-bearer'] 	= (string) \trim((string)$authData['auth-bearer']);
+		$authData['auth-token'] 	= (string) \trim((string)$authData['auth-token']);
+		$authData['auth-user'] 		= (string) \trim((string)$authData['auth-user']);
+		$authData['auth-pass'] 		= (string) \trim((string)$authData['auth-pass']);
+		$authData['auth-safe'] 		= (int)    \intval((string)$authData['auth-safe']);
+		//--
+	//	\Smart::log_notice(__METHOD__.' # '.print_r($authData,1));
+		//--
+		if(
+			((string)$authData['auth-error'] == '')
+			AND
+			((int)$authData['auth-safe'] > 0)
+			AND
+			((string)$authData['auth-bearer'] != '')
+			AND
+			((string)$authData['auth-token'] == '')
+			AND
+			((string)$authData['auth-user'] == '')
+			AND
+			((string)$authData['auth-pass'] == '')
+		) { // bearer token auth
+			return (string) $authData['auth-bearer']; // already trimmed above
+		} //end if
+		//--
+		return '';
 		//--
 	} //END FUNCTION
 

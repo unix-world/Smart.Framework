@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 abstract class SqAuthAdmins extends \SmartModDataModel\AuthAdmins\AbstractAuthAdmins {
 
 	// ->
-	// v.20250314
+	// v.20260108
 
 	private $db;
 	private $dbFile;
@@ -422,7 +422,7 @@ abstract class SqAuthAdmins extends \SmartModDataModel\AuthAdmins\AbstractAuthAd
 				];
 				if((string)$id == (string)\SmartAuth::get_auth_id()) { // current account only ; do not update keys except for current logged in user only
 					if((string)$data['upd-keys'] == 'yes') {
-						$arr['keys'] = (string) $this->encryptPrivKey((string)$data['keys']); // avoid update keys for other user since the password of other users is completely unknown, it is stored in an ireversible hash format
+						$arr['keys'] = (string) $this->encryptSecretKey((string)$data['keys']); // avoid update keys for other user since the password of other users is completely unknown, it is stored in an ireversible hash format
 					} //end if
 					// disallow self user edit privileges !
 				} else { // for editing other users, if they have superadmin privileges, they can except if is the default account
@@ -557,9 +557,9 @@ abstract class SqAuthAdmins extends \SmartModDataModel\AuthAdmins\AbstractAuthAd
 		];
 		//--
 		if((string)$pkeys != '') {
-			$pkeys = (string) $this->decryptPrivKey((string)$pkeys, (string)$ohash); // {{{SYNC-ADM-AUTH-KEYS}}}
+			$pkeys = (string) $this->decryptSecretKey((string)$pkeys, (string)$ohash); // {{{SYNC-ADM-AUTH-KEYS}}}
 			if((string)$pkeys != '') {
-				$pkeys = (string) $this->encryptPrivKey((string)$pkeys, (string)$hash); // {{{SYNC-ADM-AUTH-KEYS}}} :: re-encode keys with the new pass (not with hash which is visible in the DB !!!)
+				$pkeys = (string) $this->encryptSecretKey((string)$pkeys, (string)$hash); // {{{SYNC-ADM-AUTH-KEYS}}} :: re-encode keys with the new pass (not with hash which is visible in the DB !!!)
 			} //end if
 		} //end if
 		//--

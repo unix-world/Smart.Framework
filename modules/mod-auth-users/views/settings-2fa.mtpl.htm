@@ -7,7 +7,7 @@ const handleFormAcc2FA = () => {
 	smartJ$Browser.ConfirmDialog(
 		'<h5 style="color:#FF3300;">[###TXT-2FA-QUESTION|html|js###]</h5><br><h5>[###TXT-2FA-CONFIRM|html|js###]<br><i>[###TXT-2FA-WARN|html|js###]</i></h5>',
 		() => {
-			smartJ$Browser.SubmitFormByAjax('fa2_confirm_form', '?page=auth-users.settings-api.json', 'yes', () => { smartJ$Browser.RefreshParent(); setTimeout(() => { smartJ$Browser.CloseDelayedModalPopUp(); }, 2000); });
+			smartJ$Browser.SubmitFormByAjax('fa2_confirm_form', '?page=auth-users.settings-api.json', 'yes', () => { smartJ$Browser.RefreshParent('?page=auth-users.settings&tab=security'); setTimeout(() => { smartJ$Browser.CloseDelayedModalPopUp(); }, 2000); });
 		},
 		'[###TXT-2FA-ENABLE|js###]',
 		null,
@@ -43,7 +43,7 @@ const handleFormAcc2FA = () => {
 		</div>
 		<div class="ux-controls">
 			<button type="button" class="ux-button ux-button-spacing" onClick="smartJ$Browser.CloseDelayedModalPopUp(); return false;"><i style="color:#555555;" class="sfi sfi-spinner11"></i> &nbsp; [###TXT-CANCEL|html###]</button>
-			<button type="button" class="ux-button ux-button-highlight ux-button-spacing" onClick="handleFormAcc2FA(); return false;"><i class="sfi sfi-fa-umbrella"></i> &nbsp; [###TXT-2FA-BTN-ENABLE|html###]</button>
+			<button type="button" class="ux-button ux-button-highlight ux-button-spacing" onClick="handleFormAcc2FA(); return false;"><i class="sfi sfi-clock"></i> &nbsp; [###TXT-2FA-BTN-ENABLE|html###]</button>
 		</div>
 	</form>
 </td></tr></table></div></center>

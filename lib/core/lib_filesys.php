@@ -19,30 +19,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // [REGEX-SAFE-OK] ; [PHP8]
 
 //--
-if(!defined('SMART_FRAMEWORK_CHMOD_DIRS')) {
-	@http_response_code(500);
-	die('A required INIT constant has not been defined: SMART_FRAMEWORK_CHMOD_DIRS');
-} //end if
-if(
-	(!is_int(SMART_FRAMEWORK_CHMOD_DIRS)) OR
-	(!in_array((string)str_pad((string)decoct(SMART_FRAMEWORK_CHMOD_DIRS), 4, '0', STR_PAD_LEFT), [ '0700', '0750', '0755', '0770', '0775', '0777' ]))
-) {
-	@http_response_code(500);
-	die('Invalid INIT constant value for SMART_FRAMEWORK_CHMOD_DIRS: '.SMART_FRAMEWORK_CHMOD_DIRS.' (decimal) / '.str_pad((string)decoct(SMART_FRAMEWORK_CHMOD_DIRS), 4, '0', STR_PAD_LEFT).' (octal)');
-} //end if
-//--
-if(!defined('SMART_FRAMEWORK_CHMOD_FILES')) {
-	@http_response_code(500);
-	die('A required INIT constant has not been defined: SMART_FRAMEWORK_CHMOD_FILES');
-} //end if
-if(
-	(!is_int(SMART_FRAMEWORK_CHMOD_DIRS)) OR
-	(!in_array((string)str_pad((string)decoct(SMART_FRAMEWORK_CHMOD_FILES), 4, '0', STR_PAD_LEFT), [ '0600', '0640', '0644', '0660', '0664', '0666' ]))
-) {
-	@http_response_code(500);
-	die('Invalid INIT constant value for SMART_FRAMEWORK_CHMOD_FILES: '.SMART_FRAMEWORK_CHMOD_FILES.' (decimal) / '.str_pad((string)decoct(SMART_FRAMEWORK_CHMOD_FILES), 4, '0', STR_PAD_LEFT).' (octal)');
-} //end if
-//--
 if(!defined('SMART_FRAMEWORK_HTACCESS_NOEXECUTION')) {
 	@http_response_code(500);
 	die('A required INIT constant has not been defined: SMART_FRAMEWORK_HTACCESS_NOEXECUTION');
@@ -82,7 +58,7 @@ if(!defined('SMART_FRAMEWORK_HTACCESS_NOINDEXING')) {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be mostly safe ; Reads can also use optional shared locking if needed
  *
  * @depends 	classes: Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_CHMOD_DIRS, SMART_FRAMEWORK_CHMOD_FILES
- * @version 	v.20250118
+ * @version 	v.20260103
  * @package 	Application:FileSystem
  *
  */
@@ -2131,7 +2107,7 @@ final class SmartFileSystem {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be safe
  *
  * @depends 	classes: Smart
- * @version 	v.20250107
+ * @version 	v.20260103
  * @package 	Application:FileSystem
  *
  */

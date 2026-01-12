@@ -17,7 +17,7 @@ define('SMART_APP_MODULE_AUTH', true);
 
 final class SmartAppIndexController extends SmartAbstractAppController {
 
-	// r.20251202
+	// r.20260108
 
 	// it runs just on auth master server
 	// this is the auth users public authorize (api) used for: signin, register, recovery
@@ -118,6 +118,64 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 			//--
 			switch((string)$action) {
 				//-------
+				case 'certs:generate':
+					//--
+					$message = '';
+					$theFullName  = (string) trim((string)SmartAuth::get_user_fullname());
+					if((string)$theFullName == '') {
+						$message = (string) $this->translator->text('api-sett-empty-name');
+					} //end if
+					//--
+					$theEmailAddress = (string) SmartAuth::get_user_email();
+					if((string)$message == '') {
+						//--
+						if((string)$theEmailAddress == '') {
+							$message = (string) $this->translator->text('api-sett-empty-email');
+						} elseif(\SmartAuth::validate_auth_ext_username((string)$theEmailAddress) !== true) {
+							$message = (string) $this->translator->text('api-sett-invalid-email');
+						} //end if
+						//--
+					} //end if
+					//--
+					if((string)$message == '') {
+						//--
+						if(\SmartModExtLib\AuthUsers\Utils::isSignKeysAvailable() !== true) {
+							$message = (string) $this->translator->text('api-sett-certs-na');
+						} //end if
+						//--
+					} //end if
+					//--
+					if((string)$message == '') {
+						//--
+						$result = -100;
+						//--
+						$arrDigiCert = (array) \SmartModExtLib\AuthUsers\Utils::generateSignKeys((string)$theFullName, (string)$theEmailAddress, 100); // 100 years
+						//--
+						if((int)Smart::array_size($arrDigiCert) > 0) {
+							$result = (int) \SmartModDataModel\AuthUsers\AuthUsersFrontend::updateAccountSignKeys(
+								(string) SmartAuth::get_auth_id(),
+								(array)  $arrDigiCert
+							);
+						} //end if
+						//--
+						if((int)$result != 1) {
+							$message = (string) $this->translator->text('api-sett-op-failed').' ('.(int)$result.')';
+						} elseif(\SmartModExtLib\AuthUsers\AuthClusterUser::refreshAccountWorkspace((string)SmartAuth::get_auth_id()) !== true) { // {{{SYNC-UPDATE-AUTH-USER-SETTINGS-CLUSTER}}}
+							$message = (string) $this->translator->text('api-sett-op-failed').' [C]';
+						} //end if else
+						//--
+					} //end if
+					//--
+					if((string)$message == '') {
+						//--
+						$status = 'OK';
+						$title = (string) $this->translator->text('api-sett-op-success');
+						$message = (string) $this->translator->text('api-sett-ok-certs-generate');
+						$redirect = '?page=auth-users.settings&tab=certs';
+						//--
+					} //end if
+					//--
+					break;
 				case 'update:contact-info':
 					//--
 					$frm 			= (array)  $this->RequestVarGet('frm', array(), 'array');
@@ -148,6 +206,7 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 						$status = 'OK';
 						$title = (string) $this->translator->text('api-sett-op-success');
 						$message = (string) $this->translator->text('api-sett-ok-contact-info');
+						$redirect = '?page=auth-users.settings&tab=contact';
 						//--
 					} //end if
 					//--
@@ -256,6 +315,7 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 						$status = 'OK';
 						$title = (string) $this->translator->text('api-sett-op-success');
 						$message = (string) $this->translator->text('api-sett-ok-sso-list');
+						$redirect = '?page=auth-users.settings&tab=security';
 						//--
 					} //end if
 					//--
@@ -275,12 +335,12 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 						$message = (string) $this->translator->text('api-sett-2fa-empty-pin'); // {{{SYNC-TOTP-PIN-LENGTH-CHECK}}}
 					} elseif(SmartHashCrypto::checksum((string)$frm['key'], (string)SmartAuth::get_auth_username()) != (string)$frm['chk']) {
 						$message = (string) $this->translator->text('api-sett-2fa-invalid-key');
-					} elseif(\SmartModExtLib\AuthUsers\Utils::verify2FACode((string)SmartAuth::get_auth_username(), (string)$frm['pin'], (string)$frm['key'], false) !== true) {
+					} elseif(\SmartModExtLib\AuthUsers\Utils::verify2FACode((string)SmartAuth::get_auth_id(), (string)$frm['pin'], (string)$frm['key'], false) !== true) { // ok ; not encrypted
 						$message = (string) $this->translator->text('api-sett-2fa-invalid-pin');
 					} //end if else
 					//--
 					if((string)$message == '') {
-						$frm['key'] = (string) trim((string)\SmartModExtLib\AuthUsers\Utils::encrypt2FASecret((string)SmartAuth::get_auth_username(), (string)$frm['pin'], (string)$frm['key']));
+						$frm['key'] = (string) trim((string)\SmartModExtLib\AuthUsers\Utils::encrypt2FASecret((string)SmartAuth::get_auth_id(), (string)$frm['pin'], (string)$frm['key'])); // ok
 						if((string)$frm['key'] == '') {
 							$message = (string) $this->translator->text('api-sett-2fa-encrypt-failed');
 						} //end if
@@ -368,7 +428,7 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 						$status = 'OK';
 						$title = (string) $this->translator->text('api-sett-op-success');
 						$message = (string) $this->translator->text('api-sett-msess-updated');
-						$redirect = '?page=auth-users.settings&tab=account';
+						$redirect = '?page=auth-users.settings&tab=security';
 						//--
 					} //end if
 					//--

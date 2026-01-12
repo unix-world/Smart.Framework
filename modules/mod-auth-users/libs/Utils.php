@@ -39,7 +39,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250319
+ * @version 	v.20260108
  * @package 	modules:AuthUsers
  *
  */
@@ -61,6 +61,8 @@ final class Utils {
 	private const AUTH_USERS_REGISTER_CAPTCHA_NAME = 'AuthUsers-Captcha';
 
 	private const AUTH_OTC_REGEX_PASSCODE = '/^\([0-9]{10}\)\#\[[0-9A-Z]{10}\]$/'; // ex: (0123456789)#[AB3DEF78WZ]
+
+	private const DIGICERT_TEXT = 'User Account / Digital Signature: EC';
 
 
 	public static function isValidRequestUri() : bool {
@@ -541,14 +543,16 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function encrypt2FASecret(string $username, string $fa2code, string $fa2secret) : string {
+	public static function encrypt2FASecret(string $id, string $fa2code, string $fa2secret) : string { // ok
 		//--
-		$username = (string) \trim((string)$username);
-		if((string)$username == '') {
+		$id = (string) \trim((string)$id); // userID is: self::userAccountIdToUserName($userData['id']) ; ex: `ymdvjfr1p0.8204174162`
+		if((string)$id == '') {
 			return ''; // empty username
 		} //end if
-		if(\SmartAuth::validate_auth_ext_username((string)$username) !== true) {
-			return ''; // invalid username
+		//--
+		$userEncKey = (string) self::userEncryptionKey((string)$id); // ok ; also validates the ID
+		if((string)\trim((string)$userEncKey) == '') {
+			return ''; // user encryption key failed to generate ; user id may be invalid ...
 		} //end if
 		//--
 		$fa2code = (string) \trim((string)$fa2code);
@@ -561,17 +565,16 @@ final class Utils {
 			return ''; // 2fa secret is empty
 		} //end if
 		//--
-		$userEncKey = (string) self::userEncryptionKey((string)$username);
-		if((string)\trim((string)$userEncKey) == '') {
-			return ''; // user encryption key failed to generate
+		if(self::verify2FACode((string)$id, (string)$fa2code, (string)$fa2secret, false) !== true) { // ok ; not encrypted
+			return ''; // verification failed
 		} //end if
 		//--
-		$fa2secret = (string) \trim((string)\SmartCipherCrypto::tf_encrypt((string)$fa2secret, (string)$userEncKey, true)); // TF+BF
+		$fa2secret = (string) \trim((string)\SmartCipherCrypto::tf_encrypt((string)$fa2secret, (string)$userEncKey)); // TF
 		if((string)$fa2secret == '') {
 			return ''; // empty secret after decrypt
 		} //end if
 		//--
-		if(self::verify2FACode((string)$username, (string)$fa2code, (string)$fa2secret, true) !== true) {
+		if(self::verify2FACode((string)$id, (string)$fa2code, (string)$fa2secret, true) !== true) { // ok, encrypted
 			return ''; // verification failed
 		} //end if
 		//--
@@ -580,14 +583,46 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function verify2FACode(string $username, string $fa2code, string $fa2secret, bool $isEncrypted) : bool {
+	public static function decrypt2FASecret(string $id, string $fa2secret) : string { // ok
 		//--
-		$username = (string) \trim((string)$username);
-		if((string)$username == '') {
-			return false; // empty username
+		$id = (string) \trim((string)$id); // userID is: self::userAccountIdToUserName($userData['id']) ; ex: `ymdvjfr1p0.8204174162`
+		if((string)$id == '') {
+			return ''; // empty username
 		} //end if
-		if(\SmartAuth::validate_auth_ext_username((string)$username) !== true) {
-			return false; // invalid username
+		//--
+		$userEncKey = (string) self::userEncryptionKey((string)$id); // ok ; also validates the ID
+		if((string)\trim((string)$userEncKey) == '') {
+			return ''; // user encryption key failed to generate ; user id may be invalid ...
+		} //end if
+		//--
+		$fa2secret = (string) \trim((string)$fa2secret);
+		if((string)$fa2secret == '') {
+			return ''; // 2fa secret is empty
+		} //end if
+		//--
+		$fa2secret = (string) \trim((string)\SmartCipherCrypto::tf_decrypt((string)$fa2secret, (string)$userEncKey)); // TF ; {{{SYNC-FA2-DECRYPT}}}
+		if((string)$fa2secret == '') {
+			return ''; // empty secret after decrypt
+		} //end if
+		if(\SmartModExtLib\AuthUsers\Auth2FA::is2FASecretValid((string)$fa2secret) !== true) {
+			return ''; // invalid secret
+		} //end if
+		//--
+		return (string) $fa2secret;
+		//--
+	} //END FUNCTION
+
+
+	public static function verify2FACode(string $id, string $fa2code, string $fa2secret, bool $isEncrypted) : bool { // ok
+		//--
+		$id = (string) \trim((string)$id); // userID is: self::userAccountIdToUserName($userData['id']) ; ex: `ymdvjfr1p0.8204174162`
+		if((string)$id == '') {
+			return false; // user id is empty
+		} //end if
+		//--
+		$userEncKey = (string) \trim((string)self::userEncryptionKey((string)$id)); // ok ; also validates the ID
+		if((string)$userEncKey == '') {
+			return false; // user encryption key failed to generate ; user id may be invalid ...
 		} //end if
 		//--
 		$fa2code = (string) \trim((string)$fa2code);
@@ -600,17 +635,10 @@ final class Utils {
 			return false; // 2fa secret is empty
 		} //end if
 		if($isEncrypted === true) {
-			//--
-			$userEncKey = (string) self::userEncryptionKey((string)$username);
-			if((string)\trim((string)$userEncKey) == '') {
-				return false; // user encryption key failed to generate
-			} //end if
-			//--
-			$fa2secret = (string) \trim((string)\SmartCipherCrypto::tf_decrypt((string)$fa2secret, (string)$userEncKey, true)); // TF+BF
+			$fa2secret = (string) \trim((string)\SmartCipherCrypto::tf_decrypt((string)$fa2secret, (string)$userEncKey)); // TF ; {{{SYNC-FA2-DECRYPT}}}
 			if((string)$fa2secret == '') {
 				return false; // empty secret after decrypt
 			} //end if
-			//--
 		} //end if
 		if(\SmartModExtLib\AuthUsers\Auth2FA::is2FASecretValid((string)$fa2secret) !== true) {
 			return false; // invalid secret
@@ -630,7 +658,308 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function userEncryptionKey(string $username) : string { // on failure will return empty string
+	public static function encryptSecretKey(string $id, string $secKey) : string {
+		//--
+		$id = (string) \trim((string)$id); // userID is: self::userAccountIdToUserName($userData['id']) ; ex: `ymdvjfr1p0.8204174162`
+		if((string)$id == '') {
+			return '';
+		} //end if
+		//--
+		$userEncKey = (string) \trim((string)self::userEncryptionKey((string)$id)); // ok ; also validates the ID
+		if((string)$userEncKey == '') {
+			return '';
+		} //end if
+		//--
+		$secKey = (string) \trim((string)$secKey);
+		if((string)$secKey == '') {
+			return '';
+		} //end if
+		//--
+		return (string) \trim((string)\SmartCipherCrypto::tf_encrypt((string)$secKey, (string)$userEncKey), true); // TF+BF
+		//--
+	} //END FUNCTION
+
+
+	public static function decryptSecretKey(string $id, string $secKey) : string {
+		//--
+		$id = (string) \trim((string)$id); // userID is: self::userAccountIdToUserName($userData['id']) ; ex: `ymdvjfr1p0.8204174162`
+		if((string)$id == '') {
+			return '';
+		} //end if
+		//--
+		$userEncKey = (string) \trim((string)self::userEncryptionKey((string)$id)); // ok ; also validates the ID
+		if((string)$userEncKey == '') {
+			return '';
+		} //end if
+		//--
+		$secKey = (string) \trim((string)$secKey);
+		if((string)$secKey == '') {
+			return '';
+		} //end if
+		//--
+		return (string) \trim((string)\SmartCipherCrypto::tf_decrypt((string)$secKey, (string)$userEncKey), true); // TF+BF
+		//--
+	} //END FUNCTION
+
+
+	public static function encryptSignKeys(string $id, array $certData) : string {
+		//--
+		$id = (string) \trim((string)$id); // userID is: self::userAccountIdToUserName($userData['id']) ; ex: `ymdvjfr1p0.8204174162`
+		if((string)$id == '') {
+			return '';
+		} //end if
+		//--
+		$userEncKey = (string) \trim((string)self::userEncryptionKey((string)$id)); // ok ; also validates the ID
+		if((string)$userEncKey == '') {
+			return '';
+		} //end if
+		//--
+		if((int)\Smart::array_size($certData) <= 0) {
+			return '';
+		} //end if
+		if((int)\Smart::array_type_test($certData) != 2) { // associative
+			return '';
+		} //end if
+		//--
+		if((string)($certData['err'] ?? null) != '') {
+			return '';
+		} //end if
+		//--
+		$certData['mode'] 			= (string) \trim((string)\strval($certData['mode'] ?? null));
+		$certData['algo'] 			= (string) \trim((string)\strval($certData['algo'] ?? null));
+		$certData['curve'] 			= (string) \trim((string)\strval($certData['curve'] ?? null)); 	// for curves only: EcDSA, EdDSA, ...
+		$certData['scheme'] 		= (string) \trim((string)\strval($certData['scheme'] ?? null)); // for non-curves only: RSA, Dilitium, ...
+		$certData['years'] 			= (int)    \intval($certData['years'] ?? null);
+		$certData['dNames'] 		= (array)  (\is_array($certData['dNames']) ? $certData['dNames'] : null);
+		$certData['certificate'] 	= (string) \trim((string)\strval($certData['certificate'] ?? null));
+		$certData['privKey'] 		= (string) \trim((string)\strval($certData['privKey'] ?? null));
+		$certData['pubKey'] 		= (string) \trim((string)\strval($certData['pubKey'] ?? null));
+		$certData['serial'] 		= (string) \trim((string)\strval($certData['serial'] ?? null));
+		$certData['dateTime'] 		= (string) \trim((string)\strval($certData['dateTime'] ?? null));
+		//--
+		if((string)$certData['mode'] == '') {
+			return '';
+		} //end if
+		if((string)$certData['algo'] == '') {
+			return '';
+		} //end if
+		if(
+			((string)$certData['curve'] == '')
+			AND
+			((string)$certData['scheme'] == '')
+		) {
+			return ''; // cannot be both empty, at least one must be non-empty
+		} //end if
+		if(((int)$certData['years'] < 1) OR ((int)$certData['years'] > 100)) {
+			return '';
+		} //end if
+		if((int)\Smart::array_size($certData['dNames']) <= 0) {
+			return '';
+		} //end if
+		if((int)\Smart::array_size($certData['dNames']) > 16) { // {{{SYNC-ECDSA-DNAMES-MAX}}}
+			return '';
+		} //end if
+		if((int)\Smart::array_type_test($certData['dNames']) != 2) { // associative
+			return '';
+		} //end if
+		if((string)$certData['certificate'] == '') {
+			return '';
+		} //end if
+		if((string)$certData['privKey'] == '') {
+			return '';
+		} //end if
+		if((string)$certData['pubKey'] == '') {
+			return '';
+		} //end if
+		if((string)$certData['serial'] == '') {
+			return '';
+		} //end if
+		if((string)$certData['dateTime'] == '') {
+			return '';
+		} //end if
+		//--
+		$arr = [
+			'mode' 			=> (string) $certData['mode'],
+			'algo' 			=> (string) $certData['algo'],
+			'curve' 		=> (string) $certData['curve'],
+			'scheme' 		=> (string)	$certData['scheme'],
+			'years' 		=> (int)    $certData['years'],
+			'dNames' 		=> (array)  $certData['dNames'],
+			'certificate' 	=> (string) $certData['certificate'],
+			'privKey' 		=> (string) $certData['privKey'],
+			'pubKey' 		=> (string) $certData['pubKey'],
+			'serial' 		=> (string) $certData['serial'],
+			'dateTime' 		=> (string) $certData['dateTime'],
+		];
+		//--
+		$jsonData = (string) \trim((string)\Smart::json_encode((array)$arr, false, false, false, 2)); // max 2 levels
+		if((string)$jsonData == '') {
+			return '';
+		} //end if
+		//--
+		$encData = (string) \trim((string)\SmartCipherCrypto::t3f_encrypt((string)$jsonData, (string)$userEncKey)); // 3F
+		if((string)$encData == '') {
+			return '';
+		} //end if
+		//--
+		return (string) $encData;
+		//--
+	} //END FUNCTION
+
+
+	public static function decryptSignKeys(string $id, string $signKeys) : array { // ok
+		//--
+		$id = (string) \trim((string)$id); // userID is: self::userAccountIdToUserName($userData['id']) ; ex: `ymdvjfr1p0.8204174162`
+		if((string)$id == '') {
+			return []; // empty username
+		} //end if
+		//--
+		$userEncKey = (string) self::userEncryptionKey((string)$id); // ok ; also validates the ID
+		if((string)\trim((string)$userEncKey) == '') {
+			return []; // user encryption key failed to generate ; user id may be invalid ...
+		} //end if
+		//--
+		$signKeys = (string) \trim((string)$signKeys);
+		if((string)$signKeys == '') {
+			return []; // sign keys are empty
+		} //end if
+		//--
+		$jsonData = (string) \trim((string)\SmartCipherCrypto::t3f_decrypt((string)$signKeys, (string)$userEncKey)); // 3F
+		if((string)$jsonData == '') {
+			return []; // decryption failed
+		} //end if
+		//--
+		$arr = \Smart::json_decode((string)$jsonData, true, 2); // max 2 levels
+		if((int)\Smart::array_size($arr) <= 0) {
+			return []; // empty array or not array
+		} //end if
+		if((int)\Smart::array_type_test($arr) != 2) { // associative
+			return []; // invalid array type
+		} //end if
+		$mandatoryKeys = [ 'certificate', 'privKey', 'pubKey' ];
+		for($i=0; $i<\count($mandatoryKeys); $i++) {
+			if(!\array_key_exists((string)$mandatoryKeys[$i], (array)$arr)) {
+				return []; // mandatory key is missing
+			} //end if
+		} //end if
+		//--
+		return (array) $arr;
+		//--
+	} //END FUNCTION
+
+
+	public static function getSignKeysType(array $certData) : string {
+		//--
+		// only the following array key is used: mode
+		//--
+		if((int)\Smart::array_size($certData) <= 0) {
+			return ''; // must be empty, when certificate is empty avoid return '?'
+		} //end if
+		if((int)\Smart::array_type_test($certData) != 2) { // associative
+			return '?';
+		} //end if
+		//--
+		$type = (string) \trim((string)\strval($certData['mode'] ?? null));
+		if((string)$type == '') {
+			$type = '(Unknown)';
+		} //end if
+		//--
+		return (string) $type;
+		//--
+	} //END FUNCTION
+
+
+	public static function isSignKeysExpired(array $certData) : bool {
+		//--
+		// only the following array keys are used: years, dateTime
+		//--
+		if((int)\Smart::array_size($certData) <= 0) {
+			return true;
+		} //end if
+		if((int)\Smart::array_type_test($certData) != 2) { // associative
+			return true;
+		} //end if
+		//--
+		$certIsExpired = false;
+		//--
+		$certExpYears = (int) \intval($certData['years'] ?? null);
+		if((int)$certExpYears > 0) {
+			$certExpDateTime = (string) \trim((string)\strval($certData['dateTime'] ?? null));
+			if((string)$certExpDateTime != '') {
+				$certExpDateTime  = (string) \date('Y-m-d H:i:s', (int)\strtotime((string)$certExpDateTime));
+				$certExpYDateTime = (string) \date('Y-m-d H:i:s', (int)\strtotime((string)$certExpDateTime.' +'.(int)$certExpYears.' years'));
+				if((string)$certExpYDateTime <= (string)$certExpDateTime) {
+					$certIsExpired = true;
+				} //end if
+			//	\Smart::log_notice(__METHOD__.' # '.$certExpDateTime.' # '.$certExpYears.' # '.$certExpYDateTime.' # '.($certIsExpired === true ? 'Expired' : 'Valid'));
+			} else {
+				$certIsExpired = true;
+			} //end if
+		} else {
+			$certIsExpired = true;
+		} //end if else
+		//--
+		return (bool) $certIsExpired;
+		//--
+	} //END FUNCTION
+
+
+	public static function isSignKeysAvailable() : bool {
+		//--
+		return (bool) \SmartCryptoEcdsaOpenSSL::isAvailable();
+		//--
+	} //END FUNCTION
+
+
+	public static function generateSignKeys(string $theFullName, string $theEmailAddress, int $years) : array {
+		//--
+		if(self::isSignKeysAvailable() !== true) {
+			return [];
+		} //end if
+		//--
+		$theFullName = (string) \trim((string)$theFullName);
+		if((string)$theFullName == '') {
+			\Smart::log_warning(__METHOD__.' # Empty Full Name');
+			return [];
+		} //end if
+		//--
+		$theEmailAddress = (string) \trim((string)$theEmailAddress);
+		if((string)$theEmailAddress == '') {
+			\Smart::log_warning(__METHOD__.' # Empty Email Address');
+			return [];
+		} //end if
+		if(\SmartAuth::validate_auth_ext_username((string)$theEmailAddress) !== true) {
+			\Smart::log_warning(__METHOD__.' # Invalid Email Address: '.$theEmailAddress);
+			return [];
+		} //end if
+		//--
+		if(((int)$years < 1) OR ((int)$years > 100)) {
+			\Smart::log_warning(__METHOD__.' # Invalid Years: '.$years);
+			return [];
+		} //end if
+		//--
+		$arr = (array) \SmartCryptoEcdsaOpenSSL::newCertificate(
+			[
+				'commonName' 				=> (string) $theFullName,
+				'emailAddress' 				=> (string) $theEmailAddress,
+				'organizationName' 			=> (string) \SMART_SOFTWARE_NAMESPACE,
+				'organizationalUnitName' 	=> (string) \Smart::get_from_config('app.info-url', 'string').' - '.self::DIGICERT_TEXT
+			],
+			100 // 100 years
+		);
+		//--
+		$err = (string) \strval($arr['err'] ?? null);
+		if((string)$err != '') {
+			\Smart::log_warning(__METHOD__.' # New Certificate Error: '.$err);
+			return [];
+		} //end if
+		//--
+		return (array) $arr;
+		//--
+	} //END FUNCTION
+
+
+	public static function userEncryptionKey(string $id) : string { // ok ; on failure will return empty string
 		//--
 		if(!\defined('\\SMART_FRAMEWORK_SECURITY_KEY')) {
 			return '';
@@ -639,15 +968,15 @@ final class Utils {
 			return '';
 		} //end if
 		//--
-		$username = (string) \trim((string)$username);
-		if((string)$username == '') {
+		$id = (string) \trim((string)$id); // userID is: self::userAccountIdToUserName($userData['id']) ; ex: `ymdvjfr1p0.8204174162`
+		if(((string)$id == '') || (\strpos((string)$id, '.') === false) || ((int)\strlen((string)$id) != 21)) {
 			return '';
 		} //end if
-		if(\SmartAuth::validate_auth_ext_username((string)$username) !== true) {
+		if(\SmartAuth::validate_auth_username((string)$id) !== true) {
 			return '';
 		} //end if
 		//--
-		return (string) $username."\r".\SMART_FRAMEWORK_SECURITY_KEY;
+		return (string) \trim((string)\SmartHashCrypto::sh3a512((string)$id."\r".\SMART_FRAMEWORK_SECURITY_KEY, true)); // B64
 		//--
 	} //END FUNCTION
 

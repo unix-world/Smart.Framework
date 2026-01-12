@@ -1,0 +1,8 @@
+[%%%IF:IS-AUTHENTICATED:==1;(887)%%%]
+<!-- account redir by js -->
+<script>
+setTimeout(() => { self.location = '[###URL-ACCOUNT|js###]'; }, [###URL-REDIR-ACCOUNT-MSEC|int###]);
+</script>
+[%%%ELSE:IS-AUTHENTICATED(887)%%%]
+<!-- no account redir by js ; auth: [###IS-AUTHENTICATED|int###] location = '[###URL-ACCOUNT|js###]'; timeout = [###URL-REDIR-ACCOUNT-MSEC|int###]; -->
+[%%%/IF:IS-AUTHENTICATED(887)%%%]
