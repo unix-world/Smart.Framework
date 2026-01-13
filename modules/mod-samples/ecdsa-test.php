@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Samples/EcdsaTest
-// Route: ?page=samples.ecdsa-test
+// Route: ?page=samples.ecdsa-test&encryptedprivkey=yes|no&nonasn1=no|yes
 // (c) 2006-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -77,6 +77,65 @@ MIGIAkIB2D6ZaTZo0Fxa8D48vVvTwXSSOsyKIRGRYkCWGJvqxYLzHOO5lsry2mDEV+06k+cQxTWOq5GM
 ';
 
 
+
+private const theEncGoCertPEM = '
+-----BEGIN CERTIFICATE-----
+MIIEQTCCA6KgAwIBAgIgGNgSDTxBYkNNW+aGKXihwl+qzZKRIHJbLHfTaMPmL/ww
+CgYIKoZIzj0EAwQwgd0xCzAJBgNVBAYTAlVLMQ8wDQYDVQQIEwZMb25kb24xDzAN
+BgNVBAcTBkxvbmRvbjEcMBoGA1UECRMTU3RyZWV0IE5vTmFtZSBuby4wMDERMA8G
+A1UEERMIWkVSTzAwMDAxDzANBgNVBAoTBmdvbGFuZzESMBAGA1UEAxMJbG9jYWxo
+b3N0MVYwVAYDVQQFE00xMjEwODM3OTk4NDMyMzMwMjMwNTg2NjYxNDM2MzkyNzcz
+MzA1Mjc2NzYzODg1NDMzMDMyMDAzNDQ3MDg3MDczMTY0MzAwNTI0MzQzMDAgFw0y
+NjAxMTIxODAwMzJaGA8yMTI2MDExMjE4MDAzM1owgeMxCzAJBgNVBAYTAlJPMQ0w
+CwYDVQQIEwRDbHVqMRQwEgYDVQQHEwtDbHVqLU5hcG9jYTEYMBYGA1UECRMPTm8g
+U3RyZWV0IG5vLjAwMQ0wCwYDVQQREwQzNDAwMRAwDgYDVQQKEwdzbWFydGdvMRww
+GgYDVQQDDBN3ZWJtYXN0ZXJAbG9jYWxob3N0MVYwVAYDVQQFE00xMTIzNzI3MTky
+MDI0OTcwODA5MDgxNzE1NDUzNzA0NjIyNzE0MjQyNzY1NDQ1NDM4ODUyOTc0NjU3
+MDQxOTE0NDU4OTI1MzY4NTI0NDCBmzAQBgcqhkjOPQIBBgUrgQQAIwOBhgAEAboH
+dDKLqlg4mfW+fgr0M7BOSbGmpQgHHVGURASH0oBmVgGYQtREoqDA5IB21BS9BEMa
+hS35XOaeJU4qBopHhjGlAUvvWN/obOyOYT1xZ9E0G9dInhTdRksiBb+AehVM9Bs9
+6ZAuJSYeHejN7rmvred3bEb30bhBbWlf7xHSyUimskJCo4HmMIHjMA4GA1UdDwEB
+/wQEAwID+DA7BgNVHSUENDAyBggrBgEFBQcDBAYIKwYBBQUHAwMGCCsGAQUFBwMI
+BggrBgEFBQcDAQYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADAzBgNVHQ4ELAQqMDFL
+QTBHT0IwREswVVBNS1MtNVBEVjRPSE5ZWVo2MS0wNzcxNTE1NzgyMDUGA1UdIwQu
+MCyAKjAxS0EwR09CMEQ2V09KVE5ELTNTSE9FSzdGS0Y2NFUtNDYxNTM4MTMyNjAa
+BgNVHREEEzARgglsb2NhbGhvc3SHBH8AAAEwCgYIKoZIzj0EAwQDgYwAMIGIAkIA
+xC8wH5unyx/dof/8F/+yU3UexLGw47Nh0Q8nMmfNVmsXELXq33vVvk3pGFqAIKtB
+/SHUN1Otj53klagzFCHn8+ACQgCDUZeq5G9BIkLLn7obQX87VtLcyBHRzdhIxNHI
+x4/8/9yWDbQV7b+cf0Xhh447i3LUE4vdTWhRHbH5DQZhZnTSIA==
+-----END CERTIFICATE-----
+';
+
+private const theEncGoPrivkeyPEM = '
+-----BEGIN PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+DEK-Info: AES-256-CBC,e1fd4ffff7ac13020c11f7f4dba65abf
+
+ktl3fEhm0FM7TIrviVUJyxP387Ce3PHQ55kZvq12QkAWGa5USLYcrOkhwKv8fK7r
+pNSrU7FHiBFzk9d7wMTIWpgHCsU2XE80V+Y23qS7sle1+1lVPnH5aclZGNe13myJ
+huNvW2ypoaYz5rFwW+wNjDNcHVA4fM63e4wJ0J54SF++e68Si8xJxC+jn/mYEg82
+vaUa/JjX+/lY8QQfVmojExoh5egqjq6/BVXRkNJJ24zvJ/JRXgSVmnL4aj1DUz9T
+EGiI5wTaQXemR19jHcmAEyV5ECnFCIhcnZW4IhexouMzIplOrJhmzbNRENFTlYqZ
+T4wU+k6CQPhUXLZvtMqxjQ==
+-----END PRIVATE KEY-----
+';
+
+private const theEncGoPubkeyPEM = '
+-----BEGIN PUBLIC KEY-----
+MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBugd0MouqWDiZ9b5+CvQzsE5Jsaal
+CAcdUZREBIfSgGZWAZhC1ESioMDkgHbUFL0EQxqFLflc5p4lTioGikeGMaUBS+9Y
+3+hs7I5hPXFn0TQb10ieFN1GSyIFv4B6FUz0Gz3pkC4lJh4d6M3uua+t53dsRvfR
+uEFtaV/vEdLJSKayQkI=
+-----END PUBLIC KEY-----
+';
+
+private const theEncGoSignature = '
+MIGIAkIBR5sHnh6w9L4+CWCxSSMWYPwIOVSN1BLxfKkOzXpkfegm0JXtjt1SPDdEQ2dyHLUU+ieP4IElCNjxdMmA4I0nisQCQgGVJIwgBDafxFECOvGHfoRhg9MP5HgAe4OsUVfGAM1CqIq/tgG+EPuY6v62Y+eKySAHs3BXnPgvdHvJzUX+hd2umw==
+';
+
+private const theEncPrivKeyPass = 'pass:my'; // {{{SYNC-WITH-GOLANG-TESTS-CREATE-X509}}}
+
+
 	final public function Initialize() {
 		//--
 		return true;
@@ -109,9 +168,33 @@ MIGIAkIB2D6ZaTZo0Fxa8D48vVvTwXSSOsyKIRGRYkCWGJvqxYLzHOO5lsry2mDEV+06k+cQxTWOq5GM
 		$this->PageViewSetCfg('rawmime', 'text/plain');
 		$this->PageViewSetCfg('rawdisp', 'inline; filename="sample-ecdsa.txt"');
 
+		//--
+
+		$usePassPhrase = (string) trim((string)$this->RequestVarGet('encryptedprivkey', '', 'string'));
+		$nonASN1mode   = (string) trim((string)$this->RequestVarGet('nonasn1', '', 'string'));
+
+		$pKeyPassPhrase = (string) self::theEncPrivKeyPass;
+		if((string)$usePassPhrase == 'no') {
+			$pKeyPassPhrase = null;
+		} //end if
+
+		$useASN1 = true;
+		if((string)$nonASN1mode == 'yes') {
+			$useASN1 = false;
+		} //end if
+		//--
+
 		$main = [];
 
-		$arrCerts = (array) SmartCryptoEcdsaOpenSSL::newCertificate(['commonName' => 'My Sample Name', 'emailAddress' => 'my@email.local', 'organizationName' => 'my.local', 'organizationalUnitName' => 'My Sample Test - ECDSA Digital Signature'], 1);
+		//-- php
+
+		$arrCerts = (array) SmartCryptoEcdsaOpenSSL::newCertificate(
+			['commonName' => 'My Sample Name', 'emailAddress' => 'my@email.local', 'organizationName' => 'my.local', 'organizationalUnitName' => 'My Sample Test - ECDSA Digital Signature'],
+			1, // years
+			(string) SmartCryptoEcdsaOpenSSL::OPENSSL_ECDSA_DEF_CURVE,
+			(string) SmartCryptoEcdsaOpenSSL::OPENSSL_CSR_DEF_ALGO,
+			$pKeyPassPhrase // do not cast to string, can be null
+		);
 		if((string)($arrCerts['err'] ?? null) != '') {
 			$this->PageViewSetCfg('error', 'New Certificate Error: '.($arrCerts['err'] ?? null));
 			return 500;
@@ -119,30 +202,55 @@ MIGIAkIB2D6ZaTZo0Fxa8D48vVvTwXSSOsyKIRGRYkCWGJvqxYLzHOO5lsry2mDEV+06k+cQxTWOq5GM
 		$main[] = (string) 'New Certificate: '.SmartUtils::pretty_print_var($arrCerts);
 
 		$dataMsg = 'A message to Sign'; // {{{SYNC-SIGN-MSG-GO-PHP}}}
-		$main[] = 'Data to Sign/Verify: `'.$dataMsg.'`';
+		$main[] = 'Data to Sign/Verify: `'.Smart::escape_html($dataMsg).'`';
 
-		$arrSign = (array) SmartCryptoEcdsaOpenSSL::signData((string)($arrCerts['privKey'] ?? null), (string)($arrCerts['pubKey'] ?? null), (string)$dataMsg);
+		$arrSign = (array) SmartCryptoEcdsaOpenSSL::signData(
+			(string) ($arrCerts['privKey'] ?? null),
+			(string) ($arrCerts['pubKey'] ?? null),
+			(string) $dataMsg,
+			(string) SmartCryptoEcdsaOpenSSL::OPENSSL_SIGN_DEF_ALGO,
+			$pKeyPassPhrase, // do not cast to string, can be null
+			(bool)   $useASN1
+		);
 		if((string)($arrSign['err'] ?? null) != '') {
 			$this->PageViewSetCfg('error', 'Sign Error: '.($arrSign['err'] ?? null));
 			return 500;
 		} //end if
 		$main[] = (string) 'Sign Data: '.SmartUtils::pretty_print_var($arrSign);
 
-		$arrVfy = (array) SmartCryptoEcdsaOpenSSL::verifySignedData((string)($arrCerts['pubKey'] ?? null), (string)$dataMsg, (string)($arrSign['signatureB64'] ?? null));
+		$arrVfy = (array) SmartCryptoEcdsaOpenSSL::verifySignedData(
+			(string) ($arrCerts['pubKey'] ?? null),
+			(string) $dataMsg,
+			(string) ($arrSign['signatureB64'] ?? null),
+			(string) SmartCryptoEcdsaOpenSSL::OPENSSL_SIGN_DEF_ALGO,
+			(bool)   $useASN1
+		);
 		if(((string)($arrVfy['err'] ?? null) != '') OR (($arrVfy['verifyResult'] ?? null) !== true)) {
 			$this->PageViewSetCfg('error', 'Sign Error: '.($arrVfy['err'] ?? null).' # '.($arrVfy['verifyResult'] ?? null));
 			return 500;
 		} //end if
 		$main[] = (string) 'Verify Data: '.SmartUtils::pretty_print_var($arrVfy);
 
-		$arrGoSign = (array) SmartCryptoEcdsaOpenSSL::signData((string)trim((string)self::theGoPrivkeyPEM), (string)trim((string)self::theGoPubkeyPEM), (string)$dataMsg);
+		//-- go plain
+
+		$arrGoSign = (array) SmartCryptoEcdsaOpenSSL::signData(
+			(string) trim((string)self::theGoPrivkeyPEM),
+			(string) trim((string)self::theGoPubkeyPEM),
+			(string) $dataMsg,
+			(string) SmartCryptoEcdsaOpenSSL::OPENSSL_SIGN_DEF_ALGO,
+		);
 		if((string)($arrGoSign['err'] ?? null) != '') {
 			$this->PageViewSetCfg('error', 'Sign Go Error: '.($arrGoSign['err'] ?? null));
 			return 500;
 		} //end if
 		$main[] = (string) 'Sign Go Data: '.SmartUtils::pretty_print_var($arrGoSign);
 
-		$arrGoVfy = (array) SmartCryptoEcdsaOpenSSL::verifySignedData((string)trim((string)self::theGoPubkeyPEM), (string)$dataMsg, (string)($arrGoSign['signatureB64'] ?? null));
+		$arrGoVfy = (array) SmartCryptoEcdsaOpenSSL::verifySignedData(
+			(string) trim((string)self::theGoPubkeyPEM),
+			(string) $dataMsg,
+			(string) ($arrGoSign['signatureB64'] ?? null),
+			(string) SmartCryptoEcdsaOpenSSL::OPENSSL_SIGN_DEF_ALGO
+		);
 		if(((string)($arrGoVfy['err'] ?? null) != '') OR (($arrGoVfy['verifyResult'] ?? null) !== true)) {
 			$this->PageViewSetCfg('error', 'Sign Go Error: '.($arrGoVfy['err'] ?? null).' # '.($arrGoVfy['verifyResult'] ?? null));
 			return 500;
@@ -151,17 +259,87 @@ MIGIAkIB2D6ZaTZo0Fxa8D48vVvTwXSSOsyKIRGRYkCWGJvqxYLzHOO5lsry2mDEV+06k+cQxTWOq5GM
 
 		$main[] = 'Go Signature of Data: '.trim((string)self::theGoSignature);
 
-		$arrGoSignVfy = (array) SmartCryptoEcdsaOpenSSL::verifySignedData((string)trim((string)self::theGoPubkeyPEM), (string)$dataMsg, (string)trim((string)self::theGoSignature));
+		$arrGoSignVfy = (array) SmartCryptoEcdsaOpenSSL::verifySignedData(
+			(string) trim((string)self::theGoPubkeyPEM),
+			(string) $dataMsg,
+			(string) trim((string)self::theGoSignature),
+			(string) SmartCryptoEcdsaOpenSSL::OPENSSL_SIGN_DEF_ALGO
+		);
 		if(((string)($arrGoSignVfy['err'] ?? null) != '') OR (($arrGoSignVfy['verifyResult'] ?? null) !== true)) {
 			$this->PageViewSetCfg('error', 'Sign Go Error: '.($arrGoSignVfy['err'] ?? null).' # '.($arrGoSignVfy['verifyResult'] ?? null));
 			return 500;
 		} //end if
 		$main[] = (string) 'Verify Go Signed Data: '.SmartUtils::pretty_print_var($arrGoSignVfy);
 
+		//-- go enc
+
+		$decryptedGoPrivKeyArr = (array) SmartCryptoEcdsaOpenSSL::decryptPrivateKeyPem(
+			(string) trim((string)self::theEncGoPrivkeyPEM),
+			(string) self::theEncPrivKeyPass
+		);
+		if((string)($decryptedGoPrivKeyArr['err'] ?? null) != '') {
+			$this->PageViewSetCfg('error', 'Go Enc Decrypted PrivKey Error: '.($decryptedGoPrivKeyArr['err'] ?? null));
+			return 500;
+		} //end if
+		$main[] = (string) 'Go Enc Decrypted PrivKey: '.SmartUtils::pretty_print_var($decryptedGoPrivKeyArr);
+
+		$reEncryptedGoPrivKeyArr = (array) SmartCryptoEcdsaOpenSSL::encryptPrivateKeyPem(
+			(string) ($decryptedGoPrivKeyArr['privKey'] ?? null),
+			(string) self::theEncPrivKeyPass
+		);
+		if((string)($reEncryptedGoPrivKeyArr['err'] ?? null) != '') {
+			$this->PageViewSetCfg('error', 'Go Enc Re-Encrypted PrivKey Error: '.($reEncryptedGoPrivKeyArr['err'] ?? null));
+			return 500;
+		} //end if
+		$main[] = (string) 'Go Enc Re-Encrypted PrivKey: '.SmartUtils::pretty_print_var($reEncryptedGoPrivKeyArr);
+
+		$arrGoEncSign = (array) SmartCryptoEcdsaOpenSSL::signData(
+			(string) trim((string)self::theEncGoPrivkeyPEM),
+			(string) trim((string)self::theEncGoPubkeyPEM),
+			(string) $dataMsg,
+			(string) SmartCryptoEcdsaOpenSSL::OPENSSL_SIGN_DEF_ALGO,
+			(string) self::theEncPrivKeyPass
+		);
+		if((string)($arrGoEncSign['err'] ?? null) != '') {
+			$this->PageViewSetCfg('error', 'Enc Sign Go Error: '.($arrGoEncSign['err'] ?? null));
+			return 500;
+		} //end if
+		$main[] = (string) 'Enc Sign Go Data: '.SmartUtils::pretty_print_var($arrGoEncSign);
+
+		$arrGoEncVfy = (array) SmartCryptoEcdsaOpenSSL::verifySignedData(
+			(string) trim((string)self::theEncGoPubkeyPEM),
+			(string) $dataMsg,
+			(string) ($arrGoEncSign['signatureB64'] ?? null),
+			(string) SmartCryptoEcdsaOpenSSL::OPENSSL_SIGN_DEF_ALGO
+		);
+		if(((string)($arrGoEncVfy['err'] ?? null) != '') OR (($arrGoEncVfy['verifyResult'] ?? null) !== true)) {
+			$this->PageViewSetCfg('error', 'Enc Sign Go Error: '.($arrGoEncVfy['err'] ?? null).' # '.($arrGoEncVfy['verifyResult'] ?? null));
+			return 500;
+		} //end if
+		$main[] = (string) 'Enc Verify Go Data: '.SmartUtils::pretty_print_var($arrGoEncVfy);
+
+		$main[] = 'Go Enc Signature of Data: '.trim((string)self::theEncGoSignature);
+
+		$arrGoEncSignVfy = (array) SmartCryptoEcdsaOpenSSL::verifySignedData(
+			(string) trim((string)self::theEncGoPubkeyPEM),
+			(string) $dataMsg,
+			(string) trim((string)self::theEncGoSignature),
+			(string) SmartCryptoEcdsaOpenSSL::OPENSSL_SIGN_DEF_ALGO
+		);
+		if(((string)($arrGoEncSignVfy['err'] ?? null) != '') OR (($arrGoEncSignVfy['verifyResult'] ?? null) !== true)) {
+			$this->PageViewSetCfg('error', 'Enc Sign Go Error: '.($arrGoEncSignVfy['err'] ?? null).' # '.($arrGoEncSignVfy['verifyResult'] ?? null));
+			return 500;
+		} //end if
+		$main[] = (string) 'Verify Go Enc Signed Data: '.SmartUtils::pretty_print_var($arrGoEncSignVfy);
+
+		//--
+
 		$this->PageViewSetVar(
 			'main',
 			(string) implode("\n\n", (array)$main)
 		);
+
+		//--
 
 	} //END FUNCTION
 

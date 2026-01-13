@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20260103 # this should be loaded from app web root only
+// # r.20260112 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -91,7 +91,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2026.01.03'); // tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2026.01.12'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--
@@ -152,6 +152,14 @@ switch((string)SMART_FRAMEWORK_ENV) { // allow just 'dev' or 'prod'
 if(((string)SMART_ERROR_HANDLER !== 'dev') AND ((string)SMART_ERROR_HANDLER !== 'log')) {
 	@http_response_code(500);
 	die('A required INIT constant has a wrong value: SMART_FRAMEWORK_ENV');
+} //end if
+//--
+if(!defined('SMART_FRAMEWORK_LOG_DEBUG_BACKTRACE')) {
+	define('SMART_FRAMEWORK_LOG_DEBUG_BACKTRACE', !!(((string)SMART_ERROR_HANDLER != 'log') OR (SMART_FRAMEWORK_DEBUG_MODE === true)));
+} //end if
+if(!is_bool(SMART_FRAMEWORK_LOG_DEBUG_BACKTRACE)) {
+	@http_response_code(500);
+	die('Invalid definition for SMART_FRAMEWORK_LOG_DEBUG_BACKTRACE ...');
 } //end if
 //--
 if((!defined('SMART_FRAMEWORK_ADMIN_AREA')) OR (!is_bool(SMART_FRAMEWORK_ADMIN_AREA))) {

@@ -104,7 +104,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20260103
+ * @version     v.20260112
  * @package     @Core
  *
  */
@@ -3696,7 +3696,12 @@ final class Smart {
 			return; // use this only in DEV mode
 		} //end if
 		//--
-		trigger_error('#SMART-FRAMEWORK.NOTICE# '.$message, E_USER_NOTICE);
+		$callerMethod = '';
+		if(SMART_FRAMEWORK_LOG_DEBUG_BACKTRACE === true) { // if prod mode
+			$callerMethod = (string) self::get_caller_method().' < ';
+		} //end if
+		//--
+		trigger_error('#SMART-FRAMEWORK.NOTICE# '.$callerMethod.$message, E_USER_NOTICE);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -3714,7 +3719,12 @@ final class Smart {
 	 */
 	public static function log_warning(?string $message) : void {
 		//--
-		trigger_error('#SMART-FRAMEWORK.WARNING# '.$message, E_USER_WARNING);
+		$callerMethod = '';
+		if(SMART_FRAMEWORK_LOG_DEBUG_BACKTRACE === true) { // if prod mode
+			$callerMethod = (string) self::get_caller_method().' < ';
+		} //end if
+		//--
+		trigger_error('#SMART-FRAMEWORK.WARNING# '.$callerMethod.$message, E_USER_WARNING);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -3738,20 +3748,27 @@ final class Smart {
 		global $smart_____framework_____last__error;
 		global $smart_____framework_____is_html_last__error;
 		//--
+		$callerMethod = '';
+		if(SMART_FRAMEWORK_LOG_DEBUG_BACKTRACE === true) { // if prod mode
+			$callerMethod = (string) self::get_caller_method().' < ';
+		} //end if
+		//--
 		if((string)trim((string)$message_to_display) == '') {
-			if((string)SMART_ERROR_HANDLER == 'prod') { // if prod mode
+			if((string)SMART_FRAMEWORK_ENV == 'prod') { // if prod mode
 				$message_to_display = 'See Error Log for More Details'; // avoid empty message to display
 				$is_html_message_to_display = false;
 			} else {
 				if((string)trim((string)$message_to_display) == '') {
-					$message_to_display = (string) $message_to_log;
+					$message_to_display = (string) $callerMethod.$message_to_log;
 					$is_html_message_to_display = false;
 				} //end if
 			} //end if
 		} //end if
+		//--
 		$smart_____framework_____last__error = (string) $message_to_display;
 		$smart_____framework_____is_html_last__error = (bool) $is_html_message_to_display;
-		trigger_error('#SMART-FRAMEWORK.ERROR# '.$message_to_log, E_USER_WARNING); // {{{SF-PHP-EMULATE-E_USER_ERROR}}} ; to emulate the old behaviour of E_USER_ERROR the message must start mandatory with '#SMART-FRAMEWORK.ERROR#'
+		//--
+		trigger_error('#SMART-FRAMEWORK.ERROR# '.$callerMethod.$message_to_log, E_USER_WARNING); // {{{SF-PHP-EMULATE-E_USER_ERROR}}} ; to emulate the old behaviour of E_USER_ERROR the message must start mandatory with '#SMART-FRAMEWORK.ERROR#'
 		die('App Level Raise ERROR. Execution Halted. '.$message_to_display); // normally this line will never be executed because the E_USER_ERROR via Smart Error Handler will die() before ... but this is just in case, as this is a fatal error and the execution should be halted here !
 		//--
 	} //END FUNCTION
@@ -3942,6 +3959,35 @@ final class Smart {
 		} //end if
 		//--
 		return;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get Caller Method fro Another Method
+	 * This is expensive in execution try limit to minimum the calls
+	 * It is VERY EXPENSIVE in production environments, so only use inside here in log_notice, log_warning, raise_error
+	 * ! THIS METHOD SHOULD REMAIN PRIVATE !
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @return 	STRING						:: The method name or empty if not
+	 */
+	private static function get_caller_method() : string {
+		//--
+		$arr = (array) debug_backtrace((int)DEBUG_BACKTRACE_IGNORE_ARGS, 4); //  limit to 4 the number of stack frames returned, we only need to get last method inside the log methods of this class
+		if(isset($arr[3])) {
+			if(is_array($arr[3])) {
+				$class  = (string) trim((string)($arr[3]['class'] ?? null));
+				$method = (string) trim((string)($arr[3]['function'] ?? null));
+				return (string) ($class ? $class.'::' : '').$method;
+			} //end if
+		} //end if
+		//--
+		return '';
 		//--
 	} //END FUNCTION
 	//================================================================

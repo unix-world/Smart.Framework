@@ -12,7 +12,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 //======================================================
-// Smart-Framework - Symmetric and Asymmetric Crypto Support # r.20260108
+// Smart-Framework - Symmetric and Asymmetric Crypto Support # r.20260112
 // 		* symmetric (encrypt/decrypt):
 // 			- ThreeFish 1024-bit (CBC) built-in ; requires PHP GMP extension
 // 			- TwoFish 256-bit (CBC) built-in
@@ -26,6 +26,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // 			- DhKx built-in ; requires PHP GMP extension
 // 		* digital certificates (sign/verify):
 // 			- EcDSA (Elliptic Curve) via OpenSSL
+// 			- EcDSA ASN1 conversions built-in
 //======================================================
 // NOTICE: This is unicode safe
 //======================================================
@@ -5937,8 +5938,8 @@ final class SmartCryptoCiphersOpenSSL {
  * @access 		private
  * @internal
  *
- * @depends 	extensions: PHP OpenSSL ; classes: Smart, SmartFileSysUtils
- * @version 	v.20260108
+ * @depends 	extensions: PHP OpenSSL ; classes: Smart, SmartFileSysUtils, SmartCryptoEcdsaAsn1Sig
+ * @version 	v.20260112
  *
  */
 final class SmartCryptoEcdsaOpenSSL {
@@ -5948,6 +5949,9 @@ final class SmartCryptoEcdsaOpenSSL {
 	// Important: the standard in golang is as this: secp521r1/sha512 ; secp384r1/sha384 ; secp256k1/sha256 ; all other combinations are non-standard ...
 	public const OPENSSL_ECDSA_DEF_CURVE 	= 'secp521r1'; 	// 'secp521r1' | 'secp384r1' | 'secp256k1'
 	public const OPENSSL_CSR_DEF_ALGO 		= 'sha512'; 	// 'sha512' | 'sha384' | 'sha256' | 'sha3-512' | 'sha3-384' | 'sha3-256'
+
+	public const SIGNATURE_MODE_ASN1 		= 'ASN1';
+	public const SIGNATURE_MODE_NON_ASN1 	= 'nonASN1';
 
 	// Can be any, golang/smartgo supports all
 	public const OPENSSL_SIGN_DEF_ALGO 		= 'sha3-512'; 	// 'sha3-512' | 'sha3-384' | 'sha3-256' | 'sha512' | 'sha384' | 'sha256'
@@ -5994,26 +5998,263 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 	} //END FUNCTION
 
 
-	public static function signData(?string $eccPrivKey, ?string $eccPubKey, ?string $data, string $algo=self::OPENSSL_SIGN_DEF_ALGO) : array {
+	public static function getPemPublicKeyFromPemPrivateKeyOrPemCertificate(string $eccPrivKeyOrCertificate, ?string $privKeyPassword=null) : array {
+		//--
+		$arr = [
+			'err' 		=> '?',
+			'pubKey' 	=> null, // or string PEM
+			'version' 	=> null,
+		];
+		//--
+		$pKey = null;
+		if(self::isValidPrivateKeyPEM((string)$eccPrivKeyOrCertificate) === true) {
+			$pKey = openssl_pkey_get_private((string)$eccPrivKeyOrCertificate, $privKeyPassword);
+		} elseif(self::isValidCertificatePEM((string)$eccPrivKeyOrCertificate) === true) {
+			$pKey = openssl_pkey_get_private((string)$eccPrivKeyOrCertificate);
+		} else {
+			$arr['err'] = 'Private Key or Certificate is Empty or Invalid';
+			return (array) $arr;
+		} //end if
+		if(!$pKey) {
+			$arr['err'] = 'Failed to Extract the Private Key or Certificate';
+			return (array) $arr;
+		} //end if
+		//--
+		$detailsPrivKey = openssl_pkey_get_details($pKey);
+	//	openssl_free_key($pKey); // free the key from memory ; not needed ; deprecated since 8.0, as OpenSSLAsymmetricKey objects are freed automatically
+		if(!is_array($detailsPrivKey)) {
+			$arr['err'] = 'Failed to Get the Private Key Details';
+			return (array) $arr;
+		} //end if
+		//print_r($detailsPrivKey); die();
+		$eccPubKey = (string) trim((string)($detailsPrivKey['key'] ?? null));
+		if((string)$eccPubKey == '') {
+			$arr['err'] = 'Public Key PEM is Empty';
+			return (array) $arr;
+		} //end if
+		if(self::isValidPublicKeyPEM((string)$eccPubKey) !== true) {
+			$arr['err'] = 'Public Key PEM is Invalid';
+			return (array) $arr;
+		} //end if
+		//--
+		$keyVersion = (string) trim((string)($detailsPrivKey['type'] ?? null));
+		//--
+		$arr['pubKey']  = (string) $eccPubKey;
+		$arr['version'] = (string) $keyVersion;
+		//--
+		$arr['err'] = ''; // clear
+		return (array) $arr;
+		//--
+	} //END FUNCTION
+
+
+	public static function decryptPrivateKeyPem(string $encryptedPrivKeyPem, ?string $privKeyPassword) : array {
+		//--
+		$arr = [
+			'err' 			=> '?',
+			'privKey' 		=> '',
+		];
+		//--
+		if(self::isValidPrivateKeyPEM((string)$encryptedPrivKeyPem) !== true) {
+			$arr['err'] = 'Encrypted Private Key is Empty or Invalid';
+			return (array) $arr;
+		} //end if
+		if(
+			(
+				(
+					( // can be encrypted or not, if encrypted will have to start with `Proc-Type:`
+						(Smart::str_startswith((string)$encryptedPrivKeyPem, '-----BEGIN PRIVATE KEY-----'."\n") !== true)
+						OR
+						(Smart::str_endswith((string)$encryptedPrivKeyPem, "\n".'-----END PRIVATE KEY-----') !== true)
+					)
+					OR
+					(Smart::str_contains((string)$encryptedPrivKeyPem, "\n".'Proc-Type: 4,ENCRYPTED') !== true) // here we only support encrypted type, have to start with `Proc-Type:`
+				)
+				AND
+				( // {{{SYNC-ECDSA-VALD-ENCRYPTED-PRIVKEY}}}
+					(
+						(Smart::str_startswith((string)$encryptedPrivKeyPem, '-----BEGIN ENCRYPTED PRIVATE KEY-----'."\n") !== true)
+						OR
+						(Smart::str_endswith((string)$encryptedPrivKeyPem, "\n".'-----END ENCRYPTED PRIVATE KEY-----') !== true)
+					)
+					OR
+					(
+						(Smart::str_contains((string)$encryptedPrivKeyPem, "\n".'M') !== true)
+						AND
+						(Smart::str_contains((string)$encryptedPrivKeyPem, "\n".'Proc-Type: 4,ENCRYPTED') !== true)
+					)
+				)
+			)
+		) {
+			$arr['err'] = 'Private Key is Not Encrypted';
+			return (array) $arr;
+		} //end if
+		//--
+		if((string)$privKeyPassword == '') {
+			$arr['err'] = 'PassPhrase is Empty';
+			return (array) $arr;
+		} //end if
+		//--
+		$pKey = openssl_pkey_get_private((string)$encryptedPrivKeyPem, (string)$privKeyPassword);
+		if(!$pKey) {
+			$arr['err'] = 'Failed to Extract the Encrypted Private Key';
+			return (array) $arr;
+		} //end if
+		//--
+		$options = [ // {{{SYNC-ECDSA-PKEY-EXPORT-OPTIONS}}}
+			'encrypt_key_cipher' => OPENSSL_CIPHER_AES_256_CBC,
+		];
+		$eccPrivKey = '';
+		if(!openssl_pkey_export($pKey, $eccPrivKey, null, (array)$options)) {
+			$arr['err'] = 'Failed to Export the Plain Private Key';
+			return (array) $arr;
+		} //end if
+		$eccPrivKey = (string) trim((string)$eccPrivKey);
+		if((string)$eccPrivKey == '') {
+			$arr['err'] = 'Plain Private Key PEM is Empty';
+			return (array) $arr;
+		} //end if
+		if(self::isValidPrivateKeyPEM((string)$eccPrivKey) !== true) {
+			$arr['err'] = 'Plain Private Key PEM is Invalid';
+			return (array) $arr;
+		} //end if
+		if(
+			(
+				(
+					( // here we only support plain (unencrypted) type
+						(Smart::str_startswith((string)$eccPrivKey, '-----BEGIN PRIVATE KEY-----'."\n") !== true)
+						OR
+						(Smart::str_endswith((string)$eccPrivKey, "\n".'-----END PRIVATE KEY-----') !== true)
+					)
+					OR
+					(Smart::str_contains((string)$eccPrivKey, "\n".'M') !== true)
+				)
+			)
+		) {
+			$arr['err'] = 'Private Key is Not Plain';
+			return (array) $arr;
+		} //end if
+		//--
+		$arr['privKey'] = (string) $eccPrivKey;
+		//--
+		$arr['err'] = ''; // clear
+		return (array) $arr;
+		//--
+	} //END FUNCTION
+
+
+	public static function encryptPrivateKeyPem(string $plainPrivKeyPem, ?string $privKeyPassword) : array {
+		//--
+		$arr = [
+			'err' 			=> '?',
+			'privKey' 		=> '',
+		];
+		//--
+		if(self::isValidPrivateKeyPEM((string)$plainPrivKeyPem) !== true) {
+			$arr['err'] = 'Private Key is Empty or Invalid';
+			return (array) $arr;
+		} //end if
+		if(
+			(
+				(
+					( // can be encrypted or not, if encrypted will have to start with `Proc-Type:`
+						(Smart::str_startswith((string)$plainPrivKeyPem, '-----BEGIN PRIVATE KEY-----'."\n") !== true)
+						OR
+						(Smart::str_endswith((string)$plainPrivKeyPem, "\n".'-----END PRIVATE KEY-----') !== true)
+					)
+					OR
+					(Smart::str_contains((string)$plainPrivKeyPem, "\n".'M') !== true) // here we only support plain (unencrypted) type
+				)
+			)
+		) {
+			$arr['err'] = 'Private Key is Not Plain';
+			return (array) $arr;
+		} //end if
+		//--
+		if((string)$privKeyPassword == '') {
+			$arr['err'] = 'PassPhrase is Empty';
+			return (array) $arr;
+		} //end if
+		//--
+		$pKey = openssl_pkey_get_private((string)$plainPrivKeyPem, null);
+		if(!$pKey) {
+			$arr['err'] = 'Failed to Extract the Plain Private Key';
+			return (array) $arr;
+		} //end if
+		//--
+		$options = [ // {{{SYNC-ECDSA-PKEY-EXPORT-OPTIONS}}}
+			'encrypt_key_cipher' => OPENSSL_CIPHER_AES_256_CBC,
+		];
+		$eccPrivKey = '';
+		if(!openssl_pkey_export($pKey, $eccPrivKey, (string)$privKeyPassword, (array)$options)) {
+			$arr['err'] = 'Failed to Export the Encrypted Private Key';
+			return (array) $arr;
+		} //end if
+		$eccPrivKey = (string) trim((string)$eccPrivKey);
+		if((string)$eccPrivKey == '') {
+			$arr['err'] = 'Encrypted Private Key PEM is Empty';
+			return (array) $arr;
+		} //end if
+		if(self::isValidPrivateKeyPEM((string)$eccPrivKey) !== true) {
+			$arr['err'] = 'Encrypted Private Key PEM is Invalid';
+			return (array) $arr;
+		} //end if
+		if(
+			(
+				(
+					( // here we only support encrypted type
+						(Smart::str_startswith((string)$eccPrivKey, '-----BEGIN ENCRYPTED PRIVATE KEY-----'."\n") !== true)
+						OR
+						(Smart::str_endswith((string)$eccPrivKey, "\n".'-----END ENCRYPTED PRIVATE KEY-----') !== true)
+					)
+					OR
+					(Smart::str_contains((string)$eccPrivKey, "\n".'M') !== true)
+				)
+			)
+		) {
+			$arr['err'] = 'Private Key is Not Plain';
+			return (array) $arr;
+		} //end if
+		//--
+		$arr['privKey'] = (string) $eccPrivKey;
+		//--
+		$arr['err'] = ''; // clear
+		return (array) $arr;
+		//--
+	} //END FUNCTION
+
+
+	public static function signData(?string $eccPrivKey, ?string $eccPubKey, ?string $data, string $algo=self::OPENSSL_SIGN_DEF_ALGO, ?string $privKeyPassword=null, bool $useASN1=true) : array {
 		//--
 		$arr = [
 			'err' 			=> '?',
 			'algo' 			=> (string) $algo,
+			'mode' 			=> (string) (($useASN1 === false) ? self::SIGNATURE_MODE_NON_ASN1 : self::SIGNATURE_MODE_ASN1),
 			'signatureB64' 	=> '',
 		];
 		//--
+		$hashLen = (int) 0; // {{{SYNC-X509-PADDING-ECDSA-REQ-LEN}}}
 		switch((string)$algo) { // {{{SYNC-OPENSSL-SIGN-ALGO}}}
 			case 'sha256':
-			case 'sha384': // preferred ; wide compatibility and length attack safe
-			case 'sha512':
 			case 'sha3-256':
+				$hashLen = (int) 32 * 2; // because algorithm differ, value is double than in golang
+				break;
+			case 'sha384': // preferred ; wide compatibility and length attack safe
 			case 'sha3-384':
+				$hashLen = (int) 48 * 2; // because algorithm differ, value is double than in golang
+				break;
+			case 'sha512':
 			case 'sha3-512':
+				$hashLen = (int) 66 * 2; // because algorithm differ, value is double than in golang
 				break;
 			default:
 				$arr['err'] = 'Invalid Sign Algo: `'.$algo.'`';
 				return (array) $arr;
 		} //end switch
+		if((int)$hashLen <= 0) {
+				$arr['err'] = 'Invalid Hash Length: `'.$hashLen.'`';
+				return (array) $arr;
+		} //end if
 		//--
 		if(self::isValidPrivateKeyPEM((string)$eccPrivKey) !== true) {
 			$arr['err'] = 'Private Key is Empty or Invalid';
@@ -6023,6 +6264,19 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 		if(self::isValidPublicKeyPEM((string)$eccPubKey) !== true) {
 			$arr['err'] = 'Public Key is Empty or Invalid';
 			return (array) $arr;
+		} //end if
+		//--
+		if((string)$privKeyPassword != '') {
+			$arrDecrypt = (array) self::decryptPrivateKeyPem((string)$eccPrivKey, (string)$privKeyPassword);
+			if((string)($arrDecrypt['err'] ?? null) != '') {
+				$arr['err'] = 'Private Key Decription Failed: '.($arrDecrypt['err'] ?? null);
+				return (array) $arr;
+			} //end if
+			$eccPrivKey = (string) ($arrDecrypt['privKey'] ?? null);
+			if(self::isValidPrivateKeyPEM((string)$eccPrivKey) !== true) {
+				$arr['err'] = 'Decrypted Private Key is Empty or Invalid';
+				return (array) $arr;
+			} //end if
 		} //end if
 		//--
 		if((string)$data == '') {
@@ -6045,7 +6299,20 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 			return (array) $arr;
 		} //end if
 		//--
-		$vfyArr = (array) self::verifySignedData((string)$eccPubKey, (string)$data, (string)$arr['signatureB64'], (string)$algo);
+		if($useASN1 === false) {
+			$arrAsn1Conv = (array) SmartCryptoEcdsaAsn1Sig::fromAsn1((string)$arr['signatureB64'], (int)$hashLen);
+			if((string)($arrAsn1Conv['err'] ?? null) != '') {
+				$arr['err'] = 'Non-ASN1 Signature Conversion Failed: '.($arrAsn1Conv['err'] ?? null);
+				return (array) $arr;
+			} //end if
+			$arr['signatureB64'] = (string) trim((string)($arrAsn1Conv['sig'] ?? null));
+			if((string)$arr['signatureB64'] == '') {
+				$arr['err'] = 'Non-ASN1 Data B64 Signature is Empty';
+				return (array) $arr;
+			} //end if
+		} //end if
+		//--
+		$vfyArr = (array) self::verifySignedData((string)$eccPubKey, (string)$data, (string)$arr['signatureB64'], (string)$algo, (bool)$useASN1);
 		if((string)($vfyArr['err'] ?? null) != '') {
 			$arr['err'] = 'Sign Verification Failed: '.($vfyArr['err'] ?? null);
 			return (array) $arr;
@@ -6057,29 +6324,46 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 	} //END FUNCTION
 
 
-	public static function verifySignedData(?string $eccPubKey, ?string $data, ?string $signatureB64, string $algo=self::OPENSSL_SIGN_DEF_ALGO) : array {
+	public static function verifySignedData(?string $eccPubKey, ?string $data, ?string $signatureB64, string $algo=self::OPENSSL_SIGN_DEF_ALGO, bool $useASN1=true) : array {
+		//--
+		// $eccPubKey can be a PEM Public Key or a PEM Certificate
 		//--
 		$arr = [
 			'err' 			=> '?',
 			'algo' 			=> (string) $algo,
-			'verifyResult' 	=> null, // null (init); TRUE if verify = 1 ; otherwise verify can be: 0 / -1 / FALSE
+			'mode' 			=> (string) (($useASN1 === false) ? self::SIGNATURE_MODE_NON_ASN1 : self::SIGNATURE_MODE_ASN1),
+			'verifyResult' 	=> null, // null (init); TRUE if verify = 1 ; otherwise verify can be INTEGER, NON-VALID: 0 / -1 ...
 		];
 		//--
+		$hashLen = (int) 0; // {{{SYNC-X509-PADDING-ECDSA-REQ-LEN}}}
 		switch((string)$algo) { // {{{SYNC-OPENSSL-SIGN-ALGO}}}
 			case 'sha256':
-			case 'sha384': // preferred ; wide compatibility and length attack safe
-			case 'sha512':
 			case 'sha3-256':
+				$hashLen = (int) 32 * 2; // because algorithm differ, value is double than in golang
+				break;
+			case 'sha384': // preferred ; wide compatibility and length attack safe
 			case 'sha3-384':
+				$hashLen = (int) 48 * 2; // because algorithm differ, value is double than in golang
+				break;
+			case 'sha512':
 			case 'sha3-512':
+				$hashLen = (int) 66 * 2; // because algorithm differ, value is double than in golang
 				break;
 			default:
 				$arr['err'] = 'Invalid Sign Algo: `'.$algo.'`';
 				return (array) $arr;
 		} //end switch
+		if((int)$hashLen <= 0) {
+				$arr['err'] = 'Invalid Hash Length: `'.$hashLen.'`';
+				return (array) $arr;
+		} //end if
 		//--
-		if(self::isValidPublicKeyPEM((string)$eccPubKey) !== true) {
-			$arr['err'] = 'Public Key is Empty or Invalid';
+		if(
+			(self::isValidPublicKeyPEM((string)$eccPubKey) !== true)
+			AND
+			(self::isValidCertificatePEM((string)$eccPubKey) !== true)
+		) {
+			$arr['err'] = 'Public Key or Certificate is Empty or Invalid';
 			return (array) $arr;
 		} //end if
 		//--
@@ -6094,6 +6378,19 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 			return (array) $arr;
 		} //end if
 		//--
+		if($useASN1 === false) {
+			$arrAsn1Conv = (array) SmartCryptoEcdsaAsn1Sig::toAsn1((string)$signatureB64, (int)$hashLen);
+			if((string)($arrAsn1Conv['err'] ?? null) != '') {
+				$arr['err'] = 'Non-ASN1 Signature Conversion Failed: '.($arrAsn1Conv['err'] ?? null);
+				return (array) $arr;
+			} //end if
+			$signatureB64 = (string) trim((string)($arrAsn1Conv['sig'] ?? null));
+			if((string)$signatureB64 == '') {
+				$arr['err'] = 'Non-ASN1 Signed B64 Data is Empty';
+				return (array) $arr;
+			} //end if
+		} //end if
+		//--
 		$rawSignature = (string) Smart::b64_dec((string)$signatureB64, true); // strict
 		if((string)$rawSignature == '') {
 			$arr['err'] = 'Signed Data is Empty';
@@ -6102,7 +6399,7 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 		//--
 		$signVerify = openssl_verify((string)$data, (string)$rawSignature, (string)$eccPubKey, (string)$algo);
 		if($signVerify !== 1) { // 1 if the signature is correct, 0 if it is incorrect, and -1 or false on error
-			$arr['verifyResult'] = $signVerify;
+			$arr['verifyResult'] = (int) $signVerify;
 			$arr['err'] = 'Signature Verification Failed';
 			return (array) $arr;
 		} //end if
@@ -6114,7 +6411,7 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 	} //END FUNCTION
 
 
-	public static function newCertificate(array $dNames=['commonName' => 'localhost'], int $years=1, string $curve=self::OPENSSL_ECDSA_DEF_CURVE, string $algo=self::OPENSSL_CSR_DEF_ALGO) : array {
+	public static function newCertificate(array $dNames=['commonName' => 'localhost'], int $years=1, string $curve=self::OPENSSL_ECDSA_DEF_CURVE, string $algo=self::OPENSSL_CSR_DEF_ALGO, ?string $privKeyPassword=null) : array {
 		//--
 		// IMPORTANT: returned CERTIFICATE, PRIVATE KEY, PUBLIC KEY are plain, not passphrase protected, must be protected if stored as ENCRYPTED !
 		//--
@@ -6206,8 +6503,9 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 		} //end if
 		//--
 		$private_key = openssl_pkey_new([
-			'private_key_type' 	=> OPENSSL_KEYTYPE_EC,
-			'curve_name' 		=> (string) $curve,
+			'encrypt_key_cipher' 	=> OPENSSL_CIPHER_AES_256_CBC,
+			'private_key_type' 		=> OPENSSL_KEYTYPE_EC,
+			'curve_name' 			=> (string) $curve,
 		]);
 		if(!$private_key) {
 			$arr['err'] = 'Failed to Generate the New Private Key';
@@ -6253,10 +6551,11 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 		} //end if
 		$arr['certificate'] = (string) $eccCertPem;
 		//--
-		$options = [];
-		$passPhrase = null;
+		$options = [ // {{{SYNC-ECDSA-PKEY-EXPORT-OPTIONS}}}
+			'encrypt_key_cipher' => OPENSSL_CIPHER_AES_256_CBC,
+		];
 		$eccPrivKey = '';
-		if(!openssl_pkey_export($private_key, $eccPrivKey, $passPhrase, (array)$options)) {
+		if(!openssl_pkey_export($private_key, $eccPrivKey, $privKeyPassword, (array)$options)) {
 			$arr['err'] = 'Failed to Export the Private Key';
 			return (array) $arr;
 		} //end if
@@ -6271,31 +6570,19 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 		} //end if
 		$arr['privKey'] = (string) $eccPrivKey;
 		//--
-		$pKey = openssl_pkey_get_private((string)$eccPrivKey);
-		if(!$pKey) {
-			$arr['err'] = 'Failed to Extract the Private Key';
+		$arrGetPubKey = (array) self::getPemPublicKeyFromPemPrivateKeyOrPemCertificate((string)$eccPrivKey, $privKeyPassword);
+		if((string)($arrGetPubKey['err'] ?? null) != '') {
+			$arr['err'] = 'Failed to get the Public Key: '.($arrGetPubKey['err'] ?? null);
 			return (array) $arr;
 		} //end if
 		//--
-		$detailsPrivKey = openssl_pkey_get_details($pKey);
-	//	openssl_free_key($pKey); // free the key from memory ; not needed ; deprecated since 8.0, as OpenSSLAsymmetricKey objects are freed automatically
-		if(!is_array($detailsPrivKey)) {
-			$arr['err'] = 'Failed to Get the Private Key Details';
+		$arr['pubKey'] = (string) trim((string)($arrGetPubKey['pubKey'] ?? null));
+		if((string)$arr['pubKey'] == '') {
+			$arr['err'] = 'Failed to get the Public Key: Empty';
 			return (array) $arr;
 		} //end if
-		//print_r($detailsPrivKey); die();
-		$eccPubKey = (string) trim((string)($detailsPrivKey['key'] ?? null));
-		if((string)$eccPubKey == '') {
-			$arr['err'] = 'Public Key PEM is Empty';
-			return (array) $arr;
-		} //end if
-		if(self::isValidPublicKeyPEM((string)$eccPubKey) !== true) {
-			$arr['err'] = 'Public Key PEM is Invalid';
-			return (array) $arr;
-		} //end if
-		$arr['pubKey'] = (string) $eccPubKey;
 		//--
-		$keyVersion = (string) trim((string)($detailsPrivKey['type'] ?? null));
+		$keyVersion = (string) trim((string)($arrGetPubKey['version'] ?? null));
 		if((string)$keyVersion != '3') { // expects version 3 ; {{{SYNC-OPENSSL-ECDSA-V3}}}
 			$arr['err'] = 'Invalid Private Key Version: `'.$keyVersion.'`';
 			return (array) $arr;
@@ -6307,7 +6594,7 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 	} //END FUNCTION
 
 
-	private static function isValidCertificatePEM(?string $eccCertPem) : bool {
+	public static function isValidCertificatePEM(?string $eccCertPem) : bool {
 		//--
 		$eccCertPem = (string) trim((string)$eccCertPem);
 		if((string)$eccCertPem == '') {
@@ -6329,7 +6616,7 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 	} //END FUNCTION
 
 
-	private static function isValidPrivateKeyPEM(?string $eccPrivKey) : bool {
+	public static function isValidPrivateKeyPEM(?string $eccPrivKey) : bool {
 		//--
 		$eccPrivKey = (string) trim((string)$eccPrivKey);
 		if((string)$eccPrivKey == '') {
@@ -6337,11 +6624,35 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 		} //end if
 		//--
 		if(
-			(Smart::str_startswith((string)$eccPrivKey, '-----BEGIN PRIVATE KEY-----'."\n") !== true)
-			OR
-			(Smart::str_endswith((string)$eccPrivKey, "\n".'-----END PRIVATE KEY-----') !== true)
-			OR
-			(Smart::str_contains((string)$eccPrivKey, "\n".'M') !== true)
+			(
+				(
+					( // can be encrypted or not, if encrypted will have to start with `Proc-Type:`
+						(Smart::str_startswith((string)$eccPrivKey, '-----BEGIN PRIVATE KEY-----'."\n") !== true)
+						OR
+						(Smart::str_endswith((string)$eccPrivKey, "\n".'-----END PRIVATE KEY-----') !== true)
+					)
+					OR
+					(
+						(Smart::str_contains((string)$eccPrivKey, "\n".'M') !== true)
+						AND
+						(Smart::str_contains((string)$eccPrivKey, "\n".'Proc-Type: 4,ENCRYPTED') !== true)
+					)
+				)
+				AND
+				( // {{{SYNC-ECDSA-VALD-ENCRYPTED-PRIVKEY}}}
+					(
+						(Smart::str_startswith((string)$eccPrivKey, '-----BEGIN ENCRYPTED PRIVATE KEY-----'."\n") !== true)
+						OR
+						(Smart::str_endswith((string)$eccPrivKey, "\n".'-----END ENCRYPTED PRIVATE KEY-----') !== true)
+					)
+					OR
+					(
+						(Smart::str_contains((string)$eccPrivKey, "\n".'M') !== true)
+						AND
+						(Smart::str_contains((string)$eccPrivKey, "\n".'Proc-Type: 4,ENCRYPTED') !== true)
+					)
+				)
+			)
 		) {
 			return false;
 		} //end if
@@ -6351,7 +6662,7 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 	} //END FUNCTION
 
 
-	private static function isValidPublicKeyPEM(?string $eccPubKey) : bool {
+	public static function isValidPublicKeyPEM(?string $eccPubKey) : bool {
 		//--
 		$eccPubKey = (string) trim((string)$eccPubKey);
 		if((string)$eccPubKey == '') {
@@ -6373,6 +6684,9 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 	} //END FUNCTION
 
 
+	//-------- [PRIVATES]
+
+
 	private static function init() : string {
 		//--
 		if(self::$initialized !== null) {
@@ -6392,6 +6706,245 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 		self::$initialized = ''; // no errors
 		//--
 		return (string) self::$initialized;
+		//--
+	} //END FUNCTION
+
+
+} //END CLASS
+
+
+//=====================================================================================
+//===================================================================================== CLASS END
+//=====================================================================================
+
+
+//=====================================================================================
+//===================================================================================== CLASS START
+//=====================================================================================
+
+/**
+ * Class: SmartCryptoEcdsaAsn1Sig - provides PHP ASN1 conversions for EcDSA Signatures
+ *
+ * @usage  		static object: Class::method() - This class provides only STATIC methods
+ *
+ * @access 		private
+ * @internal
+ *
+ * @depends 	classes: Smart
+ * @version 	v.20260112
+ *
+ */
+final class SmartCryptoEcdsaAsn1Sig {
+
+
+	private const ASN1_SEQUENCE = '30';
+	private const ASN1_INTEGER = '02';
+	private const ASN1_MAX_SINGLE_BYTE = 128;
+	private const ASN1_LENGTH_2BYTES = '81';
+	private const ASN1_BIG_INTEGER_LIMIT = '7f';
+	private const ASN1_NEGATIVE_INTEGER = '00';
+	private const BYTE_SIZE = 2;
+
+
+	public static function toAsn1(string $signature, int $length) : array {
+		//--
+		$arr = [
+			'err' => '?',
+			'sig' => '',
+		];
+		//--
+		$signature = (string) trim((string)$signature);
+		if((string)$signature == '') {
+			$arr['err'] = 'B64 Signature is Empty';
+			return (array) $arr;
+		} //end if
+		$signature = (string) Smart::b64_dec((string)$signature, true); // strict
+		if((string)$signature == '') {
+			$arr['err'] = 'Signature is Empty';
+			return (array) $arr;
+		} //end if
+		//--
+		$signature = (string) bin2hex((string)$signature);
+		//--
+		$lenSgn = (int) self::octetLength((string)$signature);
+		if((int)$lenSgn != (int)$length) {
+			$arr['err'] = 'Invalid signature length, having: '.$lenSgn.', but expects: '.$length;
+			return (array) $arr;
+		} //end if
+		//--
+		$pointR = (string) self::preparePositiveInteger((string)substr((string)$signature, 0, (int)$length));
+		$pointS = (string) self::preparePositiveInteger((string)substr((string)$signature, (int)$length));
+		//--
+		$lengthR = (int) self::octetLength((string)$pointR);
+		$lengthS = (int) self::octetLength((string)$pointS);
+		//--
+		$totalLength  = (int)    $lengthR + $lengthS + self::BYTE_SIZE + self::BYTE_SIZE;
+		$lengthPrefix = (string) ($totalLength > self::ASN1_MAX_SINGLE_BYTE ? self::ASN1_LENGTH_2BYTES : '');
+		//--
+		$encodeHexToBin = (string) self::ASN1_SEQUENCE . $lengthPrefix . dechex($totalLength) . self::ASN1_INTEGER . dechex($lengthR) . $pointR . self::ASN1_INTEGER . dechex($lengthS) . $pointS;
+		//--
+		/*
+		$bin = hex2bin((string)$encodeHexToBin); // DO NOT CAST to string, can return false, is checked below
+		if(!is_string($bin)) {
+			$arr['err'] = 'Unable to decode HEX data, is invalid';
+			return (array) $arr;
+		} //end if
+		*/
+		$bin = (string) Smart::safe_hex_2_bin(
+			(string) $encodeHexToBin,
+			false,   // do not ignore case
+			true     // log notice if invalid
+		);
+		if((string)$bin == '') {
+			$arr['err'] = 'Unable to decode HEX data, is invalid';
+			return (array) $arr;
+		} //end if
+		//--
+		$arr['sig'] = (string) Smart::b64_enc((string)$bin);
+		//--
+		$arr['err'] = ''; // clear
+		return (array) $arr;
+		//--
+	} //END FUNCTION
+
+
+	public static function fromAsn1(string $signature, int $length) : array {
+		//--
+		$arr = [
+			'err' => '?',
+			'sig' => '',
+		];
+		//--
+		$signature = (string) trim((string)$signature);
+		if((string)$signature == '') {
+			$arr['err'] = 'B64 Signature is Empty';
+			return (array) $arr;
+		} //end if
+		$signature = (string) Smart::b64_dec((string)$signature, true); // strict
+		if((string)$signature == '') {
+			$arr['err'] = 'Signature is Empty';
+			return (array) $arr;
+		} //end if
+		//--
+		$message = (string) bin2hex((string)$signature);
+		//--
+		$position = 0; // init ; DO NOT cast $position anywhere in this method, it is a value by REFERENCE, from the below lines (readAsn1Content) !
+		//--
+		$startSeq = (string) self::readAsn1Content((string)$message, $position, (int)self::BYTE_SIZE);
+		//--
+		if((string)$startSeq !== (string)self::ASN1_SEQUENCE) {
+			$arr['err'] = 'Invalid data, the Sequence should starts with: `'.self::ASN1_SEQUENCE.'`, but starts with: `'.$startSeq.'`';
+			return (array) $arr;
+		} //end if
+		//--
+		if((string)self::readAsn1Content((string)$message, $position, (int)self::BYTE_SIZE) === (string)self::ASN1_LENGTH_2BYTES) {
+			$position += (int) self::BYTE_SIZE;
+		} //end if
+		//--
+		$r = self::readAsn1Integer((string)$message, $position); // do not cast, can return null on error, otherwise string
+		if($r === null) {
+			$arr['err'] = 'Invalid data for R part, should contain an integer';
+			return (array) $arr;
+		} //end if
+		//--
+		$s = self::readAsn1Integer((string)$message, $position); // do not cast, can return null on error, otherwise string
+		if($s === null) {
+			$arr['err'] = 'Invalid data for S part, should contain an integer';
+			return (array) $arr;
+		} //end if
+		//--
+		$pointR = (string) self::retrievePositiveInteger((string)$r);
+		$pointS = (string) self::retrievePositiveInteger((string)$s);
+		//--
+		$encodeHexToBin = (string) str_pad((string)$pointR, (int)$length, '0', STR_PAD_LEFT) . str_pad((string)$pointS, (int)$length, '0', STR_PAD_LEFT);
+		//--
+		/*
+		$bin = hex2bin((string)$encodeHexToBin); // DO NOT CAST to string, can return false, is checked below
+		if(!is_string($bin)) {
+			$arr['err'] = 'Unable to decode HEX data, is invalid';
+			return (array) $arr;
+		} //end if
+		*/
+		//--
+		$bin = (string) Smart::safe_hex_2_bin(
+			(string) $encodeHexToBin,
+			false,   // do not ignore case
+			true     // log notice if invalid
+		);
+		if((string)$bin == '') {
+			$arr['err'] = 'Unable to decode HEX data, is invalid';
+			return (array) $arr;
+		} //end if
+		//--
+		$arr['sig'] = (string) Smart::b64_enc((string)$bin);
+		//--
+		$arr['err'] = ''; // clear
+		return (array) $arr;
+		//--
+	} //END FUNCTION
+
+
+	//-------- [PRIVATES]
+
+
+	private static function octetLength(string $data) : int {
+		//--
+	//	return (int) ((int)strlen((string)$data) / (int)self::BYTE_SIZE);
+		return (int) ceil((int)strlen((string)$data) / (int)self::BYTE_SIZE); // fix by unixman
+		//--
+	} //END FUNCTION
+
+
+	private static function preparePositiveInteger(string $data) : string {
+		//--
+		if((string)substr((string)$data, 0, (int)self::BYTE_SIZE) > (string)self::ASN1_BIG_INTEGER_LIMIT) {
+			return (string) self::ASN1_NEGATIVE_INTEGER . $data;
+		} //end if
+		//--
+		while(!!str_starts_with((string)$data, (string)self::ASN1_NEGATIVE_INTEGER) && ((string)substr((string)$data, 2, (int)self::BYTE_SIZE) <= (string)self::ASN1_BIG_INTEGER_LIMIT)) {
+			$data = (string) substr((string)$data, 2);
+		} //end while
+		//--
+		return (string) $data;
+		//--
+	} //END FUNCTION
+
+
+	private static function readAsn1Content(string $message, int &$position, int $length) : string {
+		//--
+		// DO NOT cast $position anywhere in this method, it is a variable by REFERENCE !
+		//--
+		$content = (string) substr((string)$message, $position, (int)$length);
+		//--
+		$position += (int) $length;
+		//--
+		return (string) $content;
+		//--
+	} //END FUNCTION
+
+
+	private static function readAsn1Integer(string $message, int &$position) : ?string {
+		//--
+		// DO NOT cast $position anywhere in this method, it is a variable by REFERENCE !
+		//--
+		if((string)self::readAsn1Content((string)$message, $position, (int)self::BYTE_SIZE) !== (string)self::ASN1_INTEGER) {
+			return null; // invalid data, should contain an integer
+		} //end if
+		//--
+		$length = (int) hexdec((string)self::readAsn1Content((string)$message, $position, (int)self::BYTE_SIZE));
+		//--
+		return (string) self::readAsn1Content($message, $position, (int)((int)$length * (int)self::BYTE_SIZE));
+		//--
+	} //END FUNCTION
+
+
+	private static function retrievePositiveInteger(string $data) : string {
+		//--
+		while(!!str_starts_with((string)$data, (string)self::ASN1_NEGATIVE_INTEGER) && ((string)substr((string)$data, 2, self::BYTE_SIZE) > (string)self::ASN1_BIG_INTEGER_LIMIT)) {
+			$data = (string) substr((string)$data, 2);
+		} //end while
+		//--
+		return (string) $data;
 		//--
 	} //END FUNCTION
 
