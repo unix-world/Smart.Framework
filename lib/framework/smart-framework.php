@@ -17,7 +17,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 //======================================================
-// Smart-Framework v.8.7 # r.20260112
+// Smart-Framework v.8.7 # r.20260114
 //======================================================
 // Preferred:     PHP 8.2.x / PHP 8.3.x
 // Stable with:   PHP 8.1.0 (min) up to PHP 8.4.x (max)
@@ -38,7 +38,8 @@ require('lib/framework/lib_unicode.php'); 			// smart unicode (support)
 require('lib/framework/lib_security.php'); 			// smart security (compliance)
 require('lib/framework/lib_smart.php'); 			// smart (base) core + filesysutils
 require('lib/framework/lib_cryptohs.php');			// smart crypto (utils) hash
-require('lib/framework/lib_cryptoas.php');			// smart crypto (utils) symmetric and asymmetric
+require('lib/framework/lib_cryptoss.php');			// smart crypto (utils) symmetric
+require('lib/framework/lib_cryptoas.php');			// smart crypto (utils) asymmetric
 require('lib/framework/lib_archive.php');			// smart archive compress/uncompress support
 require('lib/framework/lib_caching.php');			// smart cache (non-persistent + abstract persistent)
 require('lib/framework/lib_templating.php');		// smart markers templating engine

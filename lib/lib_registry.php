@@ -31,7 +31,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  *
  * @depends 	classes: SmartFrameworkSecurity, SmartEnvironment
  *
- * @version 	v.20250107
+ * @version 	v.20260114
  * @package 	Application
  *
  */
@@ -285,6 +285,13 @@ final class SmartFrameworkRegistry {
 		//--
 		// $defval and $type are MIXED ; output is MIXED
 		//--
+		if(is_object($defval)) { // safety protection
+			return null;
+		} //end if
+		if(is_object($type)) { // safety protection
+			return null;
+		} //end if
+		//--
 		$key = (string) trim((string)$key);
 		if((string)$key == '') {
 			return null;
@@ -293,15 +300,20 @@ final class SmartFrameworkRegistry {
 		if(self::issetRequestVar((string)$key) === true) {
 			$val = self::$RequestVars[(string)$key]; // use the value from request :: mixed
 		} else {
-			$val = $defval; // init with the default value :: mixed
+			$val = $defval; // mixed: init with the default value
 		} //end if
 		//--
 		if(is_array($type)) { // # if $type is array, then cast is ENUM LIST, it must contain an array with all allowed values as strings #
 			//--
+			if((int)Smart::array_type_test($type) != 1) { // must be list not associative
+				$type = [];
+			} //end if
+			//--
 			if(((string)$val != '') AND (in_array((string)$val, (array)$type))) {
-				$val = (string) $val; // force string
+				$val = (string) strval($val); // force string
 			} else {
-				$val = ''; // set as empty string
+			//	$val = ''; // set as empty string
+				$val = $defval;
 			} //end if else
 			//--
 		} else { // # else $type must be a string with one of the following cases #
@@ -319,16 +331,16 @@ final class SmartFrameworkRegistry {
 			switch((string)strtolower((string)$type)) {
 				case 'array':
 					if(!is_array($val)) {
-						$val = array(); // set as empty array
+						$val = []; // set as empty array
 					} else {
 						$val = (array) $val; // force array
 					} //end if else
 					break;
 				case 'string':
-					$val = (string) $val;
+					$val = (string) strval($val);
 					break;
 				case 'boolean':
-					$val = (string) strtolower((string)$val); // {{{SYNC-SMART-BOOL-GET-EXT}}}
+					$val = (string) strtolower((string)strval($val)); // {{{SYNC-SMART-BOOL-GET-EXT}}}
 					if(((string)$val == 'true') OR ((string)$val == 't')) {
 						$val = true;
 					} elseif(((string)$val == 'false') OR ((string)$val == 'f')) {
@@ -338,34 +350,34 @@ final class SmartFrameworkRegistry {
 					} //end if else
 					break;
 				case 'integer':
-					$val = (int) $val;
+					$val = (int) intval($val);
 					break;
 				case 'integer+':
-					$val = (int) $val;
+					$val = (int) intval($val);
 					if($val < 0) { // {{{SYNC-SMART-INT+}}}
 						$val = 0;
 					} //end if
 					break;
 				case 'integer-':
-					$val = (int) $val;
+					$val = (int) intval($val);
 					if($val > 0) { // {{{SYNC-SMART-INT-}}}
 						$val = 0;
 					} //end if
 					break;
 				case 'decimal1':
-					$val = (string) number_format(((float)$val), 1, '.', ''); // {{{SYNC-SMART-DECIMAL}}}
+					$val = (string) number_format(((float)floatval($val)), 1, '.', ''); // {{{SYNC-SMART-DECIMAL}}}
 					break;
 				case 'decimal2':
-					$val = (string) number_format(((float)$val), 2, '.', ''); // {{{SYNC-SMART-DECIMAL}}}
+					$val = (string) number_format(((float)floatval($val)), 2, '.', ''); // {{{SYNC-SMART-DECIMAL}}}
 					break;
 				case 'decimal3':
-					$val = (string) number_format(((float)$val), 3, '.', ''); // {{{SYNC-SMART-DECIMAL}}}
+					$val = (string) number_format(((float)floatval($val)), 3, '.', ''); // {{{SYNC-SMART-DECIMAL}}}
 					break;
 				case 'decimal4':
-					$val = (string) number_format(((float)$val), 4, '.', ''); // {{{SYNC-SMART-DECIMAL}}}
+					$val = (string) number_format(((float)floatval($val)), 4, '.', ''); // {{{SYNC-SMART-DECIMAL}}}
 					break;
 				case 'numeric':
-					$val = (float) $val;
+					$val = (float) floatval($val);
 					break;
 				case 'mixed': // mixed variable types, can vary by context, leave as is
 				case 'raw': // raw, alias for mixed, leave as is
@@ -373,7 +385,7 @@ final class SmartFrameworkRegistry {
 					// return as is ... (in this case extra validations have to be done explicit in the controller)
 					break;
 				default:
-					trigger_error(__METHOD__.'() // Invalid Request Variable ['.$key.'] Type: '.$type, E_USER_WARNING);
+					trigger_error(__METHOD__.'() // Invalid Request Variable ['.$key.'] Type: `'.print_r($type,1).'`', E_USER_WARNING);
 					return null;
 			} //end switch
 			//--

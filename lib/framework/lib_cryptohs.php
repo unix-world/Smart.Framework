@@ -22,7 +22,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //--
 if((!function_exists('hash_algos')) OR (!function_exists('hash_hmac_algos'))) {
 	@http_response_code(500);
-	die('PHP Extension Hash / Hmac is not available');
+	die('PHP Extension Hash / Hmac is required by Smart.Framework / Crypto / HS');
 } //end if
 //--
 
@@ -45,7 +45,7 @@ if((!function_exists('hash_algos')) OR (!function_exists('hash_hmac_algos'))) {
  *
  * @access      PUBLIC
  * @depends     PHP hash_algos() / hash() ; classes: Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE
- * @version     v.20250218
+ * @version     v.20260114
  * @package     @Core:Crypto
  *
  */
@@ -499,7 +499,7 @@ final class SmartHashCrypto {
 			return ''; //  must be empty string, on err
 		} //end if
 		//--
-		if($iterations < 1) {
+		if((int)$iterations < 1) {
 			Smart::log_warning(__METHOD__.' # The Number of iterations is too low: '.(int)$iterations);
 			$iterations = 1;
 		} elseif((int)$iterations > 5000) {
@@ -923,169 +923,7 @@ final class SmartHashCrypto {
 	//==============================================================
 
 
-	//==============================================================
-	public static function ed25519_sign(string $message, string $secret) : array {
-		//--
-		// to verify with a private key just create a signature of the message with the secret and compare strings with the private signature if match
-		// to verify with a public key use the ed25519_verify_sign() method
-		//--
-		$data = [
-			'error' 		=> '?',
-			'provider' 		=> 'LibSodium',
-			'algo' 			=> 'Ed25519',
-			'private-key' 	=> '',
-			'public-key' 	=> '',
-			'signature' 	=> '',
-			'encoding' 		=> 'Base64'
-		];
-		//--
-		if(
-			(!function_exists('sodium_crypto_sign_keypair'))
-			||
-			(!function_exists('sodium_crypto_sign_seed_keypair'))
-			||
-			(!function_exists('sodium_crypto_sign_secretkey'))
-			||
-			(!function_exists('sodium_crypto_sign_publickey_from_secretkey'))
-			||
-			(!function_exists('sodium_crypto_sign_publickey'))
-			||
-			(!function_exists('sodium_crypto_sign_detached'))
-		) {
-			$data['error'] = 'PHP Sodium Extension is missing';
-			return (array) $data;
-		} //end if
-		//--
-		if((string)$message == '') { // do not trim !
-			$data['error'] = 'Message is Empty';
-			return (array) $data;
-		} //end if
-		//--
-		$keyPair = '';
-		if($secret === null) {
-			try {
-				$keyPair = (string) sodium_crypto_sign_keypair();
-			} catch(Exception $e) {
-				$data['error'] = 'Random KeyPair Generation Failed: # '.$e->getMessage();
-				return (array) $data;
-			} //end try catch
-		} else if((int)strlen((string)$secret) == 32) {
-			try {
-				$keyPair = (string) sodium_crypto_sign_seed_keypair((string)$secret);
-			} catch(Exception $e) {
-				$data['error'] = 'Secret Based KeyPair Generation Failed: # '.$e->getMessage();
-				return (array) $data;
-			} //end try catch
-		} else {
-			$data['error'] = 'Secret must be exact 32 bytes';
-			return (array) $data;
-		} //end if
-		if((string)$keyPair == '') {
-			$data['error'] = 'Key Pair generation Failed: Empty';
-			return (array) $data;
-		} //end if
-		//--
-		$privateKey = '';
-		try {
-			$privateKey = (string) sodium_crypto_sign_secretkey((string)$keyPair);
-		} catch(Exception $e) {
-			$data['error'] = 'Private Key Generation Failed: # '.$e->getMessage();
-			return (array) $data;
-		} //end try catch
-		if((string)$privateKey == '') {
-			$data['error'] = 'Private Key generation Failed: Empty';
-			return (array) $data;
-		} //end if
-		if((int)strlen((string)$privateKey) != 64) { // SODIUM_CRYPTO_SIGN_BYTES
-			$data['error'] = 'Private Key generation Failed: Invalid Length';
-			return (array) $data;
-		} //end if
-		//--
-		$publicKey = '';
-		try {
-			$publicKey  = (string) sodium_crypto_sign_publickey_from_secretkey((string)$privateKey);
-		} catch(Exception $ex) {
-			try {
-				$publicKey = (string) sodium_crypto_sign_publickey((string)$keyPair);
-			} catch(Exception $e) {
-				$data['error'] = 'Public Key Generation Failed: # '.$e->getMessage();
-				return (array) $data;
-			} //end try catch
-		} //end try catch
-		if((string)$publicKey == '') {
-			$data['error'] = 'Public Key generation Failed: Empty';
-			return (array) $data;
-		} //end if
-		if((int)strlen((string)$publicKey) != 32) { // SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES
-			$data['error'] = 'Public Key generation Failed: Invalid Length';
-			return (array) $data;
-		} //end if
-		//--
-		$signature = '';
-		try {
-			$signature = (string) sodium_crypto_sign_detached((string)$message, (string)$privateKey);
-		} catch(Exception $e) {
-			$data['error'] = 'Signature Generation Failed: # '.$e->getMessage();
-			return (array) $data;
-		} //end try catch
-		if((string)$signature == '') {
-			$data['error'] = 'Signature generation Failed: Empty';
-			return (array) $data;
-		} //end if
-		//--
-		$data['error'] 			= ''; // clear
-		$data['private-key'] 	= (string) Smart::b64_enc((string)$privateKey);
-		$data['public-key'] 	= (string) Smart::b64_enc((string)$publicKey);
-		$data['signature'] 		= (string) Smart::b64_enc((string)$signature);
-		return (array) $data;
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-	//==============================================================
-	public static function ed25519_verify_sign(string $signature, string $message, string $public_key) : bool {
-		//--
-		if(!function_exists('sodium_crypto_sign_verify_detached')) {
-			return false;
-		} //end if
-		//--
-		if((string)$message == '') { // do not trim !
-			return false;
-		} //end if
-		//--
-		if((string)$signature == '') { // do not trim !
-			return false;
-		} //end if
-		if((int)strlen((string)$signature) != 64) { // SODIUM_CRYPTO_SIGN_BYTES
-			return false;
-		} //end if
-		//--
-		if((string)$public_key == '') { // do not trim !
-			return false;
-		} //end if
-		if((int)strlen((string)$public_key) != 32) { // SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES
-			return false;
-		} //end if
-		//--
-		$ok = false;
-		try {
-			$ok = sodium_crypto_sign_verify_detached((string)$signature, (string)$message, (string)$public_key); // do not cast, it is a security risk, will be checked below if === TRUE
-		} catch(Exception $e) {
-			$ok = false;
-			Smart::log_warning(__METHOD__.' # Signature Check Failed with Error: # '.$e->getMessage());
-		} //end try catch
-		if($ok === true) {
-			return true;
-		} //end if
-		//--
-		return false;
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-	//##### PRIVATES
+	//-------- [PRIVATES]
 
 
 	//==============================================================

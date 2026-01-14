@@ -39,7 +39,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20260108
+ * @version 	v.20260114
  * @package 	modules:AuthUsers
  *
  */
@@ -721,7 +721,7 @@ final class Utils {
 			return '';
 		} //end if
 		//--
-		if((string)($certData['err'] ?? null) != '') {
+		if((string)$certData['err'] != '') {
 			return '';
 		} //end if
 		//--
@@ -948,9 +948,8 @@ final class Utils {
 			100 // 100 years
 		);
 		//--
-		$err = (string) \strval($arr['err'] ?? null);
-		if((string)$err != '') {
-			\Smart::log_warning(__METHOD__.' # New Certificate Error: '.$err);
+		if((string)$arr['err'] != '') {
+			\Smart::log_warning(__METHOD__.' # New Certificate Error: '.$arr['err']);
 			return [];
 		} //end if
 		//--

@@ -104,7 +104,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20260112
+ * @version     v.20260114
  * @package     @Core
  *
  */
@@ -1079,11 +1079,11 @@ final class Smart {
 	 * This is a shortcut to the htmlspecialchars() for XML mode, to avoid use long options each time and provide a standard into Smart.Framework
 	 *
 	 * @param 	STRING 		$y_string			:: The string to be escaped
-	 * @param 	BOOL 		$y_extra_escapings 	:: If set to TRUE will replace special characters such as TAB, LF and CR with the corresponding entities
+	 * @param 	BOOL 		$y_extra_escapings 	:: Default is TRUE ; if set to FALSE will skip replacing special characters such as TAB, LF and CR with the corresponding entities
 	 *
 	 * @return 	STRING							:: The escaped string using htmlspecialchars() XML standards with Unicode-Safe control
 	 */
-	public static function escape_xml(?string $y_string, bool $y_extra_escapings) : string {
+	public static function escape_xml(?string $y_string, bool $y_extra_escapings=true) : string {
 		//-- v.20241228
 		if((string)$y_string == '') {
 			return '';
@@ -2613,26 +2613,24 @@ final class Smart {
 	 *
 	 * @return INTEGER 						:: An integer random number
 	 */
-	public static function random_number(?int $y_min=0, ?int $y_max=-1, bool $y_seed=false) : int {
+	public static function random_number(?int $y_min=0, ?int $y_max=-1, bool $y_mtseed=false) : int {
 		//-- PHP 8.1 Fix to avoid deprecation notice float to int conversion
 		$y_min = (int) $y_min;
 		$y_max = (int) $y_max;
 		//-- seed the mt_rand() using mt_srand()
-		if($y_seed !== false) {
-			if($y_seed === true) {
-				$y_seed = (int) (microtime(true) * 10000);
-			} //end if
-			mt_srand((int)$y_seed);
+		if($y_mtseed === true) {
+			$y_mtseed = (int) (microtime(true) * 10000);
+			mt_srand((int)$y_mtseed);
 		} //end if
 		//-- the mt_rand() is 4x times faster than rand() ; but the max is limited to 2147483647 on most of the platforms
 		if((int)$y_min < 0) {
 			$y_min = 0;
 		} //end if
 		if((int)$y_max < 0) {
-			$y_max = mt_getrandmax();
+			$y_max = (int) mt_getrandmax();
 		} //end if
 		if($y_min > $y_max) {
-			$y_min = $y_max;
+			$y_min = (int) $y_max;
 		} //end if
 		//--
 		return (int) mt_rand((int)$y_min, (int)$y_max);

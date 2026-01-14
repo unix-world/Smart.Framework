@@ -1,7 +1,7 @@
 <hr>
 <h6><a href="?/page/samples.dhkx-test">DHKX Test</a></h6>
 <script>
-// v.20231117
+// v.20260113
 const jsDhkxExchangeStep1 = () => {
 	//const bas = smartJ$DhKx.getBaseGen();
 	const bas = '[###SRV-BASE|js###]';
@@ -9,7 +9,9 @@ const jsDhkxExchangeStep1 = () => {
 	const srvPub = '[###SRV-PUB|js###]';
 	const shad = smartJ$DhKx.getCliShad(cli.sec, srvPub);
 	console.log('DHKX Next Request Client.Shad', shad);
-	jQuery('pre#dhkx-dbg-cli-data').text(JSON.stringify(String(cli), null, 4));
+	const debugCLi = cli;
+	debugCLi['pub'] = String(debugCLi['pub']); // fix, BigInt cannot be serialized as JSON
+	jQuery('pre#dhkx-dbg-cli-data').text(JSON.stringify(debugCLi, null, 4));
 	smartJ$Browser.setCookie('testDhkx_SrvPub', srvPub);
 	smartJ$Browser.setCookie('testDhkx_CliPub', cli.pub);
 	smartJ$Browser.setCookie('testDhkx_CliShad', shad);

@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartEnvironment, SmartCipherCrypto
- * @version 	v.20260108
+ * @version 	v.20260114
  * @package 	@Core:Authentication
  *
  */
@@ -2383,12 +2383,30 @@ final class SmartAuth {
 		//--
 		$sign = '';
 		if((string)$edAlgo == 'ed25519') {
-			$edSignature = (array) SmartHashCrypto::ed25519_sign((string)$token, (string)$safeKey);
-			if((string)($edSignature['error'] ?? null) != '') {
-				$jwt['error'] = 'JWT Sign Failed: algo `'.$edAlgo.'` ERR: # '.$edSignature['error'];
+			//--
+			if(SmartCryptoEddsaSodium::isAvailable() !== true) {
+				$jwt['error'] = 'JWT Sign KeyPair Failed: algo `'.$edAlgo.'` is N/A';
 				return (array) $jwt;
 			} //end if
-			$sign = (string) trim((string)($edSignature['signature'] ?? null)); // b64
+			//--
+			$edKeySPair = (array) SmartCryptoEddsaSodium::ed25519NewKeypair((string)$safeKey);
+			if((string)$edKeySPair['err'] != '') {
+				$jwt['error'] = 'JWT Sign KeyPair Failed: algo `'.$edAlgo.'` ERR: # '.$edKeySPair['err'];
+				return (array) $jwt;
+			} //end if
+			//--
+			$edSignature = (array) SmartCryptoEddsaSodium::ed25519SignData(
+				(string) $edKeySPair['privKey'],
+				(string) $edKeySPair['pubKey'],
+				(string) $token
+			);
+			if((string)$edSignature['err'] != '') {
+				$jwt['error'] = 'JWT Sign Failed: algo `'.$edAlgo.'` ERR: # '.$edSignature['err'];
+				return (array) $jwt;
+			} //end if
+			//--
+			$sign = (string) trim((string)$edSignature['signatureB64']); // b64
+			//--
 		} else {
 			$sign = (string) trim((string)SmartHashCrypto::hmac((string)$hmacAlgo, (string)$safeKey, (string)$token, true)); // b64
 		} //end if else
@@ -2898,16 +2916,40 @@ final class SmartAuth {
 		//-- validate signature
 		$sign = '';
 		if((string)$edAlgo == 'ed25519') {
-			$edSignature = (array) SmartHashCrypto::ed25519_sign((string)$token, (string)$safeKey);
-			if((string)($edSignature['error'] ?? null) != '') {
-				$valid['error'] = 'JWT Sign Failed: algo `'.$edAlgo.'` ERR: # '.$edSignature['error'];
+			//--
+			if(SmartCryptoEddsaSodium::isAvailable() !== true) {
+				$valid['error'] = 'JWT Sign KeyPair Failed: algo `'.$edAlgo.'` is N/A';
 				return (array) $valid;
 			} //end if
-			$sign = (string) trim((string)($edSignature['signature'] ?? null)); // b64
-			if(SmartHashCrypto::ed25519_verify_sign((string)$signature, (string)$token, (string)Smart::b64s_dec((string)($edSignature['public-key'] ?? null), true)) !== true) { // B64 STRICT
-				$valid['error'] = 'JWT Signature verification failed';
+			//--
+			$edKeySPair = (array) SmartCryptoEddsaSodium::ed25519NewKeypair((string)$safeKey);
+			if((string)$edKeySPair['err'] != '') {
+				$valid['error'] = 'JWT Sign KeyPair Failed: algo `'.$edAlgo.'` ERR: # '.$edKeySPair['err'];
 				return (array) $valid;
 			} //end if
+			//--
+			$edSignature = (array) SmartCryptoEddsaSodium::ed25519SignData(
+				(string) $edKeySPair['privKey'],
+				(string) $edKeySPair['pubKey'],
+				(string) $token
+			);
+			if((string)$edSignature['err'] != '') {
+				$valid['error'] = 'JWT Sign Failed: algo `'.$edAlgo.'` ERR: # '.$edSignature['err'];
+				return (array) $valid;
+			} //end if
+			//--
+			$sign = (string) trim((string)$edSignature['signatureB64']); // b64
+			//--
+			$edVerifySignature = (array) SmartCryptoEddsaSodium::ed25519VerifySignedData(
+				(string) $edKeySPair['pubKey'],
+				(string) Smart::b64_enc((string)$signature),
+				(string) $token
+			);
+			if(((string)$edVerifySignature['err'] != '') OR ($edVerifySignature['verifyResult'] !== true)) {
+				$valid['error'] = 'JWT Signature Verification Failed: algo `'.$edAlgo.'` ERR: # '.$edVerifySignature['err'].' | Result: '.(is_bool($edVerifySignature['verifyResult']) ? ($edVerifySignature['verifyResult'] ? 'TRUE' : 'FALSE') : (int)$edVerifySignature['verifyResult']);
+				return (array) $valid;
+			} //end if
+			//--
 		} else {
 			$sign = (string) trim((string)SmartHashCrypto::hmac((string)$hmacAlgo, (string)$safeKey, (string)$token, true)); // b64
 		} //end if else

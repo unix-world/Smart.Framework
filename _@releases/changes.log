@@ -2,8 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
-January 12, 2026
+January 14, 2026
 	* EcDSA full support, incl. non-ASN1 mode
+	* improved nonASN1 mode for EcDSA by using GMP
+	* EdDSA improved support for Ed25519
 	* introduce SMART_FRAMEWORK_LOG_DEBUG_BACKTRACE for extra logging
 
 January 03, 2026
