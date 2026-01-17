@@ -2490,6 +2490,7 @@ final class SmartCipherCrypto {
  *
  * @depends     PHP GMP extension ; classes: Smart
  * @version     v.20250714
+ * @package     @Core:Crypto
  *
  */
 final class SmartCryptoCiphersThreefishCBC {
@@ -3271,6 +3272,7 @@ final class SmartCryptoCiphersThreefishCBC {
  *
  * @depends     classes: Smart, SmartEnvironment
  * @version     v.20250714
+ * @package     @Core:Crypto
  *
  */
 final class SmartCryptoCiphersTwofishCBC { // algo has been adapted to work faster, supports 64-bit machines only
@@ -4013,6 +4015,7 @@ die();
  *
  * @depends     classes: Smart, SmartHashCrypto
  * @version     v.20250714
+ * @package     @Core:Crypto
  *
  */
 final class SmartCryptoCiphersBlowfishCBC {
@@ -4627,6 +4630,7 @@ echo 'plain text: '.$plaintext; // it should be: 'this is some example plain tex
  *
  * @depends     classes: Smart, SmartEnvironment, SmartHashCrypto
  * @version     v.20260114
+ * @package     @Core:Crypto
  *
  */
 final class SmartCryptoCiphersHashCryptOFB {
@@ -5032,6 +5036,7 @@ final class SmartCryptoCiphersHashCryptOFB {
  *
  * @depends     extensions: PHP OpenSSL ; classes: Smart, SmartHashCrypto
  * @version     v.20250714
+ * @package     @Core:Crypto
  *
  */
 final class SmartCryptoCiphersOpenSSL {
@@ -5391,6 +5396,7 @@ final class SmartCryptoCiphersOpenSSL {
  *
  * @depends     PHP GMP extension (optional, only if uses BigInt) ; classes: Smart, SmartHashCrypto, SmartCipherCrypto, SmartCryptoCiphersBlowfishCBC
  * @version     v.20250714
+ * @package     @Core:Crypto
  *
  */
 final class SmartDhKx {

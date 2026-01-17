@@ -29,7 +29,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20251230
+ * @version 	v.20260115
  * @package 	modules:AuthUsers
  *
  */
@@ -40,8 +40,6 @@ final class SmartAuthUsersHandler
 
 
 	public static function Authenticate() : void {
-		//--
-	//	$apiToken = \SmartModExtLib\AuthUsers\AuthJwt::newAuthJwtToken('api', '@', '', 'user.id', 'user@email.ext'); \Smart::log_notice(__METHOD__.' # '.print_r($apiToken,1));
 		//--
 		$mode = '';
 		$token = '';
@@ -147,7 +145,7 @@ final class SmartAuthUsersHandler
 			OR
 			(\strpos((string)$userID, '.') === false)
 			OR
-			(\SmartAuth::validate_auth_username((string)$userID, false) !== true)
+			(\SmartAuth::validate_auth_username((string)$userID) !== true)
 		) {
 			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
 			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Auth', 403, 'User UserID is Invalid: `'.$email.'` / `'.$userID.'`');
@@ -258,8 +256,8 @@ final class SmartAuthUsersHandler
 			} //end if
 		} //end if
 		//--
-		$userEncKey = (string) \SmartModExtLib\AuthUsers\Utils::userEncryptionKey((string)$userID); // ok ; pre-check ; if returns an empty key by error means settings are bad, cannot login !
-		if((string)\trim((string)$userEncKey) == '') {
+		$userEncryptionSecretKey = (string) \SmartModExtLib\AuthUsers\Utils::userSecretKeyForEncryption((string)$userID); // ok ; pre-check ; if returns an empty key by error means settings are bad, cannot login !
+		if((string)\trim((string)$userEncryptionSecretKey) == '') {
 			\SmartModExtLib\AuthUsers\AuthCookie::unsetJwtCookie();
 			\SmartModExtLib\AuthUsers\Utils::logFailedExtAuth('JWT:['.$mode.']Auth', 403, 'Invalid User Encryption Key for auth `'.$email.'`');
 			return;
@@ -278,7 +276,7 @@ final class SmartAuthUsersHandler
 		} //end if
 		//--
 		$fa2secret 	= (string) \trim((string)\SmartModExtLib\AuthUsers\Utils::decrypt2FASecret((string)$userID, (string)($userData['fa2'] ?? null)));
-		$securityKey 	= (string) \trim((string)\SmartModExtLib\AuthUsers\Utils::decryptSecretKey((string)$userID, (string)($userData['seckey'] ?? null))); // it is used as Security Key NOT as Secret Key !
+		$securityKey 	= (string) \trim((string)\SmartModExtLib\AuthUsers\Utils::decryptSecurityKey((string)$userID, (string)($userData['seckey'] ?? null)));
 		$signKeys 	= (array)  \SmartModExtLib\AuthUsers\Utils::decryptSignKeys((string)$userID, (string)($userData['signkeys'] ?? null));
 		//--
 		$infocert 	= [];
@@ -314,7 +312,7 @@ final class SmartAuthUsersHandler
 			(string) \trim((string)($userData['restr'] ?? null)), // user restrictions * Optional *
 			(array)  [ // {{{SYNC-AUTH-KEYS}}} ; important: for user accounts, seckey (Secret Key) should never be changed, otherwise may loose encrypted data ! the ssekey (Security Key) may be changed, it is used for tokens (ex: JWT) generation only
 				'fa2sec' 	=> (string) $fa2secret, 							// 2FA secret
-				'seckey' 	=> (string) $userEncKey, 							// secret (private) key, should not be revealed, used for sensitive data persistent encryption
+				'seckey' 	=> (string) $userEncryptionSecretKey, 				// secret (private) key, should not be revealed, used for sensitive data persistent encryption
 				'ssekey' 	=> (string) $securityKey, 							// security (private) key, should not be revealed, used for on-the-fly encryption and/or tokens (ex: JWT) generation only
 				'privkey' 	=> (string) ($signKeys['privKey'] ?? null), 		// sign private key, should not be revealed
 				'pubkey'  	=> (string) ($signKeys['pubKey'] ?? null), 			// sign public key

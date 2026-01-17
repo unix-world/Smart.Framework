@@ -35,6 +35,18 @@ const accountDisable = () => {
 	};
 	smartJ$Browser.ConfirmDialog('<h5>[###TXT-ACC-DEACTIVATE-NOTE|html|js###]</h5><br><h6>[###TXT-ACC-DEACTIVATE-CHECK|html|js###]</h6><input id="accnt-deactivate-uid" type="text" maxlength="28" value="" autocomplete="off" class="ux-field" style="width:100%;">', evcode, '[###TXT-BTN-ACC-DEACTIVATE|js###]', null, null, 'alertable', false);
 }
+const tokenGenerateHandle = () => {
+	const id = 'ssekey';
+	const evcode = () => {
+		formSend(id);
+	};
+	const haveToken = [###DAT-SSEKEY-LEN|int|bool###];
+	if(haveToken) {
+		smartJ$Browser.ConfirmDialog('<h5>[###TXT-BTN-SSEKEY|html|js###] ?</h5>', evcode, '[###TXT-CONFIRM-ACTION|js###]', null, 150, 'alertable', false);
+	} else {
+		evcode();
+	}
+};
 </script>
 <script>
 jQuery(() => {
@@ -64,6 +76,11 @@ div.ux-tab-content {
 }
 div.ux-tab-subcontainer {
 	width: 100% !important;
+}
+div.uxx-uid,
+div.uxx-uid * {
+	color: #778888 !important;
+	font-size: 0.75rem !important;
 }
 </style>
 <div id="settings-container">
@@ -258,24 +275,36 @@ div.ux-tab-subcontainer {
 				</div>
 				<div class="ux-tab-content dark">
 					<div class="ux-tab-subcontainer">
-						<form id="frm-secret" class="ux-form" action="#" method="post" onSubmit="return false;">
-							<input type="hidden" name="action" value="secret:generate">
+						<form id="frm-ssekey" class="ux-form" action="#" method="post" onSubmit="return false;">
+							<input type="hidden" name="action" value="ssekey:generate">
 							<div class="ux-grid-row">
 								<div class="ux-grid-col s12 m12">
-									<h5 style="display:inline-block;">[###TXT-SSEKEY-TITLE|html###]</h5>&nbsp;&nbsp;<i class="sfi sfi-fa-umbrella sfi-xl" style="cursor:help;[%%%IF:DAT-SSEKEY-LEN:<=0;%%%] color:#778888;[%%%/IF:DAT-SSEKEY-LEN%%%]"[%%%IF:DAT-SSEKEY-LEN:>0;%%%] title="SECRET KEY [Protected]: [###DAT-SSEKEY-LEN|int###] bytes"[%%%/IF:DAT-SSEKEY-LEN%%%]></i>
+									<h5 style="display:inline-block;">[###TXT-SSEKEY-TITLE|html###]: [###DAT-SSEKEY-TYP|html###]</h5>&nbsp;&nbsp;<i class="sfi sfi-fa-umbrella sfi-xl" style="cursor:help;[%%%IF:DAT-SSEKEY-LEN:<=0;%%%] color:#778888;[%%%ELSE:DAT-SSEKEY-LEN%%%][%%%IF:DAT-SSEKEY-OK:!=1;%%%] color:#ED2559;[%%%/IF:DAT-SSEKEY-OK%%%][%%%/IF:DAT-SSEKEY-LEN%%%]"[%%%IF:DAT-SSEKEY-LEN:>0;%%%] title="[###DAT-SSEKEY-MOD|html###]TOKEN [Protected]: [###DAT-SSEKEY-LEN|int###]-bit"[%%%/IF:DAT-SSEKEY-LEN%%%]></i>
+									[%%%IF:DAT-SSEKEY-HASH:!=;%%%]<div class="uxx-uid">UID:`<b>[###DAT-SSEKEY-HASH|html###]</b>`</div>[%%%ELSE:DAT-SSEKEY-HASH%%%]<!-- UID: N/A -->[%%%/IF:DAT-SSEKEY-HASH%%%]
 								</div>
 							</div>
 							<div class="ux-grid-row">
 								<div class="ux-grid-col s12 m12">
 								[%%%IF:DAT-SSEKEY-LEN:>0;%%%]
 									<i>[###TXT-AVAILABLE-SSEKEY|html###]</i>
-								[%%%ELSE:DAT-SSEKEY-LEN%%%]
 									<br>
-									<button type="button" class="ux-button" onclick="formSend('secret'); return false;"><i class="sfi sfi-fa-umbrella"></i> &nbsp; [###TXT-BTN-SSEKEY|html###]</button>
+								[%%%ELSE:DAT-SSEKEY-LEN%%%]
+									<!-- Security Token N/A -->
 								[%%%/IF:DAT-SSEKEY-LEN%%%]
+									<br>
+									<button type="button" class="ux-button" onclick="tokenGenerateHandle(); return false;"><i class="sfi sfi-fa-umbrella"></i> &nbsp; [###TXT-BTN-SSEKEY|html###]</button>
 								</div>
 							</div>
 						</form>
+						[%%%IF:SHOW-DIGICERT:==yes;%%%]
+						<script>
+						const copyCertsHandlerCertificate = () => {
+							smartJ$Browser.AlertDialog('<small>[###DAT-DIGICERT-CERTIFICATE|html|nl2br|js###]</small>', null, '[###TXT-DIGICERT-TITLE|js###]: [###TXT-DIGICERT-CERTIFICATE|js###] - PEM', 525, 500, 'alertable', false);
+						};
+						const copyCertsHandlerPubKey = () => {
+							smartJ$Browser.AlertDialog('<small>[###DAT-DIGICERT-PUBKEY|html|nl2br|js###]</small>', null, '[###TXT-DIGICERT-TITLE|js###]: [###TXT-DIGICERT-PUBKEY|js###] - PEM', 525, 250, 'alertable', false);
+						};
+						</script>
 						<br>
 						<hr>
 						<br>
@@ -284,6 +313,7 @@ div.ux-tab-subcontainer {
 							<div class="ux-grid-row">
 								<div class="ux-grid-col s12 m12">
 									<h5 style="display:inline-block;">[###TXT-DIGICERT-TITLE|html###]: [###DAT-DIGICERT-TYPE|html###]</h5>&nbsp;&nbsp;<i class="sfi sfi-fa-certificate sfi-xl" style="cursor:help; color:[%%%IF:DAT-DIGICERT-INFOCERT:==;%%%]#778888[%%%ELSE:DAT-DIGICERT-INFOCERT%%%][%%%IF:DAT-DIGICERT-EXPIRED:==yes;%%%]#C42C53[%%%ELSE:DAT-DIGICERT-EXPIRED%%%]#82A411[%%%/IF:DAT-DIGICERT-EXPIRED%%%];[%%%/IF:DAT-DIGICERT-INFOCERT%%%]" title="[###DAT-DIGICERT-INFOCERT|html###]"></i>
+									[%%%IF:DAT-DIGICERT-HASH:!=;%%%]<div class="uxx-uid">UID:`<b>[###DAT-DIGICERT-HASH|html###]</b>`</div>[%%%ELSE:DAT-DIGICERT-HASH%%%]<!-- UID: N/A -->[%%%/IF:DAT-DIGICERT-HASH%%%]
 								</div>
 							</div>
 							<div class="ux-grid-row">
@@ -292,7 +322,7 @@ div.ux-tab-subcontainer {
 								</div>
 								<div class="ux-grid-col s12 m8">
 									[%%%IF:DAT-DIGICERT-CERTIFICATE:!=;%%%]
-									<i class="sfi sfi-eye" title="[###DAT-DIGICERT-CERTIFICATE|html###]"></i>
+									<i class="sfi sfi-eye" title="[###DAT-DIGICERT-CERTIFICATE|html###]" style="cursor:pointer;" onclick="copyCertsHandlerCertificate();"></i>
 									[%%%ELSE:DAT-DIGICERT-CERTIFICATE%%%]
 									<i class="sfi sfi-cross"></i>
 									[%%%/IF:DAT-DIGICERT-CERTIFICATE%%%]
@@ -304,7 +334,7 @@ div.ux-tab-subcontainer {
 								</div>
 								<div class="ux-grid-col s12 m8">
 									[%%%IF:DAT-DIGICERT-PRIVKEY-LEN:>0;%%%]
-									<i class="sfi sfi-eye-blocked" title="PRIVATE KEY [Protected]: [###DAT-DIGICERT-PRIVKEY-LEN|int###] bytes"></i>
+									<i class="sfi sfi-eye-blocked" [%%%IF:DAT-DIGICERT-PRIVKEY-ENC:!=yes;%%%]style="cursor:help; color:#ED2559;"[%%%ELSE:DAT-DIGICERT-PRIVKEY-ENC%%%]style="cursor:help;"[%%%/IF:DAT-DIGICERT-PRIVKEY-ENC%%%] title="PRIVATE KEY [[###DAT-DIGICERT-PRIVKEY-TYP|html###]]: [###DAT-DIGICERT-PRIVKEY-LEN|int###] bytes"></i>
 									[%%%ELSE:DAT-DIGICERT-PRIVKEY-LEN%%%]
 									<i class="sfi sfi-cross"></i>
 									[%%%/IF:DAT-DIGICERT-PRIVKEY-LEN%%%]
@@ -316,7 +346,7 @@ div.ux-tab-subcontainer {
 								</div>
 								<div class="ux-grid-col s12 m8">
 									[%%%IF:DAT-DIGICERT-PUBKEY:!=;%%%]
-									<i class="sfi sfi-eye" title="[###DAT-DIGICERT-PUBKEY|html###]"></i>
+									<i class="sfi sfi-eye" title="[###DAT-DIGICERT-PUBKEY|html###]" style="cursor:pointer;" onclick="copyCertsHandlerPubKey();"></i>
 									[%%%ELSE:DAT-DIGICERT-PUBKEY%%%]
 									<i class="sfi sfi-cross"></i>
 									[%%%/IF:DAT-DIGICERT-PUBKEY%%%]
@@ -327,16 +357,40 @@ div.ux-tab-subcontainer {
 								[%%%IF:DAT-DIGICERT-INFOCERT:==;%%%]
 									[%%%IF:NOT-AVAILABLE-DIGICERT:!=;%%%]
 									<i>[###NOT-AVAILABLE-DIGICERT|html###]</i>
-									[%%%ELSE:NOT-AVAILABLE-DIGICERT%%%]
 									<br>
-									<button type="button" class="ux-button" onclick="formSend('certs'); return false;"><i class="sfi sfi-fa-certificate"></i> &nbsp; [###TXT-BTN-CERT-ECDSA|html###]</button>
+									[%%%ELSE:NOT-AVAILABLE-DIGICERT%%%]
+									<i>[###TXT-DIGICERT-NEW|html###]</i><!-- cert n/a -->
+									<br>
 									[%%%/IF:NOT-AVAILABLE-DIGICERT%%%]
 								[%%%ELSE:DAT-DIGICERT-INFOCERT%%%]
 									<i>[###TXT-AVAILABLE-DIGICERT|html###]: <b>[###TXT-DIGICERT-EXPIRED|html###]</b></i>
+									<br>
 								[%%%/IF:DAT-DIGICERT-INFOCERT%%%]
+								[%%%IF:BTN-DIGICERT-SHOW:==1;%%%]
+									[%%%IF:NOT-AVAILABLE-DIGICERT:!=;%%%]
+									<!-- btn cert n/a -->
+									[%%%ELSE:NOT-AVAILABLE-DIGICERT%%%]
+									<br>
+									<script>
+									const certsGenerateHandle = () => {
+										const id = 'certs';
+										const evcode = () => {
+											formSend(id);
+										};
+										smartJ$Browser.ConfirmDialog('<h5>[###TXT-BTN-CERT-ECDSA|html|js###] ?</h5><br>[###TXT-DIGICERT-NEW|html###]', evcode, '[###TXT-CONFIRM-ACTION|js###]', null, 250, 'alertable', false);
+									};
+									</script>
+									<button type="button" class="ux-button ux-button-alt" onclick="certsGenerateHandle(); return false;"><i class="sfi sfi-fa-certificate"></i> &nbsp; [###TXT-BTN-CERT-ECDSA|html###]</button>
+									[%%%/IF:NOT-AVAILABLE-DIGICERT%%%]
+								[%%%ELSE:BTN-DIGICERT-SHOW%%%]
+									<!-- btn cert none -->
+								[%%%/IF:BTN-DIGICERT-SHOW%%%]
 								</div>
 							</div>
 						</form>
+						[%%%ELSE:SHOW-DIGICERT%%%]
+						<!-- DigiCert: N/A -->
+						[%%%/IF:SHOW-DIGICERT%%%]
 					</div>
 				</div>
 			</div>

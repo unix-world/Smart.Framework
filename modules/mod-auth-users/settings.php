@@ -17,7 +17,7 @@ define('SMART_APP_MODULE_AUTH', true);
 
 final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractAccountController {
 
-	// r.20260108
+	// r.20260115
 
 	// SMART_FRAMEWORK_ENABLE_MOD_AUTH_USERS 	is verified by Initialize() in AbstractAccountController
 	// Custom request URI Restriction 			is verified by Initialize() in AbstractAccountController
@@ -25,6 +25,13 @@ final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractAc
 	public function Run() {
 
 		// this controller can operate ONLY on master server
+
+/*
+// TODO: use this to generate a token with some $data[] signed or hashed by the Security Key ; once the security key changes tokens are invalidated
+// each time the generate API Key button (in the password tab is clicked will send a request to the settings.api and will return a new JWT like below
+// the JWT will display below the password fields in a div of a readonly text area
+$apiToken = \SmartModExtLib\AuthUsers\AuthJwt::newAuthJwtToken('api', '@', '', SmartAuth::get_auth_id(), SmartAuth::get_auth_username()); print_r($apiToken); die();
+*/
 
 		//--
 		if(SmartAuth::is_cluster_master_auth() !== true) {
@@ -89,6 +96,10 @@ final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractAc
 						'TXT-2FA-QUESTION' 		=> (string) $this->translator->text('sett-auth-2fa-confirm-question-enable'),
 						'TXT-2FA-CONFIRM' 		=> (string) $this->translator->text('sett-auth-2fa-confirm-enable'),
 						'TXT-2FA-WARN' 			=> (string) $this->translator->text('sett-auth-2fa-confirm-warn-enable'),
+						'TXT-2FA-APP1' 			=> (string) $this->translator->text('sett-auth-2fa-name-app1'),
+						'URL-2FA-APP1' 			=> (string) $this->translator->text('sett-auth-2fa-url-app1'),
+						'TXT-2FA-APP2' 			=> (string) $this->translator->text('sett-auth-2fa-name-app2'),
+						'URL-2FA-APP2' 			=> (string) $this->translator->text('sett-auth-2fa-url-app2'),
 					]
 				)
 			]);
@@ -101,6 +112,20 @@ final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractAc
 		//--
 		$tab = (string) $this->RequestVarGet('tab', '', 'string');
 		//--
+		$securityKey = (string) trim((string)SmartAuth::get_user_ssekey());
+		$SecurityArrKeys = [];
+		$isSecurityKeysOk = false;
+		$hashSecurityKey = '';
+		if((string)$securityKey != '') {
+			if(\SmartModExtLib\AuthUsers\Utils::isSecurityKeyAvailable() === true) {
+				$SecurityArrKeys = (array) \SmartModExtLib\AuthUsers\Utils::unpackSecurityKey((string)$securityKey);
+				if((int)\Smart::array_size($SecurityArrKeys) == 2) {
+					$isSecurityKeysOk = true;
+				} //end if
+				$hashSecurityKey = (string) SmartHashCrypto::crc32b((string)$securityKey, false);
+			} //end if
+		} //end if
+		//--
 		$infoCert = (string) trim((string)SmartAuth::get_user_infocert());
 		$arrCertInfo = Smart::json_decode((string)$infoCert);
 		if(!is_array($arrCertInfo)) {
@@ -110,6 +135,23 @@ final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractAc
 		$txtDigiCertValid 	= (string) $this->translator->text('digicert-valid');
 		$txtDigiCertExpired = (string) $this->translator->text('digicert-expired');
 		$certType = (string) \SmartModExtLib\AuthUsers\Utils::getSignKeysType((array)$arrCertInfo);
+		$userCert 				= (string) SmartAuth::get_user_cert();
+		$userPubKey 			= (string) SmartAuth::get_user_pubkey();
+		$userPrivKey 			= (string) SmartAuth::get_user_privkey();
+		$isUserEncryptedPrivKey = (bool)   \SmartModExtLib\AuthUsers\Utils::isSignPrivateKeyEncrypted((string)$userPrivKey);
+		$hashSignKeys = '';
+		if(
+			((string)$infoCert != '')
+			AND
+			((string)$userCert != '')
+			AND
+			((string)$userPrivKey != '')
+			AND
+			((string)$userPubKey != '')
+		) {
+			$hashSignKeys = (string) $infoCert."\n\n".$userCert."\n\n".$userPrivKey."\n\n".$userPubKey;
+			$hashSignKeys = (string) SmartHashCrypto::crc32b((string)$hashSignKeys, false);
+		} //end if
 		//--
 		$title = (string) $this->translator->text('sett-welcome');
 		$this->PageViewSetVars([
@@ -145,6 +187,7 @@ final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractAc
 					'TXT-CLUSTER-ID' 			=> (string) $this->translator->text('id-cluster'),
 					//--
 					'TXT-GDPR-COMPLIANT' 		=> (string) $this->translator->text('gdpr-compliant'),
+					'TXT-CONFIRM-ACTION' 		=> (string) $this->translator->text('sett-confirm-action'),
 					'TXT-NAV-ACCOUNT' 			=> (string) $this->translator->text('nav-account'),
 					'TXT-NAV-SETTINGS' 			=> (string) $this->translator->text('nav-settings'),
 					'TXT-FULL-NAME' 			=> (string) $this->translator->text('sett-full-name'),
@@ -173,20 +216,30 @@ final class SmartAppIndexController extends \SmartModExtLib\AuthUsers\AbstractAc
 					'TXT-SSEKEY-TITLE' 			=> (string) $this->translator->text('ssekey-title'),
 					'TXT-AVAILABLE-SSEKEY' 		=> (string) $this->translator->text('ssekey-ok'),
 					'TXT-BTN-SSEKEY' 			=> (string) $this->translator->text('sett-btn-ssekey'),
-					'DAT-SSEKEY-LEN' 			=> (int)    strlen((string)SmartAuth::get_user_ssekey()),
+					'DAT-SSEKEY-HASH' 			=> (string) $hashSecurityKey,
+					'DAT-SSEKEY-LEN' 			=> (int)    (strlen((string)$securityKey) * 8), // bit
+					'DAT-SSEKEY-OK' 			=> (int)    $isSecurityKeysOk,
+					'DAT-SSEKEY-TYP' 			=> (string) ((\SmartModExtLib\AuthUsers\Utils::isSecurityKeyAvailable() === true) ? \SmartModExtLib\AuthUsers\Utils::getSecurityKeyType() : ''),
+					'DAT-SSEKEY-MOD' 			=> (string) ((\SmartModExtLib\AuthUsers\Utils::isSecurityKeyAvailable() === true) ? \SmartModExtLib\AuthUsers\Utils::getSecurityKeyMode().' ' : ''),
 					'TXT-DIGICERT-TITLE' 		=> (string) $this->translator->text('digicert-title'),
+					'TXT-DIGICERT-NEW' 			=> (string) $this->translator->text('digicert-empty'),
 					'TXT-DIGICERT-CERTIFICATE' 	=> (string) $this->translator->text('digicert-certificate'),
 					'TXT-DIGICERT-PRIVKEY' 		=> (string) $this->translator->text('digicert-privkey'),
 					'TXT-DIGICERT-PUBKEY' 		=> (string) $this->translator->text('digicert-pubkey'),
+					'DAT-DIGICERT-HASH' 		=> (string) $hashSignKeys,
 					'DAT-DIGICERT-TYPE' 		=> (string) $certType,
 					'DAT-DIGICERT-INFOCERT' 	=> (string) (((string)$infoCert != '') ? SmartUtils::pretty_print_var($arrCertInfo) : ''),
-					'DAT-DIGICERT-CERTIFICATE' 	=> (string) SmartAuth::get_user_cert(),
-					'DAT-DIGICERT-PRIVKEY-LEN' 	=> (int)    strlen((string)SmartAuth::get_user_privkey()),
-					'DAT-DIGICERT-PUBKEY' 		=> (string) SmartAuth::get_user_pubkey(),
+					'DAT-DIGICERT-CERTIFICATE' 	=> (string) $userCert,
+					'DAT-DIGICERT-PRIVKEY-LEN' 	=> (int)    strlen((string)$userPrivKey),
+					'DAT-DIGICERT-PRIVKEY-TYP' 	=> (string) (($isUserEncryptedPrivKey === true) ? 'Protected / Encrypted' : 'Protected'),
+					'DAT-DIGICERT-PRIVKEY-ENC' 	=> (string) (($isUserEncryptedPrivKey === true) ? 'yes' : 'no'),
+					'DAT-DIGICERT-PUBKEY' 		=> (string) $userPubKey,
 					'DAT-DIGICERT-EXPIRED' 		=> (string) ($certIsExpired === true ? 'yes' : 'no'),
 					'TXT-DIGICERT-EXPIRED' 		=> (string) ($certIsExpired === true ? (string)$txtDigiCertExpired : (string)$txtDigiCertValid),
 					'TXT-AVAILABLE-DIGICERT' 	=> (string) $this->translator->text('digicert-ok'),
 					'NOT-AVAILABLE-DIGICERT' 	=> (string) ((\SmartModExtLib\AuthUsers\Utils::isSignKeysAvailable() !== true) ? $this->translator->text('api-sett-certs-na') : ''),
+					'BTN-DIGICERT-SHOW' 		=> (int)    (((string)$infoCert == '') ? 1 : 0),
+					'SHOW-DIGICERT' 			=> (string) ((\SmartModExtLib\AuthUsers\Utils::isSignKeysAvailable() !== true) ? 'no' : 'yes'),
 					'TXT-BTN-CERT-ECDSA' 		=> (string) $this->translator->text('sett-btn-gen-certs'),
 					'TXT-BTN-UPD-CINFO' 		=> (string) $this->translator->text('sett-btn-upd-cinfo'),
 					'TXT-NEW-PASS' 				=> (string) $this->translator->text('sett-newpass-pass'),

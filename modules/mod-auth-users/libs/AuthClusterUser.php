@@ -29,7 +29,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20251207
+ * @version 	v.20260114
  * @package 	modules:AuthUsers
  *
  */
@@ -438,7 +438,7 @@ final class AuthClusterUser {
 			OR
 			(\strpos((string)$id, '.') === false)
 			OR
-			(\SmartAuth::validate_auth_username((string)$id, false) !== true)
+			(\SmartAuth::validate_auth_username((string)$id) !== true)
 		) {
 			\Smart::log_warning(__METHOD__.' # ID is Empty or Invalid: `'.$email.'`');
 			return [];
@@ -584,7 +584,7 @@ final class AuthClusterUser {
 			OR
 			(\strpos((string)$id, '.') === false)
 			OR
-			(\SmartAuth::validate_auth_username((string)$id, false) !== true)
+			(\SmartAuth::validate_auth_username((string)$id) !== true)
 		) {
 			\Smart::log_warning(__METHOD__.' # Account ID is Empty or Invalid: `'.$id.'` for `'.$email.'`');
 			return false;

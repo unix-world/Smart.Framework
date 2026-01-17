@@ -2,6 +2,12 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+January 16, 2026
+	* several bug fixes, ex: EcDSA get Public Key from Certificate
+	* EcDSA add parse Certificate + fix version to display
+	* EcDSA new certificate uses hex 128-bit serial instead of int64
+	* EcDSA refactoring with Interface and Abstract Class to be able to extend in other modules for OpenSSL RSA
+
 January 14, 2026
 	* EcDSA full support, incl. non-ASN1 mode
 	* improved nonASN1 mode for EcDSA by using GMP

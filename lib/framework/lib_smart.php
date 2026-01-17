@@ -13,7 +13,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 //======================================================
 // Smart-Framework - Base
-// DEPENDS-PHP: 7.4 or later
+// DEPENDS-PHP: 8.1 or later
 // DEPENDS-EXT: PHP XML, PHP JSON
 //======================================================
 
@@ -104,7 +104,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20260114
+ * @version     v.20260115
  * @package     @Core
  *
  */
@@ -3696,7 +3696,7 @@ final class Smart {
 		//--
 		$callerMethod = '';
 		if(SMART_FRAMEWORK_LOG_DEBUG_BACKTRACE === true) { // if prod mode
-			$callerMethod = (string) self::get_caller_method().' < ';
+			$callerMethod = (string) self::get_caller_method().' < '."\n";
 		} //end if
 		//--
 		trigger_error('#SMART-FRAMEWORK.NOTICE# '.$callerMethod.$message, E_USER_NOTICE);
@@ -3719,7 +3719,7 @@ final class Smart {
 		//--
 		$callerMethod = '';
 		if(SMART_FRAMEWORK_LOG_DEBUG_BACKTRACE === true) { // if prod mode
-			$callerMethod = (string) self::get_caller_method().' < ';
+			$callerMethod = (string) self::get_caller_method().' < '."\n";
 		} //end if
 		//--
 		trigger_error('#SMART-FRAMEWORK.WARNING# '.$callerMethod.$message, E_USER_WARNING);
@@ -3748,7 +3748,7 @@ final class Smart {
 		//--
 		$callerMethod = '';
 		if(SMART_FRAMEWORK_LOG_DEBUG_BACKTRACE === true) { // if prod mode
-			$callerMethod = (string) self::get_caller_method().' < ';
+			$callerMethod = (string) self::get_caller_method().' < '."\n";
 		} //end if
 		//--
 		if((string)trim((string)$message_to_display) == '') {

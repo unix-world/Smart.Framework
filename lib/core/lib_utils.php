@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry, SmartValidator, SmartParser ; optional-constants: SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20251204
+ * @version 	v.20260116
  * @package 	Application:Utils
  *
  */
@@ -378,7 +378,7 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function pretty_print_var($y_var, ?int $indent=0, bool $jsstyle=false) : string {
+	public static function pretty_print_var($y_var, ?int $indent=0, bool $jsstyle=false, bool $substituteInvalidUtf8=true) : string {
 		//--
 		$out = '';
 		//--
@@ -403,7 +403,7 @@ final class SmartUtils {
 				//--
 				if(is_array($val)) {
 					//--
-					$out .= "\t".$key.' '.$marker.' '.self::pretty_print_var($val, $indent, $jsstyle);
+					$out .= "\t".$key.' '.$marker.' '.self::pretty_print_var($val, $indent, $jsstyle, $substituteInvalidUtf8);
 					//--
 				} else {
 					//--
@@ -447,6 +447,12 @@ final class SmartUtils {
 			//--
 			$out = (string) $val;
 			//--
+		} //end if
+		//--
+		if($substituteInvalidUtf8 === true) {
+			$out = (string) strtr((string)$out, [
+				"\u{fffd}" => '\\0xfffd', // substitute invalid UTF-8 replacement character from `\0xfffd` to `?`
+			]);
 		} //end if
 		//--
 		return (string) $out;

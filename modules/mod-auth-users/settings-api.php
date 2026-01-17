@@ -17,7 +17,7 @@ define('SMART_APP_MODULE_AUTH', true);
 
 final class SmartAppIndexController extends SmartAbstractAppController {
 
-	// r.20260108
+	// r.20260115
 
 	// it runs just on auth master server
 	// this is the auth users public authorize (api) used for: signin, register, recovery
@@ -118,42 +118,101 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 			//--
 			switch((string)$action) {
 				//-------
-				case 'certs:generate':
+				case 'ssekey:generate':
 					//--
 					$message = '';
-					$theFullName  = (string) trim((string)SmartAuth::get_user_fullname());
-					if((string)$theFullName == '') {
-						$message = (string) $this->translator->text('api-sett-empty-name');
-					} //end if
 					//--
-					$theEmailAddress = (string) SmartAuth::get_user_email();
+					$theUserID = (string) SmartAuth::get_auth_id();
 					if((string)$message == '') {
-						//--
-						if((string)$theEmailAddress == '') {
-							$message = (string) $this->translator->text('api-sett-empty-email');
-						} elseif(\SmartAuth::validate_auth_ext_username((string)$theEmailAddress) !== true) {
-							$message = (string) $this->translator->text('api-sett-invalid-email');
+						if((string)trim((string)$theUserID) == '') {
+							$message = (string) $this->translator->text('api-sett-empty-id');
 						} //end if
-						//--
 					} //end if
 					//--
 					if((string)$message == '') {
-						//--
-						if(\SmartModExtLib\AuthUsers\Utils::isSignKeysAvailable() !== true) {
-							$message = (string) $this->translator->text('api-sett-certs-na');
+						if(\SmartModExtLib\AuthUsers\Utils::isSecurityKeyAvailable() !== true) {
+							$message = (string) $this->translator->text('api-sett-ssekey-na');
 						} //end if
-						//--
 					} //end if
 					//--
 					if((string)$message == '') {
 						//--
 						$result = -100;
 						//--
-						$arrDigiCert = (array) \SmartModExtLib\AuthUsers\Utils::generateSignKeys((string)$theFullName, (string)$theEmailAddress, 100); // 100 years
+						$securityKey = (string) \trim((string)\SmartModExtLib\AuthUsers\Utils::generateSecurityKey((string)$theUserID));
+						//--
+						if((string)$securityKey != '') {
+							$result = (int) \SmartModDataModel\AuthUsers\AuthUsersFrontend::updateAccountSecurityKey(
+								(string) $theUserID,
+								(string) $securityKey
+							);
+						} //end if
+						//--
+						if((int)$result != 1) {
+							$message = (string) $this->translator->text('api-sett-op-failed').' ('.(int)$result.')';
+						} elseif(\SmartModExtLib\AuthUsers\AuthClusterUser::refreshAccountWorkspace((string)SmartAuth::get_auth_id()) !== true) { // {{{SYNC-UPDATE-AUTH-USER-SETTINGS-CLUSTER}}}
+							$message = (string) $this->translator->text('api-sett-op-failed').' [C]';
+						} //end if else
+						//--
+					} //end if
+					//--
+					if((string)$message == '') {
+						//--
+						$status = 'OK';
+						$title = (string) $this->translator->text('api-sett-op-success');
+						$message = (string) $this->translator->text('api-sett-ok-ssekey-generate');
+						$redirect = '?page=auth-users.settings&tab=certs';
+						//--
+					} //end if
+					//--
+					break;
+				case 'certs:generate':
+					//--
+					$message = '';
+					//--
+					$theUserID = (string) SmartAuth::get_auth_id();
+					if((string)$message == '') {
+						if((string)trim((string)$theUserID) == '') {
+							$message = (string) $this->translator->text('api-sett-empty-id');
+						} //end if
+					} //end if
+					//--
+					$theFullName  = (string) trim((string)SmartAuth::get_user_fullname());
+					if((string)$message == '') {
+						if((string)$theFullName == '') {
+							$message = (string) $this->translator->text('api-sett-empty-name');
+						} //end if
+					} //end if
+					//--
+					$theEmailAddress = (string) SmartAuth::get_user_email();
+					if((string)$message == '') {
+						if((string)$theEmailAddress == '') {
+							$message = (string) $this->translator->text('api-sett-empty-email');
+						} elseif(\SmartAuth::validate_auth_ext_username((string)$theEmailAddress) !== true) {
+							$message = (string) $this->translator->text('api-sett-invalid-email');
+						} //end if
+					} //end if
+					//--
+					if((string)$message == '') {
+						if(\SmartModExtLib\AuthUsers\Utils::isSignKeysAvailable() !== true) {
+							$message = (string) $this->translator->text('api-sett-certs-na');
+						} //end if
+					} //end if
+					//--
+					if((string)$message == '') {
+						//--
+						$result = -100;
+						//--
+						$arrDigiCert = (array) \SmartModExtLib\AuthUsers\Utils::generateSignKeys(
+							(string) $theUserID,
+							(string) $theEmailAddress,
+							(string) $theFullName,
+							100 // 100 years
+						);
 						//--
 						if((int)Smart::array_size($arrDigiCert) > 0) {
 							$result = (int) \SmartModDataModel\AuthUsers\AuthUsersFrontend::updateAccountSignKeys(
-								(string) SmartAuth::get_auth_id(),
+								(string) $theUserID,
 								(array)  $arrDigiCert
 							);
 						} //end if

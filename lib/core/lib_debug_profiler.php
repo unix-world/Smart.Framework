@@ -29,7 +29,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  *
  * @depends 	css: tpl-highlight.css ; classes: Smart, SmartComponents
- * @version 	v.20250124
+ * @version 	v.20260115
  * @package 	Application:Development
  *
  */
@@ -212,7 +212,7 @@ final class SmartDebugProfiler {
 					$arr['php-session'] = (string) Smart::b64_enc(Smart::seryalize(''));
 				} //end if else
 				if(SmartAuth::is_authenticated() === true) {
-					$arr['auth-data'] = array('is_auth' => true, 'login_data' => (array)SmartAuth::get_auth_data(), '#login-pass-hash#', SmartAuth::get_auth_passhash());
+					$arr['auth-data'] = array('is_auth' => true, 'login_data' => (array)SmartAuth::get_auth_data(!SmartEnvironment::ifInternalDebug()), '#login-pass-hash#', SmartAuth::get_auth_passhash());
 				} else {
 					$arr['auth-data'] = array('is_auth' => false, 'login_data' => []);
 				} //end if else
@@ -1122,11 +1122,6 @@ final class SmartDebugProfiler {
 				if(is_array($debug_val)) {
 					$log .= '<pre>'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html(SmartUtils::pretty_print_var($debug_val)), true).'</pre>';
 				} else {
-					if((string)$debug_key == 'auth:passhash') {
-						$debug_val = (string) self::TXT_PROTECT_PASS; // avoid display pass as clear text
-					} elseif((string)$debug_key == 'user:privkey') {
-						$debug_val = '['.(int)strlen((string)$debug_val).']'.self::TXT_PROTECT_KEYS; // avoid display pass as clear text
-					} //end if
 					$log .= SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html((string)$debug_val), true);
 				} //end if else
 				$log .= '</font></div></td></tr>';

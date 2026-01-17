@@ -2,7 +2,7 @@
 TRANSLATIONS:
   @language: RO
   @area: mod-auth-users
-  @version: 2026-01-07
+  @version: 2026-01-15
   auth-users:
     homepage: 'Pagina Principală'
     auth-required: 'Este necesară Autentificarea'
@@ -114,7 +114,7 @@ TRANSLATIONS:
     sign-up-reg-step3: '2FA - Autentificare în Doi Pași'
     sign-up-reg-step3-desc: |
         Folosind 2FA (Verificare cu cod pin în 2 pași), poți adăuga o măsură extra de securitate pentru contul tău. După prima autentificare, din setările contului tău, poți activa opțiunea de securitate 2FA. Opțiunea 2FA poate fi dezactivată oricând în cazul în care ai activat-o.
-        Activând opțiunea 2FA pentru contul tău va fi necesară furnizarea unui cod pin din 8 cifre la fiecare autentificare standard cu user și parolă folosind o aplicație mobilă compatibilă 2FA, unde codul 2FA va fi instalat, cum ar fi Google Authenticator sau FreeOTP.
+        Activând opțiunea 2FA pentru contul tău va fi necesară furnizarea unui cod pin din 8 cifre la fiecare autentificare standard cu user și parolă folosind o aplicație mobilă compatibilă 2FA, unde codul 2FA va fi instalat, cum ar fi FreeOTP sau Google Authenticator.
         Autentificarea SSO nu va folosi 2FA (dacă este activă opțiunea) din motivul că fiecare furnizor de identitate de tip SSO are implementat propriul mecanism (opțional) de 2FA.
     sign-up-reg-step4: 'Securitatea și Protecția Datelor'
     sign-up-reg-step4-desc: |
@@ -179,14 +179,15 @@ TRANSLATIONS:
     id-cluster: 'ID-Cluster'
     id-user: 'ID-Utilizator'
     registration-date: 'Data Înregistrării'
+    sett-confirm-action: 'Confirmă această acțiune'
     sett-welcome: 'Modificare Setări Cont'
     sett-full-name: 'Nume și Prenume'
     sett-tab-cinfo: 'Informații de Contact'
-    sett-tab-pass: 'Parolă și Token-uri'
+    sett-tab-pass: 'Parolă și Chei API'
     sett-tab-security: 'Autentificare'
     sett-tab-account: 'Profil'
-    sett-tab-certificates: 'Certificate și Securitate'
-    sett-btn-ssekey: 'Generează o nouă Cheie de Securitate, aleatorie'
+    sett-tab-certificates: 'Token-uri și Semnături'
+    sett-btn-ssekey: 'Generează un nou Token de Securitate'
     sett-btn-gen-certs: 'Generează o nouă Semnătură Digitală'
     sett-btn-upd-cinfo: 'Modifică Informațiile de Contact'
     sett-btn-upd-pass: 'Actualizează Parola'
@@ -204,14 +205,18 @@ TRANSLATIONS:
     sett-auth-2fa-hint-disable: 'Dacă dezactivezi 2FA securitatea contului tău va fi mai puțin protejată.'
     sett-auth-2fa-important: 'Important'
     sett-auth-2fa-notice-enable: 'Ești pe cale să activezi Autentificarea în Doi Pași pentru Contul Tău.'
-    sett-auth-2fa-hint-enable: 'Scanează Codul QR de mai jos folosind o aplicație compatibilă de tip Authenticator'
-    sett-auth-2fa-recovery-enable: 'Este indicat să păstrezi o copie securizată cu acest Cod 2FA'
+    sett-auth-2fa-hint-enable: 'Scanează Codul QR de mai jos folosind o aplicație mobilă compatibilă de tip `Two-Factor Authentication` ca de exemplu'
+    sett-auth-2fa-name-app1: 'FreeOTP App'
+    sett-auth-2fa-url-app1: 'https://freeotp.github.io'
+    sett-auth-2fa-name-app2: 'Google Authenticator App'
+    sett-auth-2fa-url-app2: 'https://google.com/search?q=Google+Authenticator&hl=ro'
+    sett-auth-2fa-recovery-enable: 'Este indicat să păstrezi o copie securizată cu acest Cod, pentru recuperarea 2FA'
     sett-auth-2fa-totp-code-enter: 'Introdu Codul 2FA (TOTP) aici'
     sett-auth-2fa-totp-code-hint: 'Introdu aici Codul pentru Autentificarea în Doi Pași (TOTP 2FA) pentru a-l testa înainte de a activa 2FA'
     sett-auth-2fa-confirm-enable: 'Confirmă această acțiune !'
     sett-auth-2fa-confirm-question-enable: 'Dorești să ACTIVEZI 2FA pentru contul ?'
     sett-auth-2fa-confirm-warn-enable: 'După activarea 2FA codul TOTP este necesar pentru fiecare autentificare...'
-    sett-auth-2fa-notice-info: 'Folosind 2FA (Verificare cu cod pin în 2 pași), poți adăuga o măsură extra de securitate pentru contul tău. Dacă opțiunea 2FA este activată pentru contul tău va fi necesară furnizarea unui cod pin din 8 cifre la fiecare autentificare standard cu user și parolă folosind o aplicație mobilă compatibilă 2FA, unde codul 2FA va fi instalat, cum ar fi Google Authenticator sau FreeOTP.'
+    sett-auth-2fa-notice-info: 'Folosind 2FA (Verificare cu cod pin în 2 pași), poți adăuga o măsură extra de securitate pentru contul tău. Dacă opțiunea 2FA este activată pentru contul tău va fi necesară furnizarea unui cod pin suplimentar din 8 cifre la fiecare autentificare standard cu user și parolă folosind o aplicație mobilă compatibilă de tip `Two-Factor Authentication`, unde codul 2FA va fi instalat, cum ar fi FreeOTP sau Google Authenticator.'
     sett-auth-sso-btn-update: 'Actualizează Lista de Plugin-uri SSO Active'
     sett-auth-sso-plugins: 'Plugin-uri Active pentru Autentificare SSO'
     sett-auth-sso-notice: 'Lista Plugin-urilor Active pentru Autentificarea SSO. Acestea trebuie să furnizeze adresa de email exactă cu care s-a înregistrat acest cont. Nu este posibilă legarea acestui cont cu un plugin SSO care furnizează o adresă de email diferită pentru că ar folosi un cont diferit.'
@@ -221,6 +226,7 @@ TRANSLATIONS:
     api-sett-update-failed: 'Actualizarea a Eșuat'
     api-sett-op-failed: 'Eroare'
     api-sett-op-success: 'Succes'
+    api-sett-empty-id: 'UserID este Nul'
     api-sett-empty-name: 'Numele este Nul'
     api-sett-empty-email: 'Adresa de Email Address este Nulă'
     api-sett-invalid-email: 'Adresa de Email Address este Invalidă'
@@ -248,16 +254,19 @@ TRANSLATIONS:
     api-sett-acc-disable-uid-invalid: 'ID-ul de utilizator este Invalid'
     api-sett-acc-disable-uid-wrong: 'ID-ul de utilizator este Greșit'
     api-sett-ok-acc-disable: 'Contul tău de utilizator a fost dezactivat...'
+    api-sett-ok-ssekey-generate: 'Un nou Token de Securitate a fost creat'
+    api-sett-ssekey-na: 'Token-ul de Securitate Nu este Disponibil pe această platformă'
     api-sett-ok-certs-generate: 'O nouă Semnătură Digitală a fost creată'
     api-sett-certs-na: 'Semnătura Digitală Nu este Disponibilă pe această platformă'
     digicert-title: 'Semnătură Digitală'
     digicert-certificate: 'Certificat'
-    digicert-privkey: 'Cheie Privată'
-    digicert-pubkey: 'Cheie Publică'
-    digicert-ok: 'Semnătură Digitală este setată pentru acest cont de utilizator'
-    digicert-valid: 'Certificatul este Valid'
+    digicert-privkey: 'Cheia Privată'
+    digicert-pubkey: 'Cheia Publică'
+    digicert-empty: 'Semnătura Digitală nu a fost generată până în acest moment. La generare va folosi Numele și Prenumele tău așa cum este setat în secțiunea `Informații de Contact`. După ce ai generat Semnatura Digitală, aceasta nu mai poate fi modificată sau re-generată.'
+    digicert-ok: 'Semnătură Digitală este setată'
+    digicert-valid: 'Certificatul și Cheile sunt Valide'
     digicert-expired: 'Certificatul este Expirat'
-    ssekey-ok: 'Cheia de Securitate este setată pentru acest cont de utilizator'
-    ssekey-title: 'Cheie de Securitate'
+    ssekey-ok: 'Token-ul de Securitate este setat. Acest Token se poate re-genera oricând.'
+    ssekey-title: 'Token de Securitate'
     gdpr-compliant: 'Conform cu GDPR'
 #END

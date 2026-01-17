@@ -33,13 +33,16 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Class: \SmartModExtLib\AuthUsers\Utils
  * Auth Users Utils
  *
+ * @depends 	\SmartCryptoEddsaSodium
+ * @depends 	\SmartCryptoEcdsaOpenSSL
+ *
  * @depends 	\SmartModExtLib\AuthUsers\AuthCsrf
  * @depends 	\SmartModExtLib\AuthUsers\Auth2FA
  *
  * @access 		private
  * @internal
  *
- * @version 	v.20260114
+ * @version 	v.20260115
  * @package 	modules:AuthUsers
  *
  */
@@ -47,22 +50,54 @@ final class Utils {
 
 	// ::
 
-	public const AUTH_USERS_AREA = 'SMART-USERS-AREA';
-	public const AUTH_USERS_PAGE_SIGNIN = 'auth-users.signin';
-	public const AUTH_USERS_URL_SIGNIN = '?page=auth-users.signin';
-	public const AUTH_USERS_URL_SIGNUP = '?page=auth-users.signup';
-	public const AUTH_USERS_URL_SIGNOUT = '?page=auth-users.signout';
-	public const AUTH_USERS_URL_ACCOUNT = '?page=auth-users.account';
-	public const AUTH_USERS_URL_APPS = '?page=auth-users.apps';
+	public const AUTH_USERS_AREA 					= 'SMART-USERS-AREA';
+	public const AUTH_USERS_PAGE_SIGNIN 			= 'auth-users.signin';
+	public const AUTH_USERS_URL_SIGNIN 				= '?page=auth-users.signin';
+	public const AUTH_USERS_URL_SIGNUP 				= '?page=auth-users.signup';
+	public const AUTH_USERS_URL_SIGNOUT 			= '?page=auth-users.signout';
+	public const AUTH_USERS_URL_ACCOUNT 			= '?page=auth-users.account';
+	public const AUTH_USERS_URL_APPS 				= '?page=auth-users.apps';
 
-	public const AUTH_USERS_RDR_COOKIE_NAME = 'Sf_SignRdr';
+	public const AUTH_USERS_RDR_COOKIE_NAME 		= 'Sf_SignRdr';
 
-	private const AUTH_2FA_REGEX_TOKEN = '/^[0-9]{8}$/';
-	private const AUTH_USERS_REGISTER_CAPTCHA_NAME = 'AuthUsers-Captcha';
+	private const AUTH_2FA_REGEX_TOKEN 				= '/^[0-9]{8}$/';
+	private const AUTH_USERS_REGISTER_CAPTCHA_NAME 	= 'AuthUsers-Captcha';
 
-	private const AUTH_OTC_REGEX_PASSCODE = '/^\([0-9]{10}\)\#\[[0-9A-Z]{10}\]$/'; // ex: (0123456789)#[AB3DEF78WZ]
+	private const AUTH_OTC_REGEX_PASSCODE 			= '/^\([0-9]{10}\)\#\[[0-9A-Z]{10}\]$/'; // ex: (0123456789)#[AB3DEF78WZ]
 
-	private const DIGICERT_TEXT = 'User Account / Digital Signature: EC';
+	private const DIGICERT_TEXT 					= 'User Account / Digital Signature: EC';
+
+
+
+	//---- user auth Logging
+
+
+	public static function logFailedExtAuth(string $action, int $status, string $message) : bool {
+		//--
+		$action = (string) \trim((string)$action);
+		if((string)$action == '') {
+			return false;
+		} //end if
+		if(((int)$status < 100) || ((int)$status > 999)) {
+			return false;
+		} //end if
+		//--
+		if(!\defined('\\SMART_AUTHUSERS_FAIL_EXTLOG')) {
+			return true; // disabled, undefined
+		} //end if
+		if(\SMART_AUTHUSERS_FAIL_EXTLOG !== true) {
+			return true; // disabled, explicit
+		} //end if
+		//--
+		$message = (string) \trim((string)$message); // can be empty, by ex an empty http response with just a status code
+		\Smart::log_info('AuthUsers :: FailedExtAuth # '.(int)$status.' :: '.$action, (string)$message);
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
+
+	//---- user auth Validate Request URL
 
 
 	public static function isValidRequestUri() : bool {
@@ -84,6 +119,9 @@ final class Utils {
 		return true;
 		//--
 	} //END FUNCTION
+
+
+	//---- user auth Redir Cookie
 
 
 	public static function setRedirUrlCookie(string $obfsUrl) : void {
@@ -132,6 +170,9 @@ final class Utils {
 		\SmartUtils::unset_cookie((string)self::AUTH_USERS_RDR_COOKIE_NAME);
 		//--
 	} //END FUNCTION
+
+
+	//---- user auth CSRF
 
 
 	public static function setCsrfCookie() : string {
@@ -225,39 +266,7 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function isAuth2FAEnabled() : bool {
-		//--
-		return (bool) \SmartEnvironment::is2FAEnabled();
-		//--
-	} //END FUNCTION
-
-
-	public static function isAuth2FARequired() : bool {
-		//--
-		return (bool) \SmartEnvironment::is2FARequired();
-		//--
-	} //END FUNCTION
-
-
-	public static function validateAuth2FACodeFormat(?string $fa2Code) : bool {
-		//--
-		$fa2Code = (string) \trim((string)$fa2Code);
-		//--
-		if((string)$fa2Code == '') {
-			return false;
-		} //end if
-		//--
-		if((int)\strlen((string)$fa2Code) != 8) { // 8 digits code
-			return false;
-		} //end if
-		//--
-		if(!\preg_match((string)self::AUTH_2FA_REGEX_TOKEN, (string)$fa2Code)) {
-			return false;
-		} //end if
-		//--
-		return true;
-		//--
-	} //END FUNCTION
+	//---- user auth Captcha
 
 
 	public static function isAuthLoginCaptchaEnabled() : bool {
@@ -324,124 +333,7 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function logFailedExtAuth(string $action, int $status, string $message) : bool {
-		//--
-		$action = (string) \trim((string)$action);
-		if((string)$action == '') {
-			return false;
-		} //end if
-		if(((int)$status < 100) || ((int)$status > 999)) {
-			return false;
-		} //end if
-		//--
-		if(!\defined('\\SMART_AUTHUSERS_FAIL_EXTLOG')) {
-			return true; // disabled, undefined
-		} //end if
-		if(\SMART_AUTHUSERS_FAIL_EXTLOG !== true) {
-			return true; // disabled, explicit
-		} //end if
-		//--
-		$message = (string) \trim((string)$message); // can be empty, by ex an empty http response with just a status code
-		\Smart::log_info('AuthUsers :: FailedExtAuth # '.(int)$status.' :: '.$action, (string)$message);
-		//--
-		return true;
-		//--
-	} //END FUNCTION
-
-
-	public static function getDbType() : string {
-		//--
-		$type = '';
-		//--
-		if(\defined('\\SMART_AUTHUSERS_DB_TYPE')) {
-			if((string)\SMART_AUTHUSERS_DB_TYPE == 'sqlite') {
-				$type = 'sqlite';
-			} elseif(((string)\SMART_AUTHUSERS_DB_TYPE == 'pgsql') AND ((int)\Smart::array_size(\Smart::get_from_config('pgsql')) > 0)) {
-				$type = 'pgsql';
-			} //end if
-		} //end if
-		//--
-		return (string) $type;
-		//--
-	} //END FUNCTION
-
-
-	public static function createOneTimePassCodePlain() : string {
-		//--
-		$plainOneTimePassCode = (string) '('.\Smart::uuid_10_num().')#['.\Smart::uuid_10_str().']'; // AUTH_OTC_REGEX_PASSCODE
-		//--
-		if(self::isValidOneTimePassCodePlain((string)$plainOneTimePassCode) !== true) {
-			return '';
-		} //end if
-		//--
-		return (string) $plainOneTimePassCode;
-		//--
-	} //END FUNCTION
-
-
-	public static function isValidOneTimePassCodePlain(string $plainOneTimePassCode) : bool {
-		//--
-		if((string)\trim((string)$plainOneTimePassCode) == '') {
-			return false;
-		} //end if
-		//--
-		if((int)\strlen((string)$plainOneTimePassCode) != 25) {
-			return false;
-		} //end if
-		//--
-		if(!\preg_match((string)self::AUTH_OTC_REGEX_PASSCODE, (string)$plainOneTimePassCode)) {
-			return false;
-		} //end if
-		//--
-		return true;
-		//--
-	} //END FUNCTION
-
-
-	public static function createOneTimePassCodeHash(string $plainOneTimePassCode) : string {
-		//--
-		if(self::isValidOneTimePassCodePlain((string)$plainOneTimePassCode) !== true) {
-			return '';
-		} //end if
-		//--
-		return (string) \SmartHashCrypto::sha512((string)$plainOneTimePassCode, true); // B64
-		//--
-	} //END FUNCTION
-
-
-	public static function verifyOneTimePassCode(string $plainOneTimePassCode, string $passwordHash) : bool {
-		//--
-		$passwordHash = (string) \trim((string)$passwordHash); // ~ 88 chars B64
-		if((string)$passwordHash == '') {
-			return false;
-		} //end if
-		if((int)\strlen((string)$passwordHash) < 80) {
-			return false;
-		} //end if
-		if((int)\strlen((string)$passwordHash) > 100) {
-			return false;
-		} //end if
-		//--
-		if((string)\trim((string)$plainOneTimePassCode) == '') {
-			return false;
-		} //end if
-		//--
-		if(self::isValidOneTimePassCodePlain((string)$plainOneTimePassCode) !== true) {
-			return false;
-		} //end if
-		//--
-		$hash = (string) \trim((string)self::createOneTimePassCodeHash((string)$plainOneTimePassCode));
-		if((string)\trim((string)$hash) == '') {
-			return false;
-		} //end if
-		//--
-		if((string)$hash !== (string)$passwordHash) {
-			return false;
-		} //end if
-		//--
-		return true;
-		//--
-	} //END FUNCTION
+	//---- user auth password
 
 
 	public static function verifyPassword(string $username, string $plainPassword, int $passwordAlgo, string $passwordHash) : bool {
@@ -543,6 +435,122 @@ final class Utils {
 	} //END FUNCTION
 
 
+	//---- user auth 2FA
+
+
+	public static function isAuth2FAEnabled() : bool {
+		//--
+		return (bool) \SmartEnvironment::is2FAEnabled();
+		//--
+	} //END FUNCTION
+
+
+	public static function isAuth2FARequired() : bool {
+		//--
+		return (bool) \SmartEnvironment::is2FARequired();
+		//--
+	} //END FUNCTION
+
+
+	public static function validateAuth2FACodeFormat(?string $fa2Code) : bool {
+		//--
+		$fa2Code = (string) \trim((string)$fa2Code);
+		//--
+		if((string)$fa2Code == '') {
+			return false;
+		} //end if
+		//--
+		if((int)\strlen((string)$fa2Code) != 8) { // 8 digits code
+			return false;
+		} //end if
+		//--
+		if(!\preg_match((string)self::AUTH_2FA_REGEX_TOKEN, (string)$fa2Code)) {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
+
+	public static function createOneTimePassCodePlain() : string {
+		//--
+		$plainOneTimePassCode = (string) '('.\Smart::uuid_10_num().')#['.\Smart::uuid_10_str().']'; // AUTH_OTC_REGEX_PASSCODE
+		//--
+		if(self::isValidOneTimePassCodePlain((string)$plainOneTimePassCode) !== true) {
+			return '';
+		} //end if
+		//--
+		return (string) $plainOneTimePassCode;
+		//--
+	} //END FUNCTION
+
+
+	public static function isValidOneTimePassCodePlain(string $plainOneTimePassCode) : bool {
+		//--
+		if((string)\trim((string)$plainOneTimePassCode) == '') {
+			return false;
+		} //end if
+		//--
+		if((int)\strlen((string)$plainOneTimePassCode) != 25) {
+			return false;
+		} //end if
+		//--
+		if(!\preg_match((string)self::AUTH_OTC_REGEX_PASSCODE, (string)$plainOneTimePassCode)) {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
+
+	public static function createOneTimePassCodeHash(string $plainOneTimePassCode) : string {
+		//--
+		if(self::isValidOneTimePassCodePlain((string)$plainOneTimePassCode) !== true) {
+			return '';
+		} //end if
+		//--
+		return (string) \SmartHashCrypto::sha512((string)$plainOneTimePassCode, true); // B64
+		//--
+	} //END FUNCTION
+
+
+	public static function verifyOneTimePassCode(string $plainOneTimePassCode, string $passwordHash) : bool {
+		//--
+		$passwordHash = (string) \trim((string)$passwordHash); // ~ 88 chars B64
+		if((string)$passwordHash == '') {
+			return false;
+		} //end if
+		if((int)\strlen((string)$passwordHash) < 80) {
+			return false;
+		} //end if
+		if((int)\strlen((string)$passwordHash) > 100) {
+			return false;
+		} //end if
+		//--
+		if((string)\trim((string)$plainOneTimePassCode) == '') {
+			return false;
+		} //end if
+		//--
+		if(self::isValidOneTimePassCodePlain((string)$plainOneTimePassCode) !== true) {
+			return false;
+		} //end if
+		//--
+		$hash = (string) \trim((string)self::createOneTimePassCodeHash((string)$plainOneTimePassCode));
+		if((string)\trim((string)$hash) == '') {
+			return false;
+		} //end if
+		//--
+		if((string)$hash !== (string)$passwordHash) {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
+
 	public static function encrypt2FASecret(string $id, string $fa2code, string $fa2secret) : string { // ok
 		//--
 		$id = (string) \trim((string)$id); // userID is: self::userAccountIdToUserName($userData['id']) ; ex: `ymdvjfr1p0.8204174162`
@@ -550,7 +558,7 @@ final class Utils {
 			return ''; // empty username
 		} //end if
 		//--
-		$userEncKey = (string) self::userEncryptionKey((string)$id); // ok ; also validates the ID
+		$userEncKey = (string) self::userSecretKeyForEncryption((string)$id); // ok ; also validates the ID
 		if((string)\trim((string)$userEncKey) == '') {
 			return ''; // user encryption key failed to generate ; user id may be invalid ...
 		} //end if
@@ -590,7 +598,7 @@ final class Utils {
 			return ''; // empty username
 		} //end if
 		//--
-		$userEncKey = (string) self::userEncryptionKey((string)$id); // ok ; also validates the ID
+		$userEncKey = (string) self::userSecretKeyForEncryption((string)$id); // ok ; also validates the ID
 		if((string)\trim((string)$userEncKey) == '') {
 			return ''; // user encryption key failed to generate ; user id may be invalid ...
 		} //end if
@@ -620,7 +628,7 @@ final class Utils {
 			return false; // user id is empty
 		} //end if
 		//--
-		$userEncKey = (string) \trim((string)self::userEncryptionKey((string)$id)); // ok ; also validates the ID
+		$userEncKey = (string) \trim((string)self::userSecretKeyForEncryption((string)$id)); // ok ; also validates the ID
 		if((string)$userEncKey == '') {
 			return false; // user encryption key failed to generate ; user id may be invalid ...
 		} //end if
@@ -658,14 +666,271 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function encryptSecretKey(string $id, string $secKey) : string {
+	//---- user Security Key
+
+
+	private static function packSecurityKey(string $privKey, string $pubKey) : string {
+		//--
+		// This method should remain PRIVATE, not intended for external use other than this context
+		//--
+		$privKey = (string) \trim((string)$privKey);
+		if((string)$privKey == '') {
+			\Smart::log_warning(__METHOD__.' # Error: The PrivKey is Empty');
+			return '';
+		} //end if
+		//--
+		$pubKey = (string) \trim((string)$pubKey);
+		if((string)$pubKey == '') {
+			\Smart::log_warning(__METHOD__.' # Error: The PubKey is Empty');
+			return '';
+		} //end if
+		//--
+		$privOrigKey = (string) $privKey;
+		$pubOrigKey  = (string) $pubKey;
+		//--
+		$privKey = (string) \Smart::b64_dec((string)$privKey, true); // strict
+		if((string)$privKey == '') {
+			\Smart::log_warning(__METHOD__.' # Error: The Raw PrivKey is Empty');
+			return '';
+		} //end if
+		if((int)\strlen((string)$privKey) != (int)\SmartCryptoEddsaSodium::ED25519_PRIVATE_KEY_LEN) {
+			\Smart::log_warning(__METHOD__.' # Error: The Raw PrivKey have an Invalid Size');
+			return '';
+		} //end if
+		//--
+		$pubKey = (string) \Smart::b64_dec((string)$pubKey, true); // strict
+		if((string)$pubKey == '') {
+			\Smart::log_warning(__METHOD__.' # Error: The Raw PubKey is Empty');
+			return '';
+		} //end if
+		if((int)\strlen((string)$pubKey) != (int)\SmartCryptoEddsaSodium::ED25519_PUBLIC_KEY_LEN) {
+			\Smart::log_warning(__METHOD__.' # Error: The Raw PubKey have an Invalid Size');
+			return '';
+		} //end if
+		//--
+		$privKey = (string) \trim((string)\Smart::base_from_hex_convert((string)\bin2hex((string)$privKey), 85));
+		$pubKey  = (string) \trim((string)\Smart::base_from_hex_convert((string)\bin2hex((string)$pubKey), 85));
+		//--
+		if((string)$privKey == '') {
+			\Smart::log_warning(__METHOD__.' # Error: The B85 PrivKey is Empty');
+			return '';
+		} //end if
+		if((string)$pubKey == '') {
+			\Smart::log_warning(__METHOD__.' # Error: The B85 PubKey is Empty');
+			return '';
+		} //end if
+		//--
+		$packedSecKey = (string) $privKey.';'.$pubKey; // {{{SYNC-USERS-SECURITY-PACKED-KEY-SEPARATOR}}} ; separator is `;` as B85 charset does not contain it
+		//--
+		$arrUnpackSecKey = (array) self::unpackSecurityKey((string)$packedSecKey);
+	//	\Smart::log_notice(__METHOD__.' '.print_r($arrUnpackSecKey,1)."\n".$privKey."\n".$pubKey."\n".$packedSecKey);
+		if((int)\Smart::array_size($arrUnpackSecKey) <= 0) {
+			\Smart::log_warning(__METHOD__.' # UnPacked Keys are Empty');
+			return '';
+		} //end if
+		//--
+		$privUKey = (string) \trim((string)($arrUnpackSecKey['privKey'] ?? null));
+		$pubUKey  = (string) \trim((string)($arrUnpackSecKey['pubKey'] ?? null));
+		//--
+		if((string)$privUKey == '') {
+			\Smart::log_warning(__METHOD__.' # UnPacked PrivKey is Empty');
+			return '';
+		} //end if
+		if((string)$pubUKey == '') {
+			\Smart::log_warning(__METHOD__.' # UnPacked PubKey is Empty');
+			return '';
+		} //end if
+		//--
+		if((string)$privUKey != (string)$privOrigKey) {
+			\Smart::log_warning(__METHOD__.' # UnPacked PrivKey is Different than Original');
+			return '';
+		} //end if
+		if((string)$pubUKey != (string)$pubOrigKey) {
+			\Smart::log_warning(__METHOD__.' # UnPacked PubKey is Different than Original');
+			return '';
+		} //end if
+		//--
+		return (string) $packedSecKey;
+		//--
+	} //END FUNCTION
+
+
+	public static function unpackSecurityKey(string $securityKey) : array {
+		//--
+		// This method should remain PUBLIC, can be used to unpack security key into Ed2559 Priv/Pub Keypair that can be used to sign different things other than EcDSA ...
+		//--
+		$securityKey = (string) \trim((string)$securityKey);
+		if((string)$securityKey == '') {
+			\Smart::log_warning(__METHOD__.' # Error: The Security Key is Empty');
+			return [];
+		} //end if
+		//--
+		if(self::isSecurityKeyAvailable() !== true) {
+			return []; // no logging
+		} //end if
+		//--
+		if(\Smart::str_contains((string)$securityKey, ';') !== true) { // {{{SYNC-USERS-SECURITY-PACKED-KEY-SEPARATOR}}} ; separator is `;` as B85 charset does not contain it
+			\Smart::log_warning(__METHOD__.' # Error: The Security Key is Invalid');
+			return [];
+		} //end if
+		//--
+		$arr = (array) \explode(';', (string)$securityKey, 2); // {{{SYNC-USERS-SECURITY-PACKED-KEY-SEPARATOR}}}
+		//--
+		$privKey = (string) \trim((string)\Smart::base_to_hex_convert((string)($arr[0] ?? null), 85));
+		$pubKey  = (string) \trim((string)\Smart::base_to_hex_convert((string)($arr[1] ?? null), 85));
+		//--
+		if((string)$privKey == '') {
+			\Smart::log_warning(__METHOD__.' # Error: The Hex PrivKey Key is Empty');
+			return [];
+		} //end if
+		if((string)$pubKey == '') {
+			\Smart::log_warning(__METHOD__.' # Error: The Hex PubKey Key is Empty');
+			return [];
+		} //end if
+		//--
+		$privKey = (string) \Smart::safe_hex_2_bin((string)$privKey, false, true); // do not trim
+		$pubKey  = (string) \Smart::safe_hex_2_bin((string)$pubKey, false, true); // do not trim
+		//--
+		if((string)$privKey == '') {
+			\Smart::log_warning(__METHOD__.' # Error: The Raw PrivKey Key is Empty');
+			return [];
+		} //end if
+		if((string)$pubKey == '') {
+			\Smart::log_warning(__METHOD__.' # Error: The Raw PubKey Key is Empty');
+			return [];
+		} //end if
+		//--
+		if((int)\strlen((string)$privKey) != (int)\SmartCryptoEddsaSodium::ED25519_PRIVATE_KEY_LEN) {
+			\Smart::log_warning(__METHOD__.' # Error: The Raw PrivKey have an Invalid Size');
+			return [];
+		} //end if
+		if((int)\strlen((string)$pubKey) != (int)\SmartCryptoEddsaSodium::ED25519_PUBLIC_KEY_LEN) {
+			\Smart::log_warning(__METHOD__.' # Error: The Raw PubKey have an Invalid Size');
+			return [];
+		} //end if
+		//--
+		$privKey = (string) \trim((string)\Smart::b64_enc((string)$privKey));
+		$pubKey  = (string) \trim((string)\Smart::b64_enc((string)$pubKey));
+		//--
+		if((string)$privKey == '') {
+			\Smart::log_warning(__METHOD__.' # Error: The B64 PrivKey Key is Empty');
+			return [];
+		} //end if
+		if((string)$pubKey == '') {
+			\Smart::log_warning(__METHOD__.' # Error: The B64 PubKey Key is Empty');
+			return [];
+		} //end if
+		//--
+		return [
+			'privKey' 	=> (string) $privKey,
+			'pubKey' 	=> (string) $pubKey,
+		];
+		//--
+	} //END FUNCTION
+
+
+	public static function getSecurityKeyType() : string {
+		//--
+		return 'EdDSA';
+		//--
+	} //END FUNCTION
+
+
+	public static function getSecurityKeyMode() : string {
+		//--
+		return 'Ed25519';
+		//--
+	} //END FUNCTION
+
+
+	public static function isSecurityKeyAvailable() : bool {
+		//--
+		return (bool) \SmartCryptoEddsaSodium::isAvailable();
+		//--
+	} //END FUNCTION
+
+
+	public static function generateSecurityKey(string $id) : string {
+		//--
+		if(self::isSecurityKeyAvailable() !== true) {
+			return '';
+		} //end if
+		//-- {{{SYNC-KEYS-USER-ID}}}
+		$id = (string) \trim((string)$id); // userID is: self::userAccountIdToUserName($userData['id']) ; ex: `ymdvjfr1p0.8204174162`
+		if(((string)$id == '') || (\strpos((string)$id, '.') === false) || ((int)\strlen((string)$id) != 21)) {
+			\Smart::log_warning(__METHOD__.' # Empty or Invalid User ID: `'.$id.'`');
+			return '';
+		} //end if
+		if(\SmartAuth::validate_auth_username((string)$id) !== true) {
+			\Smart::log_warning(__METHOD__.' # Invalid User ID: `'.$id.'`');
+			return '';
+		} //end if
+		//-- #end sync
+		$edKeyPair = (array) \SmartCryptoEddsaSodium::ed25519NewKeypair(); // random secret
+		if((string)$edKeyPair['err'] != '') {
+			\Smart::log_warning(__METHOD__.' # New Keypair Error: '.$edKeyPair['err']);
+			return '';
+		} //end if
+		//--
+		$privKey = (string) \trim((string)($edKeyPair['privKey'] ?? null));
+		if((string)$privKey == '') {
+			\Smart::log_warning(__METHOD__.' # New Keypair Error: The PrivKey is Empty');
+			return '';
+		} //end if
+		//--
+		$pubKey = (string) \trim((string)($edKeyPair['pubKey'] ?? null));
+		if((string)$pubKey == '') {
+			\Smart::log_warning(__METHOD__.' # New Keypair Error: The PubKey is Empty');
+			return '';
+		} //end if
+		//--
+		$edSignData = (array) \SmartCryptoEddsaSodium::ed25519SignData(
+			(string) $privKey,
+			(string) $pubKey,
+			(string) $id
+		);
+		if((string)$edSignData['err'] != '') {
+			\Smart::log_warning(__METHOD__.' # New Keypair Error: Test Signature Failed: '.$edSignData['err']);
+			return '';
+		} //end if
+		if((string)\trim((string)($edSignData['signatureB64'] ?? null)) == '') {
+			\Smart::log_warning(__METHOD__.' # New Keypair Error: Test Signature Failed, is Empty');
+			return '';
+		} //end if
+		//--
+		$edVerifyData = (array) \SmartCryptoEddsaSodium::ed25519VerifySignedData(
+			(string) $pubKey,
+			(string) ($edSignData['signatureB64'] ?? null),
+			(string) $id
+		);
+		if((string)$edVerifyData['err'] != '') {
+			\Smart::log_warning(__METHOD__.' # New Keypair Error: Test Signature Verification Failed: '.$edVerifyData['err']);
+			return '';
+		} //end if
+		if(($edVerifyData['verifyResult'] ?? null) !== true) {
+			\Smart::log_warning(__METHOD__.' # New Keypair Error: Test Signature Verification Failed, Invalid Result: '.($edVerifyData['verifyResult'] ?? null));
+			return '';
+		} //end if
+		//--
+		$packedSecKey = (string) \trim((string)self::packSecurityKey((string)$privKey, (string)$pubKey));
+		if((string)$packedSecKey == '') {
+			\Smart::log_warning(__METHOD__.' # Packed Key is Empty');
+			return '';
+		} //end if
+		//--
+		return (string) $packedSecKey;
+		//--
+	} //END FUNCTION
+
+
+	public static function encryptSecurityKey(string $id, string $secKey) : string {
 		//--
 		$id = (string) \trim((string)$id); // userID is: self::userAccountIdToUserName($userData['id']) ; ex: `ymdvjfr1p0.8204174162`
 		if((string)$id == '') {
 			return '';
 		} //end if
 		//--
-		$userEncKey = (string) \trim((string)self::userEncryptionKey((string)$id)); // ok ; also validates the ID
+		$userEncKey = (string) \trim((string)self::userSecretKeyForEncryption((string)$id)); // ok ; also validates the ID
 		if((string)$userEncKey == '') {
 			return '';
 		} //end if
@@ -675,19 +940,19 @@ final class Utils {
 			return '';
 		} //end if
 		//--
-		return (string) \trim((string)\SmartCipherCrypto::tf_encrypt((string)$secKey, (string)$userEncKey), true); // TF+BF
+		return (string) \trim((string)\SmartCipherCrypto::t3f_encrypt((string)$secKey, (string)$userEncKey)); // 3F ; Ed25519 Private Key is not encrypted such as EcDSA Priv Key, so use a stronger cipher
 		//--
 	} //END FUNCTION
 
 
-	public static function decryptSecretKey(string $id, string $secKey) : string {
+	public static function decryptSecurityKey(string $id, string $secKey) : string {
 		//--
 		$id = (string) \trim((string)$id); // userID is: self::userAccountIdToUserName($userData['id']) ; ex: `ymdvjfr1p0.8204174162`
 		if((string)$id == '') {
 			return '';
 		} //end if
 		//--
-		$userEncKey = (string) \trim((string)self::userEncryptionKey((string)$id)); // ok ; also validates the ID
+		$userEncKey = (string) \trim((string)self::userSecretKeyForEncryption((string)$id)); // ok ; also validates the ID
 		if((string)$userEncKey == '') {
 			return '';
 		} //end if
@@ -697,9 +962,12 @@ final class Utils {
 			return '';
 		} //end if
 		//--
-		return (string) \trim((string)\SmartCipherCrypto::tf_decrypt((string)$secKey, (string)$userEncKey), true); // TF+BF
+		return (string) \trim((string)\SmartCipherCrypto::t3f_decrypt((string)$secKey, (string)$userEncKey)); // 3F ; Ed25519 Private Key is not encrypted such as EcDSA Priv Key, so use a stronger cipher
 		//--
 	} //END FUNCTION
+
+
+	//---- user Sign Keys
 
 
 	public static function encryptSignKeys(string $id, array $certData) : string {
@@ -709,7 +977,7 @@ final class Utils {
 			return '';
 		} //end if
 		//--
-		$userEncKey = (string) \trim((string)self::userEncryptionKey((string)$id)); // ok ; also validates the ID
+		$userEncKey = (string) \trim((string)self::userSecretKeyForEncryption((string)$id)); // ok ; also validates the ID
 		if((string)$userEncKey == '') {
 			return '';
 		} //end if
@@ -797,7 +1065,7 @@ final class Utils {
 			return '';
 		} //end if
 		//--
-		$encData = (string) \trim((string)\SmartCipherCrypto::t3f_encrypt((string)$jsonData, (string)$userEncKey)); // 3F
+		$encData = (string) \trim((string)\SmartCipherCrypto::tf_encrypt((string)$jsonData, (string)$userEncKey, true)); // TF+BF
 		if((string)$encData == '') {
 			return '';
 		} //end if
@@ -814,7 +1082,7 @@ final class Utils {
 			return []; // empty username
 		} //end if
 		//--
-		$userEncKey = (string) self::userEncryptionKey((string)$id); // ok ; also validates the ID
+		$userEncKey = (string) self::userSecretKeyForEncryption((string)$id); // ok ; also validates the ID
 		if((string)\trim((string)$userEncKey) == '') {
 			return []; // user encryption key failed to generate ; user id may be invalid ...
 		} //end if
@@ -824,7 +1092,7 @@ final class Utils {
 			return []; // sign keys are empty
 		} //end if
 		//--
-		$jsonData = (string) \trim((string)\SmartCipherCrypto::t3f_decrypt((string)$signKeys, (string)$userEncKey)); // 3F
+		$jsonData = (string) \trim((string)\SmartCipherCrypto::tf_decrypt((string)$signKeys, (string)$userEncKey, true)); // TF+BF
 		if((string)$jsonData == '') {
 			return []; // decryption failed
 		} //end if
@@ -904,6 +1172,21 @@ final class Utils {
 	} //END FUNCTION
 
 
+	public static function isSignPrivateKeyEncrypted(string $privKey) : bool {
+		//--
+		if(\SmartCryptoEcdsaOpenSSL::isValidPrivateKeyPEM((string)$privKey) !== true) {
+			return false; // if is not a valid Private Key something may be wrong, consider is not encrypted so avoid to display
+		} //end if
+		//--
+		if(\SmartCryptoEcdsaOpenSSL::isValidEncryptedPrivateKeyPEM((string)$privKey) !== true) {
+			return false; // it is plain
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
+
 	public static function isSignKeysAvailable() : bool {
 		//--
 		return (bool) \SmartCryptoEcdsaOpenSSL::isAvailable();
@@ -911,18 +1194,22 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function generateSignKeys(string $theFullName, string $theEmailAddress, int $years) : array {
+	public static function generateSignKeys(string $id, string $theEmailAddress, string $theFullName, int $years) : array {
 		//--
 		if(self::isSignKeysAvailable() !== true) {
 			return [];
 		} //end if
-		//--
-		$theFullName = (string) \trim((string)$theFullName);
-		if((string)$theFullName == '') {
-			\Smart::log_warning(__METHOD__.' # Empty Full Name');
+		//-- {{{SYNC-KEYS-USER-ID}}}
+		$id = (string) \trim((string)$id); // userID is: self::userAccountIdToUserName($userData['id']) ; ex: `ymdvjfr1p0.8204174162`
+		if(((string)$id == '') || (\strpos((string)$id, '.') === false) || ((int)\strlen((string)$id) != 21)) {
+			\Smart::log_warning(__METHOD__.' # Empty or Invalid User ID: `'.$id.'`');
 			return [];
 		} //end if
-		//--
+		if(\SmartAuth::validate_auth_username((string)$id) !== true) {
+			\Smart::log_warning(__METHOD__.' # Invalid User ID: `'.$id.'`');
+			return [];
+		} //end if
+		//-- #end sync
 		$theEmailAddress = (string) \trim((string)$theEmailAddress);
 		if((string)$theEmailAddress == '') {
 			\Smart::log_warning(__METHOD__.' # Empty Email Address');
@@ -933,8 +1220,20 @@ final class Utils {
 			return [];
 		} //end if
 		//--
+		$theFullName = (string) \trim((string)$theFullName);
+		if((string)$theFullName == '') {
+			\Smart::log_warning(__METHOD__.' # Empty Full Name');
+			return [];
+		} //end if
+		//--
 		if(((int)$years < 1) OR ((int)$years > 100)) {
 			\Smart::log_warning(__METHOD__.' # Invalid Years: '.$years);
+			return [];
+		} //end if
+		//--
+		$passPhrasePrivKey = (string) \trim((string)self::passPhrasePrivSignKey((string)$id));
+		if((string)$passPhrasePrivKey == '') {
+			\Smart::log_warning(__METHOD__.' # Failed, PassPhrase is Empty for UserID: `'.$id.'`');
 			return [];
 		} //end if
 		//--
@@ -945,11 +1244,19 @@ final class Utils {
 				'organizationName' 			=> (string) \SMART_SOFTWARE_NAMESPACE,
 				'organizationalUnitName' 	=> (string) \Smart::get_from_config('app.info-url', 'string').' - '.self::DIGICERT_TEXT
 			],
-			100 // 100 years
+			100, // 100 years
+			(string) \SmartCryptoEcdsaOpenSSL::OPENSSL_ECDSA_DEF_CURVE,
+			(string) \SmartCryptoEcdsaOpenSSL::OPENSSL_CSR_DEF_ALGO,
+			(string) $passPhrasePrivKey // passPhrase for the Private Key
 		);
 		//--
 		if((string)$arr['err'] != '') {
 			\Smart::log_warning(__METHOD__.' # New Certificate Error: '.$arr['err']);
+			return [];
+		} //end if
+		//--
+		if(self::isSignPrivateKeyEncrypted((string)($arr['privKey'] ?? null)) !== true) {
+			\Smart::log_warning(__METHOD__.' # Private Key is Not Encrypted');
 			return [];
 		} //end if
 		//--
@@ -958,7 +1265,35 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function userEncryptionKey(string $id) : string { // ok ; on failure will return empty string
+	private static function passPhrasePrivSignKey(string $id) : string { // ok ; on failure will return empty string
+		//--
+		$id = (string) \trim((string)$id); // userID is: self::userAccountIdToUserName($userData['id']) ; ex: `ymdvjfr1p0.8204174162`
+		if(((string)$id == '') || (\strpos((string)$id, '.') === false) || ((int)\strlen((string)$id) != 21)) {
+			return '';
+		} //end if
+		if(\SmartAuth::validate_auth_username((string)$id) !== true) {
+			return '';
+		} //end if
+		//--
+		$userKey = (string) \trim((string)self::userSecretKeyForEncryption((string)$id));
+		if((string)$userKey == '') {
+			return '';
+		} //end if
+		//--
+		$userPassPhrase = (string) \trim((string)\Smart::base_from_hex_convert((string)\SmartHashCrypto::sh3a224((string)$userKey), 58));
+		if((string)$userPassPhrase == '') {
+			return '';
+		} //end if
+		//--
+		return (string) $userPassPhrase;
+		//--
+	} //END FUNCTION
+
+
+	//---- user account Secret Key (Encryption Key)
+
+
+	public static function userSecretKeyForEncryption(string $id) : string { // ok ; on failure will return empty string
 		//--
 		if(!\defined('\\SMART_FRAMEWORK_SECURITY_KEY')) {
 			return '';
@@ -980,6 +1315,9 @@ final class Utils {
 	} //END FUNCTION
 
 
+	//---- user account ID to UserName and reverse conversions
+
+
 	public static function userAccountIdToUserName(string $id) : string {
 		//--
 		return (string) \strtr((string)\strtolower((string)\trim((string)$id)), ['-' => '.']);
@@ -992,6 +1330,29 @@ final class Utils {
 		return (string) \strtr((string)\strtoupper((string)\trim((string)$username)), ['.' => '-']);
 		//--
 	} //END FUNCTION
+
+
+	//---- user account DB Type
+
+
+	public static function getDbType() : string {
+		//--
+		$type = '';
+		//--
+		if(\defined('\\SMART_AUTHUSERS_DB_TYPE')) {
+			if((string)\SMART_AUTHUSERS_DB_TYPE == 'sqlite') {
+				$type = 'sqlite';
+			} elseif(((string)\SMART_AUTHUSERS_DB_TYPE == 'pgsql') AND ((int)\Smart::array_size(\Smart::get_from_config('pgsql')) > 0)) {
+				$type = 'pgsql';
+			} //end if
+		} //end if
+		//--
+		return (string) $type;
+		//--
+	} //END FUNCTION
+
+
+	//---- #
 
 
 } //END CLASS

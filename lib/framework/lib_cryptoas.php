@@ -12,7 +12,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 //======================================================
-// Smart-Framework - Asymmetric Crypto Support # r.20260114
+// Smart-Framework - Asymmetric Crypto Support # r.20260116
 // 		* security key:
 // 			- Csrf, built-in ; requires PHP GMP extension
 // 		* digital certificates sign and verify, utilities:
@@ -49,7 +49,7 @@ if(!function_exists('gmp_export')) { // most recent GMP method in PHP used by Sm
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  * @hints 		This is generally intended for advanced usage !
  *
- * @depends 	PHP GMP extension, Smart, SmartHashCrypto
+ * @depends 	PHP GMP extension, classes: Smart, SmartHashCrypto
  *
  * @version 	v.20250714
  * @package 	Application
@@ -176,11 +176,16 @@ final class SmartCsrf {
  *
  * @depends 	extensions: PHP LibSodium ; classes: Smart
  *
- * @version 	v.20260114
- * @package 	Application
+ * @version 	v.20260116
+ * @package     @Core:Crypto
  *
  */
 final class SmartCryptoEddsaSodium {
+
+	public const ED25519_SECRET_SEED_LEN = 32;
+
+	public const ED25519_PRIVATE_KEY_LEN = 64;
+	public const ED25519_PUBLIC_KEY_LEN  = 32;
 
 
 	//==============================================================
@@ -250,7 +255,7 @@ final class SmartCryptoEddsaSodium {
 				$arr['err'] = 'Random KeyPair Generation Failed: # '.$e->getMessage();
 				return (array) $arr;
 			} //end try catch
-		} else if((int)strlen((string)$secret) == 32) {
+		} else if((int)strlen((string)$secret) == (int)self::ED25519_SECRET_SEED_LEN) {
 			$arr['secret'] = 'Seeded';
 			try {
 				$keyPair = (string) sodium_crypto_sign_seed_keypair((string)$secret);
@@ -278,7 +283,7 @@ final class SmartCryptoEddsaSodium {
 			$arr['err'] = 'Private Key generation Failed: Empty';
 			return (array) $arr;
 		} //end if
-		if((int)strlen((string)$privateKey) != 64) { // SODIUM_CRYPTO_SIGN_BYTES
+		if((int)strlen((string)$privateKey) != (int)self::ED25519_PRIVATE_KEY_LEN) { // SODIUM_CRYPTO_SIGN_BYTES
 			$arr['err'] = 'Private Key generation Failed: Invalid Length';
 			return (array) $arr;
 		} //end if
@@ -298,7 +303,7 @@ final class SmartCryptoEddsaSodium {
 			$arr['err'] = 'Public Key generation Failed: Empty';
 			return (array) $arr;
 		} //end if
-		if((int)strlen((string)$publicKey) != 32) { // SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES
+		if((int)strlen((string)$publicKey) != (int)self::ED25519_PUBLIC_KEY_LEN) { // SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES
 			$arr['err'] = 'Public Key generation Failed: Invalid Length';
 			return (array) $arr;
 		} //end if
@@ -362,7 +367,7 @@ final class SmartCryptoEddsaSodium {
 			$arr['err'] = 'Private Key is Empty';
 			return (array) $arr;
 		} //end if
-		if((int)strlen((string)$rawPrivKey) != 64) { // SODIUM_CRYPTO_SIGN_BYTES
+		if((int)strlen((string)$rawPrivKey) != (int)self::ED25519_PRIVATE_KEY_LEN) { // SODIUM_CRYPTO_SIGN_BYTES
 			$arr['err'] = 'Private Key Invalid Size';
 			return (array) $arr;
 		} //end if
@@ -378,7 +383,7 @@ final class SmartCryptoEddsaSodium {
 			$arr['err'] = 'Public Key is Empty';
 			return (array) $arr;
 		} //end if
-		if((int)strlen((string)$rawPubKey) != 32) { // SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES
+		if((int)strlen((string)$rawPubKey) != (int)self::ED25519_PUBLIC_KEY_LEN) { // SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES
 			$arr['err'] = 'Public Key Invalid Size';
 			return (array) $arr;
 		} //end if
@@ -459,7 +464,7 @@ final class SmartCryptoEddsaSodium {
 			$arr['err'] = 'Public Key is Empty';
 			return (array) $arr;
 		} //end if
-		if((int)strlen((string)$rawPubKey) != 32) { // SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES
+		if((int)strlen((string)$rawPubKey) != (int)self::ED25519_PUBLIC_KEY_LEN) { // SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES
 			$arr['err'] = 'Public Key Invalid Size';
 			return (array) $arr;
 		} //end if
@@ -475,7 +480,7 @@ final class SmartCryptoEddsaSodium {
 			$arr['err'] = 'Signature is Empty';
 			return (array) $arr;
 		} //end if
-		if((int)strlen((string)$signature) != 64) { // SODIUM_CRYPTO_SIGN_BYTES
+		if((int)strlen((string)$signature) != (int)self::ED25519_PRIVATE_KEY_LEN) { // SODIUM_CRYPTO_SIGN_BYTES
 			$arr['err'] = 'Signature Invalid Size';
 			return (array) $arr;
 		} //end if
@@ -520,6 +525,61 @@ final class SmartCryptoEddsaSodium {
 //=====================================================================================
 
 
+//=====================================================================================
+//===================================================================================== INTERFACE START [OK: NAMESPACE]
+//=====================================================================================
+
+
+/**
+ * Asymmetric Crypto OpenSSL Generic Interface
+ *
+ * @access 		private
+ * @internal
+ *
+ * @version 	v.20260116
+ * @package     @Core:Crypto
+ *
+ */
+interface SmartInterfaceCryptoAsOpenSSL {
+
+	// :: INTERFACE
+
+	//=====
+	/**
+	 * Sign Data, using OpenSSL
+	 * THIS MUST BE EXTENDED
+	 * RETURN: ARRAY
+	 */
+	public static function signData(?string $thePrivKey, ?string $thePubKey, ?string $data, string $algo='', ?string $privKeyPassword=null, bool $useASN1=true) : array;
+	//=====
+
+
+	//=====
+	/**
+	 * Verify Signed Data, using OpenSSL
+	 * THIS MUST BE EXTENDED
+	 * RETURN: ARRAY
+	 */
+	public static function verifySignedData(?string $thePubKey, ?string $data, ?string $signatureB64, string $algo='', bool $useASN1=true) : array;
+	//=====
+
+
+	//=====
+	/**
+	 * Create a New Certificate and the coresponding KeyPair (PrivateKey and PublicKey), all in PEM format, using OpenSSL
+	 * THIS MUST BE EXTENDED
+	 * RETURN: ARRAY
+	 */
+	public static function newCertificate(array $dNames=[], int $years=1, string $method='', string $algo='', ?string $privKeyPassword=null) : array;
+
+
+} //END INTERFACE
+
+
+//=====================================================================================
+//===================================================================================== INTERFACE END
+//=====================================================================================
+
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -527,52 +587,29 @@ final class SmartCryptoEddsaSodium {
 
 
 /**
- * Class: SmartCryptoEcdsaOpenSSL - provides PHP OpenSSL based EcDSA crypto implementation
- * Supports (standard): 	secp521r1/sha512   ; secp384r1/sha384   ; secp256k1/sha256
- * Supports (non-standard): secp521r1/sha3-512 ; secp384r1/sha3-384 ; secp256k1/sha3-256
+ * Asymmetric Crypto OpenSSL Generic AbstractClass
  *
- * @usage  		static object: Class::method() - This class provides only STATIC methods
+ * @access 		private
+ * @internal
  *
- * @depends 	extensions: PHP OpenSSL ; classes: Smart, SmartFileSysUtils, SmartCryptoEcdsaAsn1Sig
- *
- * @version 	v.20260114
- * @package 	Application
+ * @version 	v.20260116
+ * @package     @Core:Crypto
  *
  */
-final class SmartCryptoEcdsaOpenSSL {
+abstract class SmartAbstractCryptoAsOpenSSL
+	implements SmartInterfaceCryptoAsOpenSSL {
 
-	// ::
+	// :: ABSTRACT
 
-	// Important: the standard in golang is as this: secp521r1/sha512 ; secp384r1/sha384 ; secp256k1/sha256 ; all other combinations are non-standard ...
-	public const OPENSSL_ECDSA_DEF_CURVE 	= 'secp521r1'; 	// 'secp521r1' | 'secp384r1' | 'secp256k1'
-	public const OPENSSL_CSR_DEF_ALGO 		= 'sha512'; 	// 'sha512' | 'sha384' | 'sha256' | 'sha3-512' | 'sha3-384' | 'sha3-256'
+	// Can be any, golang/smartgo supports all
+	public const OPENSSL_CSR_DEF_ALGO 		= 'sha512'; 	// 'sha512'   | 'sha384'   | 'sha256'   | 'sha3-512' | 'sha3-384' | 'sha3-256'
+	public const OPENSSL_SIGN_DEF_ALGO 		= 'sha3-512'; 	// 'sha3-512' | 'sha3-384' | 'sha3-256' | 'sha512'   | 'sha384'   | 'sha256'
 
 	public const SIGNATURE_MODE_ASN1 		= 'ASN1';
 	public const SIGNATURE_MODE_NON_ASN1 	= 'nonASN1';
 
-	// Can be any, golang/smartgo supports all
-	public const OPENSSL_SIGN_DEF_ALGO 		= 'sha3-512'; 	// 'sha3-512' | 'sha3-384' | 'sha3-256' | 'sha512' | 'sha384' | 'sha256'
-
-	private const OPENSSL_CSR_OPTIONS = [
-		'config' 			=> SMART_FRAMEWORK_ROOT_ABSOLUTE_PATH . self::OPENSSL_CONF_PATH,
-		'req_extensions' 	=> 'v3_req', // {{{SYNC-OPENSSL-ECDSA-V3}}}
-		'x509_extensions' 	=> 'v3_req', // {{{SYNC-OPENSSL-ECDSA-V3}}}
-		'digest_alg' 		=> self::OPENSSL_CSR_DEF_ALGO,
-	];
-
-	private const OPENSSL_DN_KEYS = [
-		'commonName' 				=> true,  // 'localhost' * REQUIRED *
-		'emailAddress' 				=> false, // '' | 'admin@localhost'
-		'countryName' 				=> false, // '' | 'GB'
-		'localityName' 				=> false, // '' | 'London'
-		'stateOrProvinceName' 		=> false, // '' | 'Greater London'
-		'organizationName' 			=> false, // '' | 'Unix-World'
-		'organizationalUnitName' 	=> false, // '' | 'Unix-World.org'
-	];
-
-	private const OPENSSL_CONF_PATH = 'tmp/openssl-smart-ecdsa.conf';
-
-	private const OPENSSL_CONF_DATA = '
+	protected const OPENSSL_CONF_PATH = 'tmp/openssl-smart.conf';
+	protected const OPENSSL_CONF_DATA = '
 [ req_distinguished_name ]
 
 [ req ]
@@ -585,16 +622,159 @@ basicConstraints = critical, CA:FALSE
 keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRepudiation, keyAgreement
 ';
 
+	protected const OPENSSL_DN_KEYS = [
+		'commonName' 				=> true,  // 'localhost' * REQUIRED *
+		'emailAddress' 				=> false, // '' | 'admin@localhost'
+		'countryName' 				=> false, // '' | 'GB'
+		'localityName' 				=> false, // '' | 'London'
+		'stateOrProvinceName' 		=> false, // '' | 'Greater London'
+		'organizationName' 			=> false, // '' | 'Unix-World'
+		'organizationalUnitName' 	=> false, // '' | 'Unix-World.org'
+	];
+	protected const OPENSSL_CSR_OPTIONS = [
+		'config' 			=> SMART_FRAMEWORK_ROOT_ABSOLUTE_PATH . self::OPENSSL_CONF_PATH,
+		'req_extensions' 	=> 'v3_req', // {{{SYNC-OPENSSL-V3}}}
+		'x509_extensions' 	=> 'v3_req', // {{{SYNC-OPENSSL-V3}}}
+		'digest_alg' 		=> self::OPENSSL_CSR_DEF_ALGO,
+	];
+
 	private static $initialized = null;
+
+
+	//-------- [PUBLIC METHODS]: generic, can be re-implemented
 
 
 	//==============================================================
 	/**
-	 * Verifies if OpenSSL extension is Enabled and the openssl local config has been completed, in order to support EcDSA
+	 * Create a Digital Signature
+	 * Supported Algorithms: sha3-512, sha512, sha3-384, sha384, sha3-256, sha256, ...
+	 *
+	 * @param STRING $thePrivKey 					The PEM Private Key (plain or encrypted)
+	 * @param STRING $thePubKey 					The PEM Public Key, required for verification
+	 * @param STRING $data 							Data to be Signed
+	 * @param STRING $algo 							Algorithm to be used for the Signature, must be compliant with the algorithm used by the used keys and certificate ; by example cannot sign using sha256 or sha3-256 with a sha512 or sha3-512 certificate private/public key because the hash size differs
+	 * @param STRING $privKeyPassword 				*OPTIONAL* The password for the PEM Private Key if requires
+	 * @param BOOL   $useASN1 						*OPTIONAL* by default is TRUE, will create an ASN1 compliant signature ; if set to FALSE will create a Raw (Non-ASN1) signature
+	 *
+	 * @return ARRAY 								[ err, algo, mode, signatureB64 ]
+	 */
+	public static function signData(?string $thePrivKey, ?string $thePubKey, ?string $data, string $algo=self::OPENSSL_SIGN_DEF_ALGO, ?string $privKeyPassword=null, bool $useASN1=true) : array {
+		//--
+		$arr = [
+			'err' 			=> '?',
+			'algo' 			=> (string) $algo,
+			'mode' 			=> (string) (($useASN1 === false) ? self::SIGNATURE_MODE_NON_ASN1 : self::SIGNATURE_MODE_ASN1),
+			'signatureB64' 	=> '',
+		];
+		//--
+		$err = (string) self::init();
+		if($err) {
+			$arr['err'] = (string) 'Failed: '.$err;
+			return (array) $arr;
+		} //end if
+		//--
+		$arr['err'] = 'Method Not Implemented';
+		return (array) $arr;
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Verify a Digital Signature
+	 * Supported Algorithms: sha3-512, sha512, sha3-384, sha384, sha3-256, sha256, ...
+	 *
+	 * @param STRING $thePubKey 					The PEM Public Key or the Certificate PEM
+	 * @param STRING $data 							Data to be Verified
+	 * @param STRING $signatureB64 					The Base64 Signature
+	 * @param STRING $algo 							Algorithm to be used for the Signature, must be compliant with the algorithm used by the used keys and certificate ; by example cannot sign using sha256 or sha3-256 with a sha512 or sha3-512 certificate private/public key because the hash size differs
+	 * @param BOOL   $useASN1 						*OPTIONAL* by default is TRUE, will create an ASN1 compliant signature ; if set to FALSE will create a Raw (Non-ASN1) signature
+	 *
+	 * @return ARRAY 								[ err, algo, mode, verifyResult ] ; the verifyResult must be TRUE if verified, otherwise may return NULL or INTEGER
+	 */
+	public static function verifySignedData(?string $thePubKey, ?string $data, ?string $signatureB64, string $algo=self::OPENSSL_SIGN_DEF_ALGO, bool $useASN1=true) : array {
+		//--
+		// $thePubKey can be a PEM Public Key or a PEM Certificate
+		//--
+		$arr = [
+			'err' 			=> '?',
+			'algo' 			=> (string) $algo,
+			'mode' 			=> (string) (($useASN1 === false) ? self::SIGNATURE_MODE_NON_ASN1 : self::SIGNATURE_MODE_ASN1),
+			'verifyResult' 	=> null, // null (init); TRUE if verify = 1 ; otherwise verify can be INTEGER, NON-VALID: 0 / -1 ...
+		];
+		//--
+		$err = (string) self::init();
+		if($err) {
+			$arr['err'] = (string) 'Failed: '.$err;
+			return (array) $arr;
+		} //end if
+		//--
+		$arr['err'] = 'Method Not Implemented';
+		return (array) $arr;
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Create a New Certificate and the key Pair as Private and Public Key, all in PEM format
+	 * Supported Algorithms: sha3-512, sha512, sha3-384, sha384, sha3-256, sha256, ...
+	 * Supported Methods: see EcDSA or RSA ...
+	 *
+	 * @param ARRAY  $dNames 						The MetaInfo Certificate Names, minimum required is: [ commonName ] ; example: ['commonName' => 'My Sample Name', 'emailAddress' => 'my@email.local', 'organizationName' => 'my.local', 'organizationalUnitName' => 'My Sample Test - Digital Signature']
+	 * @param INT    $years 						The number of years for the certificate to be valid, 1..100
+	 * @param STRING $method 						The EcDSA curve or RSA Mode
+	 * @param STRING $algo 							Algorithm to be used for the Signature, must be compliant with the algorithm used by the curve
+	 * @param STRING $privKeyPassword 				*OPTIONAL* The password for the PEM Private Key ; if provided the returned Private Key PEM will be encrypted
+	 *
+	 * @return ARRAY 								[ err, mode, algo, curve, scheme, years, dNames, certificate, privKey, pubKey, serial, dateTime ]
+	 */
+	public static function newCertificate(array $dNames=['commonName' => 'localhost'], int $years=1, string $method='', string $algo=self::OPENSSL_CSR_DEF_ALGO, ?string $privKeyPassword=null) : array {
+		//--
+		// IMPORTANT: returned CERTIFICATE, PRIVATE KEY, PUBLIC KEY are plain, not passphrase protected, must be protected if stored as ENCRYPTED !
+		//--
+		$serial = (string) self::newSerialForCertificate(); // hex
+		//--
+		$arr = [
+			'err' 			=> '?',
+			'mode' 			=> '', 					// Ex: 'EcDSA' or 'RSA'
+			'algo' 			=> (string) $algo, 		// signature algo
+			'curve' 		=> '', 					// set $method for curves only (ex: EcDSA) ; must be empty for non-curves
+			'scheme' 		=> '', 					// set $method for non-curves  (ex: RSA)   ; N/A for curves, must be empty for curves, use for non-curves only such as RSA, Dilithium, Kyber, ...
+			'years' 		=> (int)    $years,
+			'dNames' 		=> (array)  $dNames,
+			'certificate' 	=> '',
+			'privKey' 		=> '',
+			'pubKey' 		=> '',
+			'serial' 		=> (string) '0x'.$serial,
+			'dateTime' 		=> (string) date('Y-m-d H:i:s O'),
+		];
+		//--
+		$err = (string) self::init();
+		if($err) {
+			$arr['err'] = (string) 'Failed: '.$err;
+			return (array) $arr;
+		} //end if
+		//--
+		$arr['err'] = 'Method Not Implemented';
+		return (array) $arr;
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//-------- [PUBLIC METHODS]: final
+
+
+	//==============================================================
+	/**
+	 * Verifies if OpenSSL extension is Enabled and the openssl local config has been completed
 	 *
 	 * @return BOOL 								TRUE if available, FALSE if not
 	 */
-	public static function isAvailable() : bool {
+	final public static function isAvailable() : bool {
 		//--
 		return (bool) (self::init() ? false : true);
 		//--
@@ -604,14 +784,60 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 
 	//==============================================================
 	/**
+	 * Parse the PEM Certificate via OpenSSL
+	 *
+	 * @param STRING $theCertificate 				The PEM Certificate
+	 * @param STRING $privKeyPassword 				*OPTIONAL* The password for the PEM Private Key if requires
+	 *
+	 * @return ARRAY 								The structure of the Certificate as parsed by OpenSSL
+	 */
+	final public static function parsePemCertificate(string $theCertificate, bool $shortNames=true) : array {
+		//--
+		$theCertificate = (string) trim((string)$theCertificate);
+		if((string)$theCertificate == '') {
+			return [];
+		} //end if
+		//--
+		if(self::isValidCertificatePEM((string)$theCertificate) !== true) {
+			return [];
+		} //end if
+		//--
+		$arrInf = openssl_x509_parse((string)$theCertificate, (bool)$shortNames);
+		if(!is_array($arrInf)) {
+			return [];
+		} //end if
+		//-- fix:
+		if(isset($arrInf['version'])) { // PHP bug # https://github.com/php/php-src/issues/11918 ; PHP reports less than the certificate version with -1
+			if(is_int($arrInf['version'])) {
+				$arrInf['version']++;
+			} //end if
+		} //end if
+		//-- safe array conversion, OpenSSL may include weird characters from certificate parsing, fix this via JSON encode/decode
+		$jsonInf = (string) trim((string)Smart::json_encode((array)$arrInf, true, false, false));
+		if((string)$jsonInf == '') {
+			return [];
+		} //end if
+		$arrInf  = Smart::json_decode((string)$jsonInf);
+		if(!is_array($arrInf)) {
+			return [];
+		} //end if
+		//--
+		return (array) $arrInf;
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
 	 * Extract the PEM Public Key from a PEM Private Key or a PEM Certificate
 	 *
-	 * @param STRING $eccPrivKeyOrCertificate 		The PEM Private Key or PEM Certificate
+	 * @param STRING $thePrivKeyOrCertificate 		The PEM Private Key or PEM Certificate
 	 * @param STRING $privKeyPassword 				*OPTIONAL* The password for the PEM Private Key if requires
 	 *
 	 * @return ARRAY 								[ err, pubKey, version ]
 	 */
-	public static function getPemPublicKeyFromPemPrivateKeyOrPemCertificate(string $eccPrivKeyOrCertificate, ?string $privKeyPassword=null) : array {
+	final public static function getPemPublicKeyFromPemPrivateKeyOrPemCertificate(string $thePrivKeyOrCertificate, ?string $privKeyPassword=null) : array {
 		//--
 		$arr = [
 			'err' 		=> '?',
@@ -626,10 +852,10 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 		} //end if
 		//--
 		$pKey = null;
-		if(self::isValidPrivateKeyPEM((string)$eccPrivKeyOrCertificate) === true) {
-			$pKey = openssl_pkey_get_private((string)$eccPrivKeyOrCertificate, $privKeyPassword);
-		} elseif(self::isValidCertificatePEM((string)$eccPrivKeyOrCertificate) === true) {
-			$pKey = openssl_pkey_get_private((string)$eccPrivKeyOrCertificate);
+		if(self::isValidPrivateKeyPEM((string)$thePrivKeyOrCertificate) === true) {
+			$pKey = openssl_pkey_get_private((string)$thePrivKeyOrCertificate, $privKeyPassword);
+		} elseif(self::isValidCertificatePEM((string)$thePrivKeyOrCertificate) === true) {
+			$pKey = openssl_pkey_get_public((string)$thePrivKeyOrCertificate);
 		} else {
 			$arr['err'] = 'Private Key or Certificate is Empty or Invalid';
 			return (array) $arr;
@@ -646,19 +872,19 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 			return (array) $arr;
 		} //end if
 		//print_r($detailsPrivKey); die();
-		$eccPubKey = (string) trim((string)($detailsPrivKey['key'] ?? null));
-		if((string)$eccPubKey == '') {
+		$thePubKey = (string) trim((string)($detailsPrivKey['key'] ?? null));
+		if((string)$thePubKey == '') {
 			$arr['err'] = 'Public Key PEM is Empty';
 			return (array) $arr;
 		} //end if
-		if(self::isValidPublicKeyPEM((string)$eccPubKey) !== true) {
+		if(self::isValidPublicKeyPEM((string)$thePubKey) !== true) {
 			$arr['err'] = 'Public Key PEM is Invalid';
 			return (array) $arr;
 		} //end if
 		//--
 		$keyVersion = (string) trim((string)($detailsPrivKey['type'] ?? null));
 		//--
-		$arr['pubKey']  = (string) $eccPubKey;
+		$arr['pubKey']  = (string) $thePubKey;
 		$arr['version'] = (string) $keyVersion;
 		//--
 		$arr['err'] = ''; // clear
@@ -677,7 +903,7 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 	 *
 	 * @return ARRAY 								[ err, privKey ]
 	 */
-	public static function decryptPrivateKeyPem(string $encryptedPrivKeyPem, ?string $privKeyPassword) : array {
+	final public static function decryptPrivateKeyPem(string $encryptedPrivKeyPem, ?string $privKeyPassword) : array {
 		//--
 		$arr = [
 			'err' 			=> '?',
@@ -694,33 +920,7 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 			$arr['err'] = 'Encrypted Private Key is Empty or Invalid';
 			return (array) $arr;
 		} //end if
-		if(
-			(
-				(
-					( // can be encrypted or not, if encrypted will have to start with `Proc-Type:`
-						(Smart::str_startswith((string)$encryptedPrivKeyPem, '-----BEGIN PRIVATE KEY-----'."\n") !== true)
-						OR
-						(Smart::str_endswith((string)$encryptedPrivKeyPem, "\n".'-----END PRIVATE KEY-----') !== true)
-					)
-					OR
-					(Smart::str_contains((string)$encryptedPrivKeyPem, "\n".'Proc-Type: 4,ENCRYPTED') !== true) // here we only support encrypted type, have to start with `Proc-Type:`
-				)
-				AND
-				( // {{{SYNC-ECDSA-VALD-ENCRYPTED-PRIVKEY}}}
-					(
-						(Smart::str_startswith((string)$encryptedPrivKeyPem, '-----BEGIN ENCRYPTED PRIVATE KEY-----'."\n") !== true)
-						OR
-						(Smart::str_endswith((string)$encryptedPrivKeyPem, "\n".'-----END ENCRYPTED PRIVATE KEY-----') !== true)
-					)
-					OR
-					(
-						(Smart::str_contains((string)$encryptedPrivKeyPem, "\n".'M') !== true)
-						AND
-						(Smart::str_contains((string)$encryptedPrivKeyPem, "\n".'Proc-Type: 4,ENCRYPTED') !== true)
-					)
-				)
-			)
-		) {
+		if(self::isValidEncryptedPrivateKeyPEM((string)$encryptedPrivKeyPem) !== true) {
 			$arr['err'] = 'Private Key is Not Encrypted';
 			return (array) $arr;
 		} //end if
@@ -736,41 +936,29 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 			return (array) $arr;
 		} //end if
 		//--
-		$options = [ // {{{SYNC-ECDSA-PKEY-EXPORT-OPTIONS}}}
+		$options = [ // {{{SYNC-OPENSSL-ENC-PKEY-EXPORT-OPTIONS}}}
 			'encrypt_key_cipher' => OPENSSL_CIPHER_AES_256_CBC,
 		];
-		$eccPrivKey = '';
-		if(!openssl_pkey_export($pKey, $eccPrivKey, null, (array)$options)) {
+		$thePrivKey = '';
+		if(!openssl_pkey_export($pKey, $thePrivKey, null, (array)$options)) {
 			$arr['err'] = 'Failed to Export the Plain Private Key';
 			return (array) $arr;
 		} //end if
-		$eccPrivKey = (string) trim((string)$eccPrivKey);
-		if((string)$eccPrivKey == '') {
+		$thePrivKey = (string) trim((string)$thePrivKey);
+		if((string)$thePrivKey == '') {
 			$arr['err'] = 'Plain Private Key PEM is Empty';
 			return (array) $arr;
 		} //end if
-		if(self::isValidPrivateKeyPEM((string)$eccPrivKey) !== true) {
+		if(self::isValidPrivateKeyPEM((string)$thePrivKey) !== true) {
 			$arr['err'] = 'Plain Private Key PEM is Invalid';
 			return (array) $arr;
 		} //end if
-		if(
-			(
-				(
-					( // here we only support plain (unencrypted) type
-						(Smart::str_startswith((string)$eccPrivKey, '-----BEGIN PRIVATE KEY-----'."\n") !== true)
-						OR
-						(Smart::str_endswith((string)$eccPrivKey, "\n".'-----END PRIVATE KEY-----') !== true)
-					)
-					OR
-					(Smart::str_contains((string)$eccPrivKey, "\n".'M') !== true)
-				)
-			)
-		) {
+		if(self::isValidPlainPrivateKeyPEM((string)$thePrivKey) !== true) {
 			$arr['err'] = 'Private Key is Not Plain';
 			return (array) $arr;
 		} //end if
 		//--
-		$arr['privKey'] = (string) $eccPrivKey;
+		$arr['privKey'] = (string) $thePrivKey;
 		//--
 		$arr['err'] = ''; // clear
 		return (array) $arr;
@@ -788,7 +976,7 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 	 *
 	 * @return ARRAY 								[ err, privKey ]
 	 */
-	public static function encryptPrivateKeyPem(string $plainPrivKeyPem, ?string $privKeyPassword) : array {
+	final public static function encryptPrivateKeyPem(string $plainPrivKeyPem, ?string $privKeyPassword) : array {
 		//--
 		$arr = [
 			'err' 			=> '?',
@@ -805,19 +993,7 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 			$arr['err'] = 'Private Key is Empty or Invalid';
 			return (array) $arr;
 		} //end if
-		if(
-			(
-				(
-					( // can be encrypted or not, if encrypted will have to start with `Proc-Type:`
-						(Smart::str_startswith((string)$plainPrivKeyPem, '-----BEGIN PRIVATE KEY-----'."\n") !== true)
-						OR
-						(Smart::str_endswith((string)$plainPrivKeyPem, "\n".'-----END PRIVATE KEY-----') !== true)
-					)
-					OR
-					(Smart::str_contains((string)$plainPrivKeyPem, "\n".'M') !== true) // here we only support plain (unencrypted) type
-				)
-			)
-		) {
+		if(self::isValidPlainPrivateKeyPEM((string)$plainPrivKeyPem) !== true) {
 			$arr['err'] = 'Private Key is Not Plain';
 			return (array) $arr;
 		} //end if
@@ -833,20 +1009,20 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 			return (array) $arr;
 		} //end if
 		//--
-		$options = [ // {{{SYNC-ECDSA-PKEY-EXPORT-OPTIONS}}}
+		$options = [ // {{{SYNC-OPENSSL-ENC-PKEY-EXPORT-OPTIONS}}}
 			'encrypt_key_cipher' => OPENSSL_CIPHER_AES_256_CBC,
 		];
-		$eccPrivKey = '';
-		if(!openssl_pkey_export($pKey, $eccPrivKey, (string)$privKeyPassword, (array)$options)) {
+		$thePrivKey = '';
+		if(!openssl_pkey_export($pKey, $thePrivKey, (string)$privKeyPassword, (array)$options)) {
 			$arr['err'] = 'Failed to Export the Encrypted Private Key';
 			return (array) $arr;
 		} //end if
-		$eccPrivKey = (string) trim((string)$eccPrivKey);
-		if((string)$eccPrivKey == '') {
+		$thePrivKey = (string) trim((string)$thePrivKey);
+		if((string)$thePrivKey == '') {
 			$arr['err'] = 'Encrypted Private Key PEM is Empty';
 			return (array) $arr;
 		} //end if
-		if(self::isValidPrivateKeyPEM((string)$eccPrivKey) !== true) {
+		if(self::isValidPrivateKeyPEM((string)$thePrivKey) !== true) {
 			$arr['err'] = 'Encrypted Private Key PEM is Invalid';
 			return (array) $arr;
 		} //end if
@@ -854,12 +1030,12 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 			(
 				(
 					( // here we only support encrypted type
-						(Smart::str_startswith((string)$eccPrivKey, '-----BEGIN ENCRYPTED PRIVATE KEY-----'."\n") !== true)
+						(Smart::str_startswith((string)$thePrivKey, '-----BEGIN ENCRYPTED PRIVATE KEY-----'."\n") !== true)
 						OR
-						(Smart::str_endswith((string)$eccPrivKey, "\n".'-----END ENCRYPTED PRIVATE KEY-----') !== true)
+						(Smart::str_endswith((string)$thePrivKey, "\n".'-----END ENCRYPTED PRIVATE KEY-----') !== true)
 					)
 					OR
-					(Smart::str_contains((string)$eccPrivKey, "\n".'M') !== true)
+					(Smart::str_contains((string)$thePrivKey, "\n".'M') !== true)
 				)
 			)
 		) {
@@ -867,10 +1043,378 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 			return (array) $arr;
 		} //end if
 		//--
-		$arr['privKey'] = (string) $eccPrivKey;
+		$arr['privKey'] = (string) $thePrivKey;
 		//--
 		$arr['err'] = ''; // clear
 		return (array) $arr;
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Validates a Private Key PEM format
+	 * It does not validate the type, by example if it is EcDSA or RSA
+	 * Supports: Plain or Encrypted Private Key PEM
+	 * Plain     Private Key PEM, in base 64 format must be enclosed within: -----BEGIN PRIVATE KEY----- ... -----END PRIVATE KEY----- not having Proc-Type: * ; must be plain, unencrypted
+	 * Encrypted Private Key PEM, in base 64 format must be enclosed within: -----BEGIN PRIVATE KEY----- ... -----END PRIVATE KEY----- and having Proc-Type: 4,ENCRYPTED in header
+	 * or, alternate encrypted key as
+	 * Encrypted Private Key PEM, in base 64 format must be enclosed within: -----BEGIN ENCRYPTED PRIVATE KEY----- ... -----END ENCRYPTED PRIVATE KEY-----
+	 *
+	 * @param STRING $thePrivKey 					The plain or encrypted Private Key PEM
+	 *
+	 * @return BOOL 								TRUE if Valid, FALSE if not valid or not supported
+	 */
+	final public static function isValidPrivateKeyPEM(?string $thePrivKey) : bool {
+		//--
+		$thePrivKey = (string) trim((string)$thePrivKey);
+		if((string)$thePrivKey == '') {
+			return false;
+		} //end if
+		//--
+		if(
+			(
+				(
+					( // can be encrypted or not, if encrypted will have to start with `Proc-Type:`
+						(Smart::str_startswith((string)$thePrivKey, '-----BEGIN PRIVATE KEY-----'."\n") !== true)
+						OR
+						(Smart::str_endswith((string)$thePrivKey, "\n".'-----END PRIVATE KEY-----') !== true)
+					)
+					OR
+					(
+						(Smart::str_contains((string)$thePrivKey, "\n".'M') !== true)
+						AND
+						(Smart::str_contains((string)$thePrivKey, "\n".'Proc-Type: 4,ENCRYPTED') !== true)
+					)
+				)
+				AND
+				( // {{{SYNC-OPENSSL-VALD-ENCRYPTED-PRIVKEY}}}
+					(
+						(Smart::str_startswith((string)$thePrivKey, '-----BEGIN ENCRYPTED PRIVATE KEY-----'."\n") !== true)
+						OR
+						(Smart::str_endswith((string)$thePrivKey, "\n".'-----END ENCRYPTED PRIVATE KEY-----') !== true)
+					)
+					OR
+					(
+						(Smart::str_contains((string)$thePrivKey, "\n".'M') !== true)
+						AND
+						(Smart::str_contains((string)$thePrivKey, "\n".'Proc-Type: 4,ENCRYPTED') !== true)
+					)
+				)
+			)
+		) {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Validates a Plain Private Key PEM format
+	 * It does not validate the type, by example if it is EcDSA or RSA
+	 * Supports: Plain Private Key PEM
+	 * Plain     Private Key PEM, in base 64 format must be enclosed within: -----BEGIN PRIVATE KEY----- ... -----END PRIVATE KEY----- not having Proc-Type: * ; must be plain, unencrypted
+	 *
+	 * @param STRING $plainPrivKeyPem 				The plain Private Key PEM
+	 *
+	 * @return BOOL 								TRUE if Valid, FALSE if not valid or not supported
+	 */
+	final public static function isValidPlainPrivateKeyPEM(?string $plainPrivKeyPem) : bool {
+		//--
+		$plainPrivKeyPem = (string) trim((string)$plainPrivKeyPem);
+		if((string)$plainPrivKeyPem == '') {
+			return false;
+		} //end if
+		//--
+		if(
+			(
+				(
+					( // here we only support plain (unencrypted) type
+						(Smart::str_startswith((string)$plainPrivKeyPem, '-----BEGIN PRIVATE KEY-----'."\n") !== true)
+						OR
+						(Smart::str_endswith((string)$plainPrivKeyPem, "\n".'-----END PRIVATE KEY-----') !== true)
+					)
+					OR
+					(Smart::str_contains((string)$plainPrivKeyPem, "\n".'M') !== true)
+				)
+			)
+		) {
+			return false;
+		} //end if
+		//--
+		return (bool) self::isValidPrivateKeyPEM((string)$plainPrivKeyPem); // safety check
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Validates an Encrypted Private Key PEM format
+	 * It does not validate the type, by example if it is EcDSA or RSA
+	 * Supports: Encrypted Private Key PEM
+	 * Encrypted Private Key PEM, in base 64 format must be enclosed within: -----BEGIN PRIVATE KEY----- ... -----END PRIVATE KEY----- and having Proc-Type: 4,ENCRYPTED in header
+	 * or, alternate encrypted key as
+	 * Encrypted Private Key PEM, in base 64 format must be enclosed within: -----BEGIN ENCRYPTED PRIVATE KEY----- ... -----END ENCRYPTED PRIVATE KEY-----
+	 *
+	 * @param STRING $encryptedPrivKeyPem 			The encrypted Private Key PEM
+	 *
+	 * @return BOOL 								TRUE if Valid, FALSE if not valid or not supported
+	 */
+	final public static function isValidEncryptedPrivateKeyPEM(?string $encryptedPrivKeyPem) : bool {
+		//--
+		$encryptedPrivKeyPem = (string) trim((string)$encryptedPrivKeyPem);
+		if((string)$encryptedPrivKeyPem == '') {
+			return false;
+		} //end if
+		//--
+		if(
+			(
+				(
+					( // can be encrypted or not, if encrypted will have to start with `Proc-Type:`
+						(Smart::str_startswith((string)$encryptedPrivKeyPem, '-----BEGIN PRIVATE KEY-----'."\n") !== true)
+						OR
+						(Smart::str_endswith((string)$encryptedPrivKeyPem, "\n".'-----END PRIVATE KEY-----') !== true)
+					)
+					OR
+					(Smart::str_contains((string)$encryptedPrivKeyPem, "\n".'Proc-Type: 4,ENCRYPTED') !== true) // here we only support encrypted type, have to start with `Proc-Type:`
+				)
+				AND
+				( // {{{SYNC-OPENSSL-VALD-ENCRYPTED-PRIVKEY}}}
+					(
+						(Smart::str_startswith((string)$encryptedPrivKeyPem, '-----BEGIN ENCRYPTED PRIVATE KEY-----'."\n") !== true)
+						OR
+						(Smart::str_endswith((string)$encryptedPrivKeyPem, "\n".'-----END ENCRYPTED PRIVATE KEY-----') !== true)
+					)
+					OR
+					(
+						(Smart::str_contains((string)$encryptedPrivKeyPem, "\n".'M') !== true)
+						AND
+						(Smart::str_contains((string)$encryptedPrivKeyPem, "\n".'Proc-Type: 4,ENCRYPTED') !== true)
+					)
+				)
+			)
+		) {
+			return false;
+		} //end if
+		//--
+		return (bool) self::isValidPrivateKeyPEM((string)$encryptedPrivKeyPem); // safety check
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Validates a Public Key PEM format
+	 * It does not validate the type, by example if it is EcDSA or RSA
+	 * Public Key PEM, in base 64 format must be enclosed within: -----BEGIN PUBLIC KEY----- ... -----END PUBLIC KEY-----
+	 *
+	 * @param STRING $thePubKey 					The Public Key PEM
+	 *
+	 * @return BOOL 								TRUE if Valid, FALSE if not valid or not supported
+	 */
+	final public static function isValidPublicKeyPEM(?string $thePubKey) : bool {
+		//--
+		$thePubKey = (string) trim((string)$thePubKey);
+		if((string)$thePubKey == '') {
+			return false;
+		} //end if
+		//--
+		if(
+			(Smart::str_startswith((string)$thePubKey, '-----BEGIN PUBLIC KEY-----'."\n") !== true)
+			OR
+			(Smart::str_endswith((string)$thePubKey, "\n".'-----END PUBLIC KEY-----') !== true)
+			OR
+			(Smart::str_contains((string)$thePubKey, "\n".'M') !== true)
+		) {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Validates a Certificate PEM format
+	 * It does not validate the type, by example if it is EcDSA or RSA
+	 * Certificate PEM, in base 64 format must be enclosed within: -----BEGIN CERTIFICATE----- ... -----END CERTIFICATE-----
+	 *
+	 * @param STRING $theCertPem 					The Certificate PEM
+	 *
+	 * @return BOOL 								TRUE if Valid, FALSE if not valid or not supported
+	 */
+	final public static function isValidCertificatePEM(?string $theCertPem) : bool {
+		//--
+		$theCertPem = (string) trim((string)$theCertPem);
+		if((string)$theCertPem == '') {
+			return false;
+		} //end if
+		//--
+		if(
+			(Smart::str_startswith((string)$theCertPem, '-----BEGIN CERTIFICATE-----'."\n") !== true)
+			OR
+			(Smart::str_endswith((string)$theCertPem, "\n".'-----END CERTIFICATE-----') !== true)
+			OR
+			(Smart::str_contains((string)$theCertPem, "\n".'M') !== true)
+		) {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//-------- [PROTECTED METHODS]: final
+
+
+	//==============================================================
+	final protected static function newSerialForCertificate() : string {
+		//--
+		$ser = (string) openssl_random_pseudo_bytes(16); // 16 * 8 = 128 bit
+		//--
+		return (string) bin2hex((string)$ser);
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	final protected static function init() : string {
+		//--
+		if(self::$initialized !== null) {
+			return (string) self::$initialized;
+		} //end if
+		//--
+		if(
+			(!function_exists('openssl_get_curve_names')) // newest method from the PHP OpenSSL extension
+			OR
+			(!function_exists('openssl_random_pseudo_bytes'))
+			OR
+			(!function_exists('openssl_sign'))
+			OR
+			(!function_exists('openssl_verify'))
+			OR
+			(!function_exists('openssl_pkey_new'))
+			OR
+			(!function_exists('openssl_csr_new'))
+			OR
+			(!function_exists('openssl_csr_sign'))
+			OR
+			(!function_exists('openssl_x509_export'))
+			OR
+			(!function_exists('openssl_x509_parse'))
+			OR
+			(!function_exists('openssl_pkey_export'))
+			OR
+			(!function_exists('openssl_pkey_get_private'))
+			OR
+			(!function_exists('openssl_pkey_get_public'))
+			OR
+			(!function_exists('openssl_pkey_get_details'))
+			OR
+			(!defined('OPENSSL_KEYTYPE_EC'))
+			OR
+			(!defined('OPENSSL_CIPHER_AES_256_CBC'))
+		) { // test req. methods and constants from PHP OpenSSL Extensions
+			self::$initialized = 'Init: PHP OpenSSL Extension is missing';
+			return (string) self::$initialized;
+		} //end if
+		//--
+		if(SmartFileSysUtils::writeStaticFile((string)self::OPENSSL_CONF_PATH, (string)trim((string)self::OPENSSL_CONF_DATA)."\n"."\n"."\n"."\n") !== true) {
+			self::$initialized = 'Init: Failed to write the OpenSSL config file';
+			return (string) self::$initialized;
+		} //end if
+		//--
+		self::$initialized = ''; // no errors
+		//--
+		return (string) self::$initialized;
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+} //END CLASS
+
+
+//=====================================================================================
+//===================================================================================== CLASS END
+//=====================================================================================
+
+
+//=====================================================================================
+//===================================================================================== CLASS START
+//=====================================================================================
+
+
+/**
+ * Class: SmartCryptoEcdsaOpenSSL - provides PHP OpenSSL based EcDSA crypto implementation
+ * Supports (standard): 	secp521r1/sha512   ; secp384r1/sha384   ; secp256k1/sha256
+ * Supports (non-standard): secp521r1/sha3-512 ; secp384r1/sha3-384 ; secp256k1/sha3-256
+ *
+ * @usage  		static object: Class::method() - This class provides only STATIC methods
+ *
+ * @depends 	extensions: PHP OpenSSL ; classes: Smart, SmartFileSysUtils, SmartCryptoEcdsaAsn1Sig
+ *
+ * @version 	v.20260116
+ * @package     @Core:Crypto
+ *
+ */
+final class SmartCryptoEcdsaOpenSSL
+	extends SmartAbstractCryptoAsOpenSSL {
+
+	// ::
+
+	public const CURVE_P521 = 'secp521r1'; // NIST P-521
+	public const CURVE_P384 = 'secp384r1'; // NIST P-384
+	public const CURVE_P256 = 'secp256k1'; // upgraded NIST P-256
+
+	public const ALGOS = [
+		'sha3-512' => self::CURVE_P521,
+		'sha512'   => self::CURVE_P521,
+		'sha3-384' => self::CURVE_P384,
+		'sha384'   => self::CURVE_P384,
+		'sha3-256' => self::CURVE_P256,
+		'sha256'   => self::CURVE_P256,
+	];
+
+	// Important: the standard in golang is as this: secp521r1/sha512 ; secp384r1/sha384 ; secp256k1/sha256 ; all other combinations are non-standard ...
+	public const OPENSSL_ECDSA_DEF_CURVE = self::CURVE_P521; // 'secp521r1' | 'secp384r1' | 'secp256k1'
+
+
+	//==============================================================
+	/**
+	 * Get the appropriate EcDSA Curve for the given Hash Algo
+	 * Supported Algorithms: sha3-512, sha512, sha3-384, sha384, sha3-256, sha256
+	 *
+	 * @param STRING $algo 							Algorithm to be used for the Signature
+	 *
+	 * @return STRING 								One of the supported curves: 'secp521r1' | 'secp384r1' | 'secp256k1' ; if Algorithm is not supported will return an empty string
+	 */
+	public static function getCurveForAlgo(string $algo) : string {
+		//--
+		$algo = (string) trim((string)$algo);
+		if((string)$algo == '') {
+			return '';
+		} //end if
+		//--
+		foreach(self::ALGOS as $key => $val) {
+			if((string)$key == (string)$algo) {
+				return (string) $val;
+			} //end if
+		} //end foreach
+		//--
+		return '';
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -907,24 +1451,24 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 		//--
 		$hashLen = (int) 0; // {{{SYNC-X509-PADDING-ECDSA-REQ-LEN}}}
 		switch((string)$algo) { // {{{SYNC-OPENSSL-SIGN-ALGO}}}
-			case 'sha256':
-			case 'sha3-256':
-				$hashLen = (int) 32 * 2; // because algorithm differ, value is double than in golang
-				break;
-			case 'sha384': // preferred ; wide compatibility and length attack safe
-			case 'sha3-384':
-				$hashLen = (int) 48 * 2; // because algorithm differ, value is double than in golang
-				break;
-			case 'sha512':
 			case 'sha3-512':
+			case 'sha512':
 				$hashLen = (int) 66 * 2; // because algorithm differ, value is double than in golang
 				break;
+			case 'sha3-384':
+			case 'sha384': // preferred ; wide compatibility and length attack safe
+				$hashLen = (int) 48 * 2; // because algorithm differ, value is double than in golang
+				break;
+			case 'sha3-256':
+			case 'sha256':
+				$hashLen = (int) 32 * 2; // because algorithm differ, value is double than in golang
+				break;
 			default:
-				$arr['err'] = 'Invalid Sign Algo: `'.$algo.'`';
+				$arr['err'] = 'Invalid EcDsa Sign Algo: `'.$algo.'`';
 				return (array) $arr;
 		} //end switch
 		if((int)$hashLen <= 0) {
-				$arr['err'] = 'Invalid Hash Length: `'.$hashLen.'`';
+				$arr['err'] = 'Invalid EcDsa Hash Length: `'.$hashLen.'`';
 				return (array) $arr;
 		} //end if
 		//--
@@ -1029,24 +1573,24 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 		//--
 		$hashLen = (int) 0; // {{{SYNC-X509-PADDING-ECDSA-REQ-LEN}}}
 		switch((string)$algo) { // {{{SYNC-OPENSSL-SIGN-ALGO}}}
-			case 'sha256':
-			case 'sha3-256':
-				$hashLen = (int) 32 * 2; // because algorithm differ, value is double than in golang
-				break;
-			case 'sha384': // preferred ; wide compatibility and length attack safe
-			case 'sha3-384':
-				$hashLen = (int) 48 * 2; // because algorithm differ, value is double than in golang
-				break;
-			case 'sha512':
 			case 'sha3-512':
+			case 'sha512':
 				$hashLen = (int) 66 * 2; // because algorithm differ, value is double than in golang
 				break;
+			case 'sha3-384':
+			case 'sha384': // preferred ; wide compatibility and length attack safe
+				$hashLen = (int) 48 * 2; // because algorithm differ, value is double than in golang
+				break;
+			case 'sha3-256':
+			case 'sha256':
+				$hashLen = (int) 32 * 2; // because algorithm differ, value is double than in golang
+				break;
 			default:
-				$arr['err'] = 'Invalid Sign Algo: `'.$algo.'`';
+				$arr['err'] = 'Invalid EcDsa Sign Algo: `'.$algo.'`';
 				return (array) $arr;
 		} //end switch
 		if((int)$hashLen <= 0) {
-				$arr['err'] = 'Invalid Hash Length: `'.$hashLen.'`';
+				$arr['err'] = 'Invalid EcDsa Hash Length: `'.$hashLen.'`';
 				return (array) $arr;
 		} //end if
 		//--
@@ -1112,31 +1656,31 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 	 *
 	 * @param ARRAY  $dNames 						The MetaInfo Certificate Names, minimum required is: [ commonName ] ; example: ['commonName' => 'My Sample Name', 'emailAddress' => 'my@email.local', 'organizationName' => 'my.local', 'organizationalUnitName' => 'My Sample Test - ECDSA Digital Signature']
 	 * @param INT    $years 						The number of years for the certificate to be valid, 1..100
-	 * @param STRING $curve 						The EcDSA curve ; can use only: secp521r1 with sha3-256 or sha256 ; secp384r1 with sha3-384 or sha384 ; secp256k1 with sha3-256 or sha256 ; any other combinations are invalid due to the hash size required by the curve
+	 * @param STRING $method 						The EcDSA curve ; can use only: secp521r1 with sha3-256 or sha256 ; secp384r1 with sha3-384 or sha384 ; secp256k1 with sha3-256 or sha256 ; any other combinations are invalid due to the hash size required by the curve
 	 * @param STRING $algo 							Algorithm to be used for the Signature, must be compliant with the algorithm used by the curve
 	 * @param STRING $privKeyPassword 				*OPTIONAL* The password for the PEM Private Key ; if provided the returned Private Key PEM will be encrypted
 	 *
 	 * @return ARRAY 								[ err, mode, algo, curve, scheme, years, dNames, certificate, privKey, pubKey, serial, dateTime ]
 	 */
-	public static function newCertificate(array $dNames=['commonName' => 'localhost'], int $years=1, string $curve=self::OPENSSL_ECDSA_DEF_CURVE, string $algo=self::OPENSSL_CSR_DEF_ALGO, ?string $privKeyPassword=null) : array {
+	public static function newCertificate(array $dNames=['commonName' => 'localhost'], int $years=1, string $method=self::OPENSSL_ECDSA_DEF_CURVE, string $algo=self::OPENSSL_CSR_DEF_ALGO, ?string $privKeyPassword=null) : array {
 		//--
 		// IMPORTANT: returned CERTIFICATE, PRIVATE KEY, PUBLIC KEY are plain, not passphrase protected, must be protected if stored as ENCRYPTED !
 		//--
-		$serial = (int) rand(111111111111111111, 888888888888888888);
+		$serial = (string) self::newSerialForCertificate(); // hex
 		//--
 		$arr = [
 			'err' 			=> '?',
 			'mode' 			=> 'EcDSA', 			// TODO: in the future when PHP will have real support for Ed25519 / Ed448 add these curves too
 			'algo' 			=> (string) $algo, 		// signature algo
-			'curve' 		=> (string) $curve, 	// for curves only, must be empty for non-curves
+			'curve' 		=> (string) $method, 	// for curves only, must be empty for non-curves
 			'scheme' 		=> '', 					// N/A for curves, must be empty for curves, use for non-curves only such as RSA, Dilithium, Kyber, ...
 			'years' 		=> (int)    $years,
 			'dNames' 		=> (array)  $dNames,
 			'certificate' 	=> '',
 			'privKey' 		=> '',
 			'pubKey' 		=> '',
-			'serial' 		=> (int)    $serial,
-			'dateTime' 		=> date('Y-m-d H:i:s O'),
+			'serial' 		=> (string) '0x'.$serial,
+			'dateTime' 		=> (string) date('Y-m-d H:i:s O'),
 		];
 		//--
 		$err = (string) self::init();
@@ -1149,7 +1693,7 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 			$arr['err'] = 'D-Names are Empty';
 			return (array) $arr;
 		} //end if
-		if((int)Smart::array_size($dNames) > 16) { // {{{SYNC-ECDSA-DNAMES-MAX}}}
+		if((int)Smart::array_size($dNames) > 16) { // {{{SYNC-OPENSSL-DNAMES-MAX}}}
 			$arr['err'] = 'D-Names are OverSized';
 			return (array) $arr;
 		} //end if
@@ -1163,31 +1707,33 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 			return (array) $arr;
 		} //end if
 		//--
-		switch((string)$curve) {
-			case 'secp256k1': // weak
-			case 'secp384r1': // golang compatible
-			case 'secp521r1': // preferred ; golang compatible
+		switch((string)$method) {
+			case self::CURVE_P521: // preferred ; golang compatible
+			case self::CURVE_P384: // golang compatible
+			case self::CURVE_P256: // weak
 				$availableCurves = openssl_get_curve_names();
 				if(!is_array($availableCurves)) {
 					$availableCurves = [];
 				} //end if
-				if(!in_array((string)$curve, (array)$availableCurves)) {
-					$arr['err'] = 'Unsupported EcDsa Curve: `'.$curve.'`';
+				if(!in_array((string)$method, (array)$availableCurves)) {
+					$arr['err'] = 'Unsupported EcDsa Curve: `'.$method.'`';
 					return (array) $arr;
 				} //end if
 				break;
 			default:
-				$arr['err'] = 'Invalid EcDsa Curve: `'.$curve.'`';
+				$arr['err'] = 'Invalid EcDsa Curve: `'.$method.'`';
 				return (array) $arr;
 		} //end switch
 		//--
 		switch((string)$algo) { // {{{SYNC-OPENSSL-SIGN-ALGO}}}
-			case 'sha256': // weak ; also compatible with golang
-			case 'sha384': // also compatible with golang
+			case 'sha3-512': // better
 			case 'sha512': // preferred ; also compatible with golang
-			case 'sha3-256':
+				break;
 			case 'sha3-384':
-			case 'sha3-512':
+			case 'sha384': // also compatible with golang
+				break;
+			case 'sha3-256':
+			case 'sha256': // weak ; also compatible with golang
 				break;
 			default:
 				$arr['err'] = 'Invalid EcDsa Digest Algo: `'.$algo.'`';
@@ -1212,7 +1758,7 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 		$private_key = openssl_pkey_new([
 			'encrypt_key_cipher' 	=> OPENSSL_CIPHER_AES_256_CBC,
 			'private_key_type' 		=> OPENSSL_KEYTYPE_EC,
-			'curve_name' 			=> (string) $curve,
+			'curve_name' 			=> (string) $method,
 		]);
 		if(!$private_key) {
 			$arr['err'] = 'Failed to Generate the New Private Key';
@@ -1236,7 +1782,7 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 		} //end if
 		//--
 		$cacert = null;
-		$x509 = openssl_csr_sign($csr, $cacert, $private_key, (int)$days, (array)$options_csr, (int)$serial);
+		$x509 = openssl_csr_sign($csr, $cacert, $private_key, (int)$days, (array)$options_csr, 0, (string)$serial); // using hex serial not numeric serial
 		if(!$x509) {
 			$arr['err'] = 'Failed to Sign the Certificate';
 			return (array) $arr;
@@ -1258,7 +1804,7 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 		} //end if
 		$arr['certificate'] = (string) $eccCertPem;
 		//--
-		$options = [ // {{{SYNC-ECDSA-PKEY-EXPORT-OPTIONS}}}
+		$options = [ // {{{SYNC-OPENSSL-ENC-PKEY-EXPORT-OPTIONS}}}
 			'encrypt_key_cipher' => OPENSSL_CIPHER_AES_256_CBC,
 		];
 		$eccPrivKey = '';
@@ -1290,7 +1836,7 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 		} //end if
 		//--
 		$keyVersion = (string) trim((string)($arrGetPubKey['version'] ?? null));
-		if((string)$keyVersion != '3') { // expects version 3 ; {{{SYNC-OPENSSL-ECDSA-V3}}}
+		if((string)$keyVersion != '3') { // expects version 3 ; {{{SYNC-OPENSSL-V3}}}
 			$arr['err'] = 'Invalid Private Key Version: `'.$keyVersion.'`';
 			return (array) $arr;
 		} //end if
@@ -1300,163 +1846,6 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 		//--
 	} //END FUNCTION
 	//==============================================================
-
-
-	//==============================================================
-	/**
-	 * Validates a Private Key PEM format
-	 * It does not validate the type, by example if it is EcDSA or RSA
-	 * Supports: Plain or Encrypted Private Key PEM
-	 * Plain     Private Key PEM, in base 64 format must be enclosed within: -----BEGIN PRIVATE KEY----- ... -----END PRIVATE KEY-----
-	 * Encrypted Private Key PEM, in base 64 format must be enclosed within: -----BEGIN PRIVATE KEY----- ... -----END PRIVATE KEY----- and having Proc-Type: 4,ENCRYPTED in header
-	 * or, alternate encrypted key as
-	 * Encrypted Private Key PEM, in base 64 format must be enclosed within: -----BEGIN ENCRYPTED PRIVATE KEY----- ... -----END ENCRYPTED PRIVATE KEY-----
-	 *
-	 * @param STRING $eccPrivKey 					The plain or encrypted Private Key PEM
-	 *
-	 * @return BOOL 								TRUE if Valid, FALSE if not valid or not supported
-	 */
-	public static function isValidPrivateKeyPEM(?string $eccPrivKey) : bool {
-		//--
-		$eccPrivKey = (string) trim((string)$eccPrivKey);
-		if((string)$eccPrivKey == '') {
-			return false;
-		} //end if
-		//--
-		if(
-			(
-				(
-					( // can be encrypted or not, if encrypted will have to start with `Proc-Type:`
-						(Smart::str_startswith((string)$eccPrivKey, '-----BEGIN PRIVATE KEY-----'."\n") !== true)
-						OR
-						(Smart::str_endswith((string)$eccPrivKey, "\n".'-----END PRIVATE KEY-----') !== true)
-					)
-					OR
-					(
-						(Smart::str_contains((string)$eccPrivKey, "\n".'M') !== true)
-						AND
-						(Smart::str_contains((string)$eccPrivKey, "\n".'Proc-Type: 4,ENCRYPTED') !== true)
-					)
-				)
-				AND
-				( // {{{SYNC-ECDSA-VALD-ENCRYPTED-PRIVKEY}}}
-					(
-						(Smart::str_startswith((string)$eccPrivKey, '-----BEGIN ENCRYPTED PRIVATE KEY-----'."\n") !== true)
-						OR
-						(Smart::str_endswith((string)$eccPrivKey, "\n".'-----END ENCRYPTED PRIVATE KEY-----') !== true)
-					)
-					OR
-					(
-						(Smart::str_contains((string)$eccPrivKey, "\n".'M') !== true)
-						AND
-						(Smart::str_contains((string)$eccPrivKey, "\n".'Proc-Type: 4,ENCRYPTED') !== true)
-					)
-				)
-			)
-		) {
-			return false;
-		} //end if
-		//--
-		return true;
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-	//==============================================================
-	/**
-	 * Validates a Public Key PEM format
-	 * It does not validate the type, by example if it is EcDSA or RSA
-	 * Public Key PEM, in base 64 format must be enclosed within: -----BEGIN PUBLIC KEY----- ... -----END PUBLIC KEY-----
-	 *
-	 * @param STRING $eccPubKey 					The Public Key PEM
-	 *
-	 * @return BOOL 								TRUE if Valid, FALSE if not valid or not supported
-	 */
-	public static function isValidPublicKeyPEM(?string $eccPubKey) : bool {
-		//--
-		$eccPubKey = (string) trim((string)$eccPubKey);
-		if((string)$eccPubKey == '') {
-			return false;
-		} //end if
-		//--
-		if(
-			(Smart::str_startswith((string)$eccPubKey, '-----BEGIN PUBLIC KEY-----'."\n") !== true)
-			OR
-			(Smart::str_endswith((string)$eccPubKey, "\n".'-----END PUBLIC KEY-----') !== true)
-			OR
-			(Smart::str_contains((string)$eccPubKey, "\n".'M') !== true)
-		) {
-			return false;
-		} //end if
-		//--
-		return true;
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-	//==============================================================
-	/**
-	 * Validates a Certificate PEM format
-	 * It does not validate the type, by example if it is EcDSA or RSA
-	 * Certificate PEM, in base 64 format must be enclosed within: -----BEGIN CERTIFICATE----- ... -----END CERTIFICATE-----
-	 *
-	 * @param STRING $eccCertPem 					The Certificate PEM
-	 *
-	 * @return BOOL 								TRUE if Valid, FALSE if not valid or not supported
-	 */
-	public static function isValidCertificatePEM(?string $eccCertPem) : bool {
-		//--
-		$eccCertPem = (string) trim((string)$eccCertPem);
-		if((string)$eccCertPem == '') {
-			return false;
-		} //end if
-		//--
-		if(
-			(Smart::str_startswith((string)$eccCertPem, '-----BEGIN CERTIFICATE-----'."\n") !== true)
-			OR
-			(Smart::str_endswith((string)$eccCertPem, "\n".'-----END CERTIFICATE-----') !== true)
-			OR
-			(Smart::str_contains((string)$eccCertPem, "\n".'M') !== true)
-		) {
-			return false;
-		} //end if
-		//--
-		return true;
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-	//-------- [PRIVATES]
-
-
-	private static function init() : string {
-		//--
-		if(self::$initialized !== null) {
-			return (string) self::$initialized;
-		} //end if
-		//--
-		if(
-			(!function_exists('openssl_pkey_get_details'))
-			OR
-			(!function_exists('openssl_sign'))
-		) { // test the newest method from GMP ; req. at least PHP 7.3 or later and a modern GMP implementation
-			self::$initialized = 'Init: PHP OpenSSL Extension is missing';
-			return (string) self::$initialized;
-		} //end if
-		//--
-		if(SmartFileSysUtils::writeStaticFile((string)self::OPENSSL_CONF_PATH, (string)trim((string)self::OPENSSL_CONF_DATA)."\n"."\n"."\n"."\n") !== true) {
-			self::$initialized = 'Init: Failed to write the OpenSSL config file';
-			return (string) self::$initialized;
-		} //end if
-		//--
-		self::$initialized = ''; // no errors
-		//--
-		return (string) self::$initialized;
-		//--
-	} //END FUNCTION
 
 
 } //END CLASS
@@ -1479,10 +1868,11 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
 // LICENSE: MIT
 // (c) 2014-2017 Spomky-Labs
 //
-// Modified from by unixman (iradu@unix-world.org)
+// LICENSE: BSD
+// (c) 2026-present unix-world.org
+// Modified from by unixman (iradu@unix-world.org), uses GMP (can work with larger numbers than 64-bit) instead of the original non-safe approach using only 64-bit integers
 // this class is a rework of the class: Jose\Component\Core\Util\ECSignature
 // from the project: web-token/jwt-framework (JSON Object Signing and Encryption library for PHP and Symfony Bundle)
-// (c) 2026-present unix-world.org
 //--
 
 /**
@@ -1493,20 +1883,22 @@ keyUsage = critical, keyEncipherment, dataEncipherment, digitalSignature, nonRep
  * @access 		private
  * @internal
  *
- * @depends 	classes: Smart
- * @version 	v.20260114
+ * @depends 	extensions: PHP GMP extension, classes: Smart
+ *
+ * @version 	v.20260116
+ * @package     @Core:Crypto
  *
  */
 final class SmartCryptoEcdsaAsn1Sig {
 
-
-//	private const ASN1_NEGATIVE_INTEGER = '00'; // unixman
 	private const ASN1_SEQUENCE = '30';
 	private const ASN1_INTEGER = '02';
 	private const ASN1_MAX_SINGLE_BYTE = 128;
 	private const ASN1_LENGTH_2BYTES = '81';
-	private const ASN1_BIG_INTEGER_LIMIT = '7f';
 	private const BYTE_SIZE = 2;
+
+//	private const ASN1_NEGATIVE_INTEGER = '00';  // unixman
+//	private const ASN1_BIG_INTEGER_LIMIT = '7f'; // unixman
 
 
 	public static function toAsn1(string $signature, int $length) : array {

@@ -23,7 +23,7 @@ const handleFormAcc2FA = () => {
 		<input type="hidden" name="frm[key]" value="[###2FA-CODE|html###]">
 		<input type="hidden" name="frm[pin]" value="" id="auth-2fa-pin">
 		<legend><h1>[###TXT-2FA-ENABLE|html###]</h1></legend><br>
-		<div class="operation_info" style="display:inline-block; max-width:600px!important;">[###TXT-IMPORTANT|html###]:<div>[###TXT-2FA-NOTICE|html###]<br><br>[###TXT-2FA-REC-KEY|html###]:<br>`<span style="color:#685A8B;font-weight:bold;">[###2FA-CODE|html###]</span>`.<br><br>[###TXT-2FA-HINT|html###]:<br><span style="color:#ED2839;">FreeOTP App</span> / <span style="color:#ED2839;">Google Authenticator App</span>.</div></div>
+		<div class="operation_info" style="display:inline-block; max-width:600px!important;">[###TXT-IMPORTANT|html###]:<div>[###TXT-2FA-NOTICE|html###]<br><br>[###TXT-2FA-REC-KEY|html###]:<br>`<span style="color:#685A8B;font-weight:bold;">[###2FA-CODE|html###]</span>`.<br><br>[###TXT-2FA-HINT|html###]:<br><span style="color:#ED2839;">[%%%IF:URL-2FA-APP1:!=;%%%]<a href="[###URL-2FA-APP1|html###]" target="_blank" style="color:#ED2839;">[%%%/IF:URL-2FA-APP1%%%][###TXT-2FA-APP1|html###][%%%IF:URL-2FA-APP1:!=;%%%]</a>[%%%/IF:URL-2FA-APP1%%%]</span> / <span style="color:#ED2839;">[%%%IF:URL-2FA-APP2:!=;%%%]<a href="[###URL-2FA-APP2|html###]" target="_blank" style="color:#ED2839;">[%%%/IF:URL-2FA-APP2%%%][###TXT-2FA-APP2|html###][%%%IF:URL-2FA-APP2:!=;%%%]</a>[%%%/IF:URL-2FA-APP2%%%]</span>.</div></div>
 		<br><br>
 		<div id="app-container">
 			<div class="ux-grid-row">

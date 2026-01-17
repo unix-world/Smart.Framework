@@ -30,7 +30,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20251230
+ * @version 	v.20260115
  * @package 	modules:AuthUsers
  *
  */
@@ -114,7 +114,7 @@ final class AuthJwt {
 		} //end if
 		//--
 		if((int)\Smart::array_size($data) > 0) {
-			if(\Smart::array_type_test($data) !== 2) { // if non-empty array. must be associative
+			if(\Smart::array_type_test($data) !== 2) { // if non-empty array, must be associative
 				$jwt['err'] = 902;
 				return (array) $jwt;
 			} //end if

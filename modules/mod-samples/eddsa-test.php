@@ -72,7 +72,7 @@ abstract class SmartAppAbstractController extends SmartAbstractAppController {
 
 		//--
 		$edKeyPair = (array) SmartCryptoEddsaSodium::ed25519NewKeypair();
-		if($edKeyPair['err'] != '') {
+		if((string)$edKeyPair['err'] != '') {
 			$this->PageViewSetCfg('error', 'New Key Pair, with Random Secret Error: '.$edKeyPair['err']);
 			return 500;
 		} //end if
@@ -90,7 +90,7 @@ abstract class SmartAppAbstractController extends SmartAbstractAppController {
 			(string) $edKeyPair['pubKey'],
 			(string) $dataMsg
 		);
-		if($edSignData['err'] != '') {
+		if((string)$edSignData['err'] != '') {
 			$this->PageViewSetCfg('error', 'Signed Data Error: '.$edSignData['err']);
 			return 500;
 		} //end if

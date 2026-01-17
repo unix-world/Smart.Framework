@@ -2,7 +2,7 @@
 TRANSLATIONS:
   @language: EN
   @area: mod-auth-users
-  @version: 2026-01-07
+  @version: 2026-01-15
   auth-users:
     homepage: 'Home Page'
     auth-required: 'Sign-In is Required'
@@ -114,7 +114,7 @@ TRANSLATIONS:
     sign-up-reg-step3: '2FA - Two Factor Authentication'
     sign-up-reg-step3-desc: |
         With 2FA (2-Step pin code Verification), you can add an extra layer of security to your account. After your first login, from your account settings, you can enable the 2FA security option. The 2FA option can also be disabled anytime, if you enabled it.
-        Enabling the 2FA option for your account will require on each standard (user / password) Sign-In an extra 8-digit code provided by a 2FA compatible mobile application, where the 2FA code will be installed, such as Google Authenticator or FreeOTP.
+        Enabling the 2FA option for your account will require on each standard (user / password) Sign-In an extra 8-digit code provided by a 2FA compatible mobile application, where the 2FA code will be installed, such as FreeOTP or Google Authenticator.
         The SSO Authentication will not use the 2FA (if the 2FA option is enabled) because each SSO identity provider is using it's own (optional) mechanism for 2FA.
     sign-up-reg-step4: 'Security and Data Protection'
     sign-up-reg-step4-desc: |
@@ -179,14 +179,15 @@ TRANSLATIONS:
     id-cluster: 'ClusterID'
     id-user: 'UserID'
     registration-date: 'Registration Date'
+    sett-confirm-action: 'Please confirm this action'
     sett-welcome: 'Modify Your Account Settings'
     sett-full-name: 'Full Name'
     sett-tab-cinfo: 'Contact Info'
-    sett-tab-pass: 'Password and Tokens'
+    sett-tab-pass: 'Password and API Keys'
     sett-tab-security: 'Authentication'
     sett-tab-account: 'Account'
-    sett-tab-certificates: 'Certificates and Security'
-    sett-btn-ssekey: 'Generate a new random Security Key'
+    sett-tab-certificates: 'Tokens and Signatures'
+    sett-btn-ssekey: 'Generate a new Security Token'
     sett-btn-gen-certs: 'Generate a new Digital Signature'
     sett-btn-upd-cinfo: 'Update Contact Info'
     sett-btn-upd-pass: 'Update Password'
@@ -204,14 +205,18 @@ TRANSLATIONS:
     sett-auth-2fa-hint-disable: 'If you disable 2FA your account you will less protected.'
     sett-auth-2fa-important: 'Important'
     sett-auth-2fa-notice-enable: 'You are about to enable Two-Factor Authentication for your account.'
-    sett-auth-2fa-hint-enable: 'Scan the below 2FA Setup QRCode with any 2FA compatible Authenticator apps as'
-    sett-auth-2fa-recovery-enable: 'Make a safe backup of the below 2FA Secret Key, for recovery'
+    sett-auth-2fa-hint-enable: 'Scan the below 2FA Setup QRCode with any 2FA compatible `Two-Factor Authentication` mobile application such as'
+    sett-auth-2fa-name-app1: 'FreeOTP App'
+    sett-auth-2fa-url-app1: 'https://freeotp.github.io'
+    sett-auth-2fa-name-app2: 'Google Authenticator App'
+    sett-auth-2fa-url-app2: 'https://google.com/search?q=Google+Authenticator'
+    sett-auth-2fa-recovery-enable: 'Make a safe backup of the below Secret Key, for 2FA recovery'
     sett-auth-2fa-totp-code-enter: 'Enter the 2FA (TOTP) Code here'
     sett-auth-2fa-totp-code-hint: 'Enter the Two-Factor Authentication Code here (TOTP 2FA Code) to test before enabling 2FA'
     sett-auth-2fa-confirm-enable: 'Please confirm !'
     sett-auth-2fa-confirm-question-enable: 'Are you sure to ENABLE 2FA for your account ?'
     sett-auth-2fa-confirm-warn-enable: 'After enabling 2FA the TOTP Code is mandatory on every login...'
-    sett-auth-2fa-notice-info: 'With 2FA (2-Step pin code Verification), you can add an extra layer of security to your account. If the 2FA is Enabled for your account will require on each standard (user / password) Sign-In an extra 8-digit code provided by a 2FA compatible mobile application, where the 2FA code will be installed, such as Google Authenticator or FreeOTP.'
+    sett-auth-2fa-notice-info: 'With 2FA (2-Step pin code Verification), you can add an extra layer of security to your account. If the 2FA is Enabled for your account will require on each standard (user / password) Sign-In an extra code, 8-digit, provided by any `Two-Factor Authentication` compatible mobile application, where the 2FA code will be installed, such as FreeOTP or Google Authenticator.'
     sett-auth-sso-btn-update: 'Update the List of Enabled SSO Plugins'
     sett-auth-sso-plugins: 'Enabled Auth SSO Plugins'
     sett-auth-sso-notice: 'The Enabled SSO Plugins for your account. They must provide the exact email address as you registered on this account. It is not possible to use a SSO Plugin that will provide a different email address otherwise you will be landing into a different account.'
@@ -221,6 +226,7 @@ TRANSLATIONS:
     api-sett-update-failed: 'Update Failed'
     api-sett-op-failed: 'Failed'
     api-sett-op-success: 'Success'
+    api-sett-empty-id: 'UserID is Empty'
     api-sett-empty-name: 'Name is Empty'
     api-sett-empty-email: 'Email Address is Empty'
     api-sett-invalid-email: 'Email Address is Invalid'
@@ -248,16 +254,19 @@ TRANSLATIONS:
     api-sett-acc-disable-uid-invalid: 'UserID is Invalid'
     api-sett-acc-disable-uid-wrong: 'UserID is Wrong'
     api-sett-ok-acc-disable: 'Your user account has been deactivated...'
+    api-sett-ok-ssekey-generate: 'A new Security Token was created'
+    api-sett-ssekey-na: 'The Security Token is Not Available on this platform'
     api-sett-ok-certs-generate: 'A new Digital Signature was created'
     api-sett-certs-na: 'The Digital Signature is Not Available on this platform'
     digicert-title: 'Digital Signature'
     digicert-certificate: 'Certificate'
     digicert-privkey: 'Private Key'
     digicert-pubkey: 'Public Key'
-    digicert-ok: 'The Digital Signature is ready to use for this user account'
-    digicert-valid: 'Certificate is Valid'
+    digicert-empty: 'The Digital Signature has not been yet generated. When you generate it, will use your Full Name as set in the `Contact Info` section. After you generate a Digital Signature it can not be changed or re-generated.'
+    digicert-ok: 'The Digital Signature is ready to use'
+    digicert-valid: 'Certificate and the KeyPair are Valid'
     digicert-expired: 'Certificate is Expired'
-    ssekey-ok: 'The Security Key is ready to use for this user account'
-    ssekey-title: 'Security Key'
+    ssekey-ok: 'The Security Token is ready to use. You can re-generate it anytime.'
+    ssekey-title: 'Security Token'
     gdpr-compliant: 'GDPR Compliant'
 #END
