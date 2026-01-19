@@ -4041,7 +4041,7 @@ final class Smart {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_CHMOD_DIRS, SMART_FRAMEWORK_CHMOD_FILES
- * @version 	v.20260103
+ * @version 	v.20260120
  * @package 	@Core:FileSystem
  *
  */
@@ -4049,7 +4049,57 @@ final class SmartFileSysUtils {
 
 	// ::
 
+	/**
+	 * @access 		private
+	 * @internal
+	 */
+	public const APP_DB_FOLDER = '#db/'; // {{{SYNC-APP-DB-FOLDER}}}
+
 	private static $cachedStaticFilePaths = [];
+
+
+	//================================================================
+	/**
+	 * Return the MAXIMUM allowed Upload Size
+	 *
+	 * @return INTEGER								:: the Max Upload Size in Bytes
+	 */
+	public static function maxUploadFileSize() : int {
+		//--
+		$inival = (string) trim((string)ini_get('upload_max_filesize'));
+		if((string)$inival == '') {
+			return 0;
+		} //end if
+		//--
+		$last = (string) strtoupper((string)substr((string)$inival, -1, 1));
+		$value = (int) intval((string)$inival);
+		//--
+		if((string)$last === 'K') { // kilo
+			$value *= 1000;
+		} elseif((string)$last === 'M') { // mega
+			$value *= 1000 * 1000;
+		} elseif((string)$last === 'G') { // giga ; is this used ?
+			$value *= 1000 * 1000 * 1000;
+		/* unused at the moment
+		} elseif((string)$last === 'T') { // tera
+			$value *= 1000 * 1000 * 1000 * 1000;
+		} elseif((string)$last === 'P') { // peta
+			$value *= 1000 * 1000 * 1000 * 1000 * 1000;
+		*/
+		/* the below unit of measures may overflow the max 64-bit integer value with higher values set in php.ini ... anyway there is no case to upload such large files ...
+		} elseif((string)$last === 'E') { // exa
+			$value *= 1000 * 1000 * 1000 * 1000 * 1000 * 1000;
+		} elseif((string)$last === 'Z') { // zetta
+			$value *= 1000 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000;
+		} elseif((string)$last === 'Y') { // yotta
+			$value *= 1000 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000;
+		*/
+		} //end if else
+		//--
+		return (int) Smart::format_number_int((int)$value, '+');
+		//--
+	} //END FUNCTION
+	//================================================================
 
 
 	//================================================================
@@ -4058,10 +4108,11 @@ final class SmartFileSysUtils {
 	 * It should be used just with static files which does not changes between executions ; it does not use safe lock checks
 	 *
 	 * @param 	STRING 		$file_relative_path 				:: The relative path of file to be read (can be a symlink to a file)
+	 * @param 	BOOL 		$skip_cached 						:: if TRUE will do a full check if exists, not using cached result
 	 *
 	 * @return 	BOOL											:: TRUE if file exists and path is safe ; FALSE otherwise
 	 */
-	public static function staticFileExists(?string $file_relative_path) : bool {
+	public static function staticFileExists(?string $file_relative_path, bool $skip_cached=false) : bool {
 		//--
 		if((string)trim((string)$file_relative_path) == '') {
 			return false;
@@ -4070,23 +4121,38 @@ final class SmartFileSysUtils {
 		if(!is_array(self::$cachedStaticFilePaths)) {
 			self::$cachedStaticFilePaths = [];
 		} //end if
-		if(array_key_exists((string)$file_relative_path, (array)self::$cachedStaticFilePaths)) {
-			self::$cachedStaticFilePaths[(string)$file_relative_path]++; // keep number ou accesses
-			return (bool) self::$cachedStaticFilePaths[(string)$file_relative_path];
+		if($skip_cached !== true) {
+			if(array_key_exists((string)$file_relative_path, (array)self::$cachedStaticFilePaths)) {
+				self::$cachedStaticFilePaths[(string)$file_relative_path]++; // keep number ou accesses
+				return (bool) self::$cachedStaticFilePaths[(string)$file_relative_path];
+			} //end if
 		} //end if
 		//--
 		$staticRootPath = (string) self::getStaticFilesRootPath();
 		//--
+		$deny_absolute_path = true;
+		if((string)$staticRootPath != '') { // {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-OR-ABSOLUTE-PATH-BY-STATIC-ROOT-PATH}}} ; if SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH is non-empty (outside Smart.Framework environment use only), allow absolute paths
+			$deny_absolute_path = false;
+		} //end if
+		//--
 		$ok = true;
 		if(
-			(self::checkIfSafePath((string)$file_relative_path) != 1)
+			(self::checkIfSafePath((string)$file_relative_path) != 1) // {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-PATH-ALWAYS}}} ; disallow absolute, this should be always relative path !
 			OR
-			(self::checkIfSafePath((string)$staticRootPath.$file_relative_path) != 1)
+			(self::checkIfSafePath((string)$staticRootPath.$file_relative_path, (bool)$deny_absolute_path) != 1) // {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-OR-ABSOLUTE-PATH-BY-STATIC-ROOT-PATH}}}
 		) {
+			return false;
+		} //end if
+		//--
+		/* // do not use clearstatcache(), this is intended for STATIC FILES ONLY
+		if($skip_cached === true) {
+			clearstatcache(true, (string)$staticRootPath.$file_relative_path);
+		} //end if
+		*/
+		//--
+		if(!is_file((string)$staticRootPath.$file_relative_path)) {
 			$ok = false;
-		} elseif(!is_file((string)$staticRootPath.$file_relative_path)) { // do not use clearstatcache(), this is intended for STATIC FILES ONLY
-			$ok = false;
-		} elseif(!is_readable((string)$staticRootPath.$file_relative_path)) { // do not use clearstatcache(), this is intended for STATIC FILES ONLY
+		} elseif(!is_readable((string)$staticRootPath.$file_relative_path)) {
 			$ok = false;
 		} //end if
 		//--
@@ -4106,12 +4172,13 @@ final class SmartFileSysUtils {
 	 * @param 	STRING 		$file_relative_path 				:: The relative path of file to be read (can be a symlink to a file)
 	 * @param 	INTEGER+	$length 							:: DEFAULT is 0 (zero) ; If zero will read the entire file ; If > 0 (ex: 100) will read only the first 100 bytes fro the file or less if the file size is under 100 bytes
 	 * @param 	BOOL 		$dont_read_if_overSized 			:: DEFAULT is FALSE ; if set to TRUE and a Max length is Set the file will not be read if size is more than max length
+	 * @param 	BOOL 		$skip_cached 						:: if TRUE will do a full check if exists, not using cached result
 	 *
 	 * @return 	STRING											:: The file contents or an empty string if file not found or cannot read file or other error cases
 	 */
-	public static function readStaticFile(?string $file_relative_path, ?int $length=null, bool $dont_read_if_overSized=false) : string {
+	public static function readStaticFile(?string $file_relative_path, ?int $length=null, bool $dont_read_if_overSized=false, bool $skip_cached=false) : string {
 		//--
-		if(self::staticFileExists((string)$file_relative_path) !== true) {
+		if(self::staticFileExists((string)$file_relative_path, (bool)$skip_cached) !== true) {
 			Smart::log_warning(__METHOD__.' # File Path is Invalid: Empty / Unsafe / Not Found / Not Readable: `'.$file_relative_path.'`');
 			return '';
 		} //end if
@@ -4125,8 +4192,13 @@ final class SmartFileSysUtils {
 		//--
 		$staticRootPath = (string) self::getStaticFilesRootPath();
 		//--
-		self::raiseErrorIfUnsafePath((string)$file_relative_path);
-		self::raiseErrorIfUnsafePath((string)$staticRootPath.$file_relative_path);
+		$deny_absolute_path = true;
+		if((string)$staticRootPath != '') { // {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-OR-ABSOLUTE-PATH-BY-STATIC-ROOT-PATH}}} ; if SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH is non-empty (outside Smart.Framework environment use only), allow absolute paths
+			$deny_absolute_path = false;
+		} //end if
+		//--
+		self::raiseErrorIfUnsafePath((string)$file_relative_path); // {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-PATH-ALWAYS}}} ; disallow absolute, this should be always relative path !
+		self::raiseErrorIfUnsafePath((string)$staticRootPath.$file_relative_path, (bool)$deny_absolute_path); // {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-OR-ABSOLUTE-PATH-BY-STATIC-ROOT-PATH}}}
 		//--
 		if($dont_read_if_overSized === true) { // {{{SYNC-DONT-READ-FILE-IF-SPECIFIC-LEN-AND-OVERSIZED}}}
 			if((int)filesize((string)$staticRootPath.$file_relative_path) > (int)$length) { // if this param is set to TRUE even if the max length was not specified and that is zero stop here !
@@ -4177,11 +4249,16 @@ final class SmartFileSysUtils {
 	 */
 	public static function writeStaticFile(?string $file_relative_path, ?string $contents, bool $skip_check_if_exists=false) : bool {
 		//--
-		if(self::staticFileExists((string)$file_relative_path) === true) {
+		if(!defined('SMART_FRAMEWORK_CHMOD_FILES')) {
+			Smart::log_warning(__METHOD__.' # Skip: A required constant (SMART_FRAMEWORK_CHMOD_FILES) has not been defined ...');
+			return false;
+		} //end if
+		//--
+		if(self::staticFileExists((string)$file_relative_path, true) === true) { // skip cached !
 			if($skip_check_if_exists === true) {
 				return true;
 			} else {
-				$chkContents = (string) self::readStaticFile((string)$file_relative_path);
+				$chkContents = (string) self::readStaticFile((string)$file_relative_path); // no need to skip caching, was checked above via staticFileExists
 				if((string)$chkContents === (string)$contents) {
 					return true;
 				} //end if
@@ -4192,8 +4269,18 @@ final class SmartFileSysUtils {
 		//--
 		$staticRootPath = (string) self::getStaticFilesRootPath();
 		//--
-		self::raiseErrorIfUnsafePath((string)$file_relative_path);
-		self::raiseErrorIfUnsafePath((string)$staticRootPath.$file_relative_path);
+		$deny_absolute_path = true;
+		if((string)$staticRootPath != '') { // {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-OR-ABSOLUTE-PATH-BY-STATIC-ROOT-PATH}}} ; if SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH is non-empty (outside Smart.Framework environment use only), allow absolute paths
+			$deny_absolute_path = false;
+		} //end if
+		//--
+		self::raiseErrorIfUnsafePath((string)$file_relative_path); // {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-PATH-ALWAYS}}} ; disallow absolute, this should be always relative path !
+		self::raiseErrorIfUnsafePath((string)$staticRootPath.$file_relative_path, (bool)$deny_absolute_path); // {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-OR-ABSOLUTE-PATH-BY-STATIC-ROOT-PATH}}}
+		//--
+		if(is_dir((string)$staticRootPath.$file_relative_path)) {
+			Smart::log_warning(__METHOD__.' # Failed to Write the File, it is a Dir: `'.$staticRootPath.$file_relative_path.'`');
+			return false;
+		} //end if
 		//--
 		$result = file_put_contents(
 			(string) $staticRootPath.$file_relative_path,
@@ -4210,12 +4297,205 @@ final class SmartFileSysUtils {
 			Smart::log_warning(__METHOD__.' # Writing the File: `'.$staticRootPath.$file_relative_path.'` has returned an incomplete result, only '.$flen.' bytes were written');
 			return false;
 		} //end if
+		if(!is_file((string)$staticRootPath.$file_relative_path)) {
+			Smart::log_warning(__METHOD__.' # Failed to Write the File, Not Found: `'.$staticRootPath.$file_relative_path.'`');
+			return false;
+		} //end if
 		//--
-		if(defined('SMART_FRAMEWORK_CHMOD_FILES')) {
-			return (bool) chmod((string)$staticRootPath.$file_relative_path, SMART_FRAMEWORK_CHMOD_FILES);
+		// {{{SYNC-DO-NOT-CHECK-FILESIZE-AFTER-FILE-WRITE}}} ; DO NOT CHECK filesize, may fail on busy writes, cost too much in execution on slow or busy file systems because the disk write cache delays ; trust the file_put_contents result and the disk write promise
+		//--
+		if(!is_dir((string)$staticRootPath.$file_relative_path)) { // avoid chmod if it is a dir
+			if(!chmod((string)$staticRootPath.$file_relative_path, SMART_FRAMEWORK_CHMOD_FILES)) {
+				Smart::log_warning(__METHOD__.' # Failed to CHMOD the File: `'.$staticRootPath.$file_relative_path.'`');
+			} //end if
 		} //end if
 		//--
 		return true;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Create a Protected Directory (Folder)
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	public static function createStaticProtectedDir(?string $dir_relative_path, bool $clearStatCache=false) : string {
+		//--
+		$dir_relative_path = (string) trim((string)$dir_relative_path);
+		//--
+		if((string)$dir_relative_path == '') {
+			return 'ERR: Protected Folder is Empty !';
+		} //end if
+		//--
+		// protected paths mostly may start with a `#` but not always true, there are situations like creating sub-protected folders, ex: `tmp/#protected`
+		//--
+		if((string)(string)$dir_relative_path == '#') {
+			return 'ERR: Protected Folder is Invalid !';
+		} //end if
+		if((string)(string)$dir_relative_path == '#/') {
+			return 'ERR: Protected Folder is Invalid !';
+		} //end if
+		//--
+		$dir_relative_path = (string) trim((string)$dir_relative_path, '/').'/';
+		if((string)substr((string)$dir_relative_path, -1, 1) != '/') {
+			return 'ERR: Protected Folder Mising Slash Suffix !';
+		} //end if
+		if((string)(string)$dir_relative_path == '/') {
+			return 'ERR: Protected Folder is Absolute Root !';
+		} //end if
+		//--
+		$staticRootPath = (string) self::getStaticFilesRootPath();
+		//--
+		$deny_absolute_path = true;
+		if((string)$staticRootPath != '') { // {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-OR-ABSOLUTE-PATH-BY-STATIC-ROOT-PATH}}} ; if SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH is non-empty (outside Smart.Framework environment use only), allow absolute paths
+			$deny_absolute_path = false;
+		} //end if
+		//--
+		if( // both must be allowed to be verified as protected paths, in the case that $staticRootPath is empty, second check will be on $dir_relative_path ...
+			(self::checkIfSafePath((string)$dir_relative_path, true, true) != 1) // {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-PATH-ALWAYS}}} ; disallow absolute, this should be always relative path !
+			OR
+			(self::checkIfSafePath((string)$staticRootPath.$dir_relative_path, (bool)$deny_absolute_path, true) != 1) // {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-OR-ABSOLUTE-PATH-BY-STATIC-ROOT-PATH}}}
+		) {
+			return 'ERR: Protected Folder path is Unsafe !';
+		} //end if
+		//--
+		if($clearStatCache === true) {
+			clearstatcache(true, (string)$staticRootPath.$dir_relative_path); // this should be used just for `#db/` which is sensitive on security, not for sub-folders
+		} //end if
+		//--
+		if(is_dir((string)$staticRootPath.$dir_relative_path)) {
+			//--
+			// OK, dir exists
+			//--
+		} elseif(
+			(!file_exists((string)$staticRootPath.$dir_relative_path))
+			AND
+			(!is_link((string)$staticRootPath.$dir_relative_path))
+		) { // {{{SYNC-SF-PATH-EXISTS}}}
+			//--
+			@mkdir((string)$staticRootPath.$dir_relative_path, SMART_FRAMEWORK_CHMOD_DIRS, true); // do not test mkdir, may return false if folder exists
+			if(is_dir((string)$staticRootPath.$dir_relative_path) !== true) {
+				return 'ERR: Protected Folder path Failed to be Created !';
+			} //end if
+			//--
+			$dirSegments = (array) explode('/', (string)$dir_relative_path); // use only the relative path to get elements, DO NOT WANT TO CHMOD THE REST OF THE PATH !
+			$crrDir = '';
+			for($i=0; $i<count($dirSegments); $i++) { // fix: to chmod all dir segments (in PHP the mkdir chmod is applied only to the last dir segment if recursive mkdir ...)
+				$dirSegments[$i] = (string) trim((string)$dirSegments[$i]);
+				if((string)$dirSegments[$i] != '') {
+					if( // {{{SYNC-RECURSIVE-DIR_CHMOD_SAFETY-CHECKS}}}
+						((string)$dirSegments[$i] != '/')
+						AND
+						((string)$dirSegments[$i] != '.')
+						AND
+						((string)$dirSegments[$i] != '..')
+						AND
+						(Smart::str_contains((string)$dirSegments[$i], '/') == false)
+					) {
+						$crrDir .= (string) $dirSegments[$i].'/';
+						if(
+							(is_dir((string)$staticRootPath.$crrDir)) // must be dir
+							AND
+							(!is_link((string)$staticRootPath.$crrDir)) // and not a link
+						) {
+							if(!chmod((string)$staticRootPath.$crrDir, SMART_FRAMEWORK_CHMOD_DIRS)) {
+								Smart::log_warning(__METHOD__.' # Failed to CHMOD the Dir: `'.$staticRootPath.$crrDir.'`');
+							} //end if
+						} //end if
+					} else {
+						Smart::log_warning(__METHOD__.' # Skip to CHMOD an Invalid Segment ['.$dirSegments[$i].'] for Dir: `'.$staticRootPath.$crrDir.'`');
+					} //end if
+				} //end if
+			} //end for
+			//--
+		} //end if
+		if(!is_writable((string)$staticRootPath.$dir_relative_path)) {
+			return 'ERR: Protected Folder is Not Writable !';
+		} //end if
+		//--
+		$fpathHtAccess = (string) $dir_relative_path.'.htaccess';
+		if(is_dir((string)$staticRootPath.$fpathHtAccess)) {
+			return 'ERR: Protected Folder access-protection Write Failed, is a Dir !';
+		} //end if
+		$wrContentHtAccess = '### Smart.Framework // '.__METHOD__.' @ HtAccess Protected Folder :: `'.$dir_relative_path.'` ###'."\n".SMART_FRAMEWORK_HTACCESS_NOINDEXING.SMART_FRAMEWORK_HTACCESS_FORBIDDEN."\n".'### END ###'."\n";
+		$doRwHtAccess = true;
+		if(is_file((string)$staticRootPath.$fpathHtAccess)) {
+			$rdContentHtAccess = file_get_contents(
+				(string) $staticRootPath.$fpathHtAccess,
+				false, // don't use include path
+				null, // context resource
+				0 // start from begining (negative offsets still don't work)
+				// max length to read ; don't use this parameter here ...
+			);
+			if($rdContentHtAccess !== false) {
+				if((string)$wrContentHtAccess === (string)$rdContentHtAccess) {
+					$doRwHtAccess = false;
+				} //end if
+			} //end if
+		} //end if
+		if($doRwHtAccess !== false) {
+			$resultHtAccess = file_put_contents(
+				(string) $staticRootPath.$fpathHtAccess,
+				(string) $wrContentHtAccess,
+				LOCK_EX
+			);
+			if($resultHtAccess === false) { // fatal, .htaccess must be exist
+				return 'ERR: Protected Folder access-protection Write Failed !';
+			} //end if
+			if($resultHtAccess !== (int)strlen((string)$wrContentHtAccess)) { // fatal, .htaccess must be exist
+				return 'ERR: Protected Folder access-protection Write Invalid Length !';
+			} //end if
+			if(!is_file((string)$staticRootPath.$fpathHtAccess)) { // fatal, .htaccess must be exist
+				return 'ERR: Protected Folder access-protection File Not Found !';
+			} //end if
+			// {{{SYNC-DO-NOT-CHECK-FILESIZE-AFTER-FILE-WRITE}}} ; DO NOT CHECK filesize, may fail on busy writes, cost too much in execution on slow or busy file systems because the disk write cache delays ; trust the file_put_contents result and the disk write promise
+			if(!is_dir((string)$staticRootPath.$fpathHtAccess)) { // avoid chmod if it is a dir
+				if(!chmod((string)$staticRootPath.$fpathHtAccess, SMART_FRAMEWORK_CHMOD_FILES)) { // non-fatal, just a chmod
+					Smart::log_warning(__METHOD__.' # Failed to CHMOD the File: `'.$staticRootPath.$fpathHtAccess.'`');
+				} //end if
+			} //end if
+		} //end if
+		//--
+		$fpathIndexHtm = (string) $dir_relative_path.'index.html';
+		if(is_dir((string)$staticRootPath.$fpathIndexHtm)) {
+			return 'ERR: Protected Folder index-protection Write Failed, is a Dir !';
+		} //end if
+		$doRwIndexHtm = true;
+		if(
+			(is_file((string)$staticRootPath.$fpathIndexHtm))
+			AND
+			((int)filesize((string)$staticRootPath.$fpathIndexHtm) <= 0)
+		) {
+			$doRwIndexHtm = false;
+		} //end if
+		if($doRwIndexHtm !== false) {
+			$resultIndexHtm = file_put_contents(
+				(string) $staticRootPath.$fpathIndexHtm,
+				'', // empty contents
+				LOCK_EX
+			);
+			if($resultIndexHtm === false) { // non-fatal, there is already an htaccess
+				Smart::log_warning(__METHOD__.' # Protected Folder index-protection Write Failed on File: '.$staticRootPath.$fpathIndexHtm);
+				return '';
+			} //end if
+			if(!is_file((string)$staticRootPath.$fpathIndexHtm)) { // non-fatal, there is already an htaccess
+				Smart::log_warning(__METHOD__.' # Protected Folder index-protection File Not Found: '.$staticRootPath.$fpathIndexHtm);
+				return '';
+			} //end if
+			if(!is_dir((string)$staticRootPath.$fpathIndexHtm)) { // avoid chmod if it is a dir
+				if(!chmod((string)$staticRootPath.$fpathIndexHtm, SMART_FRAMEWORK_CHMOD_FILES)) { // non-fatal, there is already an htaccess
+					Smart::log_warning(__METHOD__.' # Failed to CHMOD the File: `'.$staticRootPath.$fpathIndexHtm.'`');
+					return '';
+				} //end if
+			} //end if
+		} //end if
+		//--
+		return '';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -4238,69 +4518,37 @@ final class SmartFileSysUtils {
 			return '';
 		} //end if
 		//--
-		if((string)trim((string)SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH) == '') {
+		$staticRootPath = (string) trim((string)SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH);
+		//--
+		if((string)$staticRootPath == '') {
 			return '';
 		} //end if
 		//--
-		if((string)trim((string)SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH) == '/') {
+		if((string)$staticRootPath == '/') {
 			Smart::raise_error(
-				__METHOD__.' # The Static Root Path is disallowed: `/`',
-				'Smart.Framework / FileSystem Utils / [SECURITY]: DISSALOWED ROOT PATH !' // msg to display
+				__METHOD__.' # The Static Root Path is disallowed as: `/`',
+				'Smart.Framework / FileSystem Utils / [SECURITY]: INVALID ROOT PATH, ROOT SLASH !' // msg to display
 			);
 			return '';
 		} //end if
 		//--
-		if((string)substr((string)trim((string)SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH), -1, 1) != '/') {
+		if((string)substr((string)$staticRootPath, -1, 1) != '/') {
 			Smart::raise_error(
-				__METHOD__.' # The Static Root Path is invalid: `'.SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH.'`',
-				'Smart.Framework / FileSystem Utils / [SECURITY]: INVALID ROOT PATH !' // msg to display
+				__METHOD__.' # The Static Root Path is invalid, trailing slash missing: `'.SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH.'`',
+				'Smart.Framework / FileSystem Utils / [SECURITY]: INVALID ROOT PATH, TRAILING SLASH !' // msg to display
 			);
 			return '';
 		} //end if
 		//--
-		return (string) trim((string)SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Return the MAXIMUM allowed Upload Size
-	 *
-	 * @return INTEGER								:: the Max Upload Size in Bytes
-	 */
-	public static function maxUploadFileSize() : int {
-		//--
-		$inival = (string) trim((string)ini_get('upload_max_filesize'));
-		if((string)$inival == '') {
-			return 0;
+		if(self::testIfProtectedPath((string)$staticRootPath) !== 1) {
+			Smart::raise_error(
+				__METHOD__.' # The Static Root Path is invalid, cannot be protected (should not start with #): `'.SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH.'`',
+				'Smart.Framework / FileSystem Utils / [SECURITY]: INVALID ROOT PATH, PROTECTED PATH !' // msg to display
+			);
+			return '';
 		} //end if
 		//--
-		$last = (string) strtoupper((string)substr((string)$inival, -1, 1));
-		$value = (int) intval((string)$inival);
-		//--
-		if((string)$last === 'K') { // kilo
-			$value *= 1000;
-		} elseif((string)$last === 'M') { // mega
-			$value *= 1000 * 1000;
-		} elseif((string)$last === 'G') { // giga
-			$value *= 1000 * 1000 * 1000;
-		} elseif((string)$last === 'T') { // tera
-			$value *= 1000 * 1000 * 1000 * 1000;
-		} elseif((string)$last === 'P') { // peta
-			$value *= 1000 * 1000 * 1000 * 1000 * 1000;
-		/* the below unit of measures may overflow the max 64-bit integer value with higher values set in php.ini ... anyway there is no case to upload such large files ...
-		} elseif((string)$last === 'E') { // exa
-			$value *= 1000 * 1000 * 1000 * 1000 * 1000 * 1000;
-		} elseif((string)$last === 'Z') { // zetta
-			$value *= 1000 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000;
-		} elseif((string)$last === 'Y') { // yotta
-			$value *= 1000 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000;
-		*/
-		} //end if else
-		//--
-		return (int) Smart::format_number_int((int)$value, '+');
+		return (string) $staticRootPath;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -4441,7 +4689,7 @@ final class SmartFileSysUtils {
 		//--
 		$y_path = (string) $y_path;
 		//--
-		if((string)substr((string)trim((string)$y_path), 0, 1) == '#') {
+		if((string)substr((string)trim((string)$y_path), 0, 1) == '#') { // {{{SYNC-PROTECTED-PATH-PREFIX}}}
 			return 0;
 		} //end if
 		//--

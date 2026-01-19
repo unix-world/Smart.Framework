@@ -11,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 
-//-- r.20221225
+//-- r.20260118
 // #PLUGINS# :: they can be loaded always (require) or as dependency injection (require_once)
 //--
 require_once('lib/core/plugins/lib_robot.php'); 			// smart robot
@@ -19,8 +19,6 @@ require_once('lib/core/plugins/lib_robot.php'); 			// smart robot
 require_once('lib/core/plugins/lib_mail_utils.php');		// mail utils (verify, parse)
 //--
 require_once('lib/core/plugins/lib_db_dba.php');			// dba db connector
-require_once('lib/core/plugins/lib_db_sqlite.php');			// sqlite3 db connector
-//--
 require_once('lib/core/plugins/lib_pcache_dba.php'); 		// dba persistent cache
 require_once('lib/core/plugins/lib_pcache_sqlite.php'); 	// sqlite3 persistent cache
 //--

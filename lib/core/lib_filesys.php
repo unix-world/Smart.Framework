@@ -58,7 +58,7 @@ if(!defined('SMART_FRAMEWORK_HTACCESS_NOINDEXING')) {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be mostly safe ; Reads can also use optional shared locking if needed
  *
  * @depends 	classes: Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_CHMOD_DIRS, SMART_FRAMEWORK_CHMOD_FILES
- * @version 	v.20260103
+ * @version 	v.20260118
  * @package 	Application:FileSystem
  *
  */
@@ -1435,12 +1435,24 @@ final class SmartFileSystem {
 					for($i=0; $i<count($dir_elements); $i++) { // fix: to chmod all dir segments (in PHP the mkdir chmod is applied only to the last dir segment if recursive mkdir ...)
 						$dir_elements[$i] = (string) trim((string)$dir_elements[$i]);
 						if((string)$dir_elements[$i] != '') {
-							$tmp_crr_dir .= (string) SmartFileSysUtils::addPathTrailingSlash((string)$dir_elements[$i]);
-							if((string)$tmp_crr_dir != '') {
-								if(self::is_type_dir((string)$tmp_crr_dir)) {
-									self::fix_dir_chmod((string)$tmp_crr_dir); // apply separate chmod to each segment
+							if( // {{{SYNC-RECURSIVE-DIR_CHMOD_SAFETY-CHECKS}}}
+								((string)$dir_elements[$i] != '/')
+								AND
+								((string)$dir_elements[$i] != '.')
+								AND
+								((string)$dir_elements[$i] != '..')
+								AND
+								(Smart::str_contains((string)$dir_elements[$i], '/') == false)
+							) {
+								$tmp_crr_dir .= (string) SmartFileSysUtils::addPathTrailingSlash((string)$dir_elements[$i]);
+								if((string)$tmp_crr_dir != '') {
+									if(self::is_type_dir((string)$tmp_crr_dir)) {
+										self::fix_dir_chmod((string)$tmp_crr_dir); // apply separate chmod to each segment
+									} //end if
 								} //end if
-							} //end if
+							} else {
+								Smart::log_warning(__METHOD__.' # Skip to CHMOD ('.SMART_FRAMEWORK_CHMOD_DIRS.') an Unsafe Directory Segment ['.$dir_elements[$i].']: '.$tmp_crr_dir);
+							} //end if else
 						} //end if
 					} //end for
 				} else {
@@ -1983,85 +1995,6 @@ final class SmartFileSystem {
 		} //end if
 		//--
 		return array(); // this means no differences
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//##### NON-PUBLICS
-
-
-	/**
-	 * @access 		private
-	 * @internal
-	 */
-	public const APP_DB_FOLDER = '#db/'; // {{{SYNC-APP-DB-FOLDER}}}
-
-
-	//================================================================
-	/**
-	 * Create a Protected Directory (Folder)
-	 *
-	 * @access 		private
-	 * @internal
-	 *
-	 */
-	public static function create_protected_dir(?string $protected_dir_path) : string {
-		//--
-		if((string)trim((string)$protected_dir_path) == '') {
-			return 'ERR: Protected Folder not defined !';
-		} //end if
-		//--
-		if(SmartFileSysUtils::checkIfSafePath((string)$protected_dir_path, true, true) != 1) { // deny absolute paths, allow protected paths
-			return 'ERR: Protected Folder path is unsafe (1) !';
-		} //end if
-		//--
-		$protected_dir_path = (string) SmartFileSysUtils::addPathTrailingSlash((string)$protected_dir_path);
-		if(SmartFileSysUtils::checkIfSafePath((string)$protected_dir_path, true, true) != 1) { // deny absolute paths, allow protected paths
-			return 'ERR: Protected Folder path is unsafe (2) !';
-		} //end if
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$protected_dir_path, true, true); // deny absolute path access ; allow protected path access (starting with #)
-		//--
-		if(!self::is_type_dir((string)$protected_dir_path)) {
-			self::dir_create((string)$protected_dir_path, true, true); // allow protected paths
-		} //end if
-		if(!self::is_type_dir((string)$protected_dir_path)) {
-			return 'ERR: Protected Folder does not exists !';
-		} //end if
-		if(!self::have_access_write((string)$protected_dir_path)) {
-			return 'ERR: Protected Folder is not writable !';
-		} //end if
-		//--
-		$write_check_compare = 'yes';
-		if((string)$protected_dir_path != (string)self::APP_DB_FOLDER) { // {{{SYNC-APP-DB-FOLDER}}}
-			$write_check_compare = 'no'; // if different folder than APP_DB_FOLDER do not overwrite the htaccess file, it may be different
-		} //end if
-		if((int)self::write_if_not_exists(
-			(string)$protected_dir_path.'.htaccess', // file name
-			(string)'### Smart.Framework // '.__FUNCTION__.' @ HtAccess Protected Folder :: `'.$protected_dir_path.'` ###'."\n".SMART_FRAMEWORK_HTACCESS_NOINDEXING.SMART_FRAMEWORK_HTACCESS_FORBIDDEN."\n".'### END ###', // file content
-			(string) $write_check_compare, // check compare will be yes just on APP_DB_FOLDER
-			true // allow protected paths
-		) != 1) {
-			return 'ERR: Protected Folder access-protection write failed !';
-		} //end if
-		if(!self::is_type_file((string)$protected_dir_path.'.htaccess')) {
-			return 'ERR: Protected Folder access-protection not found !';
-		} //end if
-		if((int)self::get_file_size((string)$protected_dir_path.'.htaccess') <= 0) {
-			return 'ERR: Protected Folder access-protection size is zero !';
-		} //end if
-		//--
-		if(!self::is_type_file((string)$protected_dir_path.'index.html')) {
-			SmartFileSysUtils::raiseErrorIfUnsafePath((string)$protected_dir_path.'index.html', true, true); // deny absolute path access ; allow protected path access (starting with #)
-			if(self::write((string)$protected_dir_path.'index.html', '', 'w', true) != 1) { // allow protected paths
-				return 'ERR: Protected Folder index-protection write failed !';
-			} //end if
-			if(!self::is_type_file((string)$protected_dir_path.'index.html')) {
-				return 'ERR: Protected Folder index-protection not found !';
-			} //end if
-		} //end if
-		//--
-		return '';
 		//--
 	} //END FUNCTION
 	//================================================================

@@ -18,7 +18,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* Smart::
 //	* SmartFileSysUtils::
 // 	* SmartHashCrypto::
-//	* SmartFileSystem::
 //	* SmartComponents::
 // DEPENDS-EXT: PHP DBA Extension
 //======================================================
@@ -47,8 +46,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @access 		PUBLIC
- * @depends 	extensions: PHP DBA Extension ; classes: Smart, SmartEnvironment, SmartHashCrypto, SmartComponents, SmartFileSysUtils, SmartFileSystem
- * @version 	v.20250107
+ * @depends 	extensions: PHP DBA Extension ; classes: Smart, SmartEnvironment, SmartHashCrypto, SmartFileSysUtils, (optional) SmartComponents
+ * @version 	v.20260118
  * @package 	Application:Plugins:Database:Dba
  *
  */
@@ -81,7 +80,7 @@ final class SmartDbaDb {
 	 * @param BOOLEAN $y_fatal_err :: *OPTIONAL* If Errors are Fatal or Not ... ; Set this parameter to TRUE if you want to Raise a fatal error on DBA errors ; otherwise default is FALSE and will ignore DBA errors but just log them as warnings (this is the wanted behaviour on a production server ...)
 	 * @param FLOAT $y_debug_exch_slowtime :: *OPTIONAL* The Debug Slow Time in microseconds to Record slow Queries ; if > 0 will use this, otherwise will use the value from configs
 	 */
-	public function __construct($file, $y_description='DEFAULT', $y_fatal_err=false, $y_debug_exch_slowtime=0) {
+	public function __construct(?string $file, ?string $y_description='DEFAULT', ?bool $y_fatal_err=false, ?int $y_debug_exch_slowtime=0) {
 		//--
 		$this->err = false;
 		//--
@@ -1051,7 +1050,7 @@ final class SmartDbaDb {
 
 
 	//======================================================
-	private function open($truncate=false) {
+	private function open(?bool $truncate=false) {
 		//--
 		if($this->err !== false) {
 			return false;
@@ -1074,26 +1073,36 @@ final class SmartDbaDb {
 			return true;
 		} //end if
 		//--
+		$staticRootPath = (string) SmartFileSysUtils::getStaticFilesRootPath();
+		//--
+		$deny_absolute_path = true;
+		if((string)$staticRootPath != '') { // {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-OR-ABSOLUTE-PATH-BY-STATIC-ROOT-PATH}}} ; if SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH is non-empty (outside Smart.Framework environment use only), allow absolute paths
+			$deny_absolute_path = false;
+		} //end if
+		//--
 		if(SmartFileSysUtils::checkIfSafePath((string)$this->file, true, true) != 1) { // deny absolute path access ; allow protected path access (starting with #)
 			$this->error('OPEN', 'ERROR: DB path is invalid !');
 			return false;
 		} //end if
+		if(SmartFileSysUtils::checkIfSafePath((string)$staticRootPath.$this->file, (bool)$deny_absolute_path, true) != 1) { // allow absolute path access ; allow protected path access (starting with #)
+			$this->error('OPEN', 'ERROR: DB full path is invalid !');
+			return false;
+		} //end if
 		//--
-		if(SmartFileSystem::is_type_dir((string)$this->file)) {
+		if(is_dir((string)$staticRootPath.$this->file)) {
 			$this->error('OPEN', 'ERROR: DB path is a directory !');
 			return false;
 		} //end if
 		//--
 		$file_of_db = (string) SmartFileSysUtils::extractPathFileName((string)$this->file);
-	//	$dir_of_db = (string) SmartFileSysUtils::extractPathDir((string)$this->file);
-		$dir_of_db = (string) Smart::dir_name((string)$this->file); // sync with SQLite, this method is better as if empty, the checks are below in create
+		$dir_of_db  = (string) Smart::dir_name((string)$this->file); // sync with SQLite, this method is better as if empty, the checks are below in create
 		//--
 		if(SmartFileSysUtils::checkIfSafeFileOrDirName((string)$file_of_db, true, true) != 1) {
 			$this->error('OPEN', 'ERROR: DB file name is unsafe !');
 			return false;
 		} //end if
 		//--
-		$err = (string) SmartFileSystem::create_protected_dir((string)$dir_of_db); // {{{SYNC-APP-DB-FOLDER}}} ; this checks also if safe path of dir
+		$err = (string) SmartFileSysUtils::createStaticProtectedDir((string)$dir_of_db); // {{{SYNC-APP-DB-FOLDER}}} ; this checks also if safe path of dir
 		if((string)$err != '') {
 			$this->error('OPEN', 'ERROR: DB path creation failed # '.$err);
 			return;
@@ -1105,8 +1114,12 @@ final class SmartDbaDb {
 			return false;
 		} //end if
 		//--
-	//	$the_abs_path_to_db = (string) $this->file;
-		$the_abs_path_to_db = (string) rtrim((string)Smart::real_path((string)$dir_of_db), '/').'/'.$file_of_db; // on Windows requires an absolute path to work ; detect as: ((string)DIRECTORY_SEPARATOR == '\\')
+		$the_abs_path_to_db = (string) $this->file; // will not work, requires absolute, but avoid be empty
+		if((string)$staticRootPath != '') {
+			$the_abs_path_to_db = (string) $staticRootPath.$this->file;
+		} else {
+			$the_abs_path_to_db = (string) rtrim((string)Smart::real_path((string)$dir_of_db), '/').'/'.$file_of_db; // on Windows requires an absolute path to work ; detect as: ((string)DIRECTORY_SEPARATOR == '\\')
+		} //end if
 		if(!SmartFileSysUtils::checkIfSafePath((string)$the_abs_path_to_db, false, true)) { // allow both: absolute and protected paths here
 			$this->error('OPEN', 'ERROR: DB unsafe absolute path: `'.$the_abs_path_to_db.'`'); // this will be an absolute path, bust still must be safe
 			return false;
@@ -1292,7 +1305,7 @@ final class SmartDbaDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP DBA Extension ; classes: Smart
- * @version 	v.20250107
+ * @version 	v.20260118
  * @package 	Application:Plugins:Database:Dba
  *
  */

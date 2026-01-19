@@ -3,7 +3,7 @@
 // bootstrap/autoload Smart.Framework base classes for Vendor/Composer
 // license: BSD
 // (c) 2022-present unix-world.org
-// r.20250214.2358
+// r.20260118.2358
 
 // ####### DO NOT MODIFY THIS FILE. IT WILL BE REWRITTEN ON ANY UPDATE OF vendor/unixman/smart-framework-base
 // how to install: `php composer.phar require unixman/smart-framework-base @dev`
@@ -68,14 +68,18 @@ $configs['sqlite'] = [];
 $configs['sqlite']['timeout'] 		= 60;									// connection timeout
 $configs['sqlite']['slowtime'] 		= 0.0025;								// slow query time (for debugging)
 
+// dba
+$configs['dba']['handler'] 			= '@autoselect'; 						// @autoselect or specific: gdbm, qdbm, db4
+$configs['dba']['slowtime'] 		= 0.0025;								// slow query time (for debugging)
+
 // example of loading a model
 //require_once(__DIR__.'/../app/Models/MyModel.php');
 
 */
 
-if(version_compare((string)phpversion(), '7.4.33') < 0) { // check for PHP 7.4 or later
+if(version_compare((string)phpversion(), '8.1.0') < 0) { // check for PHP 8.1 or later
 	@http_response_code(500);
-	die('Smart.Framework: PHP Runtime not supported: '.phpversion().' !'.'<br>PHP versions to run Smart.Framework libs are: 7.4 / 8.0 / 8.1 / 8.2 / 8.3 / 8.4 / 8.5 / 8.6 or later');
+	die('Smart.Framework: PHP Runtime not supported: '.phpversion().' !'.'<br>PHP versions to run this software are: 8.1 / 8.2 / 8.3 / 8.4 / 8.5 or later');
 } //end if
 
 setlocale(LC_ALL, 'C'); // DON'T CHANGE THIS !!! THIS IS COMPATIBLE WILL ALL UTF-8 UNICODE CONTEXTS !!!
@@ -163,7 +167,6 @@ function autoload__SmartFrameworkVendorBase($classname) {
 		case 'SmartHashCrypto':
 			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/lib_cryptohs.php'); // smart crypto (utils) hash
 			break;
-		case 'SmartCsrf':
 		case 'SmartDhKx':
 		case 'SmartCryptoCiphersThreefishCBC':
 		case 'SmartCryptoCiphersTwofishCBC':
@@ -171,7 +174,15 @@ function autoload__SmartFrameworkVendorBase($classname) {
 		case 'SmartCryptoCiphersOpenSSL':
 		case 'SmartCryptoCiphersHashCryptOFB':
 		case 'SmartCipherCrypto':
-			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/lib_cryptoas.php'); // smart crypto (utils) symmetric and asymmetric
+			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/lib_cryptoss.php'); // smart crypto (utils) symmetric
+			break;
+		case 'SmartCsrf':
+		case 'SmartCryptoEddsaSodium':
+		case 'SmartCryptoEcdsaAsn1Sig':
+		case 'SmartInterfaceCryptoAsOpenSSL':
+		case 'SmartAbstractCryptoAsOpenSSL':
+		case 'SmartCryptoEcdsaOpenSSL':
+			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/lib_cryptoas.php'); // smart crypto (utils) asymmetric
 			break;
 		case 'SmartZLib':
 		case 'SmartGZip':
@@ -236,6 +247,11 @@ function autoload__SmartFrameworkVendorBase($classname) {
 		case 'SmartMailerMimeDecode':
 			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/plugins/lib_mail_decode.php'); // mail message decoder (mime)
 			break;
+		case 'SmartSQliteFunctions':
+		case 'SmartSQliteUtilDb':
+		case 'SmartSQliteDb':
+			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/plugins/lib_db_sqlite.php'); // sqlite3 db connector
+			break;
 		case 'SmartRedisDb':
 			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/plugins/lib_db_redis.php'); // redis db connector
 			break;
@@ -281,18 +297,18 @@ spl_autoload_register('autoload__SmartFrameworkVendorBase', true, true); // thro
 //--
 function autoload__SmartFrameworkVendorModClasses($classname) {
 	//--
-	$classname = (string) $classname;
+	$classname = (string) strval($classname);
 	//--
-	if((strpos($classname, '\\') === false) OR (!preg_match('/^[a-zA-Z0-9_\\\]+$/', $classname))) { // if have no namespace or not valid character set
+	if((strpos((string)$classname, '\\') === false) OR (!preg_match('/^[a-zA-Z0-9_\\\]+$/', (string)$classname))) { // if have no namespace or not valid character set
 		return;
 	} //end if
 	//--
-	if((strpos($classname, 'SmartModExtLib\\') === false) AND (strpos($classname, 'SmartModDataModel\\') === false)) { // must start with this namespaces only
+	if((strpos((string)$classname, 'SmartModExtLib\\') === false) AND (strpos((string)$classname, 'SmartModDataModel\\') === false)) { // must start with this namespaces only
 		return;
 	} //end if
 	//--
-	$parts = (array) explode('\\', $classname);
-	if(count($parts) != 3) { // need for [0], [1] and [2]
+	$parts = (array) explode('\\', (string)$classname);
+	if((int)count($parts) != 3) { // need for [0], [1] and [2]
 		return;
 	} //end if
 	if((string)trim((string)$parts[0]) == '') { // type

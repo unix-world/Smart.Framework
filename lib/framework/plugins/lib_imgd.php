@@ -74,7 +74,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends     PHP GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring ; classes: Smart, SmartFileSysUtils
- * @version 	v.20251215
+ * @version 	v.20260118
  * @package 	Plugins:Image
  *
  */
@@ -190,11 +190,7 @@ final class SmartImageGdProcess {
 	public function __destruct() {
 
 		//--
-		if($this->testIfValidImg($this->img)) {
-			@imagedestroy($this->img);
-		} //end if
-		//--
-		$this->img = null;
+		$this->img = null; // imagedestroy is deprecated and has no effect since PHP 8.0
 		//--
 
 	} //END FUNCTION
@@ -603,11 +599,9 @@ final class SmartImageGdProcess {
 		//--
 
 		//-- finalize
-		@imagedestroy($this->img);
-		$this->img = null;
+		$this->img = null; // imagedestroy is deprecated and has no effect since PHP 8.0
 		if($this->testIfValidImg($this->img)) {
-			@imagedestroy($imgnew);
-			$imgnew = null;
+			$imgnew = null; // imagedestroy is deprecated and has no effect since PHP 8.0
 			$this->_debugMsg((string)__METHOD__.' :: '.'Failed to Destroy Original Image Resource for Resampling ...');
 			$this->status = false;
 			return false;
@@ -624,8 +618,7 @@ final class SmartImageGdProcess {
 		//--
 		$this->img = @imagecreatetruecolor($resize_width, $resize_height);
 		if(!$this->testIfValidImg($this->img)) {
-			@imagedestroy($imgnew);
-			$imgnew = null;
+			$imgnew = null; // imagedestroy is deprecated and has no effect since PHP 8.0
 			$this->img = null; // reset back !
 			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image Export Resource');
 			$this->status = false;
@@ -633,8 +626,7 @@ final class SmartImageGdProcess {
 		} //end if
 		@imagefill($this->img, 0, 0, @imagecolorallocate($this->img, (int)$bg_color_rgb[0], (int)$bg_color_rgb[1], (int)$bg_color_rgb[2])); // fill with bg again (needed after resampling)
 		@imagecopy($this->img, $imgnew, $center_w, $center_h, 0, 0, $newImgW, $newImgH); // save back must clone, as it is resource ; not work direct as: $this->img = $imgnew;
-		@imagedestroy($imgnew);
-		$imgnew = null;
+		$imgnew = null; // imagedestroy is deprecated and has no effect since PHP 8.0
 		if(!$this->testIfValidImg($this->img)) {
 			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image Export Data');
 			$this->status = false;
@@ -767,8 +759,7 @@ final class SmartImageGdProcess {
 
 		//--
 		@imagecopy($this->img, $wtm_img, $gvtyX, $gvtyY, 0, 0, $wtm_width, $wtm_height);
-		@imagedestroy($wtm_img);
-		$wtm_img = null;
+		$wtm_img = null; // imagedestroy is deprecated and has no effect since PHP 8.0
 		if(!$this->testIfValidImg($this->img)) {
 			$this->img = null; // reset back !
 			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image+Watermark Export Data');

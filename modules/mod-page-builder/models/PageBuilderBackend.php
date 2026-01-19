@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20250714
+	// v.20260118
 
 
 	private static $db = null;
@@ -37,7 +37,7 @@ final class PageBuilderBackend {
 			//--
 			if(self::$db === null) {
 				//--
-				$sqlitedbfile = '#db/page-builder.sqlite';
+				$sqlitedbfile = (string) \SmartFileSysUtils::APP_DB_FOLDER.'page-builder.sqlite'; // {{{SYNC-APP-DB-FOLDER}}}
 				//--
 				if(!\SmartFileSysUtils::checkIfSafePath((string)$sqlitedbfile, true, true)) { // dissalow absolute ; allow protected
 					\Smart::raise_error(

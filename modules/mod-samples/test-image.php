@@ -134,8 +134,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		ob_start();
 		imagepng($im); // this function will echo, but in this controller type it is not allowed direct echo, so we need to capture the output of this echo !
 		$png = ob_get_contents();
-		imagedestroy($im);
-		$im = null;
+		$im = null; // imagedestroy is deprecated and has no effect since PHP 8.0
 		ob_end_clean();
 		//--
 		if((string)$png == '') {
@@ -222,8 +221,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		imagejpeg($im, null, 100); // direct echo
 		//--
 		ob_start(); // avoid echo warnings or errors !
-		imagedestroy($im);
-		$im = null;
+		$im = null; // imagedestroy is deprecated and has no effect since PHP 8.0
 		ob_end_clean();
 		//--
 

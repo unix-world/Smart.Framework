@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210526
+ * @version 	v.20260118
  *
  */
 final class TestUnitDbaDB {
@@ -69,7 +69,7 @@ final class TestUnitDbaDB {
 		//--
 
 		//--
-		$dba = new \SmartDbaDb('tmp/testunit.dba', (string)__CLASS__);
+		$dba = new \SmartDbaDb('tmp/#test-db/testunit.dba', (string)__CLASS__); // {{{SYNC-TMP-TEST-DB-PATH}}}
 		//--
 		$dbPath = (string) $dba->getDbRealPath();
 		//--

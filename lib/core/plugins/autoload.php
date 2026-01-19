@@ -11,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 
-//-- r.20221225
+//-- r.20260118
 // #PLUGINS# :: they are loaded via Dependency Injection
 //--
 /**
@@ -37,15 +37,10 @@ function autoload__SmartFrameworkCorePlugins($classname) {
 		case 'SmartMailerUtils':
 			require_once('lib/core/plugins/lib_mail_utils.php');		// mail utils (send, verify, parse)
 			break;
-		//-- db drivers
+		//-- db
 		case 'SmartDbaUtilDb':
 		case 'SmartDbaDb':
 			require_once('lib/core/plugins/lib_db_dba.php');			// dba db connector
-			break;
-		case 'SmartSQliteFunctions':
-		case 'SmartSQliteUtilDb':
-		case 'SmartSQliteDb':
-			require_once('lib/core/plugins/lib_db_sqlite.php');			// sqlite3 db connector
 			break;
 		//-- persistent cache
 		case 'SmartDbaPersistentCache':

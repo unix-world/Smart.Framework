@@ -11,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 
-//-- r.20221225
+//-- r.20260118
 // #PLUGINS# :: they are loaded via Dependency Injection
 //--
 /**
@@ -65,6 +65,12 @@ function autoload__SmartFrameworkPlugins($classname) {
 		case 'SmartMailerMimeExtract':
 		case 'SmartMailerMimeDecode':
 			require_once('lib/framework/plugins/lib_mail_decode.php'); 		// mail message decoder (mime)
+			break;
+		//--
+		case 'SmartSQliteFunctions':
+		case 'SmartSQliteUtilDb':
+		case 'SmartSQliteDb':
+			require_once('lib/framework/plugins/lib_db_sqlite.php');		// sqlite3 db connector
 			break;
 		//--
 		case 'SmartRedisDb':

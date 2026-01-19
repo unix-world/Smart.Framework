@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqOauth2 {
 
 	// ->
-	// v.20250711
+	// v.20260118
 
 	private $db;
 	private $userId;
@@ -57,7 +57,7 @@ final class SqOauth2 {
 			\Smart::raise_error(__METHOD__.' # Failed to get a valid Authenticated UserName Valid Path !');
 			return;
 		} //end if
-		$db_path = '#db/'.$db_pfx.'/oauth2-'.\SmartHashCrypto::safesuffix('Mod.OAuth2').'.sqlite';
+		$db_path = (string) \SmartFileSysUtils::APP_DB_FOLDER.$db_pfx.'/oauth2-'.\SmartHashCrypto::safesuffix('Mod.OAuth2').'.sqlite'; // {{{SYNC-APP-DB-FOLDER}}}
 		if(!\SmartFileSysUtils::checkIfSafePath((string)$db_path, true, true)) {
 			\Smart::raise_error(__METHOD__.' # DB Path is UNSAFE !');
 			return;

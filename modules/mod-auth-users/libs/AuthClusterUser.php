@@ -29,7 +29,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20260114
+ * @version 	v.20260118
  * @package 	modules:AuthUsers
  *
  */
@@ -461,7 +461,7 @@ final class AuthClusterUser {
 		} //end if
 		//--
 		$userDbPath = (string) \trim((string)self::getAccountWorkspacePath((string)$id));
-		if(((string)$userDbPath == '') OR (\strpos((string)$userDbPath, '#db/') !== 0)) {
+		if(((string)$userDbPath == '') OR (\strpos((string)$userDbPath, (string)\SmartFileSysUtils::APP_DB_FOLDER) !== 0)) { // {{{SYNC-APP-DB-FOLDER}}}
 			\Smart::log_warning(__METHOD__.' # Account Data WorkSpace Path is Empty or Invalid');
 			return [];
 		} //end if
@@ -539,7 +539,7 @@ final class AuthClusterUser {
 			return '';
 		} //end if
 		//--
-		return (string) \SmartFileSysUtils::addPathTrailingSlash('#db/'.$userDbPath);
+		return (string) \SmartFileSysUtils::addPathTrailingSlash((string)\SmartFileSysUtils::APP_DB_FOLDER.$userDbPath); // {{{SYNC-APP-DB-FOLDER}}}
 		//--
 	} //END FUNCTION
 
@@ -608,18 +608,18 @@ final class AuthClusterUser {
 		} //end if
 		//--
 		$userDbPath = (string) \trim((string)self::getAccountWorkspacePath((string)$id));
-		if(((string)$userDbPath == '') OR (\strpos((string)$userDbPath, '#db/') !== 0)) {
+		if(((string)$userDbPath == '') OR (\strpos((string)$userDbPath, (string)\SmartFileSysUtils::APP_DB_FOLDER) !== 0)) { // {{{SYNC-APP-DB-FOLDER}}}
 			\Smart::log_warning(__METHOD__.' # DB Dir is Empty or Invalid: `'.$userDbPath.'` for ID: `'.$id.'`');
 			return false;
 		} //end if
 		//--
-		$err = (string) \SmartFileSystem::create_protected_dir('#db/');
+		$err = (string) \SmartFileSysUtils::createStaticProtectedDir((string)\SmartFileSysUtils::APP_DB_FOLDER); // {{{SYNC-APP-DB-FOLDER}}}
 		if((string)$err != '') {
 			\Smart::log_warning(__METHOD__.' # Failed to Create Protected DB Base Dir for: `'.$userDbPath.'` for ID: `'.$id.'`');
 			return false;
 		} //end if
 		//--
-		$err = (string) \SmartFileSystem::create_protected_dir((string)$userDbPath);
+		$err = (string) \SmartFileSysUtils::createStaticProtectedDir((string)$userDbPath);
 		if((string)$err != '') {
 			\Smart::log_warning(__METHOD__.' # Failed to Create Protected DB Dir for: `'.$userDbPath.'` for ID: `'.$id.'`');
 			return false;

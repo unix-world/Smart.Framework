@@ -823,7 +823,7 @@ final class SmartMailerMimeDecode {
  * @internal
  *
  * @depends 	classes: Smart, SmartUnicode, SmartMailerNotes
- * @version 	v.20250307
+ * @version 	v.20260118
  *
  */
 final class SmartMailerMimeExtract {
@@ -996,7 +996,7 @@ final class SmartMailerMimeExtract {
 						} //end while
 					} //end if
 					break;
-				case 'content-disposition';
+				case 'content-disposition':
 					$content_disposition = $this->_parseHeaderValue($headers[(string)$key]['value']);
 					$content_disposition['other'] = $content_disposition['other'] ?? null;
 					$return->disposition = $content_disposition['value'];

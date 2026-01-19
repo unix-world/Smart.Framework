@@ -19,7 +19,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* SmartFileSysUtils::
 //	* SmartUnicode::
 // 	* SmartHashCrypto::
-//	* SmartFileSystem::
 //	* SmartComponents::
 // DEPENDS-EXT: PHP SQLite3 Extension
 //======================================================
@@ -67,8 +66,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
- * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSystem, SmartComponents
- * @version 	v.20250714
+ * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, (optional) SmartComponents
+ * @version 	v.20260118
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -451,7 +450,7 @@ final class SmartSQliteDb {
 	 */
 	private function check_exists() {
 		$exists = false;
-		if(((string)$this->get_filename() != '') AND (SmartFileSystem::is_type_file((string)$this->get_filename()))) {
+		if(((string)$this->get_filename() != '') AND (is_file((string)$this->get_filename()))) {
 			$exists = true;
 		} //end if
 		return $exists;
@@ -499,8 +498,8 @@ final class SmartSQliteDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSysUtils, SmartFileSystem, SmartComponents
- * @version 	v.20250714
+ * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSysUtils, (optional) SmartComponents
+ * @version 	v.20260118
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -527,43 +526,54 @@ final class SmartSQliteUtilDb {
 
 	//======================================================
 	// SQLite will automatically lock file on write access (does not allow multiple write acess at same time)
-	public static function open($file_name, $timeout_busy_sec=60, $register_extra_functions=true) {
+	public static function open(?string $db_fpath, ?int $timeout_busy_sec=60, ?bool $register_extra_functions=true) {
 		//-- check if available
 		self::check_is_available();
 		//--
 		$register_extra_functions = (bool) $register_extra_functions;
 		//--
-		if((string)$file_name == '') {
-			self::error((string)$file_name, 'OPEN', 'ERROR: DB path is empty !', '', '');
+		if((string)trim((string)$db_fpath) == '') {
+			self::error((string)$db_fpath, 'OPEN', 'ERROR: DB path is empty !', '', '');
 			return;
 		} //end if
 		//--
-		if((string)substr((string)$file_name, -7, 7) != '.sqlite') {
-			self::error((string)$file_name, 'OPEN', 'ERROR: DB must have .sqlite file extension !', '', '');
+		if((string)substr((string)$db_fpath, -7, 7) != '.sqlite') {
+			self::error((string)$db_fpath, 'OPEN', 'ERROR: DB must have .sqlite file extension !', '', '');
 			return;
 		} //end if
 		//--
-		if(SmartFileSysUtils::checkIfSafePath((string)$file_name, true, true) != 1) { // deny absolute path access ; allow protected path access (starting with #)
-			self::error((string)$file_name, 'OPEN', 'ERROR: DB path is invalid !', '', '');
+		$staticRootPath = (string) SmartFileSysUtils::getStaticFilesRootPath();
+		//--
+		$deny_absolute_path = true;
+		if((string)$staticRootPath != '') { // {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-OR-ABSOLUTE-PATH-BY-STATIC-ROOT-PATH}}} ; if SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH is non-empty (outside Smart.Framework environment use only), allow absolute paths
+			$deny_absolute_path = false;
+		} //end if
+		//--
+		if(SmartFileSysUtils::checkIfSafePath((string)$db_fpath, true, true) != 1) { // deny absolute path access ; allow protected path access (starting with #)
+			self::error((string)$db_fpath, 'OPEN', 'ERROR: DB path is invalid !', '', '');
+			return;
+		} //end if
+		if(SmartFileSysUtils::checkIfSafePath((string)$staticRootPath.$db_fpath, (bool)$deny_absolute_path, true) != 1) { // allow absolute path access ; allow protected path access (starting with #)
+			self::error((string)$db_fpath, 'OPEN', 'ERROR: DB full path is invalid !', '', '');
 			return;
 		} //end if
 		//--
-		if(SmartFileSystem::is_type_dir((string)$file_name)) {
-			self::error((string)$file_name, 'OPEN', 'ERROR: DB path is a directory !', '', '');
+		if(is_dir((string)$staticRootPath.$db_fpath)) {
+			self::error((string)$db_fpath, 'OPEN', 'ERROR: DB path is a directory !', '', '');
 			return;
 		} //end if
 		//--
-		$dir_of_db = (string) Smart::dir_name((string)$file_name);
+		$dir_of_db = (string) Smart::dir_name((string)$db_fpath); // ok, get from relative
 		//--
-		$err = (string) SmartFileSystem::create_protected_dir((string)$dir_of_db); // {{{SYNC-APP-DB-FOLDER}}} ; this checks also if safe path of dir
+		$err = (string) SmartFileSysUtils::createStaticProtectedDir((string)$dir_of_db); // {{{SYNC-APP-DB-FOLDER}}} ; this checks also if safe path of dir
 		if((string)$err != '') {
-			self::error((string)$file_name, 'OPEN', 'ERROR: DB path creation failed # '.$err, '', '');
+			self::error((string)$db_fpath, 'OPEN', 'ERROR: DB path creation failed # '.$err, '', '');
 			return;
 		} //end if
 		//-- open DB connection
 		try {
 			//--
-			$db = @new SQLite3((string)$file_name, SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE);
+			$db = @new SQLite3((string)$staticRootPath.$db_fpath, SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE);
 			//--
 			$db->busyTimeout((int)$timeout_busy_sec * 1000); // the $timeout_busy_sec is in seconds ; we set a busy timeout in miliseconds
 			//--
@@ -602,17 +612,19 @@ final class SmartSQliteUtilDb {
 			//--
 		} catch (Exception $e) {
 			//--
-			self::error((string)$file_name, 'OPEN', $e->getMessage(), 'Catch Exception ...', '');
+			self::error((string)$db_fpath, 'OPEN', $e->getMessage(), 'Catch Exception ...', '');
 			return;
 			//--
 		} //end try catch
 		//--
-		if(SmartFileSystem::is_type_file($file_name)) {
-			if(SmartFileSystem::get_file_size($file_name) <= 0) {
-				SmartFileSystem::fix_file_chmod($file_name); // apply initial file chmod
+		if(is_file((string)$staticRootPath.$db_fpath)) {
+			if(filesize((string)$staticRootPath.$db_fpath) <= 0) {
+				if(defined('SMART_FRAMEWORK_CHMOD_FILES')) {
+					chmod((string)$staticRootPath.$db_fpath, SMART_FRAMEWORK_CHMOD_FILES);
+				} //end if
 			} //end if
-			if(!SmartFileSystem::have_access_read($file_name)) { // MUST NOT check Write Access since in some situations the DB can be in Read-Only Mode !!!
-				self::error((string)$file_name, 'OPEN', 'The DB File have not read access', 'Failed to set Fix CHMOD on this file !', $file_name);
+			if(!is_writable((string)$staticRootPath.$db_fpath)) { // MUST NOT check Write Access since in some situations the DB can be in Read-Only Mode !!!
+				self::error((string)$db_fpath, 'OPEN', 'The DB File have not read access', 'Failed to set Fix CHMOD on this file !', $db_fpath);
 				return;
 			} //end if
 			// the write access will result in write query fail and must not be checked here ... (when DB is read-only)
@@ -620,18 +632,18 @@ final class SmartSQliteUtilDb {
 		//--
 		self::check_connection($db);
 		//--
-		SmartEnvironment::$Connections['sqlite'][(string)self::get_connection_id($db)] = (string) $file_name;
+		SmartEnvironment::$Connections['sqlite'][(string)self::get_connection_id($db)] = (string) $db_fpath;
 		//--
 		if(@$db->lastErrorCode() !== 0) {
 			$sqlite_error = 'SQLite3-ERR:: '.@$db->lastErrorMsg();
-			self::error((string)$file_name, 'OPEN', 'Failed to Open DB File', $file_name."\n".'ERR: '.$sqlite_error, $file_name);
+			self::error((string)$db_fpath, 'OPEN', 'Failed to Open DB File', $db_fpath."\n".'ERR: '.$sqlite_error, $db_fpath);
 			return;
 		} //end if
 		//--
 		if(SmartEnvironment::ifDebug()) {
 			SmartEnvironment::setDebugMsg('db', 'sqlite|log', [
 				'type' => 'open-close',
-				'data' => 'Open SQLite Database: '.$file_name
+				'data' => 'Open SQLite Database: '.$db_fpath
 			]);
 		} //end if
 		//-- register basic user functions (will use as prefix: `smart_` for each below)
@@ -653,9 +665,14 @@ final class SmartSQliteUtilDb {
 				'crc32b' 					=>  1,
 				'md5' 						=>  1,
 				'sha1' 						=>  1,
+				'sha224' 					=>  1,
 				'sha256' 					=>  1,
 				'sha384' 					=>  1,
 				'sha512' 					=>  1,
+				'sh3a224' 					=>  1,
+				'sh3a256' 					=>  1,
+				'sh3a384' 					=>  1,
+				'sh3a512' 					=>  1,
 				'strlen' 					=>  1,
 				'charlen' 					=>  1, // mbstring
 				'str_wordcount' 			=>  1,
@@ -689,7 +706,7 @@ final class SmartSQliteUtilDb {
 			self::write_data($db, 'INSERT OR REPLACE INTO `_smartframework_metadata` (`id`, `description`) VALUES (\'sqlite-version\', \''.self::escape_str($db, '3').'\')');
 			self::write_data($db, 'INSERT OR REPLACE INTO `_smartframework_metadata` (`id`, `description`) VALUES (\'smartframework-version\', \''.self::escape_str($db, (string)SMART_FRAMEWORK_VERSION).'\')');
 			self::write_data($db, 'INSERT OR REPLACE INTO `_smartframework_metadata` (`id`, `description`) VALUES (\'creation-date-and-time\', \''.self::escape_str($db, (string)date('Y-m-d H:i:s O')).'\')');
-			self::write_data($db, 'INSERT OR REPLACE INTO `_smartframework_metadata` (`id`, `description`) VALUES (\'database-name\', \''.self::escape_str($db, (string)$file_name).'\')');
+			self::write_data($db, 'INSERT OR REPLACE INTO `_smartframework_metadata` (`id`, `description`) VALUES (\'database-name\', \''.self::escape_str($db, (string)$db_fpath).'\')');
 			self::write_data($db, 'INSERT OR REPLACE INTO `_smartframework_metadata` (`id`, `description`) VALUES (\'domain-realm-id\', \''.self::escape_str($db, (string)SMART_SOFTWARE_NAMESPACE).'\')');
 		} //end if
 		//--
@@ -1832,7 +1849,7 @@ final class SmartSQliteUtilDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20250714
+ * @version 	v.20260118
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -1982,6 +1999,12 @@ final class SmartSQliteFunctions {
 		//--
 	} //END FUNCTION
 
+	public static function sha224($str) {
+		//--
+		return (string) SmartHashCrypto::sha224((string)$str);
+		//--
+	} //END FUNCTION
+
 
 	public static function sha256($str) {
 		//--
@@ -2000,6 +2023,34 @@ final class SmartSQliteFunctions {
 	public static function sha512($str) {
 		//--
 		return (string) SmartHashCrypto::sha512((string)$str);
+		//--
+	} //END FUNCTION
+
+
+	public static function sh3a224($str) {
+		//--
+		return (string) SmartHashCrypto::sh3a224((string)$str);
+		//--
+	} //END FUNCTION
+
+
+	public static function sh3a256($str) {
+		//--
+		return (string) SmartHashCrypto::sh3a256((string)$str);
+		//--
+	} //END FUNCTION
+
+
+	public static function sh3a384($str) {
+		//--
+		return (string) SmartHashCrypto::sh3a384((string)$str);
+		//--
+	} //END FUNCTION
+
+
+	public static function sh3a512($str) {
+		//--
+		return (string) SmartHashCrypto::sh3a512((string)$str);
 		//--
 	} //END FUNCTION
 

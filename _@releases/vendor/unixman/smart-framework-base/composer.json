@@ -16,14 +16,30 @@
 	],
 	"homepage": "https://codeberg.org/unixman/smart-framework-base",
 	"require": {
-		"php": ">=7.4",
+		"php": ">=8.1",
+		"ext-date": 		"*",
+		"ext-filter": 		"*",
 		"ext-pcre": 		"*",
 		"ext-zlib": 		"*",
 		"ext-mbstring": 	"*",
 		"ext-hash": 		"*",
 		"ext-json": 		"*",
-		"ext-xml": 			"*",
+		"ext-gmp": 			"*",
+		"ext-gd": 			"*",
+		"ext-libxml": 		"*",
 		"ext-SimpleXML": 	"*"
+	},
+	"suggest": {
+		"ext-sodium": 		"*",
+		"ext-openssl": 		"*",
+		"ext-sqlite3": 		"*",
+		"ext-dba": 			"*",
+		"ext-pgsql": 		"*",
+		"ext-mysqli": 		"*",
+		"ext-mongodb": 		"*",
+		"ext-session": 		"*",
+		"ext-dom": 			"*",
+		"ext-tidy": 		"*"
 	},
 	"autoload": {
 		"files": {

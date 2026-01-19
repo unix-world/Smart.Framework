@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class AuthUsersFrontend {
 
 	// ::
-	// v.20260115
+	// v.20260118
 
 
 	private static $db = null;
@@ -36,8 +36,8 @@ final class AuthUsersFrontend {
 		if((string)\SmartModExtLib\AuthUsers\Utils::getDbType() == 'sqlite') {
 			//--
 			if(self::$db === null) {
-				//--
-				$sqlitedbfile = '#db/auth-users.sqlite'; // TODO: do not use the same DB for all users if SQLite, can't scale ... use an algorithm to have a single DB for each user containing all the info
+				//-- TODO: do not use the same DB for all users if SQLite, can't scale ... use an algorithm to have a single DB for each user containing all the info
+				$sqlitedbfile = (string) \SmartFileSysUtils::APP_DB_FOLDER.'auth-users.sqlite'; // {{{SYNC-APP-DB-FOLDER}}}
 				//--
 				if(!\SmartFileSysUtils::checkIfSafePath((string)$sqlitedbfile, true, true)) { // dissalow absolute ; allow protected
 					\Smart::raise_error(

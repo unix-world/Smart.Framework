@@ -11,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 
-//-- r.20221225
+//-- r.20260118
 // #PLUGINS# :: they can be loaded always (require) or as dependency injection (require_once)
 //--
 require_once('lib/framework/plugins/lib_yaml.php');				// yaml converter
@@ -27,6 +27,7 @@ require_once('lib/framework/plugins/lib_mail_get.php'); 		// mail get client (po
 require_once('lib/framework/plugins/lib_mail_notes.php');		// mail notes (mime parsing fixes, decode, encode)
 require_once('lib/framework/plugins/lib_mail_decode.php'); 		// mail message decoder (mime)
 //--
+require_once('lib/framework/plugins/lib_db_sqlite.php');		// sqlite3 db connector
 require_once('lib/framework/plugins/lib_db_redis.php');			// redis db connector
 require_once('lib/framework/plugins/lib_db_mongodb.php');		// mongodb db connector
 require_once('lib/framework/plugins/lib_db_pgsql.php');			// postgresql db connector

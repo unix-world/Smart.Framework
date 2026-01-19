@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20260116 # this should be loaded from app web root only
+// # r.20260120 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -45,7 +45,7 @@ if((string)trim((string)ini_get('default_mimetype')) != 'text/html') {
 //-- PHP version, 64-bit support and various checks
 if(version_compare((string)phpversion(), '8.1.0') < 0) { // check for PHP 8.1 or later
 	@http_response_code(500);
-	die('PHP Runtime not supported: '.phpversion().' !'.'<br>PHP versions to run this software are: 8.1 / 8.2 / 8.3 / 8.4 / 8.5 or later');
+	die('PHP Runtime not supported: '.phpversion().' !'.'<br>PHP versions to run this software are: 8.1 / 8.2 / 8.3 / 8.4 / 8.5 / 8.6 or later');
 } //end if
 //--
 if(((int)PHP_INT_SIZE < 8) OR ((string)(int)PHP_INT_MAX < '9223372036854775807')) { // check for 64-bit integer
@@ -91,7 +91,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2026.01.16'); // tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2026.01.20'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--
@@ -574,8 +574,13 @@ set_exception_handler(function($exception) { // no type for EXCEPTION to be PHP 
 		} else {
 			//--
 			for($i=0; $i<2; $i++) { // trace just 2 levels
+				//--
 				$details .= "\n".'  ----- Line #'.($arr[$i]['line'] ?? '').' @ Class: ['.($arr[$i]['class'] ?? '').'] '.($arr[$i]['type'] ?? '').' Function: ['.($arr[$i]['function'] ?? '').'] | File: '.($arr[$i]['file'] ?? '');
-				$details .= "\n".'    ----- Args * '.(isset($arr[$i]['args']) ? print_r($arr[$i]['args'],1) : '');
+				//--
+				if((string)SMART_ERROR_HANDLER == 'dev') { // if dev mode, show call arguments, otherwise hide them for production environments, it is not safe to log them !
+					$details .= "\n".'    ----- Args * '.(isset($arr[$i]['args']) ? print_r($arr[$i]['args'],1) : '');
+				} //end if
+				//--
 			} //end for
 			//--
 		} //end if else

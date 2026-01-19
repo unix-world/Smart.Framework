@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 abstract class SqAuthAdmins extends \SmartModDataModel\AuthAdmins\AbstractAuthAdmins {
 
 	// ->
-	// v.20260108
+	// v.20260118
 
 	private $db;
 	private $dbFile;
@@ -49,7 +49,7 @@ abstract class SqAuthAdmins extends \SmartModDataModel\AuthAdmins\AbstractAuthAd
 			return;
 		} //end if
 		//--
-		$dbPath =  (string) '#db/auth-admins-'.\SmartHashCrypto::safesuffix('Mod.AuthAdmins').'.sqlite';
+		$dbPath =  (string) \SmartFileSysUtils::APP_DB_FOLDER.'auth-admins-'.\SmartHashCrypto::safesuffix('Mod.AuthAdmins').'.sqlite'; // {{{SYNC-APP-DB-FOLDER}}}
 		if(!\SmartFileSysUtils::checkIfSafePath((string)$dbPath, true, true)) { // {{{SYNC-AUTHDB-CHECK-DB-SAFE-PATH}}}
 			throw new \Exception('AUTH DB SQLITE File Path is Unsafe !');
 			return;

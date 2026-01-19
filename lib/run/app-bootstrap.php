@@ -48,7 +48,7 @@ define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // REQUIRED BY SMART R
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version 	v.20250620
+ * @version 	v.20260118
  * @package 	Application
  *
  */
@@ -495,8 +495,8 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 			} //end if
 		} //end if
 		//--
-		$dir = (string) SmartFileSystem::APP_DB_FOLDER; // {{{SYNC-APP-DB-FOLDER}}}
-		$err = (string) SmartFileSystem::create_protected_dir((string)$dir);
+		$dir = (string) SmartFileSysUtils::APP_DB_FOLDER; // {{{SYNC-APP-DB-FOLDER}}}
+		$err = (string) SmartFileSysUtils::createStaticProtectedDir((string)$dir, true); // using clear stat cache TRUE
 		if((string)$err != '') {
 			Smart::raise_error(
 				__METHOD__."\n".'General ERROR :: `'.$dir.'` create: '.$err,
