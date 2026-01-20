@@ -1,5 +1,5 @@
 # [@[#[!SF.DEV-ONLY!]#]@] ; do not remove this line, it is for safety to dissalow this file to be send in a release package
-# appcodepack.yaml s.20250107.2358 ; sample: MINIFY ; (c) 2013-present unix-world.org
+# appcodepack.yaml s.20260120.2358 ; sample: MINIFY ; (c) 2013-present unix-world.org
 APP-RELEASE:
 	# the app ID
 	smart-framework.local:

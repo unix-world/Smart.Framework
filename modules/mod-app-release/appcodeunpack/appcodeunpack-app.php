@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20260108 s.20260108.2358
+// [AppCodeUnpack / APP] v.20260120 s.20260120.2358
 // (c) 2008-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -94,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) : voi
 final class AppCodeUnpack {
 
 	// ::
-	// v.20260108
+	// v.20260120
 
-	private const APPCODEUNPACK_VERSION = 's.20260108.2358';
+	private const APPCODEUNPACK_VERSION = 's.20260120.2358';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 

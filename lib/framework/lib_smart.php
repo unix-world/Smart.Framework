@@ -64,6 +64,15 @@ if(
 	@http_response_code(500);
 	die('Invalid INIT constant value for SMART_FRAMEWORK_CHMOD_FILES: '.SMART_FRAMEWORK_CHMOD_FILES.' (decimal) / '.str_pad((string)decoct(SMART_FRAMEWORK_CHMOD_FILES), 4, '0', STR_PAD_LEFT).' (octal)');
 } //end if
+//--
+if(!defined('SMART_FRAMEWORK_HTACCESS_FORBIDDEN')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_HTACCESS_FORBIDDEN');
+} //end if
+if(!defined('SMART_FRAMEWORK_HTACCESS_NOINDEXING')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_HTACCESS_NOINDEXING');
+} //end if
 //================================================================
 
 
@@ -4809,6 +4818,13 @@ final class SmartFileSysUtils {
 			return './'; // this is a mandatory security fix for the cases when used with dirname() which may return empty or just .
 		} //end if
 		//--
+		$staticRootPath = (string) self::getStaticFilesRootPath();
+		//--
+		$deny_absolute_path = true;
+		if((string)$staticRootPath != '') { // {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-OR-ABSOLUTE-PATH-BY-STATIC-ROOT-PATH}}} ; if SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH is non-empty (outside Smart.Framework environment use only), allow absolute paths
+			$deny_absolute_path = false;
+		} //end if
+		//--
 		if(((string)$y_path == '/') OR ((string)trim((string)str_replace(['/', '.'], ['', ''], (string)$y_path)) == '') OR (strpos((string)$y_path, '\\') !== false)) {
 			Smart::log_warning(__METHOD__.' # Add Last Dir Slash: Invalid Path: ['.$y_path.'] ; Returned: tmp/invalid/');
 			return 'tmp/invalid/'; // Security Fix: avoid make the path as root: / (if the path is empty, adding a trailing slash is a huge security risk)
@@ -4818,7 +4834,7 @@ final class SmartFileSysUtils {
 			$y_path = (string) $y_path.'/';
 		} //end if
 		//--
-		self::raiseErrorIfUnsafePath((string)$y_path, true, true); // deny absolute paths ; allow #special paths
+		self::raiseErrorIfUnsafePath((string)$y_path, (bool)$deny_absolute_path, true); // allow #protected paths ; {{{SYNC-SMART-STATIC-EXISTS-READ-WRITE-RELATIVE-OR-ABSOLUTE-PATH-BY-STATIC-ROOT-PATH}}}
 		//--
 		return (string) $y_path;
 		//--
@@ -5148,7 +5164,7 @@ final class SmartFileSysUtils {
 		//--
 		$dir = (string) rtrim((string)implode('/', (array)$arr),'/').'/';
 		//--
-		if(!self::checkIfSafePath((string)$dir)) {
+		if(!self::checkIfSafePath((string)$dir)) { // dir is always a relative path, no need to allow here check for absolute or protected
 			Smart::log_warning(__METHOD__.' # Invalid Dir Path: ['.$dir.'] :: From ID: ['.$y_id.']');
 			return 'tmp/invalid/pfx-uid-path/'; // this error should not happen ...
 		} //end if

@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / INIT] v.20260108 s.20260108.2358
+// [AppCodeUnpack / INIT] v.20260120 s.20260120.2358
 // (c) 2013-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -94,6 +94,8 @@ const SMART_FRAMEWORK_IDENT_ROBOTS =  					'<(smart.framework >,<(smart.framewor
 //--------------------------------------- UPLOADS SECURITY :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING
 const SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS = 		'<z-netarch>'; 								// *OPTIONAL* The List of Allowed file extensions for Uploads ; if set and empty, will dissalow any upload by default ; if set and non-empty will only allow files with these extensions to be uploaded (if this is set the SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS will not count at all)
 const SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS =  		''; 										// The List of DENIED file extensions for Uploads ; files with these extensions will not be allowed to be uploaded by default
+//---------------------------------------
+const SMART_SOFTWARE_SQLDB_FATAL_ERR = 					true;										// If set to false will throw \EXCEPTION which can be catched instead of raise a fatal error on all SQL DB adapters such as PostgreSQL / SQLite / MySQL (NOSQL adapters, ex: MongoDB or Redis can be set per instance and are not affected by this setting) ; WARNING: disabling SQL Fatal Errors is not safe, especially when using SQL transactions ... ; DO NOT modify this parameter unless you know what you are doing !!!
 //---------------------------------------
 //============================================================
 

@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20250207
+ * @version 	v.20260120
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -211,13 +211,18 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			'lib/framework/lib_unicode.php'									=> true,
 			'lib/framework/lib_security.php'								=> true,
 			'lib/framework/lib_smart.php'									=> true,
-			'lib/framework/lib_caching.php'									=> true,
 			'lib/framework/lib_cryptohs.php'								=> true,
+			'lib/framework/lib_cryptoss.php'								=> true,
 			'lib/framework/lib_cryptoas.php'								=> true,
+			'lib/framework/lib_archive.php'									=> true,
+			'lib/framework/lib_caching.php'									=> true,
 			'lib/framework/lib_templating.php'								=> true,
 			'lib/framework/lib_valid_parse.php'								=> true,
 			'lib/framework/lib_http_cli.php'								=> true,
 			'lib/framework/lib_auth.php'									=> true,
+			//--
+			'lib/framework/plugins/lib_db_sqlite.php'						=> true,
+			'lib/framework/plugins/lib_db_redis.php'						=> true,
 			//--
 			'lib/lib_registry.php'											=> true,
 			//--

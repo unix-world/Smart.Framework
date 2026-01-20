@@ -6,6 +6,8 @@ January 20, 2026
 	* many fixes in SmartFileSysUtils, especially when using SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH
 	* method SmartFileSysUtils::createStaticProtectedDir as a replacement for SmartFileSystem::create_protected_dir
 	* get rid of SmartFileSystem from Lib SQlite and DBA ; move Lib DBA to framework plugins
+	* vendoring fixes
+	* mod appcode unpack fixes
 
 January 16, 2026
 	* several bug fixes, ex: EcDSA get Public Key from Certificate

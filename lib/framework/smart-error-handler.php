@@ -15,7 +15,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
 //	* ONLY CONSTANTS CAN BE DEFINED HERE
-//	* FOR ERRORS WILL USE htmlspecialchars($string, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, SMART_FRAMEWORK_CHARSET, true); // as default, with double encoding
+//	* FOR ERRORS WILL USE htmlspecialchars((string)$errMsg, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, SMART_FRAMEWORK_CHARSET, true); // as default, with double encoding
 //===================
 
 // ALL ERRORS WILL BE LOGGED TO A LOG FILE: SMART_ERROR_LOGDIR/SMART_ERROR_LOGFILE defined below
@@ -95,19 +95,33 @@ define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2026.01.20'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--
-if(defined('SMART_FRAMEWORK_VERSION')) {
-	@http_response_code(500);
-	die('A Reserved Constant have been already defined: SMART_FRAMEWORK_VERSION');
+if(defined('SMART_VENDOR_APP')) { // support for Sf.vendor bootstrap
+	//--
+	if(!defined('SMART_FRAMEWORK_VERSION')) {
+		@http_response_code(500);
+		die('A Required Constant have not been defined: SMART_FRAMEWORK_VERSION');
+	} //end if
+	//--
+	if(!defined('SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH')) {
+		@http_response_code(500);
+		die('A Required Constant have not been defined: SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH');
+	} //end if
+	//--
+} else {
+	//--
+	if(defined('SMART_FRAMEWORK_VERSION')) {
+		@http_response_code(500);
+		die('A Reserved Constant have been already defined: SMART_FRAMEWORK_VERSION');
+	} //end if
+	define('SMART_FRAMEWORK_VERSION', 'smart.framework.v.8.7'); // major version ; required for the framework libs
+	//--
+	if(defined('SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH')) {
+		@http_response_code(500);
+		die('A Reserved Constant have been already defined: SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH');
+	} //end if
+	define('SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH', ''); // for the Smart.Framework Environment it must be set to EMPTY STRING as '' to allow only relative paths ; in other environments can be set to something like (string)realpath('./').'/'
+	//--
 } //end if
-define('SMART_FRAMEWORK_VERSION', 'smart.framework.v.8.7'); // major version ; required for the framework libs
-//--
-
-//--
-if(defined('SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH')) {
-	@http_response_code(500);
-	die('A Reserved Constant have been already defined: SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH');
-} //end if
-define('SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH', ''); // for the Smart.Framework Environment it must be set to EMPTY STRING as '' to allow only relative paths ; in other environments can be set to something like (string)realpath('./').'/'
 //--
 
 //--
@@ -167,22 +181,35 @@ if((!defined('SMART_FRAMEWORK_ADMIN_AREA')) OR (!is_bool(SMART_FRAMEWORK_ADMIN_A
 	die('A required RUNTIME constant has not been defined or have an invalid value: SMART_FRAMEWORK_ADMIN_AREA');
 } //end if
 //--
+if(!defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER')) {
+	define('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER', false);
+} //end if
+if(!defined('SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS')) {
+	define('SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS', '');
+} //end if
+if(!defined('SMART_FRAMEWORK_IDENT_ROBOTS')) {
+	define('SMART_FRAMEWORK_IDENT_ROBOTS', '');
+} //end if
+if(!defined('SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS')) {
+	define('SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS', '');
+} //end if
+//--
 array_map(function($const){
 	if(!defined((string)$const)) {
 		@http_response_code(500);
 		die('A required INIT constant has not been defined: '.$const);
 	}
 },
-[ // {{{SYNC-SMART-APP-INI-SETTINGS}}}
+[ // {{{SYNC-SMART-APP-INI-SETTINGS}}} ; required
 	'SMART_STANDALONE_APP', 'SMART_FRAMEWORK_RUNTIME_MODE', 'SMART_FRAMEWORK_LIB_PATH',
-	'SMART_SOFTWARE_NAMESPACE', 'SMART_FRAMEWORK_SECURITY_KEY', 'SMART_FRAMEWORK_SRVPROXY_ENABLED',
-	'SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME', 'SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE', 'SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN',
-	'SMART_FRAMEWORK_TIMEZONE', 'SMART_FRAMEWORK_CHARSET', 'SMART_FRAMEWORK_SECURITY_FILTER_INPUT', 'SMART_FRAMEWORK_SQL_CHARSET',
+	'SMART_SOFTWARE_NAMESPACE', 'SMART_FRAMEWORK_SECURITY_KEY', 'SMART_FRAMEWORK_TIMEZONE',
+	'SMART_FRAMEWORK_CHARSET', 'SMART_FRAMEWORK_SECURITY_FILTER_INPUT',
+	'SMART_FRAMEWORK_SQL_CHARSET', 'SMART_SOFTWARE_SQLDB_FATAL_ERR',
 	'SMART_FRAMEWORK_MEMORY_LIMIT', 'SMART_FRAMEWORK_EXECUTION_TIMEOUT', 'SMART_FRAMEWORK_NETSOCKET_TIMEOUT', 'SMART_FRAMEWORK_NETSERVER_ID',
 	'SMART_FRAMEWORK_SSL_MODE', 'SMART_FRAMEWORK_SSL_CIPHERS', 'SMART_FRAMEWORK_SSL_VFY_HOST', 'SMART_FRAMEWORK_SSL_VFY_PEER', 'SMART_FRAMEWORK_SSL_VFY_PEER_NAME', 'SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED', 'SMART_FRAMEWORK_SSL_DISABLE_COMPRESS', // 'SMART_FRAMEWORK_SSL_CA_FILE', is optional
-	'SMART_FRAMEWORK_CHMOD_DIRS', 'SMART_FRAMEWORK_CHMOD_FILES', 'SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS',
-	'SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER', 'SMART_SOFTWARE_MKTPL_DEBUG_LEN',
-	'SMART_FRAMEWORK_IDENT_ROBOTS', 'SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS',
+	'SMART_FRAMEWORK_CHMOD_DIRS', 'SMART_FRAMEWORK_CHMOD_FILES',
+	'SMART_FRAMEWORK_HTACCESS_FORBIDDEN', 'SMART_FRAMEWORK_HTACCESS_NOINDEXING',
+	'SMART_SOFTWARE_MKTPL_DEBUG_LEN',
 ]);
 //--
 if((string)date_default_timezone_get() != (string)SMART_FRAMEWORK_TIMEZONE) {
@@ -211,6 +238,16 @@ if(((int)SMART_FRAMEWORK_NETSERVER_ID < 0) OR ((int)SMART_FRAMEWORK_NETSERVER_ID
 	die('The required INIT constant SMART_FRAMEWORK_NETSERVER_ID can have values between 0 and 1295');
 } //end if
 //--
+if(!defined('SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME')) {
+	define('SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME', 0);
+} //end if
+if(!defined('SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE')) {
+	define('SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE', 'Lax');
+} //end if
+if(!defined('SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN')) {
+	define('SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN', '');
+} //end if
+//--
 if(!defined('SMART_FRAMEWORK_MAX_BROWSER_COOKIE_SIZE')) {
 	define('SMART_FRAMEWORK_MAX_BROWSER_COOKIE_SIZE', 3072); // max cookie size is 4096 but includding the name, time, domain, path and the rest ...
 } //end if
@@ -219,6 +256,9 @@ if(!defined('SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS')) {
 	define('SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS', '');
 } //end if
 //--
+if(!defined('SMART_FRAMEWORK_SRVPROXY_ENABLED')) {
+	define('SMART_FRAMEWORK_SRVPROXY_ENABLED', false);
+} //end if
 if(!is_bool(SMART_FRAMEWORK_SRVPROXY_ENABLED)) {
 	@http_response_code(500);
 	die('Invalid value for SMART_FRAMEWORK_SRVPROXY_ENABLED');
@@ -777,6 +817,9 @@ function smart__framework__err__handler__get__absolute_logpath($suffix_path) {
 	} //end if
 	//--
 	$path = (string) trim((string)realpath('./')); // get the current absolute path of current running folder (this will be run from index.php or admin.php or task.php which are outside lib/ ... so this scenario is considered)
+	if((string)trim((string)SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH) != '') {
+		$path = (string) rtrim((string)trim((string)SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH), '/'); // as the real path returns above, without a trailing slash
+	} //end if
 	if((string)DIRECTORY_SEPARATOR == '\\') { // if on Windows, Fix Path Separator !!!
 		if(strpos((string)$path, '\\') !== false) {
 			$path = (string) str_replace((string)DIRECTORY_SEPARATOR, '/', (string)$path); // convert windows path from using backslash to using slash

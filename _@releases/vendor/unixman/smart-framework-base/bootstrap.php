@@ -3,7 +3,7 @@
 // bootstrap/autoload Smart.Framework base classes for Vendor/Composer
 // license: BSD
 // (c) 2022-present unix-world.org
-// r.20260118.2358
+// r.20260120.2358
 
 // ####### DO NOT MODIFY THIS FILE. IT WILL BE REWRITTEN ON ANY UPDATE OF vendor/unixman/smart-framework-base
 // how to install: `php composer.phar require unixman/smart-framework-base @dev`
@@ -11,13 +11,47 @@
 /*
 
 // [ setup for Smart Configs ]
-// create config/smart-cfg.php ; add the following ; comment out what is unused from below configs ...
+// create smart-cfg.php ; add the following ; comment out what is unused from below configs ...
 
 define('SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH', (string)realpath(__DIR__.'/../').'/');
-define('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER', false); // false | 'redis' | 'mongodb'
+
+const SMART_FRAMEWORK_TIMEZONE 					= 'UTC'; 					// 'UTC' or your time zone, ex: 'Europe/London'
+
+const SMART_FRAMEWORK_ENV 						= 'prod'; 					// APP Environment: can be set to 'dev' or 'prod' ; id set to 'prod' (production environment) will not log E_USER_NOTICE and E_DEPRECATED and will not display in-page error details but just log them ; for development mode set this to 'dev'
+const SMART_FRAMEWORK_SECURITY_KEY 				= 'Private-Key#0987654321'; // *** YOU HAVE TO CHANGE IT *** ; This is the Security Key that will be used to generate secure hashes
+
+const SMART_FRAMEWORK_MEMORY_LIMIT 				= '256M'; 					// Memory Limit Per Script
+const SMART_FRAMEWORK_EXECUTION_TIMEOUT 		= 120; 						// Script Max Execution Time
+const SMART_FRAMEWORK_NETSOCKET_TIMEOUT 		=  60; 						// Network Socket (Stream) TimeOut in Seconds
+
+const SMART_FRAMEWORK_SSL_MODE 					= 'tls';					// SSL/TLS Mode: tls | tls:1.1 | tls:1.2 | tls:1.3
+const SMART_FRAMEWORK_SSL_CIPHERS 				= 'HIGH';					// SSL/TLS Context Ciphers: ciphers ; default: 'HIGH' ; generally allow only high ciphers
+const SMART_FRAMEWORK_SSL_VFY_HOST 				= true;						// SSL/TLS Context Verify Host: verify_host ; default: true
+const SMART_FRAMEWORK_SSL_VFY_PEER 				= false;					// SSL/TLS Context Verify Peer: verify_peer ; default: false ; this may fail with some CAs
+const SMART_FRAMEWORK_SSL_VFY_PEER_NAME 		= false;					// SSL/TLS Context Verify Peer Name: verify_peer_name ; default: false ; allow also wildcard names *
+const SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED 	= true;						// SSL/TLS Context Allow Self-Signed Certificates: allow_self_signed ; default: true ; generally must allow self-signed certificates but verified above
+const SMART_FRAMEWORK_SSL_DISABLE_COMPRESS 		= true;						// SSL/TLS Context Allow Self-Signed Certificates: disable_compression ; default: true ; help mitigate the CRIME attack vector
+const SMART_FRAMEWORK_SSL_CA_FILE = 			'';							// SSL/TLS Context CA Path: cafile ; default: '' ; if non-empty, must point to something like 'etc/cacert.pem' or another path to a certification authority pem
+
+const SMART_FRAMEWORK_CHMOD_DIRS 				= 0770; 					// Folder Permissions: 	default is 0770
+const SMART_FRAMEWORK_CHMOD_FILES 				= 0660; 					// File Permissions: 	default is 0660
+
+const SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER 	= false; 					// false | 'redis' | 'mongodb' ; see documentation on how to enable redis or mongodb
+
+const APP_CUSTOM_LOG_PATH						= 'logs/'; 					// logs path, change to match your current log directory
+const APP_USE_SMART_VENDOR_ERROR_HANDLER		= true; 					// set to FALSE if you have your own implemented error handler ...
+
+//--
+ini_set('memory_limit', (string)SMART_FRAMEWORK_MEMORY_LIMIT);
+ini_set('max_execution_time', (int)SMART_FRAMEWORK_EXECUTION_TIMEOUT);
+ini_set('default_socket_timeout', (int)SMART_FRAMEWORK_NETSOCKET_TIMEOUT);
+date_default_timezone_set((string)SMART_FRAMEWORK_TIMEZONE);
+//--
 
 global $configs;
 $configs = [];
+
+//--
 
 // redis
 $configs['redis'] = [];
@@ -72,10 +106,18 @@ $configs['sqlite']['slowtime'] 		= 0.0025;								// slow query time (for debugg
 $configs['dba']['handler'] 			= '@autoselect'; 						// @autoselect or specific: gdbm, qdbm, db4
 $configs['dba']['slowtime'] 		= 0.0025;								// slow query time (for debugging)
 
+//--
+
 // example of loading a model
 //require_once(__DIR__.'/../app/Models/MyModel.php');
 
+//--
+
+// #end config
+
 */
+
+//-------- DO NOT MODIFY ANYTHING BELOW ...
 
 if(version_compare((string)phpversion(), '8.1.0') < 0) { // check for PHP 8.1 or later
 	@http_response_code(500);
@@ -98,19 +140,19 @@ if(!define('SMART_FRAMEWORK_VENDOR_BASE_DIR', (string)__DIR__.'/src/')) {
 	die('Smart.Framework: Failed to define: SMART_FRAMEWORK_VENDOR_BASE_DIR');
 } //end if
 
-const SMART_MODULES_USE_VENDOR_CLASSES = true; // vendor classes are not includded in any provided modules, use the composer way to install and autoload vendor classes
+const SMART_VENDOR_APP = true; // vendor classes are not includded in any provided modules, use the composer way to install and autoload vendor classes
+const SMART_STANDALONE_APP = true;
+const SMART_FRAMEWORK_LIB_PATH = '';
 const SMART_FRAMEWORK_VERSION = 'smart.framework.v.8.7'; // major version ; required for the framework libs
 const SMART_FRAMEWORK_SECURITY_FILTER_INPUT = '/[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]/'; // !!! DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU ARE DOING !!! This is a Safe Unicode Filter Input (GET/POST/COOKIE) Variables (Strings) as it will remove all lower dangerous characters: x00 - x1F and x7F except: \t = x09 \n = x0A \r = x0D
 const SMART_FRAMEWORK_CHARSET = 'UTF-8'; // This must be `UTF-8`:: Default Character Set for PHP
 const SMART_FRAMEWORK_SQL_CHARSET = 'UTF8'; // This must be `UTF8` :: Default Character Set for DB SQL Servers
-const SMART_FRAMEWORK_NETSOCKET_TIMEOUT = 60; // Network Socket (Stream) TimeOut in Seconds
 const SMART_FRAMEWORK_RUNTIME_MODE = 'web.vendor'; // runtime mode: 'web.vendor'
 const SMART_FRAMEWORK_ADMIN_AREA = false; // run app in public/index mode ; must be set to FALSE for the public web environment
 //const SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER = false; // Persistent Cache Handler ; If set to FALSE will use no handler ; If set otherwise can use Built-In: 'redis' or 'mongodb' ; or a Custom handler can be set as (example): 'modules/app/persistent-cache-custom-adapter.php'
 define('SMART_FRAMEWORK_RUNTIME_READY', microtime(true)); // semaphore, runtime can execute scripts
 
 ini_set('default_charset', (string)SMART_FRAMEWORK_CHARSET); // set the default charset
-ini_set('default_socket_timeout', (int)SMART_FRAMEWORK_NETSOCKET_TIMEOUT); // socket timeout (2 min.)
 ini_set('auto_detect_line_endings', '0'); // auto detect line endings
 ini_set('y2k_compliance', '0'); // it is recommended to use this as disabled since POSIX systems keep time based on UNIX epoch
 ini_set('precision', '14'); // decimal number precision
@@ -124,24 +166,41 @@ if((int)ini_get('pcre.jit') > 0) {
 	} //end if
 } //end if
 
-
-const SMART_FRAMEWORK_NETSERVER_ID = 1; // Load Balancing: Unique ID, integer+ (min=0 ; max=1295) ; this is used for the main purpose to be able to generate very unique UUIDS in a cluster of apps ; every server in the cluster running the same app must have a different ID
-const SMART_FRAMEWORK_SECURITY_KEY = 'Private-Key#0987654321'; // *** YOU HAVE TO CHANGE IT *** ; This is the Security Key that will be used to generate secure hashes
 const SMART_SOFTWARE_NAMESPACE = 'smart-framework.vendor'; // APP Namespace ID :: [ _ a-z 0-9 - . ], length 10..25 :: This should be used as a unique ID identifier for the application (aka application unique ID)
-const SMART_FRAMEWORK_ENV = 'prod'; // APP Environment: can be set to 'dev' or 'prod' ; id set to 'prod' (production environment) will not log E_USER_NOTICE and E_DEPRECATED and will not display in-page error details but just log them ; for development mode set this to 'dev'
+const SMART_FRAMEWORK_NETSERVER_ID = 1; // Load Balancing: Unique ID, integer+ (min=0 ; max=1295) ; this is used for the main purpose to be able to generate very unique UUIDS in a cluster of apps ; every server in the cluster running the same app must have a different ID
 const SMART_SOFTWARE_SQLDB_FATAL_ERR = true; // If set to false will throw \EXCEPTION which can be catched instead of raise a fatal error on all SQL DB adapters such as PostgreSQL / SQLite / MySQL (NOSQL adapters, ex: MongoDB or Redis can be set per instance and are not affected by this setting) ; WARNING: disabling SQL Fatal Errors is not safe, especially when using SQL transactions ... ; DO NOT modify this parameter unless you know what you are doing !!!
 const SMART_SOFTWARE_MKTPL_DEBUG_LEN = 0; // If set will use this TPL Debug Length (255..524280) ; If not set will use default: 512
 const SMART_FRAMEWORK_DEBUG_MODE = false; // enable debug mode
 
-const SMART_FRAMEWORK_SSL_MODE =  				'tls';		// SSL/TLS Mode: tls | tls:1.1 | tls:1.2 | tls:1.3
-const SMART_FRAMEWORK_SSL_CIPHERS = 			'HIGH';		// SSL/TLS Context Ciphers: ciphers ; default: 'HIGH' ; generally allow only high ciphers
-const SMART_FRAMEWORK_SSL_VFY_HOST = 			true;		// SSL/TLS Context Verify Host: verify_host ; default: true
-const SMART_FRAMEWORK_SSL_VFY_PEER = 			false;		// SSL/TLS Context Verify Peer: verify_peer ; default: false ; this may fail with some CAs
-const SMART_FRAMEWORK_SSL_VFY_PEER_NAME = 		false;		// SSL/TLS Context Verify Peer Name: verify_peer_name ; default: false ; allow also wildcard names *
-const SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED = 	true;		// SSL/TLS Context Allow Self-Signed Certificates: allow_self_signed ; default: true ; generally must allow self-signed certificates but verified above
-const SMART_FRAMEWORK_SSL_DISABLE_COMPRESS = 	true;		// SSL/TLS Context Allow Self-Signed Certificates: disable_compression ; default: true ; help mitigate the CRIME attack vector
-//const SMART_FRAMEWORK_SSL_CA_FILE = 			'';			// SSL/TLS Context CA Path: cafile ; default: '' ; if non-empty, must point to something like 'etc/cacert.pem' or another path to a certification authority pem
+//-- .htaccess ACCESS FORBIDDEN
+const SMART_FRAMEWORK_HTACCESS_FORBIDDEN = '
+# Deny Access: Apache 2.2
+<IfModule !mod_authz_core.c>
+	Order allow,deny
+	Deny from all
+</IfModule>
+# Deny Access: Apache 2.4
+<IfModule mod_authz_core.c>
+	Require all denied
+</IfModule>
+# r.20250620
+'; // {{{SYNC-SMART-APP-INI-HTACCESS}}}
+//-- .htaccess IGNORE INDEXING
+const SMART_FRAMEWORK_HTACCESS_NOINDEXING = '
+# Disable Indexing
+<IfModule mod_autoindex.c>
+	IndexIgnore *
+</IfModule>
+Options -Indexes
+# r.20250620
+'; // {{{SYNC-SMART-APP-INI-HTACCESS}}}
+//--
 
+if(defined('APP_USE_SMART_VENDOR_ERROR_HANDLER')) {
+	if(APP_USE_SMART_VENDOR_ERROR_HANDLER === true) {
+		require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/smart-error-handler.php');
+	} //end if
+} //end if
 
 //--
 function autoload__SmartFrameworkVendorBase($classname) {
@@ -321,7 +380,7 @@ function autoload__SmartFrameworkVendorModClasses($classname) {
 		return; // invalid
 	} //end if
 	//--
-	$dir = (string) SMART_FRAMEWORK_VENDOR_BASE_DIR.'modules/mod';
+	$dir = (string) SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH.'modules/mod';
 	$dir .= (string) strtolower((string)implode('-', preg_split('/(?=[A-Z])/', (string)$parts[1])));
 	if((string)$parts[0] == 'SmartModExtLib') {
 		$dir .= '/libs/';
